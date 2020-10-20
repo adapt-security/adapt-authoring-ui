@@ -3,9 +3,9 @@ define(function(require) {
   var Origin = require('core/origin');
   var ProjectsView = require('./views/projectsView');
   var ProjectsSidebarView = require('./views/projectsSidebarView');
-  var MyProjectCollection = require('./collections/myProjectCollection');
-  var SharedProjectCollection = require('./collections/sharedProjectCollection');
+  var ContentCollection = require('core/collections/contentCollection');
   var TagsCollection = require('core/collections/tagsCollection');
+  var Utils = require('core/utils');
 
   Origin.on('router:dashboard', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
@@ -67,10 +67,10 @@ define(function(require) {
       return;
     }
     var titleKey = (isMine) ? 'myprojects' : 'sharedprojects';
-    var Coll = (isMine) ? MyProjectCollection : SharedProjectCollection;
-
+    var filter = isMine ? 'owner=' + '' : 'owner';
+    var coll = new ContentCollection(undefined, { _type: 'course' });
     Origin.trigger('location:title:update', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.' + titleKey) });
-    Origin.contentPane.setView(ProjectsView, { collection: new Coll, _isShared: options.type === 'shared' });
+    Origin.contentPane.setView(ProjectsView, { collection: coll, _isShared: options.type === 'shared' });
   });
 
   Origin.on('globalMenu:dashboard:open', function() {
