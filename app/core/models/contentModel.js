@@ -8,6 +8,7 @@ define(function(require) {
   var ContentModel = Backbone.Model.extend({
     idAttribute: '_id',
     attributeBlacklist: null,
+    urlRoot: 'api/content',
 
     initialize: function(options) {
       this.on('sync', this.loadedData, this);

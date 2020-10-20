@@ -5,7 +5,6 @@ define(function(require) {
   var ContentModel = require('./contentModel');
 
   var CourseModel = ContentModel.extend({
-    urlRoot: 'api/content/course',
     _type: 'course',
     _childTypes: 'contentobject',
 

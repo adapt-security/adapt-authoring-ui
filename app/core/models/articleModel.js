@@ -3,7 +3,6 @@ define(function(require) {
   var ContentModel = require('./contentModel');
 
   var ArticleModel = ContentModel.extend({
-    urlRoot: 'api/content/article',
     _parentType: 'contentobject',
     _siblingTypes: 'article',
     _childTypes: 'block',
