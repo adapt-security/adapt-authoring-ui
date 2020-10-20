@@ -9,7 +9,7 @@ module.exports = function(grunt) {
         langFileExt: '.json',
         src: {
           backend: 'routes/lang',
-          frontend: 'frontend/src/**/lang'
+          frontend: 'app/**/lang'
         },
         dest: 'temp/lang'
       }
@@ -21,10 +21,10 @@ module.exports = function(grunt) {
             expand: true,
             flatten: true,
             src: [
-              'frontend/src/core/**/assets/**',
-              'frontend/src/modules/**/assets/**',
-              'frontend/src/plugins/**/assets/**',
-              'frontend/src/libraries/**/assets/**'
+              'app/core/**/assets/**',
+              'app/modules/**/assets/**',
+              'app/plugins/**/assets/**',
+              'app/libraries/**/assets/**'
             ],
             dest: 'build/css/assets/',
             filter: 'isFile'
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             flatten: true,
-            src: ['frontend/src/libraries/ace/*'],
+            src: ['app/libraries/ace/*'],
             dest: 'build/js/ace'
           }
         ]
@@ -41,14 +41,14 @@ module.exports = function(grunt) {
     less: {
       dev: {
         options: {
-          baseUrl: 'frontend/src',
+          baseUrl: 'app',
           src: [
-            'frontend/src/core/**/*.less',
-            'frontend/src/modules/**/*.less',
-            'frontend/src/plugins/**/*.less',
-            'frontend/src/libraries/**/*.less'
+            'app/core/**/*.less',
+            'app/modules/**/*.less',
+            'app/plugins/**/*.less',
+            'app/libraries/**/*.less'
           ],
-          paths: 'frontend/src/core/less',
+          paths: 'app/core/less',
           generateSourceMaps: true,
           compress: false,
           dest: 'build/css',
@@ -58,15 +58,15 @@ module.exports = function(grunt) {
       },
       compile: {
         options: {
-          baseUrl: 'frontend/src',
+          baseUrl: 'app',
           src: [
-            'frontend/src/core/**/*.less',
-            'frontend/src/less/**/*.less',
-            'frontend/src/modules/**/*.less',
-            'frontend/src/plugins/**/*.less',
-            'frontend/src/libraries/**/*.less'
+            'app/core/**/*.less',
+            'app/less/**/*.less',
+            'app/modules/**/*.less',
+            'app/plugins/**/*.less',
+            'app/libraries/**/*.less'
           ],
-          paths: 'frontend/src/core/less',
+          paths: 'app/core/less',
           generateSourceMaps: false,
           compress: true,
           dest: 'build/css',
@@ -92,11 +92,11 @@ module.exports = function(grunt) {
           {
             follow: true,
             src: [
-              'frontend/src/core/**/*.hbs',
-              'frontend/src/modules/**/*.hbs',
-              'frontend/src/plugins/**/*.hbs'
+              'app/core/**/*.hbs',
+              'app/modules/**/*.hbs',
+              'app/plugins/**/*.hbs'
             ],
-            dest: 'frontend/src/templates/templates.js'
+            dest: 'app/templates/templates.js'
           }
         ]
       }
@@ -104,9 +104,9 @@ module.exports = function(grunt) {
     requirejs: {
       dev: {
         options: {
-          baseUrl: 'frontend/src',
+          baseUrl: 'app',
           name: 'core/app',
-          mainConfigFile: "frontend/src/core/config.js",
+          mainConfigFile: "app/core/config.js",
           out: "build/js/origin.js",
           generateSourceMaps: true,
           preserveLicenseComments: true,
@@ -115,9 +115,9 @@ module.exports = function(grunt) {
       },
       compile: {
         options: {
-          baseUrl: 'frontend/src',
+          baseUrl: 'app',
           name: 'core/app',
-          mainConfigFile: "frontend/src/core/config.js",
+          mainConfigFile: "app/core/config.js",
           out: "build/js/origin.js",
           optimize: "uglify2"
         }
@@ -132,12 +132,12 @@ module.exports = function(grunt) {
     },
     requireBundle: {
       modules: {
-        src: 'frontend/src/modules/*',
-        dest: 'frontend/src/modules/modules.js'
+        src: 'app/modules/*',
+        dest: 'app/modules/modules.js'
       },
       plugins: {
-        src: 'frontend/src/plugins/*',
-        dest: 'frontend/src/plugins/plugins.js'
+        src: 'app/plugins/*',
+        dest: 'app/plugins/plugins.js'
       }
     }
   });
