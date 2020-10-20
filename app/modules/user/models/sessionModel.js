@@ -22,7 +22,7 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
     },
 
     logout: function () {
-      $.post('api/logout', _.bind(function() {
+      $.post('api/auth/disavow', _.bind(function() {
         // revert to the defaults
         this.set(this.defaults);
         Origin.trigger('login:changed');
