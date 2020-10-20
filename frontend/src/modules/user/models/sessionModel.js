@@ -1,38 +1,22 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origin) {
   var SessionModel = Backbone.Model.extend({
-    url: "api/authcheck",
-    defaults: {
-      id: '',
-      tenantId: '',
-      email: '',
-      isAuthenticated: false,
-      permissions: [],
-      otherLoginLinks: []
-    },
+    url: "api/auth/check",
 
-    initialize: function() {
-    },
-
-    login: function (username, password, shouldPersist) {
-      var postData = {
-        email: username,
-        password: password,
-        shouldPersist: shouldPersist
-      };
-      $.post('api/login', postData, _.bind(function (jqXHR, textStatus, errorThrown) {
-        this.set({
-          id: jqXHR.id,
-          tenantId: jqXHR.tenantId,
-          email: jqXHR.email,
-          isAuthenticated: true,
-          permissions: jqXHR.permissions
+    login: function (email, password, shouldPersist) {
+      $.post('api/auth/local', { email, password })
+        .done(token => {
+          this.fetch({ 
+            success: () => {
+              Origin.trigger('login:changed');
+              Origin.trigger('schemas:loadData', Origin.router.navigateToHome);
+            },
+            error: jqXhr => Origin.trigger('login:failed', jqXHR.status)
+          });
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          Origin.trigger('login:failed', jqXHR.status);
         });
-        Origin.trigger('login:changed');
-        Origin.trigger('schemas:loadData', Origin.router.navigateToHome);
-      }, this)).fail(function(jqXHR, textStatus, errorThrown) {
-        Origin.trigger('login:failed', (jqXHR.responseJSON && jqXHR.responseJSON.errorCode) || 1);
-      });
     },
 
     logout: function () {
