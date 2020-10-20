@@ -25,10 +25,17 @@ define(['require', 'underscore', 'backbone'], function(require, _, Backbone){
       Origin.sessionModel = session;
       session.fetch({
         success: function() {
+          session.set({ isAuthenticated: true });
           Origin.trigger('origin:sessionStarted');
           Origin.initialize();
         },
-        error: console.error
+        error: function(model, jqXhr) {
+          if(jqXhr.status !== 401) {
+            return console.error(jqXhr.responseJSON.message);
+          }
+          Origin.trigger('origin:sessionStarted');
+          Origin.initialize();
+        }
       });
     },
     /**
