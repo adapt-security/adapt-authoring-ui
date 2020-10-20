@@ -63,7 +63,6 @@
       loadModules(function() {
         loadPlugins(function() {
           // start session
-          // FIXME required here to avoid errors
           require(['modules/user/models/sessionModel'], function(SessionModel) {
               origin.startSession(new SessionModel());
           });
