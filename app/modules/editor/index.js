@@ -14,8 +14,7 @@ define([
   './themeEditor/index'
 ], function(require, Origin, EditorData) {
   // loads editor data
-  Origin.on('origin:dataReady login:changed', EditorData.loadGlobalData);
-  Origin.on('router:editor editor:refreshData', EditorData.loadCourseData);
+  Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('editor:resetData', EditorData.reset);
   // handle routing
   Origin.on('router:editor', function(route1, route2, route3, route4) {
