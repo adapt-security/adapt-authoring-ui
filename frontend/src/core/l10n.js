@@ -1,5 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(['require', 'jquery', 'polyglot', 'core/origin'], function(require, $, Polyglot, Origin) {
+define(['require', 'jquery', 'polyglot', 'core/origin', 'core/utils'], function(require, $, Polyglot, Origin, Utils) {
   var polyglot;
   // set up global l10n object
   Origin.l10n = {
@@ -20,7 +20,10 @@ define(['require', 'jquery', 'polyglot', 'core/origin'], function(require, $, Po
   * Initialise from language file
   */
   var locale = localStorage.getItem('lang') || 'en';
-  $.getJSON('lang/' + locale, function(data) {
+  Utils.fetch('/api/lang/' + locale, (error, data) => {
+    if(error) {
+      return console.error(error.message);
+    }
     polyglot = new Polyglot({
       locale: locale,
       phrases: data,
@@ -28,8 +31,6 @@ define(['require', 'jquery', 'polyglot', 'core/origin'], function(require, $, Po
         if(Origin.debug) console.warn('l10n:', message);
       }
     });
-    Origin.trigger('l10n:loaded');
-  }).fail(function(jqXHR, textStatus, error) {
     Origin.trigger('l10n:loaded');
   });
 });
