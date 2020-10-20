@@ -1,15 +1,13 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-
-  var Origin = require('core/origin');
-  var LoginView = require('./views/loginView');
-  var UserProfileView = require('./views/userProfileView');
-  var UserProfileSidebarView = require('./views/userProfileSidebarView');
-  var UserProfileModel = require('./models/userProfileModel');
-
   var ForgotPasswordView = require('./views/forgotPasswordView');
+  var LoginView = require('./views/loginView');
+  var Origin = require('core/origin');
   var ResetPasswordView = require('./views/resetPasswordView');
   var UserPasswordResetModel = require('./models/userPasswordResetModel');
+  var UserProfileModel = require('./models/userProfileModel');
+  var UserProfileSidebarView = require('./views/userProfileSidebarView');
+  var UserProfileView = require('./views/userProfileView');
 
   Origin.on('navigation:user:logout', function() {
     Origin.router.navigateTo('user/logout');
