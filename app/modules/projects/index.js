@@ -67,10 +67,13 @@ define(function(require) {
       return;
     }
     var titleKey = (isMine) ? 'myprojects' : 'sharedprojects';
-    var filter = isMine ? 'owner=' + '' : 'owner';
-    var coll = new ContentCollection(undefined, { _type: 'course' });
+    var meId = Origin.sessionModel.get('user')._id;
+    var coll = new ContentCollection(undefined, { 
+      _type: 'course',
+      filter: { createdBy: isMine ? meId : { $ne: meId } }
+    });
     Origin.trigger('location:title:update', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.' + titleKey) });
-    Origin.contentPane.setView(ProjectsView, { collection: coll, _isShared: options.type === 'shared' });
+    Origin.contentPane.setView(ProjectsView, { collection: coll, _isShared: isShared });
   });
 
   Origin.on('globalMenu:dashboard:open', function() {
