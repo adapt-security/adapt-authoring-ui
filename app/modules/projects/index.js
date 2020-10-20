@@ -5,7 +5,6 @@ define(function(require) {
   var ProjectsSidebarView = require('./views/projectsSidebarView');
   var ContentCollection = require('core/collections/contentCollection');
   var TagsCollection = require('core/collections/tagsCollection');
-  var Utils = require('core/utils');
 
   Origin.on('router:dashboard', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
