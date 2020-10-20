@@ -26,14 +26,14 @@ module.exports = function(grunt) {
               'frontend/src/plugins/**/assets/**',
               'frontend/src/libraries/**/assets/**'
             ],
-            dest: 'frontend/build/css/assets/',
+            dest: 'build/css/assets/',
             filter: 'isFile'
           },
           {
             expand: true,
             flatten: true,
             src: ['frontend/src/libraries/ace/*'],
-            dest: 'frontend/build/js/ace'
+            dest: 'build/js/ace'
           }
         ]
       }
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
           paths: 'frontend/src/core/less',
           generateSourceMaps: true,
           compress: false,
-          dest: 'frontend/build/css',
+          dest: 'build/css',
           cssFilename: 'adapt.css',
           mapFilename: 'adapt.css.map'
         }
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
           paths: 'frontend/src/core/less',
           generateSourceMaps: false,
           compress: true,
-          dest: 'frontend/build/css',
+          dest: 'build/css',
           cssFilename: 'adapt.css',
           mapFilename: 'adapt.css.map'
         }
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
           baseUrl: 'frontend/src',
           name: 'core/app',
           mainConfigFile: "frontend/src/core/config.js",
-          out: "frontend/build/js/origin.js",
+          out: "build/js/origin.js",
           generateSourceMaps: true,
           preserveLicenseComments: true,
           optimize: "none"
@@ -118,7 +118,7 @@ module.exports = function(grunt) {
           baseUrl: 'frontend/src',
           name: 'core/app',
           mainConfigFile: "frontend/src/core/config.js",
-          out: "frontend/build/js/origin.js",
+          out: "build/js/origin.js",
           optimize: "uglify2"
         }
       }
