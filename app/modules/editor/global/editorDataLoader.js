@@ -64,11 +64,7 @@ define(function(require) {
     * Accepts callback for editor:refreshData
     */
     loadCourseData: function(callback) {
-      if(!Origin.sessionModel.get('isAuthenticated')) {
-        // no point continuing if not logged in
-        return;
-      }
-      if(loadingCourseData) {
+      if(loadingCourseData || !Origin.sessionModel.get('isAuthenticated')) { // no point continuing if not logged in
         return;
       }
       if(!preloader.hasLoadedGlobalData()) {
