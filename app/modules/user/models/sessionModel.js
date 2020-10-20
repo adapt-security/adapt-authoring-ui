@@ -4,14 +4,16 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
     url: "api/auth/check",
 
     login: function (email, password, shouldPersist) {
-      $.post('api/auth/local', { email, password })
-        .done(token => {
+      $.post('api/auth/local', { email: email, password: password })
+        .done(function (token) {
           this.fetch({ 
-            success: () => {
+            success: function() {
               Origin.trigger('login:changed');
               Origin.trigger('schemas:loadData', Origin.router.navigateToHome);
             },
-            error: jqXhr => Origin.trigger('login:failed', jqXHR.status)
+            error: function(jqXhr) {
+              Origin.trigger('login:failed', jqXHR.status);
+            }
           });
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
