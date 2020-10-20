@@ -11,12 +11,10 @@ define(['require', 'underscore', 'backbone'], function(require, _, Backbone){
     */
     initialize: _.once(function() {
       listenToWindowEvents();
-      Origin.trigger('schemas:loadData', function() {
-        Origin.trigger('origin:dataReady');
-        initLoading();
-        initialized = true;
-        Origin.trigger('origin:initialize');
-      });
+      Origin.trigger('origin:dataReady');
+      initLoading();
+      initialized = true;
+      Origin.trigger('origin:initialize');
     }),
     /**
     * Saves session on the Origin object
