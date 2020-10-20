@@ -34,8 +34,6 @@ define(function(require) {
         'dashboard:projectView:itemSelected': this.deselectItem,
         'dashboard:dashboardView:deselectItem': this.deselectItem
       });
-      this.listenTo(Origin, 'editorView:deleteProject:' + this.model.get('_id'), this.deleteProject);
-
       this.model.set('heroImageURI', this.model.getHeroImageURI());
     },
 
@@ -89,13 +87,9 @@ define(function(require) {
     },
 
     deleteProjectConfirm: function(confirmed) {
-      if (confirmed) {
-        var id = this.model.get('_id');
-        Origin.trigger('editorView:deleteProject:' + id);
+      if(!confirmed) {
+        return;
       }
-    },
-
-    deleteProject: function(event) {
       this.model.destroy({
         success: function() {
           Origin.trigger('dashboard:refresh');
