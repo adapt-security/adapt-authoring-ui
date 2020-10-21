@@ -4,7 +4,7 @@ define(function(require) {
   var PresetModel = require('../models/editorPresetModel.js');
 
   var PresetCollection = Backbone.Collection.extend({
-    url: 'api/content/themepreset',
+    url: 'api/coursethemepresets',
     comparator: 'parentTheme',
     model: PresetModel
   });
