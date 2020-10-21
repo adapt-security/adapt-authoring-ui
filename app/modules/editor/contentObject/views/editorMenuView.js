@@ -1,5 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
   var ContentCollection = require('core/collections/contentCollection');
@@ -22,17 +23,15 @@ define(function(require){
     },
 
     postRender: function() {
-      this.contentobjects = new ContentCollection(null, {
-        _type: 'contentobject',
-        _courseId: Origin.editor.data.course.get('_id')
-      });
-      this.contentobjects.fetch({
-        success: _.bind(function(children) {
-          this.contentobjects = children;
+      Origin.editor.data.content.fetch({
+        success: (function(content) {
+          this.contentobjects = new Backbone.Collection(content.filter(function(c) { return c.get('_type') === 'menu' || c.get('_type') === 'page'; }));
           this.renderLayers();
           _.defer(this.setViewToReady);
-        }, this),
-        error: console.error
+        }).bind(this),
+        error: (function(error) {
+          Origin.Notify.alert({ type: 'error', text: error.message });
+        }).bind(this)
       });
     },
 
