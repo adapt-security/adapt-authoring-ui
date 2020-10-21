@@ -1,10 +1,8 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var EditorOriginView = require('../../global/views/editorOriginView');
-  var ExtensionTypeModel = require('core/models/extensionTypeModel');
-  var EditorCollection = require('../../global/collections/editorCollection');
+  var ContentPluginCollection = require('core/collections/contentPluginCollection');
 
   var EditorExtensionsEditView = EditorOriginView.extend({
     className: "extension-management",
@@ -13,14 +11,12 @@ define(function(require) {
     settings: {
       autoRender: false
     },
-
     events: {
       'click button.remove-extension': 'onRemoveExtensionClicked',
       'click button.add-extension': 'onAddExtensionClicked'
     },
 
     preRender: function() {
-      var _this = this;
       this.currentSelectedIds = [];
 
       this.listenTo(Origin, {
@@ -29,63 +25,34 @@ define(function(require) {
       });
       // assumption: extensions are always switched between enabled and available
       this.listenTo(this.model, 'change:enabledExtensions', this.render);
-
-      this.setupExtensions(function() {
-        _this.postRender()
-      });
+      this.setupExtensions(this.postRender.bind(this));
     },
 
     setupExtensions: function(callback) {
-      var enabledExtensionNames = _.pluck(Origin.editor.data.config.get('_enabledExtensions'), 'name');
-      var enabledExtensions = [];
-      var disabledExtensions = [];
-      var _this = this;
-
-      var extensionTypes = new EditorCollection(null, {
-        autoFetch: false,
-        model: ExtensionTypeModel,
-        url: ExtensionTypeModel.prototype.urlRoot,
-        _type: 'extension'
-      });
-
-      extensionTypes.fetch({
-        success: function() {
-          extensionTypes.each(function(model) {
-            var extension = model.toJSON();
-            if (_.indexOf(enabledExtensionNames, extension.name) > -1) {
-              enabledExtensions.push(extension);
-            } else if (extension._isAvailableInEditor) {
-              disabledExtensions.push(extension);
-            }
+      var plugins = new ContentPluginCollection(undefined, { type: 'extension' });
+      
+      plugins.fetch({
+        success: (function() {
+          var partitioned = _.partition(plugins.models, function(e) {
+            return _.indexOf(Origin.editor.data.config.get('_enabledPlugins'), e.get('name')) > -1;
           });
-
-          enabledExtensions.sort(function(a, b){
-            if(a.displayName < b.displayName) return -1;
-            if(a.displayName > b.displayName) return 1;
-            return 0;
+          this.model.set({
+            enabledExtensions: partitioned[0].sort(this.sortByDisplayName),
+            availableExtensions: partitioned[1].sort(this.sortByDisplayName)
           });
+          if(callback) callback();
 
-          disabledExtensions.sort(function(a, b){
-            if(a.displayName < b.displayName) return -1;
-            if(a.displayName > b.displayName) return 1;
-            return 0;
-          });
-
-          _this.model.set({
-            enabledExtensions: enabledExtensions,
-            availableExtensions: disabledExtensions
-          });
-
-          if(callback){
-            return callback();
-          }
-        },
-        error: function(err) {
-          if(callback){
-            return callback(err);
-          }
+        }).bind(this),
+        error: function(e) {
+          if(callback) return callback(e);
         }
       })
+    },
+
+    sortByDisplayName: function(a, b) {
+      if(a.get('displayName') < b.get('displayName')) return -1;
+      if(a.get('displayName') > b.get('displayName')) return 1;
+      return 0;
     },
 
     postRender: function() {
