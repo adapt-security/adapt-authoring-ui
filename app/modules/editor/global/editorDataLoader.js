@@ -29,7 +29,7 @@ define(function(require) {
           Origin.editor.data.content.fetch({
            success: function(content) {
               isLoaded = true;
-              Origin.editor.data.config = content.where({ _type: 'config' });
+              Origin.editor.data.config = content.findWhere({ _type: 'config' });
               if(_.isFunction(callback)) callback();
               Origin.trigger('editor:dataLoaded');
             }, 
