@@ -5,7 +5,7 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
 
     login: function (email, password, shouldPersist) {
       $.post('api/auth/local', { email: email, password: password })
-        .done(function (token) {
+        .done((function (token) {
           this.fetch({ 
             success: function() {
               Origin.trigger('login:changed');
@@ -15,7 +15,7 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
               Origin.trigger('login:failed', jqXHR.status);
             }
           });
-        })
+        }).bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
           Origin.trigger('login:failed', jqXHR.status);
         });
