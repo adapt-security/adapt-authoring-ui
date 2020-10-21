@@ -1,10 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Backbone = require('backbone');
+  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
-  var ThemeCollection = require('../collections/editorThemeCollection');
   var PresetCollection = require('../collections/editorPresetCollection.js');
   var PresetEditView = require('./editorPresetEditView.js');
   var PresetModel = require('../models/editorPresetModel.js');
@@ -116,19 +116,20 @@ define(function(require) {
     },
 
     loadCollections: function() {
-      this.themes = new ThemeCollection();
-      this.listenTo(this.themes, {
-        sync: this.onCollectionReady,
-        error: this.onError
-      });
-      this.themes.fetch();
-
+      this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
       this.presets = new PresetCollection();
-      this.listenTo(this.presets, {
-        sync: this.onCollectionReady,
+
+      this.themes.fetch({
+        success: (function() {
+          this.presets.fetch({
+            success: (function() {
+              this.trigger('dataReady');
+            }).bind(this),
+            error: this.onError
+          });
+        }).bind(this),
         error: this.onError
       });
-      this.presets.fetch();
     },
 
     updateSelects: function() {
@@ -146,7 +147,7 @@ define(function(require) {
       // add options
       this.themes.models.forEach(function(item) {
         if (item.get('_isAvailableInEditor') === false) return;
-        select.append($('<option>', { value: item.get('theme') }).text(item.get('displayName')));
+        select.append($('<option data-name="' + item.get('name') + '">', { value: item.get('theme') }).text(item.get('displayName')));
       }, this);
 
       // disable if no options
@@ -259,11 +260,8 @@ define(function(require) {
     validateForm: function() {
       var selectedTheme = this.getSelectedTheme();
 
-      if (selectedTheme === undefined) {
-        Origin.Notify.alert({
-          type: 'error',
-          text: Origin.l10n.t('app.errornothemeselected')
-        });
+      if (!selectedTheme) {
+        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errornothemeselected') });
         return false;
       }
       return true;
@@ -366,11 +364,7 @@ define(function(require) {
     },
 
     getSelectedTheme: function() {
-      var theme = $('select#theme', this.$el).val();
-      if (theme) {
-        return this.themes.findWhere({ 'theme': theme });
-      }
-      return this.themes.findWhere({ 'name': this.model.get('_theme') });
+      return this.themes.findWhere({ name: $('select#theme', this.$el).attr('data-name') || this.model.get('_theme') });
     },
 
     // param used to only return the val() (and ignore model data)
@@ -486,22 +480,8 @@ define(function(require) {
       select.find('option[value="' + id + '"]').remove();
     },
 
-    onCollectionReady: function(collection) {
-      if (collection === this.themes || collection === this.presets) {
-        collection.ready = true;
-        if (this.isDataLoaded()) this.trigger('dataReady');
-      }
-      // must just be a model
-      else {
-        this.updateSelects();
-      }
-    },
-
     onError: function(collection, response, options) {
-      Origin.Notify.alert({
-        type: 'error',
-        text: response
-      });
+      Origin.Notify.alert({ type: 'error', text: response });
     },
 
     onThemeChanged: function() {
