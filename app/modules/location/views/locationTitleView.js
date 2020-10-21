@@ -4,8 +4,6 @@ define(function(require) {
   var Backbone = require('backbone');
   var Origin = require('core/origin');
 
-  var EditorDataLoader = require('modules/editor/global/editorDataLoader');
-
   var LocationTitleView = Backbone.View.extend({
     el: '.location-title',
 
@@ -14,7 +12,6 @@ define(function(require) {
         'location:title:update': this.render,
         'location:title:hide': this.onHideTitle
       });
-      EditorDataLoader.waitForLoad(_.bind(this.render, this));
     },
 
     render: function(data) {
@@ -29,13 +26,16 @@ define(function(require) {
         return data;
       }
       // add some shortcuts to common locations
-      var course = Origin.editor.data.course;
       // Dashboard
       var dashboardI = data.breadcrumbs.indexOf('dashboard');
       if(dashboardI > -1) {
         data.breadcrumbs.splice(dashboardI, 1, { title: Origin.l10n.t('app.dashboard'), url: '#' });
       }
       // Course
+      var course = Origin.editor && Origin.editor.data && Origin.editor.data.course;
+      if(!course) {
+        return data;
+      }
       var courseI = data.breadcrumbs.indexOf('course');
       if(courseI > -1) {
         data.breadcrumbs.splice(courseI, 1, {
