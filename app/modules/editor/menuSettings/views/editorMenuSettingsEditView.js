@@ -27,11 +27,8 @@ define(function(require) {
 
     renderMenuItemViews: function() {
       this.collection.each(function(menu) {
-        var isSelected = menu.get('name') === this.model.get('_menu');
-        menu.set('_isSelected', isSelected);
-        if(isSelected || menu.get('_isAvailableInEditor') === true) {
-          this.$('.menu-settings-list').append(new MenuSettingsView({ model: menu }).$el);
-        }
+        menu.set('_isSelected', menu.get('name') === this.model.get('_menu'));
+        this.$('.menu-settings-list').append(new MenuSettingsView({ model: menu }).$el);
       }, this);
       this.setViewToReady();
     },
