@@ -1,16 +1,18 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require) {
-  var _ = require('underscore');
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
-  var Helpers = require('core/helpers');
-
+define([
+  'backbone',
+  'underscore',
+  '../models/contentModel',
+  '../origin',
+  '../helpers'
+], function(Backbone, _, ContentModel, Origin, Helpers) {
   var ContentCollection = Backbone.Collection.extend({
     url: 'api/content',
+    model: ContentModel,
 
     initialize : function(models, options) {
       this._type = options._type;
-      this.model = Helpers.contentModelMap(this._type);
+      if(this._type) this.model = Helpers.contentModelMap(this._type);
       this._courseId = options._courseId;
       this._parentId = options._parentId;
       this.customQuery = options.filter || {};
@@ -20,18 +22,19 @@ define(function(require) {
       }, this);
     },
     buildQuery: function() {
-      var query = _.assign(this.customQuery, { _type: this._type });
+      var query = _.assign({}, this.customQuery);
+      if(this._type) query._type = this._type;
       if(this._courseId) query._courseId = this._courseId;
       if(this._parentId) query._parentId = this._parentId;
       _.assign(query, this.customQuery);
       return query;
     },
     fetch: function(options) {
-      Backbone.Collection.prototype.fetch.call(this, {
+      Backbone.Collection.prototype.fetch.call(this, _.assign({
         url: 'api/content/query',
         method: 'POST',
         data: this.buildQuery()
-      });
+      }, options));
     }
   });
 
