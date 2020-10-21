@@ -5,19 +5,16 @@ define(function(require) {
   var ConfigModel = ContentModel.extend({
     _type: 'config',
     _parent: 'course',
-
+    /**
+     * Custom sync to allow a _courseId to be specified instead of an _id
+     */
     sync: function(method, model, options) {
       options = options || {};
 
-      switch (method.toLowerCase()) {
-        case 'read':
-          options.url = 'api/content/' + this.get('_courseId');
-          break;
-        case 'update':
-        case 'patch':
-          options.url = 'api/content/' + this.get('_id');
-          break;
-      }
+      var _id = this.get('_id');
+      var query = '?_type=config&_courseId=' + this.get('_courseId');
+
+      options.url = 'api/content/' + (_id ? _id : query);
 
       return Backbone.sync.apply(this, arguments);
     }
