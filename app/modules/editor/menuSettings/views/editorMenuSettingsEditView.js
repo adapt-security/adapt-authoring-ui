@@ -3,7 +3,7 @@ define(function(require) {
   var Backbone = require('backbone');
   var Origin = require('core/origin');
   var EditorOriginView = require('../../global/views/editorOriginView');
-  var MenuSettingsCollection = require('../collections/editorMenuSettingsCollection');
+  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var MenuSettingsView = require('./editorMenuSettingsView');
 
   var EditorMenuSettingsEditView = EditorOriginView.extend({
@@ -11,7 +11,7 @@ define(function(require) {
     tagName: "ul",
 
     preRender: function() {
-      this.collection = new MenuSettingsCollection();
+      this.collection = new ContentPluginCollection(undefined, { type: 'menu' });
       this.listenTo(this.collection, 'sync', this.addMenuItemView);
       this.collection.fetch();
 
