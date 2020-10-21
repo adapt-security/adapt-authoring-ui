@@ -2,7 +2,6 @@
 define(function(require) {
   var Backbone = require('backbone');
   var Origin = require('core/origin');
-  var EditorData = require('../global/editorDataLoader');
   var Helpers = require('../global/helpers');
 
   var ComponentModel = require('core/models/componentModel');
