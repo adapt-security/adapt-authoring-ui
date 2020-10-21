@@ -12,11 +12,9 @@ define(function(require) {
   var ThemingView = EditorOriginView.extend({
     tagName: 'div',
     className: 'theming',
-
     settings: {
       presetSelection: null
     },
-
     events: {
       'change .theme select': 'onThemeChanged',
       'change .preset select': 'onPresetChanged',
@@ -51,7 +49,6 @@ define(function(require) {
         breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
         title: Origin.l10n.t('app.themingtitle')
       });
-
       this.updateRestorePresetButton();
       this.renderForm();
     },
@@ -68,7 +65,6 @@ define(function(require) {
         $('.editor-theming-sidebar-reset').hide();
         return;
       }
-
       this.$('.theme-selector').addClass('show-preset-select');
       this.$('.empty-message').hide();
       this.$('.editable-theme').show();
@@ -78,15 +74,12 @@ define(function(require) {
           model: selectedTheme,
           schemaType: selectedTheme.get('theme')
         });
-      }
-      catch(e) {
+      } catch(e) {
         console.log(e);
       }
-
       if (this.form) {
         this.$('.form-container').html(this.form.el);
       }
-
       this.$el.find('fieldset:not(:has(>.field))').addClass('empty-fieldset');
       this.$('.theme-customiser').show();
       Origin.trigger('theming:showPresetButton', true);
@@ -111,7 +104,6 @@ define(function(require) {
     postRender: function() {
       this.updateSelects();
       this.setViewToReady();
-
       this.$el.show();
     },
 
@@ -149,13 +141,10 @@ define(function(require) {
         if (item.get('_isAvailableInEditor') === false) return;
         select.append($('<option data-name="' + item.get('name') + '">', { value: item.get('theme') }).text(item.get('displayName')));
       }, this);
-
       // disable if no options
       select.attr('disabled', this.themes.models.length === 0);
-
       // restore the previous value
       if (oldVal) return select.val(oldVal);
-
       // select current theme
       var selectedTheme = this.getSelectedTheme();
       if (selectedTheme) select.val(selectedTheme.get('theme'));
@@ -179,7 +168,6 @@ define(function(require) {
         this.$('button.edit').hide();
         return;
       }
-
       var selectedPreset = this.getSelectedPreset();
       if (selectedPreset && selectedPreset.get('parentTheme') === theme) {
         $.get('api/themepreset/exists/' + selectedPreset.get('_id'), function(data) {
@@ -297,7 +285,6 @@ define(function(require) {
       if (!this.validateForm()) {
         return Origin.trigger('sidebar:resetButtons');
       }
-
       this.postThemeData(function(){
         this.postPresetData(function() {
           this.postSettingsData(this.onSaveSuccess);
@@ -387,6 +374,7 @@ define(function(require) {
 
     getDefaultThemeSettings: function() {
       var defaults = {};
+      var t = this.getSelectedTheme();
       var props = this.getSelectedTheme().get('properties').variables;
       for (var key in props) {
         // Check for nested properties
@@ -414,7 +402,6 @@ define(function(require) {
 
     themeIsEditable: function(theme) {
       var props = theme && theme.get('properties');
-
       return props && props.variables;
     },
 
@@ -527,11 +514,7 @@ define(function(require) {
     },
 
     onSaveError: function() {
-      Origin.Notify.alert({
-        type: 'error',
-        text: Origin.l10n.t('app.errorsave')
-      });
-
+      Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsave') });
       this.navigateBack();
     },
 
