@@ -1,11 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Backbone = require('backbone');
-  var Origin = require('core/origin');
-
-  var EditorExtensionsEditView = require('./views/editorExtensionsEditView');
   var EditorExtensionsEditSidebarView = require('./views/editorExtensionsEditSidebarView');
-  var Helpers = require('../global/helpers');
+  var EditorExtensionsEditView = require('./views/editorExtensionsEditView');
+  var Origin = require('core/origin');
 
   Origin.on('editor:extensions', function(data) {
     Origin.trigger('location:title:update', {
