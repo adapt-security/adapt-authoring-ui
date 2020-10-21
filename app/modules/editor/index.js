@@ -43,8 +43,6 @@ define([
       case 'settings':
         type = 'course';
         break;
-      default:
-        // TODO ???
     }
     Origin.trigger('editor:' + type, {
       type: route2,
