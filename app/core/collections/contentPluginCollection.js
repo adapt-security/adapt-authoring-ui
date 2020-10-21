@@ -11,6 +11,7 @@ define(function(require) {
       this.type = options && options.type;
     },
     fetch: function(options) {
+      options = options || {};
       if(this.type) options.url = this.url + '?type=' + this.type;
       Backbone.Collection.prototype.fetch.call(this, options);
     }
