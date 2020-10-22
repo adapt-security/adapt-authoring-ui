@@ -22,7 +22,7 @@ define(function(require) {
 					return;
 				}
 				// Find out if theres any {{tenantid}}/*
-				var splitPermission = splitString(permission)
+				var splitPermission = splitString(permission);
 				
 				if (splitPermission[1].charAt(0) === '*') {
 					var tenantWildCard = splitPermission[splitPermission.length - 1];
@@ -57,14 +57,11 @@ define(function(require) {
 			if (!_.isString(route) || !_.isArray(permissions)) {
 				return console.log('Please consult the documentation on adding permissions to a route');
 			}
-			// Push the route and permissions to the routes array
 			routes.push({ route: route, permissions: permissions });
 		},
 
 		checkRoute: function(route) {
-			// Find the route
 			var routeObject = _.findWhere(routes, {route: route});
-			// If no route is avialable the pass back true
 			if (!routeObject) return true;
 			// If there is a route - check against the users permissions
 			return this.hasPermissions(routeObject.permissions);
