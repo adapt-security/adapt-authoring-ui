@@ -16,7 +16,8 @@ define(function(require) {
 			_.each(sessionModelPermissions, function(permission) {
 				// Find out if the first character is a wild card
 				if (permission.charAt(0) === '*') {
-					return hasWildCard = true;
+					hasWildCard = true;
+					return;
 				}
 				// Find out if theres any {{tenantid}}/*
 				var splitPermission = splitString(permission)
@@ -39,13 +40,13 @@ define(function(require) {
 				var splitPermissionItem = splitString(permissionItem);
 				// Check if the user has a tenantWildCard matching the operation - :create || :retrieve etc
 				if (_.contains(tenantWildCards, splitPermissionItem[splitPermissionItem.length-1])) {
-					allowedPermissionsLength ++;
+					allowedPermissionsLength++;
 					return;
 				}
 				// Check if the user has a match 
 				// - this is currently a straight string comparision
 				if (_.contains(sessionModelPermissions, permissionItem)) {
-					allowedPermissionsLength ++;
+					allowedPermissionsLength++;
 				}
 			});
 			// If the all the permissions coming in match the allowed length
@@ -54,16 +55,11 @@ define(function(require) {
 		},
 
 		addRoute: function(route, permissions) {
-			if (_.isString(route) && _.isArray(permissions)) {
-				// Push the route and permissions to the routes array
-				var routeObject = {
-					route: route,
-					permissions: permissions
-				};
-				routes.push(routeObject);
-			} else {
-				console.log('Please consult the documentation on adding permissions to a route');
+			if (!_.isString(route) || !_.isArray(permissions)) {
+				return console.log('Please consult the documentation on adding permissions to a route');
 			}
+			// Push the route and permissions to the routes array
+			routes.push({ route: route, permissions: permissions });
 		},
 
 		checkRoute: function(route) {
