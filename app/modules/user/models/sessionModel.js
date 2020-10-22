@@ -5,6 +5,9 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
 
     hasScopes: function(scopes) {
       var assignedScopes = this.get('scopes');
+      if(this.get('isSuper')) {
+        return true;
+      }
       if(!Array.isArray(scopes)) {
         return assignedScopes.includes(scopes);
       }
