@@ -73,9 +73,6 @@ define(function(require){
 
     onRestoreButtonClicked: function(event) {
       event.preventDefault();
-
-      event.preventDefault();
-
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.assetconfirmrestore'),
         callback: _.bind(this.onRestoreConfirmed, this)
