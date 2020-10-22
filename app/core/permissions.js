@@ -6,8 +6,10 @@ define(function(require) {
 	var routes = [];
 
 	var Permissions = {
-		// This method should return true or false
-		// based upon if the user has the correct permissions
+		/**
+		 * This method should return true or false based upon if the user has the correct permissions
+		 * @param {*} permissionsArray 
+		 */
 		hasPermissions: function(permissionsArray) {
 			// First check for any wildcards '*'
 			var sessionModelPermissions = Origin.sessionModel.get('permissions');
@@ -31,8 +33,7 @@ define(function(require) {
 			if (hasWildCard) {
 				return true;
 			}
-			// These are used to compare the permissions length coming in
-			// and the allowed permissions
+			// These are used to compare the permissions length coming in and the allowed permissions
 			var permissionsLength = permissionsArray.length;
 			var allowedPermissionsLength = 0;
 
@@ -43,14 +44,12 @@ define(function(require) {
 					allowedPermissionsLength++;
 					return;
 				}
-				// Check if the user has a match 
-				// - this is currently a straight string comparision
+				// Check if the user has a match (currently a straight string comparision)
 				if (_.contains(sessionModelPermissions, permissionItem)) {
 					allowedPermissionsLength++;
 				}
 			});
-			// If the all the permissions coming in match the allowed length
-			// then allow this user the permission
+			// If the all the permissions coming in match the allowed length then allow this user the permission
 			return allowedPermissionsLength === permissionsLength;
 		},
 
