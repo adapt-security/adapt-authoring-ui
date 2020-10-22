@@ -6,7 +6,6 @@ define(function(require) {
   var _ = require('underscore');
 
   var UserProfileModel = Backbone.Model.extend({
-
     idAttribute: '_id',
     url: 'api/user/me',
 
@@ -16,17 +15,14 @@ define(function(require) {
       if (!attributes.firstName) {
         validationErrors.firstName = Origin.l10n.t('app.validationrequired');
       }
-
       if (!attributes.lastName) {
         validationErrors.lastName = Origin.l10n.t('app.validationrequired');
       }
-
       if (!attributes.email) {
         validationErrors.email = Origin.l10n.t('app.validationrequired');
       } else if (!Helpers.isValidEmail(attributes.email)) {
         validationErrors.email = Origin.l10n.t('app.invalidusernameoremail');
       }
-
       if (attributes._isNewPassword) {
         if (!attributes.password) {
           validationErrors.password = Origin.l10n.t('app.validationrequired');
@@ -36,14 +32,10 @@ define(function(require) {
           }
         }
       }
-
-      return _.isEmpty(validationErrors) 
-      ? null
-      : validationErrors;
+      return _.isEmpty(validationErrors) ? null : validationErrors;
     }
 
   });
 
   return UserProfileModel;
-
 });
