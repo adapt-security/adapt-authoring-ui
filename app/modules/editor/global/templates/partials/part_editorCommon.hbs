@@ -23,14 +23,14 @@
     </span>
   </button>
 
-  {{#ifHasPermissions "*/*:create,*/*:read,*/*:update,*/*:delete"}}
+  {{#ifHasScopes "export:adapt"}}
   <button class="editor-common-sidebar-export action-secondary">
     <span class="editor-common-sidebar-export-inner">{{ t 'app.export'}}</span>
     <span class="editor-common-sidebar-exporting display-none">
       <i class="fa fa-circle-o-notch fa-spin"></i>{{ t 'app.exporting'}}
     </span>
   </button>
-  {{/ifHasPermissions}}
+  {{/ifHasScopes}}
 
   <div class="separator" />
 

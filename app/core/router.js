@@ -11,6 +11,7 @@ define(function(require) {
       '_=_': 'handleIndex',
       ':module(/*route1)(/*route2)(/*route3)(/*route4)': 'handleRoute'
     },
+    restrictedRoutes: {},
 
     initialize: function() {
       this.listenTo(Origin, 'origin:initialize', this.onOriginInitialize);
@@ -48,23 +49,24 @@ define(function(require) {
       this.homeRoute = url;
     },
 
-    isUserAuthenticated: function() {
-      return Origin.sessionModel.get('isAuthenticated') ? true : false;
+    restrictRoute: function(route, scopes) {
+      if(this.restrictedRoutes[route]) {
+        return console.error('Route already restricted', route);
+      }
+      this.restrictedRoutes[route] = scopes;
     },
-
     /**
     * Checks user permissions for route
     */
-    verifyRoute: function(module, route1) {
+    verifyRoute: function(mod, route1) {
       // Check this user has permissions
-      if(!Origin.permissions.checkRoute(Backbone.history.fragment)) {
-        this.blockUserAccess();
-        return false;
+      var requiredScopes = this.restrictedRoutes[Backbone.history.fragment];
+      if(requiredScopes && !Origin.sessionModel.hasScopes(requiredScopes)) {
+        return this.blockUserAccess();
       }
       // FIXME routes shouldn't be hard-coded
-      if(!this.isUserAuthenticated()  && (module !== 'user' && route1 !== 'login')) {
-        this.blockUserAccess(Origin.l10n.t('app.errorsessionexpired'), true);
-        return false;
+      if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login')) {
+        return this.blockUserAccess(Origin.l10n.t('app.errorsessionexpired'), true);
       }
       return true;
     },
@@ -141,7 +143,7 @@ define(function(require) {
 
     handleIndex: function() {
       Origin.trigger('origin:showLoading');
-      this.isUserAuthenticated() ? this.navigateToHome() : this.navigateToLogin();
+      Origin.sessionModel.get('isAuthenticated') ? this.navigateToHome() : this.navigateToLogin();
     },
 
     handleRoute: function(module, route1, route2, route3, route4) {

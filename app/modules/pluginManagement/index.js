@@ -11,7 +11,6 @@ define(function(require) {
     if (!location) {
       location = 'extension';
     }
-
     if ('upload' === location) {
       Origin.contentPane.setView(PluginManagementUploadView);
       Origin.sidebar.addView(new PluginManagementUploadSidebarView().$el, {});
@@ -26,11 +25,12 @@ define(function(require) {
   });
 
   Origin.on('origin:dataReady login:changed', function() {
-    var permissions = ["{{tenantid}}/extensiontype/*:update"];
-    Origin.permissions.addRoute('pluginManagement', permissions);
+    var permissions = ["write:contentplugins"];
+    Origin.router.restrictRoute('pluginManagement', permissions);
 
-    if (!Origin.permissions.hasPermissions(permissions)) return;
-
+    if (!Origin.sessionModel.hasScopes(permissions)) {
+      return;
+    }
     Origin.globalMenu.addItem({
       location: 'global',
       text: Origin.l10n.t('app.pluginmanagement'),

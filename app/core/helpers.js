@@ -172,9 +172,8 @@ define(function(require){
       return new Handlebars.SafeString(html + '</ul>');
     },
 
-    ifHasPermissions: function(permissions, block) {
-      var hasPermission = Origin.permissions.hasPermissions(permissions.split(','));
-      return hasPermission ? block.fn(this) : block.inverse(this);
+    ifHasScopes: function(scopes, block) {
+      return Origin.sessionModel.hasScopes(scopes.split(',')) ? block.fn(this) : block.inverse(this);
     },
 
     ifMailEnabled: function(block) {

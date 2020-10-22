@@ -3,6 +3,14 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
   var SessionModel = Backbone.Model.extend({
     url: "api/auth/check",
 
+    hasScopes: function(scopes) {
+      var assignedScopes = this.get('scopes');
+      if(!Array.isArray(scopes)) {
+        return assignedScopes.includes(scopes);
+      }
+      return scopes.every(function(s) { return assignedScopes.includes(s); });
+    },
+
     login: function (email, password, shouldPersist) {
       $.post('api/auth/local', { email: email, password: password })
         .done((function (token) {
