@@ -7,7 +7,7 @@ define(function(require) {
     idAttribute: '_id',
 
     url: function() {
-      var root = 'api/user';
+      var root = 'api/users';
       return root + ((this.isNew()) ? '' : '/' + this.id);
     },
 

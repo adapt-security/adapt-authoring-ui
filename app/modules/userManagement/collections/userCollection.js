@@ -1,11 +1,10 @@
 define(function(require) {
   var Backbone = require('backbone');
   var UserModel = require('../models/userModel');
-  var Moment = require('moment');
 
   var UserCollection = Backbone.Collection.extend({
+    url: 'api/users',
     model: UserModel,
-
     sortBy: 'email',
     direction: 1,
     mailSearchTerm: false,
@@ -41,8 +40,6 @@ define(function(require) {
       if (a < b) return this.direction * -1;
       return 0;
     },
-
-    url: 'api/user',
 
     updateFilter: function(filterMap) {
       this.filterGroups = filterMap;

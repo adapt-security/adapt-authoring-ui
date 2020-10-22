@@ -8,34 +8,31 @@ define(function(require) {
   var UserCollection = require('./collections/userCollection');
 
   var isReady = false;
-  var data = {
-    featurePermissions: ["*/*:create","*/*:read","*/*:update","*/*:delete"],
-    allRoles: new Backbone.Collection(),
-    allTenants: new Backbone.Collection()
-  };
+  var allRoles = new Backbone.Collection();
 
   Origin.on('origin:dataReady login:changed', function() {
-    Origin.permissions.addRoute('userManagement', data.featurePermissions);
+    var permissions = ["read:users"];
 
-  	if (Origin.permissions.hasPermissions(data.featurePermissions)) {
-      data.allRoles.on('sync', onDataFetched);
-      data.allRoles.url = 'api/role';
-      data.allRoles.fetch();
-
-      data.allTenants.on('sync', onDataFetched);
-      data.allTenants.url = 'api/tenant';
-      data.allTenants.fetch();
-
-  		Origin.globalMenu.addItem({
-        "location": "global",
-        "text": Origin.l10n.t('app.usermanagement'),
-        "icon": "fa-users",
-        "sortOrder": 3,
-        "callbackEvent": "userManagement:open"
-      });
-  	} else {
+    Origin.router.restrictRoute('userManagement', permissions);
+    
+  	if (!Origin.sessionModel.hasScopes(permissions)) {
       isReady = true;
+      return;
     }
+    allRoles.on('sync', function() {
+      isReady = true;
+      Origin.trigger('userManagement:dataReady');
+    });
+    allRoles.url = 'api/roles';
+    allRoles.fetch();
+
+    Origin.globalMenu.addItem({
+      "location": "global",
+      "text": Origin.l10n.t('app.usermanagement'),
+      "icon": "fa-users",
+      "sortOrder": 3,
+      "callbackEvent": "userManagement:open"
+    });
   });
 
   Origin.on('globalMenu:userManagement:open', function() {
@@ -53,23 +50,18 @@ define(function(require) {
 
   var onRoute = function(location, subLocation, action) {
     if (location && location === 'addUser') {
-      Origin.contentPane.setView(AddUserView, {
-        model: new Backbone.Model({ globalData: data })
-      });
+      Origin.contentPane.setView(AddUserView, { model: new Backbone.Model({ globalData: { allRoles: allRoles } }) });
       Origin.sidebar.addView(new AddUserSidebarView().$el);
-
       return;
     }
-
     var userCollection = new UserCollection();
-    var globalModel = new Backbone.Model({ globalData: data })
+    var globalModel = new Backbone.Model({ globalData: { allRoles: allRoles } });
 
     userCollection.once('sync', function() {
       Origin.contentPane.setView(UserManagementView, {
         model: globalModel,
         collection: userCollection
       });
-
       Origin.sidebar.addView(new UserManagementSidebarView({
         model: globalModel,
         collection: userCollection
@@ -77,13 +69,5 @@ define(function(require) {
     });
 
     userCollection.fetch();
-  };
-
-  var onDataFetched = function() {
-    // ASSUMPTION we always have roles and tenants
-    if(data.allRoles.length > 0 && data.allTenants.length > 0) {
-      isReady = true;
-      Origin.trigger('userManagement:dataReady');
-    }
   };
 });
