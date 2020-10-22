@@ -7,9 +7,9 @@ define(function(require) {
 
   var UserProfileModel = Backbone.Model.extend({
     idAttribute: '_id',
-    url: 'api/user/me',
+    url: 'api/users/me',
 
-    validate: function (attributes, options) {
+    validate: function(attributes) {
       var validationErrors = {};
 
       if (!attributes.firstName) {
