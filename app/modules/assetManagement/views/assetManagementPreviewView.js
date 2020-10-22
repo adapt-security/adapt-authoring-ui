@@ -53,11 +53,7 @@ define(function(require){
           url: 'api/asset/trash/' + self.model.get('_id'),
           type: 'PUT',
           success: function() {
-            if (Origin.permissions.hasPermissions(["*"])) {
-              self.model.set({_isDeleted: true});
-            } else {
-              self.model.trigger('destroy', self.model, self.model.collection);
-            }
+            self.model.trigger('destroy', self.model, self.model.collection);
             Origin.trigger('assetManagement:assetPreviewView:delete');
             self.remove();
           },
