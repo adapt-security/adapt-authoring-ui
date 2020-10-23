@@ -3,6 +3,7 @@ define(function(require){
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
+  var contentPluginCollection = require('core/collections/contentPluginCollection');
   var PluginTypeView = require('./pluginTypeView');
 
   var PluginManagementView = OriginView.extend({
@@ -14,42 +15,38 @@ define(function(require){
       'click .refresh-all-plugins': 'refreshPluginList'
     },
 
-    getColl: function() {
-      return this.pluginCollections[this.pluginType];
-    },
-
     initialize: function(options) {
-      this.pluginType = options.pluginType;
-      this.pluginCollections = {
-        extension: Origin.editor.data.extensiontypes,
-        component: Origin.editor.data.componenttypes,
-        theme: Origin.editor.data.themetypes,
-        menu: Origin.editor.data.menutypes
-      };
+      this.currentPluginType = options.pluginType;
 
+      this.contentPlugins = new contentPluginCollection();
+      this.pluginCollections = {}; // sorted plugins go here
+
+      this.refreshPluginList();
+      
       return OriginView.prototype.initialize.apply(this, arguments);
     },
 
     preRender: function() {
-      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.' + this.pluginType + 'management') });
-      this.getColl().fetch({ success: this.renderPluginTypeViews.bind(this) });
+      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.' + this.currentPluginType + 'management') });
+      this.refreshPluginList();
     },
     
     render: function() {
       this.model = {
-        toJSON: _.bind(function() {
-          return { type: this.pluginType };
-        }, this)
-      }
+        toJSON: _.bind(function() { return { type: this.currentPluginType }; }, this)
+      };
       return OriginView.prototype.render.apply(this, arguments);
     },
 
     renderPluginTypeViews: function() {
       this.$('.pluginManagement-plugins').empty();
 
-      this.getColl().each(this.renderPluginTypeView);
-      this.evaluatePluginTypeCount(this.getColl());
-
+      var coll = this.pluginCollections[this.currentPluginType];
+      if(!coll.length) {
+        this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
+      } else {
+        coll.forEach(this.renderPluginTypeView);
+      }
       this.setViewToReady();
     },
 
@@ -59,27 +56,33 @@ define(function(require){
       this.$('.pluginManagement-plugins').append(view.$el.addClass(cssClass));
     },
 
-    evaluatePluginTypeCount: function(pluginTypes) {
-      if(pluginTypes.length === 0) {
-        this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
-      }
-    },
-
     refreshPluginList: function(e) {
-      e && e.preventDefault();
-      var $btn = $(e.currentTarget);
-
-      if($btn.is(':disabled')) return false;
-
-      $btn.attr('disabled', true);
-
-      this.getColl().fetch({
-        success: _.bind(function() {
-          Origin.trigger('scaffold:updateSchemas', function() {
-            this.renderPluginTypeViews();
+      if(e) { // triggered by the UI, so handle button style
+        e.preventDefault();
+        var $btn = $(e.currentTarget);
+        if($btn.is(':disabled')) return false;
+        $btn.attr('disabled', true);
+      }
+      /**
+       * @NOTE this should probably be done as 4 separate requests, 
+       * but this'll do until this page is refactored
+       */
+      this.contentPlugins.fetch({ 
+        success: _.bind(function(plugins) {
+          // sort the plugins by type
+          this.pluginCollections = plugins.reduce(function(memo, p) {
+            var type = p.get('type');
+            if(!memo[type]) memo[type] = [];
+            memo[type].push(p);
+            return memo;
+          }, {});
+          // make sure each list is sorted by name
+          Object.keys(this.pluginCollections).forEach(function(k) { 
+            this.pluginCollections[k].sort(function(a, b) { return a.get('name').localeCompare(b.get('name')); }); 
           }, this);
-        }, this),
-        error: console.log
+          this.renderPluginTypeViews();
+        }, this), 
+        error: console.error 
       });
     }
   }, {
