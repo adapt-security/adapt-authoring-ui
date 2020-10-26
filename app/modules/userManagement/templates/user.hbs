@@ -10,7 +10,7 @@
 }}
 <div class="inner">
   <div class="col-row">
-    <div class="col-25">
+    <div class="col-30">
       <div class="tb-col-inner">
         <span class="read no-wrap">{{email}}</span>
         {{#ifUserNotMe _id}}{{#unless _isDeleted}}
@@ -23,7 +23,7 @@
         {{/unless}}{{/ifUserNotMe}}
       </div>
     </div>
-    <div class="col-15">
+    <div class="col-20">
       <div class="tb-col-inner">
         <div class="read">
           <ul>
@@ -47,7 +47,7 @@
         {{/unless}}{{/ifUserNotMe}}
       </div>
     </div>
-    <div class="col-15 col-centered">
+    <div class="col-20 col-centered">
       <div class="tb-col-inner">
         {{failedLoginCount}}
         {{#if _isLocked}}
