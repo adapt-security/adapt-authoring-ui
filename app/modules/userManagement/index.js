@@ -49,21 +49,22 @@ define(function(require) {
   });
 
   var onRoute = function(location, subLocation, action) {
+    var model = new Backbone.Model({ allRoles: allRoles });
+
     if (location && location === 'addUser') {
-      Origin.contentPane.setView(AddUserView, { model: new Backbone.Model({ globalData: { allRoles: allRoles } }) });
+      Origin.contentPane.setView(AddUserView, { model: model });
       Origin.sidebar.addView(new AddUserSidebarView().$el);
       return;
     }
     var userCollection = new UserCollection();
-    var globalModel = new Backbone.Model({ globalData: { allRoles: allRoles } });
 
     userCollection.once('sync', function() {
       Origin.contentPane.setView(UserManagementView, {
-        model: globalModel,
+        model: model,
         collection: userCollection
       });
       Origin.sidebar.addView(new UserManagementSidebarView({
-        model: globalModel,
+        model: model,
         collection: userCollection
       }).$el);
     });

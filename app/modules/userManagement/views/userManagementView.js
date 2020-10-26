@@ -48,8 +48,13 @@ define(function(require){
     renderChildViews: function() {
       var fragment = document.createDocumentFragment();
       this.users.each(function(user) {
-        user.set('globalData', this.model.get('globalData'));
-        var userView = new UserView({model: user});
+        user.set({
+          allRoles: this.model.get('allRoles'),
+          roles: user.get('roles').map(function(r) { 
+            return this.model.get('allRoles').findWhere({ _id: r }); 
+          }, this)
+        });
+        var userView = new UserView({ model: user });
         fragment.appendChild(userView.el);
         this.views.push(userView);
 
