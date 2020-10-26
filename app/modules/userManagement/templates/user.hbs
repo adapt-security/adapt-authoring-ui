@@ -36,7 +36,7 @@
             <a class="edit read edit-mode"><i class="fa fa-pencil-square-o"></i></a>
             <div class="write">
               <select class="input" data-modelKey="roles">
-                {{#each globalData.allRoles.models}}
+                {{#each allRoles.models}}
                   {{!NOTE this won't do if we introduce multiple roles (../roles.[0])}}
                   <option value="{{{this.attributes._id}}}"{{#ifValueEquals ../roles.[0]._id this.attributes._id}} selected{{/ifValueEquals}}>{{this.attributes.name}}</option>
                 {{/each}}
