@@ -37,11 +37,9 @@ define(function(require){
 
     preRender: function() {
       this.listenTo(Origin, 'userManagement:user:reset', this.resetView);
-      this.listenTo(this.model, 'destroy', this.remove);
-      this.listenTo(this.model, 'change:_isHidden', function(model, _isHidden) {
-        this.$el.toggleClass('display-none', _isHidden);
-      });
       this.listenTo(this, 'remove', this.remove);
+      this.listenTo(this.model, 'destroy', this.remove);
+      this.listenTo(this.model, 'change:_isHidden', this.toggleHidden);
     },
 
     render: function() {
@@ -100,6 +98,10 @@ define(function(require){
       $('.write', div).addClass('display-none');
     },
 
+    toggleHidden: function(model, _isHidden) { 
+      this.$el.toggleClass('display-none', _isHidden); 
+    },
+
     enableFieldEdit: function(div) {
       $('.read', div).addClass('display-none');
       $('.write', div).removeClass('display-none').children('input').focus();
@@ -109,7 +111,6 @@ define(function(require){
       event && event.preventDefault();
 
       var $column = this.getColumnFromDiv(event.currentTarget);
-
       // disable any existing inputs first
       this.disableFieldEdit(this.$el);
       this.enableFieldEdit($column);
@@ -133,7 +134,6 @@ define(function(require){
 
       var $column = this.getColumnFromDiv(event.currentTarget);
       this.disableFieldEdit($column);
-
       // save if not the same as old value
       var $input = this.getInputFromDiv($column);
       if($input.val() && this.model.get($input.attr('data-modelKey')) !== $input.val()) {
@@ -156,14 +156,15 @@ define(function(require){
 
       this.disableFieldEdit($column);
 
-      var self = this;
-      if(newRole && this.model.get($input.attr('data-modelKey')) !== newRole) {
-        Helpers.ajax('api/role/' + oldRole + '/unassign/' + this.model.get('_id'), null, 'POST', function() {
-          Helpers.ajax('api/role/' + newRole + '/assign/' + self.model.get('_id'), null, 'POST', function() {
-            self.model.fetch();
-          });
-        });
+      if(!newRole || this.model.get($input.attr('data-modelKey')) === newRole) {
+        return;
       }
+      var self = this;
+      Helpers.ajax('api/role/' + oldRole + '/unassign/' + this.model.get('_id'), null, 'POST', function() {
+        Helpers.ajax('api/role/' + newRole + '/assign/' + self.model.get('_id'), null, 'POST', function() {
+          self.model.fetch();
+        });
+      });
     },
 
     onResetLoginsClicked: function() {
@@ -183,7 +184,6 @@ define(function(require){
           if(!confirmed) {
             return;
           }
-
           var $btn = $(e.target);
           $btn.addClass('submitted');
           Helpers.ajax('api/user/invite', { email: this.model.get('email') }, 'POST', function() {
@@ -261,9 +261,7 @@ define(function(require){
         callback: function(confirmed) {
           if(confirmed) {
             self.model.destroy({
-              data: {
-                userCourseOption: option
-              },
+              data: { userCourseOption: option },
               processData: true,
               error: self.onError
             });
@@ -273,38 +271,27 @@ define(function(require){
     },
 
     updateModel: function(key, value) {
-      var self = this;
       var toSave = {};
       toSave[key] = value;
       this.model.save(toSave, {
         patch: true,
         wait: true,
-        error: function(model, response, options) {
-          var data = { key: key, value: value };
-          var errorCode = response.responseJSON && response.responseJSON.code;
-          var errorMessage = response.responseText;
-          switch(errorCode) {
-            // duplicate key
-            case 11000:
-              return self.onError(Origin.l10n.t('app.duplicateuservalueerror', data));
-            default:
-              return self.onError(Origin.l10n.t('app.uservalueerror') + ' (' + errorMessage + ')');
+        error: (function(model, response, options) {
+          if(response.responseJSON && response.responseJSON.code === 11000) { // duplicate key
+            return self.onError(Origin.l10n.t('app.duplicateuservalueerror', { key: key, value: value }));
           }
-        }
+          self.onError(Origin.l10n.t('app.uservalueerror') + ' (' + response.responseText + ')');
+        }).bind(this)
       });
     },
 
     onError: function(error) {
       /**
       * HACK setTimeout to make sure the alert opens.
-      * If we've come straight from a confirm, sweetalert will still be cleaning
-      * up, and won't show.
+      * If we've come straight from a confirm, sweetalert will still be cleaning up, and won't show.
       */
       setTimeout(function() {
-        Origin.Notify.alert({
-          type: 'error',
-          text: error.message || error
-        });
+        Origin.Notify.alert({ type: 'error', text: error.message || error });
       }, 100);
     }
   }, {

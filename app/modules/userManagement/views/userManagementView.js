@@ -34,9 +34,7 @@ define(function(require){
     },
 
     initData: function() {
-      this.listenTo(this.users, {
-        'sync': this.onDataFetched
-      });
+      this.listenTo(this.users, { 'sync': this.render });
     },
 
     render: function() {
@@ -61,7 +59,6 @@ define(function(require){
         if(this.selectedView && user.get('_id') === this.selectedView) {
           userView.$el.addClass('selected').click();
         }
-
       }, this);
       this.$('.users').append(fragment);
     },
