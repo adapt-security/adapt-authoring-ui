@@ -38,7 +38,7 @@
               <select class="input" data-modelKey="roles">
                 {{#each allRoles.models}}
                   {{!NOTE this won't do if we introduce multiple roles (../roles.[0])}}
-                  <option value="{{{this.attributes._id}}}"{{#ifValueEquals ../roles.[0]._id this.attributes._id}} selected{{/ifValueEquals}}>{{this.attributes.name}}</option>
+                  <option value="{{{this.attributes._id}}}"{{#ifValueEquals ../roles.[0]._id this.attributes._id}} selected{{/ifValueEquals}}>{{this.attributes.displayName}}</option>
                 {{/each}}
               </select>
               <a class="saveRoles"><i class="fa fa-check-square-o"></i></a>
