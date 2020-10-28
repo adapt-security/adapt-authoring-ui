@@ -1,15 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
 
   var LoginView = OriginView.extend({
-
     className: 'login',
-
     tagName: "div",
-
     events: {
       'keydown #login-input-username' : 'clearErrorStyling',
       'keydown #login-input-password' : 'clearErrorStyling',
@@ -102,5 +98,4 @@ define(function(require) {
   });
 
   return LoginView;
-
 });
