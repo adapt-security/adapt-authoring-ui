@@ -72,31 +72,24 @@ define(function(require) {
       $('.editor-common-sidebar-preview-inner').addClass('display-none');
       $('.editor-common-sidebar-previewing').removeClass('display-none');
 
-      var url = 'api/output/'+Origin.constants.outputPlugin+'/preview/'+this.currentCourseId+'?force='+(forceRebuild === true);
-      $.get(url, function(data, textStatus, jqXHR) {
-        if (!data.success) {
+      $.post('api/adapt/preview/' + this.currentCourseId + '?force='+(forceRebuild === true))
+        .done(function(data, textStatus, jqXHR) {
+          var pollUrl = data.payload && data.payload.pollUrl;
+          if (pollUrl) { // Ping the remote URL to check if the job has been completed
+            this.updatePreviewProgress(pollUrl, previewWindow);
+            return;
+          }
+          this.updateCoursePreview(previewWindow);
+          this.resetPreviewProgress();
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
           this.resetPreviewProgress();
           Origin.Notify.alert({
             type: 'error',
-            text: Origin.l10n.t('app.errorgeneratingpreview') +
-              Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
+            text: Origin.l10n.t('app.errorgeneratingpreview') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
           });
           previewWindow.close();
-          return;
-        }
-        const pollUrl = data.payload && data.payload.pollUrl;
-        if (pollUrl) {
-          // Ping the remote URL to check if the job has been completed
-          this.updatePreviewProgress(pollUrl, previewWindow);
-          return;
-        }
-        this.updateCoursePreview(previewWindow);
-        this.resetPreviewProgress();
-      }.bind(this)).fail(function(jqXHR, textStatus, errorThrown) {
-        this.resetPreviewProgress();
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
-        previewWindow.close();
-      }.bind(this));
+        });
     },
 
     exportProject: function(error) {
@@ -239,9 +232,7 @@ define(function(require) {
     },
 
     updateCoursePreview: function(previewWindow) {
-      var courseId = Origin.editor.data.course.get('_id');
-      var tenantId = Origin.sessionModel.get('tenantId');
-      previewWindow.location.href = 'preview/' + tenantId + '/' + courseId + '/';
+      previewWindow.location.href = 'adapt/preview/' + Origin.editor.data.course.get('_id') + '/';
     },
 
     addToClipboard: function(model) {
