@@ -28,10 +28,12 @@ define(['require', 'backbone'], function(require, Backbone) {
       $.post('api/auth/local', { email: email, password: password })
         .done((function (token) {
           this.fetch({ 
-            success: function() {
+            success: (function() {
               this.Origin.trigger('login:changed');
-              this.Origin.router.navigateToHome();
-            },
+              this.once('sync', (function() {
+                this.Origin.router.navigateToHome();
+              }).bind(this));
+            }).bind(this),
             error: function(jqXhr) {
               this.Origin.trigger('login:failed', jqXHR.status);
             }
