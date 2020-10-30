@@ -79,8 +79,7 @@ define(function(require) {
     Origin.router.navigateTo('dashboard');
   });
 
-  Origin.on('origin:dataReady login:changed', function() {
-    Origin.router.setHomeRoute('dashboard');
+  Origin.on('router:initialize login:changed', function() {
     Origin.globalMenu.addItem({
       "location": "global",
       "text": Origin.l10n.t('app.dashboard'),
@@ -88,5 +87,6 @@ define(function(require) {
       "callbackEvent": "dashboard:open",
       "sortOrder": 1
     });
+    Origin.router.setHomeRoute('dashboard');
   });
 });

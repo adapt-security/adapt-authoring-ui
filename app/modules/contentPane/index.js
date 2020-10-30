@@ -3,22 +3,18 @@ define(function(require) {
   var Origin = require('core/origin');
   var ContentPaneView = require('./views/contentPaneView');
 
-  var contentPaneView;
+  var cpv = new ContentPaneView();
+  $('.app-inner').append(cpv.$el);
 
   Origin.contentPane = {
     setView: function(ViewClass, options) {
-      contentPaneView.setView(new ViewClass(options));
+      cpv.setView(new ViewClass(options));
     },
     enableScroll: function() {
-      contentPaneView.$el.removeClass('no-scroll');
+      cpv.$el.removeClass('no-scroll');
     },
     disableScroll: function() {
-      contentPaneView.$el.addClass('no-scroll');
+      cpv.$el.addClass('no-scroll');
     }
   };
-
-  Origin.on('origin:dataReady', function() {
-    contentPaneView = new ContentPaneView();
-    $('.app-inner').append(contentPaneView.$el);
-  });
 });
