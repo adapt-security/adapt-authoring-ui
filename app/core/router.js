@@ -1,9 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require) {
-  var _ = require('underscore');
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
-
+define(['underscore', 'backbone'], function(_, Backbone) {
+  var Origin;
   var Router = Backbone.Router.extend({
     homeRoute: '',
     routes: {
@@ -13,10 +10,15 @@ define(function(require) {
     },
     restrictedRoutes: {},
 
-    initialize: function() {
-      this.listenTo(Origin, 'origin:initialize', this.onOriginInitialize);
+    initialize: function(origin) {
+      Origin = origin;
+      Origin.router = this;
+      Origin.trigger('router:initialize');
       this.locationKeys = ['module', 'route1', 'route2', 'route3', 'route4'];
       this.resetLocation();
+      Origin.on('origin:dataReady', (function() {
+        Backbone.history.start();
+      }).bind(this));
     },
 
     updateLocation: function(routeArgs) {
@@ -79,14 +81,14 @@ define(function(require) {
         $('body').addClass('no-ui');
         Origin.trigger('remove:views');
       }
-      var cb = hideUI ? Origin.router.navigateToLogin : Origin.router.navigateToHome;
+      var cb = hideUI ? this.navigateToLogin : this.navigateToHome;
 
       Origin.Notify.alert({
         type: 'error',
         title: Origin.l10n.t('app.errorpagenoaccesstitle'),
         text: message || Origin.l10n.t('app.errorpagenoaccess'),
         confirmButtonText: Origin.l10n.t('app.ok'),
-        callback: cb
+        callback: cb.bind(this)
       });
     },
 
@@ -115,7 +117,7 @@ define(function(require) {
     },
 
     persistRoute: function(route) {
-      Origin.router.navigate(this.formatRoute(route));
+      this.navigate(this.formatRoute(route));
     },
 
     navigateBack: function() {
@@ -124,21 +126,21 @@ define(function(require) {
 
     navigateTo: function(route) {
       // use Origin.router.navigate in case we don't have a valid 'this' reference
-      Origin.router.navigate(this.formatRoute(route), { trigger: true });
+      this.navigate(this.formatRoute(route), { trigger: true });
     },
 
     navigateToLogin: function() {
       // use Origin.router.navigate in case we don't have a valid 'this' reference
-      Origin.router.navigateTo('user/login');
+      this.navigateTo('user/login');
     },
 
     navigateToHome: function() {
-      if(!Origin.router.homeRoute) {
+      if(!this.homeRoute) {
         console.trace('Router.navigateToHome: cannot load homepage, homeRoute not set');
         return;
       }
       // use Origin.router.navigate in case we don't have a valid 'this' reference
-      Origin.router.navigateTo(Origin.router.homeRoute);
+      this.navigateTo(this.homeRoute);
     },
 
     handleIndex: function() {
@@ -153,14 +155,6 @@ define(function(require) {
       }
       this.updateLocation(arguments);
       Origin.trigger('router:' + module, route1, route2, route3, route4);
-    },
-
-    /**
-    * Event handling
-    */
-
-    onOriginInitialize: function() {
-      Backbone.history.start();
     }
   });
 

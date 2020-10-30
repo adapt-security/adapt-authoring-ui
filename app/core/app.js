@@ -1,7 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 (function() {
-  var origin;
-
   function loadLibraries(callback) {
     require([
       'ace/ace',
@@ -15,8 +13,8 @@
       'selectize',
       'sweetalert',
       'velocity'
-    ], function() {
-      window.Handlebars = $.extend(require('handlebars'), window.Handlebars);
+    ], function(Ace, Handlebars) {
+      window.Handlebars = $.extend(Handlebars, window.Handlebars);
       callback();
     });
   }
@@ -25,46 +23,23 @@
     require([
       'templates/templates',
       'core/origin',
-      'core/router',
       'core/helpers',
-      'core/l10n',
-      'core/constants'
-    ], function(Templates, Origin, Router) {
-      origin = Origin;
-      origin.router = new Router();
-
-      var constantsLoaded = false;
-      var l10nLoaded = false;
-      origin.once('constants:loaded', function() {
-        constantsLoaded = true;
-        if(l10nLoaded) callback();
-      });
-      origin.once('l10n:loaded', function() {
-        l10nLoaded = true;
-        if(constantsLoaded) callback();
-      });
+    ], function(Templates, Origin) {
+      callback(Origin);
     });
   }
 
-  function loadModules(callback) {
-    require(['modules/modules'], callback);
+  function loadExtras(callback) {
+    require(['modules/modules', 'plugins/plugins'], callback);
   }
-
-  function loadPlugins(callback) {
-    require(['plugins/plugins'], callback);
-  }
-
   /**
- * Start app load
- */
+   * Start app load
+   */
   loadLibraries(function() {
-    loadCore(function() {
-      loadModules(function() {
-        loadPlugins(function() {
-          // start session
-          require(['modules/user/models/sessionModel'], function(SessionModel) {
-              origin.startSession(new SessionModel());
-          });
+    loadCore(function(Origin) {
+      Origin.startSession(function() {
+        loadExtras(function() {
+          Origin.initialize();
         });
       });
     });

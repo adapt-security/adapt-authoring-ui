@@ -1,5 +1,12 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(['require', 'underscore', 'backbone'], function(require, _, Backbone){
+define([
+  'underscore', 
+  'backbone', 
+  'core/constants',
+  'core/l10n',
+  'core/router',
+  'modules/user/models/sessionModel'
+], function(_, Backbone, Constants, l10n, Router, SessionModel) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
@@ -9,33 +16,43 @@ define(['require', 'underscore', 'backbone'], function(require, _, Backbone){
     /**
     * Performs the necessary set-up steps
     */
-    initialize: _.once(function() {
+    initialize: _.once(function(callback) {
       listenToWindowEvents();
-      Origin.trigger('origin:dataReady');
-      initLoading();
+      new Router(this);
       initialized = true;
-      Origin.trigger('origin:initialize');
+      this.trigger('origin:dataReady');
+    }),
+    
+    loadUtilities: _.once(function(callback) {
+      var constantsLoaded = false;
+      var l10nLoaded = false;
+      this.constants = new Constants(this);
+      this.l10n = new l10n(this);
+      this.once('constants:loaded', function() {
+        constantsLoaded = true;
+        if(l10nLoaded) callback();
+      });
+      this.once('l10n:loaded', function() {
+        l10nLoaded = true;
+        if(constantsLoaded) callback();
+      });
     }),
     /**
-    * Saves session on the Origin object
-    */
-    startSession: function(session) {
-      Origin.sessionModel = session;
-      session.fetch({
-        success: function() {
-          session.set({ isAuthenticated: true });
-          Origin.trigger('origin:sessionStarted');
-          Origin.initialize();
-        },
-        error: function(model, jqXhr) {
-          if(jqXhr.status !== 401) {
-            return console.error(jqXhr.responseJSON.message);
+     * Saves session on the Origin object
+     */
+    startSession: _.once(function(callback) {
+      initLoading();
+      this.loadUtilities((function() {
+        Origin.sessionModel = new SessionModel(this);
+        Origin.sessionModel.fetch({
+          success: callback,
+          error: function(model, jqXhr) {
+            if(jqXhr.status === 401) return callback();
+            callback(new Error(jqXhr.responseJSON.message));
           }
-          Origin.trigger('origin:sessionStarted');
-          Origin.initialize();
-        }
-      });
-    },
+        });
+      }).bind(this));
+    }),
     /**
     * Whether the Origin object has loaded
     */

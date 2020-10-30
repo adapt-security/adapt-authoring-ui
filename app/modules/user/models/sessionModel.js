@@ -1,12 +1,22 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origin) {
+define(['require', 'backbone'], function(require, Backbone) {
   var SessionModel = Backbone.Model.extend({
     url: "api/auth/check",
+
+    initialize: function(Origin) {
+      this.Origin = Origin;
+
+      this.on('sync', function() {  this.set('isAuthenticated', true); });
+      this.on('error', function() {  this.set('isAuthenticated', false); });
+    },
 
     hasScopes: function(scopes) {
       var assignedScopes = this.get('scopes');
       if(this.get('isSuper')) {
         return true;
+      }
+      if(!assignedScopes || !assignedScopes.length) {
+        return false;
       }
       if(!Array.isArray(scopes)) {
         return assignedScopes.includes(scopes);
@@ -19,16 +29,16 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
         .done((function (token) {
           this.fetch({ 
             success: function() {
-              Origin.trigger('login:changed');
-              Origin.trigger('schemas:loadData', Origin.router.navigateToHome);
+              this.Origin.trigger('login:changed');
+              this.Origin.router.navigateToHome();
             },
             error: function(jqXhr) {
-              Origin.trigger('login:failed', jqXHR.status);
+              this.Origin.trigger('login:failed', jqXHR.status);
             }
           });
         }).bind(this))
         .fail(function(jqXHR, textStatus, errorThrown) {
-          Origin.trigger('login:failed', jqXHR.status);
+          this.Origin.trigger('login:failed', jqXHR.status);
         });
     },
 
@@ -36,8 +46,8 @@ define(['require', 'backbone', 'core/origin'], function(require, Backbone, Origi
       $.post('api/auth/disavow', _.bind(function() {
         // revert to the defaults
         this.set(this.defaults);
-        Origin.trigger('login:changed');
-        Origin.router.navigateToLogin();
+        this.Origin.trigger('login:changed');
+        this.Origin.router.navigateToLogin();
       }, this));
     },
   });
