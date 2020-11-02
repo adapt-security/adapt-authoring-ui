@@ -58,7 +58,8 @@ define(function(require) {
 
     filterRoleNames: function(model) {
       var roleNames = this.filterGroups.roleNames;
-      if (roleNames && roleNames.indexOf(model.get('roleNames')[0]) < 0) {
+      var userRoles = model.get('roleNames');
+      if (roleNames && roleNames.indexOf(userRoles && userRoles[0]) < 0) {
         model.set('_isHidden', true);
       }
     },
