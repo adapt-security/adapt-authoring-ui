@@ -11,10 +11,7 @@ define(function(require) {
     lastAccess: null,
 
     initialize: function() {
-      this.filterGroups = {
-        tenantName: [],
-        roleNames: []
-      };
+      this.filterGroups = { roleNames: [] };
     },
 
     comparator: function(ma, mb) {
@@ -55,16 +52,8 @@ define(function(require) {
 
     filter: function() {
       this.models.forEach(function(model) {
-        this.filterTenants(model);
         this.filterRoleNames(model);
       }, this);
-    },
-
-    filterTenants: function(model) {
-      var tenantName = this.filterGroups.tenantName;
-      if (tenantName && tenantName.indexOf(model.get('tenantName')) < 0) {
-        model.set('_isHidden', true);
-      }
     },
 
     filterRoleNames: function(model) {
