@@ -18,7 +18,7 @@ define(['core/origin'], function(Origin) {
     },
 
     onFormChange: function() {
-      var attributeMap = this.$('input:checked').reduce(function(memo, input) {
+      var attributeMap = Array.from(this.$('input:checked')).reduce(function(memo, input) {
         if(!memo[input.name]) memo[input.name] = [];
         memo[input.name].push(input.value);
         return memo;
