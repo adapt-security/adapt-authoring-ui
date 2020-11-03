@@ -71,12 +71,9 @@ define(function(require) {
     },
 
     searchByMail: function() {
-      if (!this.mailSearchTerm) return;
       this.models.forEach(function(model) {
         var mail = model.get('email').toLowerCase();
-        if (mail.indexOf(this.mailSearchTerm) < 0) {
-          model.set('_isHidden', true);
-        }
+        model.set('_isHidden', mail.indexOf(this.mailSearchTerm) === -1);
       }, this);
     }
 
