@@ -9,10 +9,7 @@ define(function(require) {
     direction: 1,
     mailSearchTerm: false,
     lastAccess: null,
-
-    initialize: function() {
-      this.filterGroups = { roleNames: [] };
-    },
+    filterGroups: { roleNames: [] },
 
     comparator: function(ma, mb) {
       var a = ma.get(this.sortBy);
@@ -22,17 +19,14 @@ define(function(require) {
         a = a[0];
         b = b[0];
       }
-
       if (this.sortBy === 'lastAccess') {
         a = new Date(a || '01.01.1900');
         b = new Date(b || '01.01.1900');
       }
-
       if (typeof a === 'string' && typeof b === 'string') {
         a = a.toLowerCase();
         b = b.toLowerCase();
       }
-
       if (a > b) return this.direction;
       if (a < b) return this.direction * -1;
       return 0;
@@ -40,45 +34,39 @@ define(function(require) {
 
     updateFilter: function(filterMap) {
       this.filterGroups = filterMap;
-      this.sortCollection();
-    },
-
-    sortCollection: function() {
-      this.resetHidden();
       this.filter();
-      this.searchByMail();
       this.sort();
     },
 
     filter: function() {
-      this.models.forEach(function(model) {
-        this.filterRoleNames(model);
+      this.models.forEach(function(model) { 
+        var isHidden = [this.roleFilter, this.mailFilter].every(function(f) { 
+          return f.call(this, model); 
+        }, this);
+        model.set('_isHidden', isHidden);
       }, this);
     },
-
-    filterRoleNames: function(model) {
-      var roleNames = this.filterGroups.roleNames;
-      var userRoles = model.get('roleNames');
-      if (roleNames && roleNames.indexOf(userRoles && userRoles[0]) < 0) {
-        model.set('_isHidden', true);
+    /* 
+    * Returns whether the model should be hidden 
+    */
+    mailFilter: function(model) {
+      return model.get('email').toLowerCase().indexOf(this.mailSearchTerm) === -1;
+    },
+    /* 
+    * Returns whether the model should be hidden   
+    */
+    roleFilter: function(model) {
+      if(!this.filterGroups || !this.filterGroups.roleNames) {
+        return false;
       }
-    },
-
-    resetHidden: function() {
-      this.forEach(function(model) {
-        model.set('_isHidden', false);
-      });
-    },
-
-    searchByMail: function() {
-      this.models.forEach(function(model) {
-        var mail = model.get('email').toLowerCase();
-        model.set('_isHidden', mail.indexOf(this.mailSearchTerm) === -1);
-      }, this);
+      (model.get('roles').some(function(r) {
+        return this.filterGroups.roleNames.includes(r.get('shortName'));
+      }, this))
+      return !(model.get('roles').some(function(r) {
+        return this.filterGroups.roleNames.includes(r.get('shortName'));
+      }, this));
     }
-
   });
 
   return UserCollection;
-
 });
