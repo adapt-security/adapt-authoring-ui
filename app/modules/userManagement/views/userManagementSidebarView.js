@@ -5,7 +5,6 @@ define([
 ], function(Origin, SidebarItemView, FilterView) {
 
   var UserManagementSidebarView = SidebarItemView.extend({
-
     events: {
       'click button.add': 'addUser'
     },
@@ -26,11 +25,9 @@ define([
       event && event.preventDefault();
       Origin.router.navigateTo('userManagement/addUser');
     }
-
   }, {
     template: 'userManagementSidebar'
   });
 
   return UserManagementSidebarView;
-
 });
