@@ -12,6 +12,7 @@ define([
 
     initialize: function() {
       SidebarItemView.prototype.initialize.apply(this, arguments);
+      this.listenTo(this.collection, { 'sync': this.render });
     },
 
     postRender: function() {
