@@ -9,6 +9,7 @@ define(function(require) {
 
   var isReady = false;
   var allRoles = new Backbone.Collection();
+  var userCollection = new UserCollection();
 
   Origin.on('origin:dataReady login:changed', function() {
     var permissions = ["read:users"];
@@ -56,8 +57,6 @@ define(function(require) {
       Origin.sidebar.addView(new AddUserSidebarView().$el);
       return;
     }
-    var userCollection = new UserCollection();
-
     userCollection.once('sync', function() {
       Origin.contentPane.setView(UserManagementView, {
         model: model,
@@ -69,6 +68,26 @@ define(function(require) {
       }).$el);
     });
 
-    userCollection.fetch();
+    Origin.on('userManagement:refresh', refreshUsers);
+    refreshUsers();
   };
+  
+  function refreshUsers() {
+    console.log('refreshUsers');
+    userCollection.fetch({
+      success: function(users) {
+        console.log('success');
+        users.forEach(function(user) {
+          user.set({
+            allRoles: allRoles,
+            roles: user.get('roles').map(function(r) { return allRoles.findWhere({ _id: r }); }, this)
+          });
+        });
+      },
+      error: function() {
+        console.log('error');
+        Origin.notify.alert({ type: 'error', message: error });
+      }
+    });
+  }
 });
