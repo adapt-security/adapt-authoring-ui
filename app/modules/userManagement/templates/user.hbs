@@ -10,7 +10,7 @@
 }}
 <div class="inner">
   <div class="col-row">
-    <div class="col-30">
+    <div class="col-25">
       <div class="tb-col-inner">
         <span class="read no-wrap">{{email}}</span>
         {{#ifUserNotMe _id}}{{#unless _isDeleted}}
@@ -23,7 +23,7 @@
         {{/unless}}{{/ifUserNotMe}}
       </div>
     </div>
-    <div class="col-20">
+    <div class="col-15">
       <div class="tb-col-inner">
         <div class="read">
           <ul>
@@ -37,6 +37,7 @@
             <div class="write">
               <select class="input" data-modelKey="roles">
                 {{#each allRoles.models}}
+                  {{console ../roles.[0]._id this.attributes._id}}
                   {{!NOTE this won't do if we introduce multiple roles (../roles.[0])}}
                   <option value="{{{this.attributes._id}}}"{{#ifValueEquals ../roles.[0]._id this.attributes._id}} selected{{/ifValueEquals}}>{{this.attributes.displayName}}</option>
                 {{/each}}
@@ -47,7 +48,19 @@
         {{/unless}}{{/ifUserNotMe}}
       </div>
     </div>
-    <div class="col-20 col-centered">
+    <div class="col-10 col-centered">
+      <div class="tb-col-inner">
+        <div class="read">
+          <ul>
+          {{#each authTypes}}
+            <li class="no-wrap">{{this}}</li>
+          {{/each}}
+          </ul>
+        </div>
+  
+      </div>
+    </div>
+    <div class="col-10 col-centered">
       <div class="tb-col-inner">
         {{failedLoginAttempts}}
         {{#if _isLocked}}
@@ -57,6 +70,12 @@
     </div>
     <div class="col-15 col-centered">
       <div class="tb-col-inner no-wrap">{{momentFormat lastAccess 'DD MMM-YY'}}</div>
+    </div>
+    <div class="col-10 col-centered temp">
+      <div class="tb-col-inner">
+        {{#if _isTempLocked}}<i class="fa fa-lock temp"></i>{{/if}}
+        {{#if _isPermLocked}}<i class="fa fa-lock perm"></i>{{/if}}
+      </div>
     </div>
     <div class="col-15">
       <div class="tb-col-inner">
