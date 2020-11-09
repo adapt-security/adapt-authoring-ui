@@ -2,7 +2,6 @@
 define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var Helpers = require('core/helpers');
 
   var EditorOriginView = OriginView.extend({
     events: {
