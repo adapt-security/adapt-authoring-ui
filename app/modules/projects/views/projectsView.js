@@ -128,6 +128,7 @@ define(function(require){
       this.isCollectionFetching = true;
 
       this.collection.fetch({
+        /*
         data: {
           search: _.extend(this.search, { tags: { $all: this.tags } }),
           operators : {
@@ -137,6 +138,7 @@ define(function(require){
             collation: { locale: navigator.language.substring(0, 2) }
           }
         },
+        */
         success: function(collection, response) {
           this.isCollectionFetching = false;
           this.fetchCount += response.length;
