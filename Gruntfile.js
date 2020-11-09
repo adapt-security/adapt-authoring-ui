@@ -4,16 +4,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    'generate-lang-json': {
-      options: {
-        langFileExt: '.json',
-        src: {
-          backend: 'routes/lang',
-          frontend: 'app/**/lang'
-        },
-        dest: 'temp/lang'
-      }
-    },
+   
     copy: {
       main: {
         files: [
@@ -34,6 +25,42 @@ module.exports = function(grunt) {
             flatten: true,
             src: ['app/libraries/ace/*'],
             dest: 'build/js/ace'
+          }
+        ]
+      }
+    },
+    'generate-lang-json': {
+      options: {
+        langFileExt: '.json',
+        src: {
+          backend: 'routes/lang',
+          frontend: 'app/**/lang'
+        },
+        dest: 'temp/lang'
+      }
+    },
+    handlebars: {
+      compile: {
+        options: {
+          amd: true,
+          namespace:"Handlebars.templates",
+          processName: function(filePath) {
+            var newFilePath = filePath.split("/");
+            newFilePath = newFilePath[newFilePath.length - 1].replace(/\.[^/.]+$/, "");
+            return  newFilePath;
+          },
+          partialRegex: /^part_/,
+          partialsPathRegex: /\/partials\//
+        },
+        files: [
+          {
+            follow: true,
+            src: [
+              'app/core/**/*.hbs',
+              'app/modules/**/*.hbs',
+              'app/plugins/**/*.hbs'
+            ],
+            dest: 'app/templates/templates.js'
           }
         ]
       }
@@ -75,30 +102,21 @@ module.exports = function(grunt) {
         }
       }
     },
-    handlebars: {
-      compile: {
-        options: {
-          amd: true,
-          namespace:"Handlebars.templates",
-          processName: function(filePath) {
-            var newFilePath = filePath.split("/");
-            newFilePath = newFilePath[newFilePath.length - 1].replace(/\.[^/.]+$/, "");
-            return  newFilePath;
-          },
-          partialRegex: /^part_/,
-          partialsPathRegex: /\/partials\//
-        },
-        files: [
-          {
-            follow: true,
-            src: [
-              'app/core/**/*.hbs',
-              'app/modules/**/*.hbs',
-              'app/plugins/**/*.hbs'
-            ],
-            dest: 'app/templates/templates.js'
-          }
-        ]
+    mochaTest: {
+      src: ['test/*.js'],
+      options: {
+        reporter: 'spec',
+        timeout: 3500
+      }
+    },
+    requireBundle: {
+      modules: {
+        src: 'app/modules/*',
+        dest: 'app/modules/modules.js'
+      },
+      plugins: {
+        src: 'app/plugins/*',
+        dest: 'app/plugins/plugins.js'
       }
     },
     requirejs: {
@@ -120,45 +138,6 @@ module.exports = function(grunt) {
           out: "build/js/origin.js",
           optimize: "none"
         }
-      }
-    },
-    babel: {
-      dev: {
-        options: {
-          compact: false,
-          retainLines: true,
-          presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],
-          sourceType: 'script'
-        },
-        src: 'frontend/build/js/origin.js',
-        dest: 'frontend/build/js/origin.js'
-      },
-      compile: {
-        options: {
-          comments: false,
-          minified: true,
-          presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],
-          sourceType: 'script'
-        },
-        src: 'frontend/build/js/origin.js',
-        dest: 'frontend/build/js/origin.js'
-      }
-    },
-    mochaTest: {
-      src: ['test/*.js'],
-      options: {
-        reporter: 'spec',
-        timeout: 3500
-      }
-    },
-    requireBundle: {
-      modules: {
-        src: 'app/modules/*',
-        dest: 'app/modules/modules.js'
-      },
-      plugins: {
-        src: 'app/plugins/*',
-        dest: 'app/plugins/plugins.js'
       }
     }
   });
@@ -182,7 +161,7 @@ module.exports = function(grunt) {
       // Check if a MongoDB replicaset array has been specified.
       if (config.dbReplicaset && Array.isArray(config.dbReplicaset) && config.dbReplicaset.length !== 0) {
         // The replicaset should contain an array of hosts and ports
-        connectionString = 'mongodb://' + authenticationString + config.dbReplicaset.join(',') + '/' + config.dbName
+        connectionString = 'mongodb://' + authenticationString + config.dbReplicaset.join(',') + '/' + config.dbName;
       } else {
         // Get the host and port number from the configuration.
 
@@ -191,7 +170,7 @@ module.exports = function(grunt) {
         connectionString = 'mongodb://' + authenticationString + config.dbHost + portString + '/' + config.dbName;
       }
       if (typeof config.dbAuthSource === 'string' && config.dbAuthSource !== '' ) {
-        connectionString += '?authSource=' + config.dbAuthSource
+        connectionString += '?authSource=' + config.dbAuthSource;
       }
     }
     var migrateConf = {
