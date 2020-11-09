@@ -26,7 +26,6 @@ define([
       if(this._type) query._type = this._type;
       if(this._courseId) query._courseId = this._courseId;
       if(this._parentId) query._parentId = this._parentId;
-      _.assign(query, this.customQuery);
       return query;
     },
     fetch: function(options) {
