@@ -2,6 +2,8 @@
 define(['backbone', 'underscore'], function(Backbone, _) {
   var ApiCollection = Backbone.Collection.extend({
     initialize : function(models, options) {
+      Backbone.Collection.prototype.initialize.apply(this, arguments);
+      if(!options) options = {};
       if(!this.url) this.url = options.url;
       this.customQuery = options.filter || {};
     },
