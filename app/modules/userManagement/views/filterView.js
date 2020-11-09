@@ -14,7 +14,7 @@ define(['core/origin'], function(Origin) {
 
     onSearchInput: function(event) {
       this.collection.mailSearchTerm = $(event.currentTarget).val().toLowerCase();
-      this.collection.sortCollection();
+      this.collection.updateFilter();
     },
 
     onFormChange: function() {
