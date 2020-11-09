@@ -31,6 +31,10 @@ define(function(require){
       });
     },
 
+    fetchChildren: function(callback) {
+      (new ContentCollection(undefined, {})).fetch({ success: callback, error: callback });
+    },
+
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
       if(this.model) {
