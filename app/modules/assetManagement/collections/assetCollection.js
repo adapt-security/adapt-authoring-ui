@@ -1,21 +1,16 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require) {
-
-  var Backbone = require('backbone');
-  var AssetModel = require('../models/assetModel');
-
-  var AssetCollection = Backbone.Collection.extend({
-
+define([
+  'core/collections/apiCollection', 
+  '../models/assetModel'
+], function(ApiCollection, AssetModel) {
+  var AssetCollection = ApiCollection.extend({
     model: AssetModel,
-
-    url: 'api/asset/query',
+    url: 'api/assets',
 
     dateComparator: function(m) {
       return -m.get('lastUpdated').getTime();
     }
-
   });
 
   return AssetCollection;
-
 });
