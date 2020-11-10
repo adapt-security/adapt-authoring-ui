@@ -12,8 +12,8 @@ module.exports = function(grunt) {
           presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],	
           sourceType: 'script'	
         },	
-        src: 'frontend/build/js/origin.js',	
-        dest: 'frontend/build/js/origin.js'	
+        src: 'build/js/origin.js',	
+        dest: 'build/js/origin.js'	
       },	
       compile: {	
         options: {	
@@ -22,8 +22,8 @@ module.exports = function(grunt) {
           presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],	
           sourceType: 'script'	
         },	
-        src: 'frontend/build/js/origin.js',	
-        dest: 'frontend/build/js/origin.js'	
+        src: 'build/js/origin.js',	
+        dest: 'build/js/origin.js'	
       }	
     },
     copy: {
