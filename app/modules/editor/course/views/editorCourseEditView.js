@@ -109,31 +109,17 @@ define(function(require) {
     },
 
     createGenericComponent: function(blockModel) {
-      // Store the component types
-      var componentTypes = new EditorCollection(null, {
-        model: ComponentTypeModel,
-        url: 'api/componenttype',
-        _type: 'componentTypes'
-      });
-      componentTypes.fetch({
+      const _courseId = blockModel.get('_courseId');
+      (new ComponentModel({
+        _courseId,
+        _parentId: blockModel.get('_id'),
+        body: Origin.l10n.t('app.projectcontentbody'),
+        _type: 'component',
+        _component: 'text',
+        _layout: 'full'
+      })).save(null, {
         error: _.bind(this.onSaveError, this),
-        success: _.bind(function() {
-          var componentModel = new ComponentModel({
-            _courseId: blockModel.get('_courseId'),
-            _parentId: blockModel.get('_id'),
-            body: Origin.l10n.t('app.projectcontentbody'),
-            _type: 'component',
-            _component: 'text',
-            _componentType: componentTypes.findWhere({ component: 'text' }).attributes._id,
-            _layout: 'full'
-          });
-          componentModel.save(null, {
-            error: _.bind(this.onSaveError, this),
-            success: function() {
-              Origin.router.navigateTo('editor/' + componentModel.get('_courseId') + '/menu');
-            }
-          });
-        }, this)
+        success: () => Origin.router.navigateTo(`editor/${_courseId}/menu`)
       });
     }
   }, {
