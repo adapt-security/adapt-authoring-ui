@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-
   var Origin = require('core/origin');
   var PluginManagementView = require('./views/pluginManagementView');
   var PluginManagementUploadView = require('./views/pluginManagementUploadView');
@@ -39,5 +38,4 @@ define(function(require) {
       sortOrder: 3
     });
   });
-
 });
