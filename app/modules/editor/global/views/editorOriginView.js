@@ -33,7 +33,11 @@ define(function(require){
     },
 
     fetchChildren: function(callback) {
-      (new ContentCollection(undefined, {})).fetch({ success: callback, error: callback });
+      (new ContentCollection(undefined, { _parentId: this.model.get('_id') }))
+        .fetch({ 
+          success: callback, 
+          error: callback 
+        });
     },
 
     render: function() {
