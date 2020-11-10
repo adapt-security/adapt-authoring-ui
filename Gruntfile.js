@@ -4,7 +4,28 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-   
+    babel: {	
+      dev: {	
+        options: {	
+          compact: false,	
+          retainLines: true,	
+          presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],	
+          sourceType: 'script'	
+        },	
+        src: 'frontend/build/js/origin.js',	
+        dest: 'frontend/build/js/origin.js'	
+      },	
+      compile: {	
+        options: {	
+          comments: false,	
+          minified: true,	
+          presets: [ [ '@babel/preset-env', { targets: { ie: '11' } } ] ],	
+          sourceType: 'script'	
+        },	
+        src: 'frontend/build/js/origin.js',	
+        dest: 'frontend/build/js/origin.js'	
+      }	
+    },
     copy: {
       main: {
         files: [
