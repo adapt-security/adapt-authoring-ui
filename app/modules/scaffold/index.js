@@ -30,52 +30,43 @@ define([
   Backbone.Form.editors.List.Modal.ModalAdapter = ScaffoldItemsModalView;
 
   function onScaffoldUpdateSchemas(callback, context) {
-    Origin.trigger('schemas:loadData', function() {
-      callback.apply(context);
-    });
+    Origin.trigger('schemas:loadData', callback.bind(context));
   }
 
   function generateFieldObject(field, key) {
     var fieldType = field.type;
     var isFieldTypeObject = fieldType === 'object';
-    var inputType = field.inputType;
     var items = field.items;
     var itemsProperties = items && items.properties;
-    var itemsInputType = items && items.inputType;
     var confirmDelete = Origin.l10n.t('app.confirmdelete');
+    var formsConfig = field._backboneForms || {};
 
-    var getTitle = function() {
-      var title = field.title;
-
-      if (title) {
-        return title;
+    var getType = function(item) {
+      if (!item) {
+        item = field;
       }
+      var config = item._backboneForms;
+      var editor = typeof config === 'string' ? config : config && config.type;
 
-      if (!isFieldTypeObject) {
-        return Backbone.Form.Field.prototype.createTitle.call({ key: key });
+      if (editor) {
+        return editor;
       }
-    };
-
-    var getType = function() {
-      if (inputType) {
-        return inputType;
-      }
-
-      if (isFieldTypeObject) {
-        return 'Object';
-      }
-
-      if (itemsProperties && Backbone.Form.editors[itemsInputType]) {
-        return itemsInputType;
-      }
-
-      if (fieldType === 'array') {
-        return 'List';
+      switch (item.type) {
+        case 'array':
+          return 'List';
+        case 'boolean':
+          return 'Checkbox';
+        case 'number':
+          return 'Number';
+        case 'object':
+          return 'Object';
+        case 'string':
+          return 'Text';
       }
     };
 
     var getValidators = function() {
-      var validators = field.validators || [];
+      var validators = formsConfig.validators || [];
 
       for (var i = 0, j = validators.length; i < j; i++) {
         var validator = validators[i];
@@ -105,28 +96,22 @@ define([
     };
 
     var fieldObject = {
-      confirmDelete: itemsProperties ? confirmDelete : field.confirmDelete,
+      confirmDelete: itemsProperties ? confirmDelete : formsConfig.confirmDelete,
       default: field.default,
-      editorAttrs: field.editorAttrs,
-      editorClass: field.editorClass,
-      fieldAttrs: field.fieldAttrs,
-      fieldClass: field.fieldClass,
-      help: field.help,
-      itemType: itemsProperties ? 'Object' : itemsInputType,
-      inputType: inputType,
-      legend: field.legend,
+      editorAttrs: formsConfig.editorAttrs,
+      editorClass: formsConfig.editorClass,
+      fieldAttrs: formsConfig.fieldAttrs,
+      fieldClass: formsConfig.fieldClass,
+      help: field.description,
+      itemType: itemsProperties ? 'Object' : items && getType(items),
+      inputType: formsConfig.type ? formsConfig : getType(),
+      options: field.enum,
       subSchema: isFieldTypeObject ? field.properties : itemsProperties || items,
-      title: getTitle(),
-      titleHTML: field.titleHTML,
+      title: field.title,
+      titleHTML: formsConfig.titleHTML,
       type: getType(),
       validators: getValidators()
     };
-
-    if (_.isObject(inputType)) {
-      // merge nested inputType attributes into fieldObject
-      fieldObject = _.extend(fieldObject, inputType);
-    }
-
     return fieldObject;
   }
 
@@ -137,34 +122,33 @@ define([
     var scaffoldObjectSchema = scaffoldSchema[key].subSchema;
 
     for (var i in objectSchema) {
-      if (objectSchema.hasOwnProperty(i)) {
-        setUpSchemaFields(objectSchema[i], i, objectSchema, scaffoldObjectSchema);
-      }
+      if (!objectSchema.hasOwnProperty(i)) continue;
+
+      var objectField = objectSchema[i];
+
+      setRequiredValidators(objectField.required, objectField.properties);
+      setUpSchemaFields(objectField, i, objectSchema, scaffoldObjectSchema);
     }
   }
 
-  function buildSchema(schema, options, type) {
-
+  function buildSchema(requiredKeys, schema, options, type) {
     var scaffoldSchema = {};
+    var field = { type: 'object', properties: Object.assign({}, schema) };
+    var nestedProps = field.properties;
+    var key = 'properties';
 
-    for (var key in schema) {
-      if (!schema.hasOwnProperty(key)) continue;
+    schema = { properties: field };
+    setRequiredValidators(requiredKeys, nestedProps);
 
-      var field = schema[key];
-      var nestedProps = field.properties;
-
-      if (!options.isTheme || !nestedProps) {
-        setUpSchemaFields(field, key, schema, scaffoldSchema);
-        continue;
-      }
-
-      // process nested properties on edit theme page
-      for (var innerKey in nestedProps) {
-        if (!nestedProps.hasOwnProperty(innerKey)) continue;
-        setUpSchemaFields(nestedProps[innerKey], innerKey, nestedProps, scaffoldSchema);
-      }
+    if (!options.isTheme || !nestedProps) {
+      setUpSchemaFields(field, key, schema, scaffoldSchema);
+      return scaffoldSchema.properties.subSchema;
     }
-
+    // process nested properties on edit theme page
+    for (var innerKey in nestedProps) {
+      if (!nestedProps.hasOwnProperty(innerKey)) continue;
+      setUpSchemaFields(nestedProps[innerKey], innerKey, nestedProps, scaffoldSchema);
+    }
     return scaffoldSchema;
   }
 
@@ -180,25 +164,22 @@ define([
       if (!schema.hasOwnProperty(key) || key === '_extensions') continue;
 
       var value = schema[key];
+      var adaptConfig = value._adapt;
 
-      if (value.isSetting) {
+      if (adaptConfig && adaptConfig.isSetting) {
         fieldsets.settings.fields.push(key);
         continue;
       }
-
       if (value.type !== 'object') {
         fieldsets.general.fields.push(key);
         continue;
       }
-
       if (fieldsets[key]) {
         fieldsets[key].fields.push(key);
         continue;
       }
-
       var nestedProps = value.properties;
       var fields = [];
-
       // process nested properties on edit theme page
       if (options.isTheme) {
         for (var innerKey in nestedProps) {
@@ -207,30 +188,41 @@ define([
           }
         }
       }
-
       fieldsets[key] = {
         key: key,
-        legend: value.title || Helpers.keyToTitleString(key),
+        legend: value.title,
         fields: fields.length ? fields : [ key ]
       };
     }
-
     if (!schema._extensions) {
       delete fieldsets.extensions;
     }
-
     if (!fieldsets.settings.fields.length) {
       delete fieldsets.settings;
     }
-
     if (!fieldsets.properties.fields.length) {
       delete fieldsets.properties;
     }
-
     return _.values(fieldsets);
   }
 
-  Scaffold.buildForm = function(options) {
+  function setRequiredValidators(requiredKeys, schema) {
+    if (!requiredKeys) return;
+
+    requiredKeys.forEach(function(requiredKey) {
+      var field = schema[requiredKey];
+      var config = field._backboneForms || {};
+
+      if (typeof config === 'string') {
+        field._backboneForms = { type: config, validators: [ 'required' ] };
+        return;
+      }
+      (config.validators = config.validators || []).push('required');
+      field._backboneForms = config;
+    });
+  }
+
+  Scaffold.buildForm = async function(options) {
     var model = options.model;
     var type = model.get('_type') || model._type || options.schemaType;
     options.isTheme = false;
@@ -247,13 +239,10 @@ define([
         type = options.schemaType;
         options.isTheme = true;
     }
-
-    var schema = new Schemas(type);
-    if (options.isTheme) {
-      schema = schema.variables;
-    }
-    options.model.schema = buildSchema(schema, options, type);
-    options.fieldsets = buildFieldsets(schema, options);
+    var json = await $.getJSON('testSchema/course.schema.json');
+    var schema = json.$merge.with;
+    options.model.schema = buildSchema(schema.required, schema.properties, options, type);
+    options.fieldsets = buildFieldsets(schema.properties, options);
     alternativeModel = options.alternativeModelToSave;
     alternativeAttribute = options.alternativeAttributeToSave;
     currentModel = options.model;
@@ -274,7 +263,6 @@ define([
     if (!templateName || !template) {
       return console.log('Custom templates need a name and template');
     }
-
     if (customTemplates[templateName] && !overwrite) {
       console.log('Sorry, the custom template you’re trying to add already exists');
     } else {
@@ -289,17 +277,17 @@ define([
       customValidators.push({ name: name, validatorMethod: validatorMethod });
     }
   };
-
   // example of customValidator
-  /*Scaffold.addCustomValidator('title', function(value, formValues) {
+  /*
+  Scaffold.addCustomValidator('title', function(value, formValues) {
     var err = {
       type: 'username',
       message: 'Usernames must be at least three characters long'
     };
 
     if (value.length < 3) return err;
-  });*/
-
+  });
+  */
   Scaffold.getCurrentModel = function() { return currentModel; };
   Scaffold.getCurrentForm = function() { return currentForm; };
   Scaffold.getAlternativeModel = function() { return alternativeModel; };
@@ -317,5 +305,4 @@ define([
   });
 
   Origin.scaffold = Scaffold;
-
 });

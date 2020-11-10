@@ -137,10 +137,10 @@ define([
 
   // add override to allow prevention of validation
   Backbone.Form.prototype.validate = function(options) {
-    var self = this,
-        fields = this.fields,
-        model = this.model,
-        errors = {};
+    var self = this;
+    var fields = this.fields;
+    var model = this.model;
+    var errors = {};
 
     options = options || {};
 
@@ -149,15 +149,13 @@ define([
     if (!options.skipModelValidate) {
       _.each(fields, function(field) {
         var error = field.validate();
-
-        if (!error) return;
-
-        var title = field.schema.title;
-
-        if (title) {
-            error.title = title;
+        if (!error) {
+          return;
         }
-
+        // add title to error if at field level
+        if (typeof error.type === 'string') {
+          error.title = field.schema.title;
+        }
         errors[field.key] = error;
       });
     }
