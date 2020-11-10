@@ -1,9 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var contentPluginCollection = require('core/collections/contentPluginCollection');
   var PluginTypeView = require('./pluginTypeView');
 
   var PluginManagementView = OriginView.extend({
@@ -18,7 +18,7 @@ define(function(require){
     initialize: function(options) {
       this.currentPluginType = options.pluginType;
 
-      this.contentPlugins = new contentPluginCollection();
+      this.contentPlugins = new ContentPluginCollection();
       this.pluginCollections = {}; // sorted plugins go here
 
       this.refreshPluginList();
