@@ -31,7 +31,7 @@ define(function(require){
     },
 
     render: function() {
-      this.model.fetchChildren(_.bind(function(components) {
+      this.fetchChildren(_.bind(function(components) {
         this.children = components;
         var layouts = this.getAvailableLayouts();
         // FIXME why do we have two attributes with the same value?
