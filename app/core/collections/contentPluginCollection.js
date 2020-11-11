@@ -1,19 +1,20 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
+  var ApiCollection = require('core/collections/apiCollection');
   var ContentPluginModel = require('core/models/contentPluginModel');
 
-  var ContentCollection = Backbone.Collection.extend({
+  var ContentCollection = ApiCollection.extend({
     url: 'api/contentplugins',
     model: ContentPluginModel,
+    comparator: 'displayName',
 
     initialize : function(models, options) {
       this.type = options && options.type;
     },
-    fetch: function(options) {
-      options = options || {};
-      if(this.type) options.url = this.url + '?type=' + this.type;
-      Backbone.Collection.prototype.fetch.call(this, options);
+    buildQuery: function() {
+      var query = ApiCollection.prototype.buildQuery.call(this);
+      if(this.type && !query.type) query.type = this.type;
+      return query;
     }
   });
 
