@@ -112,7 +112,7 @@ define(function(require){
         return [layoutOptions.full,layoutOptions.left,layoutOptions.right];
       }
       if (this.children.length === 1) {
-        var layout = this.children[0].get('_layout');
+        var layout = this.children.at(0).get('_layout');
         if(layout === layoutOptions.left.type) return [layoutOptions.right];
         if(layout === layoutOptions.right.type) return [layoutOptions.left];
       }
@@ -206,13 +206,13 @@ define(function(require){
     addComponentViews: function() {
       this.$('.page-components').empty();
 
-      var addPasteZonesFirst = this.children.length && this.children[0].get('_layout') !== 'full';
+      var addPasteZonesFirst = this.children.length && this.children.at(0).get('_layout') !== 'full';
       this.addComponentButtonLayout(this.children);
 
       if (addPasteZonesFirst) this.setupPasteZones();
       // Add component elements
       for(var i = 0, count = this.children.length; i < count; i++) {
-        var view = new EditorPageComponentView({ model: this.children[i] });
+        var view = new EditorPageComponentView({ model: this.children.at(i) });
         this.$('.page-components').append(view.$el);
       }
       if (!addPasteZonesFirst) this.setupPasteZones();
@@ -226,7 +226,7 @@ define(function(require){
         this.$('.add-component').addClass('full');
         return;
       }
-      var layout = components[0].get('_layout');
+      var layout = components.at(0).get('_layout');
       var className = '';
       if(layout === 'left') className = 'right';
       if(layout === 'right') className = 'left';
