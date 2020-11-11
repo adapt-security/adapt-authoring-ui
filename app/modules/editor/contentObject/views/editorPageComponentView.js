@@ -6,11 +6,9 @@ define(function(require){
   var EditorPageComponentView = EditorOriginView.extend({
     className: 'component editable component-draggable',
     tagName: 'div',
-
     settings: _.extend({}, EditorOriginView.prototype.settings, {
       autoRender: false,
     }),
-
     events: _.extend({}, EditorOriginView.prototype.events, {
       'click .component-delete': 'deleteComponentPrompt',
       'click .component-move': 'evaluateMove',

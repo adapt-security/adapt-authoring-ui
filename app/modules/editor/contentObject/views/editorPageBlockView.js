@@ -11,12 +11,10 @@ define(function(require){
   var EditorPageBlockView = EditorOriginView.extend({
     className: 'block editable block-draggable page-content-syncing',
     tagName: 'div',
-
     settings: _.extend({}, EditorOriginView.prototype.settings, {
       hasAsyncPostRender: true,
       autoRender: false
     }),
-
     events: _.extend({}, EditorOriginView.prototype.events, {
       'click .block-delete': 'deleteBlockPrompt',
       'click .add-component': 'showComponentList',
