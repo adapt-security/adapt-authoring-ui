@@ -68,7 +68,7 @@ define(function(require){
       var courseId = Origin.editor.data.course.get('_id');
       var type = this.model.get('_type');
       var id = this.model.get('_id');
-      Origin.router.navigateTo('editor/' + courseId + '/' + type + '/' + id + '/edit');
+      Origin.router.navigateTo(`editor/${courseId}/${type}/${id}/edit`);
     },
 
     setupDragDrop: function() {
