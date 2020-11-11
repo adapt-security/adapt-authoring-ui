@@ -39,6 +39,14 @@ define(function(require){
           error: callback 
         });
     },
+    
+    fetchSiblings: function(callback) {
+      (new ContentCollection(undefined, { _parentId: this.model.get('_parentId') }))
+        .fetch({ 
+          success: callback, 
+          error: callback 
+        });
+    },
 
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
