@@ -198,20 +198,10 @@ define(function(require){
       var parentId = this.model.get('_parentId');
       $.ajax({
         type: 'PUT',
-        url:'api/content/component/' + id,
-        data: {
-          _layout: layout,
-          _parentId: parentId
-        },
-        success: function(jqXHR, textStatus, errorThrown) {
-          Origin.trigger('editorView:moveComponent:' + parentId);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          Origin.Notify.alert({
-            type: 'error',
-            text: jqXHR.responseJSON.message
-          });
-        }
+        url:`api/content/component/${id}`,
+        data: { _layout: layout, _parentId: parentId },
+        success: () => Origin.trigger(`editorView:moveComponent:${parentId}`),
+        error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
     }
   }, {
