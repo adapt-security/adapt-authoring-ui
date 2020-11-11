@@ -234,8 +234,12 @@ define([
         type = options.schemaType;
         options.isTheme = true;
     }
-    var json = await $.getJSON('testSchema/course.schema.json');
-    var schema = json.$merge.with;
+    let schema;
+    try {
+      schema = await $.getJSON(`api/content/schema?type=${type}&courseId=${model.get('_courseId')}`);
+    } catch(e) {
+      console.error(e);
+    }
     options.model.schema = buildSchema(schema.required, schema.properties, options, type);
     options.fieldsets = buildFieldsets(schema.properties, options);
     alternativeModel = options.alternativeModelToSave;
