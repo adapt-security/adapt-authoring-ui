@@ -9,7 +9,6 @@ define(function(require) {
   var EditorPageComponentListView = EditorOriginView.extend({
     className: "editor-component-list",
     tagName: "div",
-
     events: {
       'click': 'onOverlayClicked',
       'click .editor-component-list-sidebar-exit, .click-capture': 'closeView',
