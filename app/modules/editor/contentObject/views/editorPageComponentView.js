@@ -25,10 +25,10 @@ define(function(require){
         'contextMenu:component:copyID': this.onCopyID,
         'contextMenu:component:delete': this.deleteComponentPrompt
       });
-      this.evaluateLayout(_.bind(function(layouts) {
+      this.evaluateLayout(layouts => {
         this.model.set('_movePositions', layouts);
         this.render();
-      }, this));
+      });
     },
 
     postRender: function () {
