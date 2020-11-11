@@ -6,11 +6,12 @@ define(function(require) {
   var Origin = require('core/origin');
   var ContentObjectModel = require('core/models/contentObjectModel');
   var EditorMenuSidebarView = require('./views/editorMenuSidebarView');
-  var EditorPageEditView = require('./views/editorPageEditView');
   var EditorPageEditSidebarView = require('./views/editorPageEditSidebarView');
+  var EditorPageEditView = require('./views/editorPageEditView');
   var EditorPageSidebarView = require('./views/editorPageSidebarView');
   var EditorView = require('../global/views/editorView');
   var Helpers = require('../global/helpers');
+  var Origin = require('core/origin');
 
   Origin.on('editor:contentObject', function(data) {
     var route = function() {
