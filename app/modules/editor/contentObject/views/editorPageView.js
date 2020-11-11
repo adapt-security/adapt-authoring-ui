@@ -11,7 +11,6 @@ define(function(require){
     className: 'page',
     tagName: 'div',
     childrenRenderedCount: 0,
-
     events: _.extend({}, EditorOriginView.prototype.events, {
       'click .add-article': 'addNewArticle',
       'click .page-edit-button': 'openContextMenu',
@@ -52,9 +51,7 @@ define(function(require){
 
     render: function() {
       var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
-
       this.addArticleViews();
-
       return returnVal;
     },
 
@@ -102,7 +99,6 @@ define(function(require){
       } else { // 'splice' block into the new position
         $($articles[index]).before(newArticleView.$el);
       }
-
       if (scrollIntoView) {
         $.scrollTo(newArticleView.$el, 200);
       }
