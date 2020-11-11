@@ -159,7 +159,7 @@ define(function(require){
         right: false,
         full: false
       };
-      this.model.fetchSiblings(_.bind(function(siblings) {
+      this.fetchSiblings(_.bind(function(siblings) {
         var showFull = supportedLayout.full && siblings.length < 1;
         switch(this.model.get('_layout')) {
           case 'left':
