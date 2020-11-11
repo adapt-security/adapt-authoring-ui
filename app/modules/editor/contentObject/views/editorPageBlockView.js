@@ -24,7 +24,6 @@ define(function(require){
 
     preRender: function() {
       this.listenToEvents();
-      this.model.set('componentTypes', Origin.editor.data.componenttypes.toJSON());
       this.render();
     },
 
@@ -250,7 +249,6 @@ define(function(require){
         title: Origin.l10n.t('app.addcomponent'),
         body: Origin.l10n.t('app.pleaseselectcomponent'),
         _parentId: this.model.get('_id'),
-        componentTypes: Origin.editor.data.componenttypes.toJSON(),
         layoutOptions: layoutOptions
       });
 
