@@ -1,8 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require){
-  var Origin = require('core/origin');
-  var EditorOriginView = require('../../global/views/editorOriginView');
-
+define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOriginView, Origin) {
   var EditorPageComponentView = EditorOriginView.extend({
     className: 'component editable component-draggable',
     tagName: 'div',
