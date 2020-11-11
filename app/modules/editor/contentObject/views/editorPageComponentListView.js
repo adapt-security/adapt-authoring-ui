@@ -22,17 +22,17 @@ define(function(require) {
         'editorComponentListView:remove': this.remove,
         'window:resize': this.onScreenResize
       });
-
-      this.setupCollection();
-      this.setupFilters();
-
+      
       this.$parentElement = options.$parentElement;
       this.parentView = options.parentView;
+
+      this.setupFilters();
+      this.setupCollection();
     },
 
     setupCollection: function() {
-      var availableComponents = _.where(this.model.get('componentTypes'), { _isAvailableInEditor: true });
-      this.collection = new Backbone.Collection(availableComponents, { comparator: 'displayName' });
+      var available = Origin.editor.data.componentTypes.where({ _isAvailableInEditor: true });
+      this.collection = new Backbone.Collection(available, { comparator: 'displayName' });
     },
 
     setupFilters: function() {
