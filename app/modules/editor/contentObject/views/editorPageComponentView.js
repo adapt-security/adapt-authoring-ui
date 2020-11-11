@@ -22,6 +22,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         'contextMenu:component:copyID': this.onCopyID,
         'contextMenu:component:delete': this.deleteComponentPrompt
       });
+      this.componentType = Origin.editor.data.componentTypes.findWhere({ component: this.model.get('_component') });
       this.evaluateLayout(layouts => {
         this.model.set('_movePositions', layouts);
         this.render();
@@ -138,8 +139,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     },
 
     getSupportedLayout: function() {
-      var componentType = Origin.editor.data.componenttypes.findWhere({ component: this.model.get('_component') });
-      var supportedLayout = componentType.get('properties')._supportedLayout;
+      var supportedLayout /*= this.componentType.get('properties')._supportedLayout*/;
       // allow all layouts by default
       if(!supportedLayout) return { full: true, half: true };
 
