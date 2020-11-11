@@ -12,8 +12,8 @@ define(function(require) {
       return;
     }
     (new ArticleModel({ _id: data.id })).fetch({
-      success: function(model) {
-        var form = Origin.scaffold.buildForm({ model: model });
+      success: async function(model) {
+        var form = await Origin.scaffold.buildForm({ model: model });
         Helpers.setPageTitle(model);
         Origin.sidebar.addView(new EditorArticleEditSidebarView({ model: model, form: form }).$el);
         Origin.contentPane.setView(EditorArticleEditView, { model: model, form: form });

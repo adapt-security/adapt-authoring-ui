@@ -10,8 +10,8 @@ define(function(require) {
 
   Origin.on('editor:component', function(data) {
     (new ComponentModel({ _id: data.id })).fetch({
-      success: function(model) {
-        var form = Origin.scaffold.buildForm({ model: model });
+      success: async function(model) {
+        var form = await Origin.scaffold.buildForm({ model: model });
         Helpers.setPageTitle(model);
         Origin.sidebar.addView(new EditorComponentEditSidebarView({ model: model, form: form }).$el);
         Origin.contentPane.setView(EditorComponentEditView, { model: model, form: form });

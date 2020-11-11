@@ -24,13 +24,13 @@ define(function(require) {
     });
   }
 
-  function createNewCourse() {
+  async function createNewCourse() {
     var model = new CourseModel();
     Origin.trigger('location:title:update', {
       breadcrumbs: ['dashboard'],
       title: Origin.l10n.t('app.editornew')
     });
-    var form = Origin.scaffold.buildForm({ model: model });
+    var form = await Origin.scaffold.buildForm({ model: model });
     Origin.contentPane.setView(EditorCourseEditView, { model: model, form: form });
     Origin.sidebar.addView(new EditorCourseEditSidebarView({ form: form }).$el);
   }

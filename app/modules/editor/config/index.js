@@ -9,8 +9,8 @@ define(function(require) {
 
   Origin.on('editor:config', function(data) {
     (new ConfigModel({ _courseId: Origin.location.route1 })).fetch({
-      success: function(model) {
-        var form = Origin.scaffold.buildForm({ model: model });
+      success: async function(model) {
+        var form = await Origin.scaffold.buildForm({ model: model });
         Helpers.setPageTitle(model);
         Origin.sidebar.addView(new EditorConfigEditSidebarView({ form: form }).$el);
         Origin.contentPane.setView(EditorConfigEditView, { model: model, form: form });

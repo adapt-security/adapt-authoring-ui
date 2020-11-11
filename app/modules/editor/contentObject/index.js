@@ -35,9 +35,9 @@ define(function(require) {
     });
   });
 
-  function renderContentObjectEdit(data) {
+  async function renderContentObjectEdit(data) {
     Helpers.setPageTitle(data.model);
-    var form = Origin.scaffold.buildForm({ model: data.model });
+    var form = await Origin.scaffold.buildForm({ model: data.model });
     Origin.sidebar.addView(new EditorPageEditSidebarView({ form: form }).$el);
     Origin.contentPane.setView(EditorPageEditView, { model: data.model, form: form });
   }
