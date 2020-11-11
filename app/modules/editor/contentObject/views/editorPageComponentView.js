@@ -88,13 +88,17 @@ define(function(require){
         appendTo:'.app-inner',
         containment: '.app-inner',
         helper: function (e) {
-          // Store the offset to stop the page jumping during the start of drag
-          // because of the drop zones changing the scroll position on the page
+          /** 
+           * Store the offset to stop the page jumping during the start of drag
+           * because of the drop zones changing the scroll position on the page
+           */
           view.offsetTopFromWindow = view.$el.offset().top - $(window).scrollTop();
-          // This is in the helper method because the height needs to be
-          // manipulated before the drag start method due to adding drop zones
-          // Passing the supported layout as a parameter allows the method to
-          // determine which drop zones should be displayed
+          /** 
+           * This is in the helper method because the height needs to be
+           * manipulated before the drag start method due to adding drop zones
+           * Passing the supported layout as a parameter allows the method to
+           * determine which drop zones should be displayed
+           */
           var supportedLayout = view.getSupportedLayout();
           view.showDropZones(supportedLayout);
           $(this).attr('data-component-id', view.model.get('_id'));
