@@ -4,7 +4,7 @@ define(function(require) {
 
   var ContentPluginModel = Backbone.Model.extend({
     idAttribute: '_id',
-    urlRoot: 'api/contentplugin',
+    urlRoot: 'api/contentplugins',
   });
   return ContentPluginModel;
 });
