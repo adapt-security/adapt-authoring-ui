@@ -29,10 +29,6 @@ define([
 
   Backbone.Form.editors.List.Modal.ModalAdapter = ScaffoldItemsModalView;
 
-  function onScaffoldUpdateSchemas(callback, context) {
-    Origin.trigger('schemas:loadData', callback.bind(context));
-  }
-
   function generateFieldObject(field, key) {
     var fieldType = field.type;
     var isFieldTypeObject = fieldType === 'object';
@@ -299,7 +295,6 @@ define([
   Scaffold.addCustomField('QuestionButton', Backbone.Form.editors.Text);
 
   Origin.on({
-    'scaffold:updateSchemas': onScaffoldUpdateSchemas,
     'scaffold:increaseActiveModals': function() { ActiveItemsModal++; },
     'scaffold:decreaseActiveModals': function() { ActiveItemsModal--; },
   });

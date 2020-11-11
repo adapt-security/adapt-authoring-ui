@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var _ = require('underscore');
-  var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
 
@@ -40,14 +39,12 @@ define(function(require){
     },
 
     onUploadSuccess: function(data) {
-      Origin.trigger('scaffold:updateSchemas', function() {
-        Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
+      Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
 
-        Origin.trigger('sidebar:resetButtons');
-        $('.loading').hide();
+      Origin.trigger('sidebar:resetButtons');
+      $('.loading').hide();
 
-        Origin.router.navigateTo('pluginManagement/' + (data.pluginType || ''));
-      }, this);
+      Origin.router.navigateTo(`pluginManagement/${data.pluginType || ''}`);
     },
 
     onUploadError: function(data) {
