@@ -1,10 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
+/**
+ * This module handles both sections/menus and pages.
+ */
 define(function(require) {
-  /**
-  * This module handles both sections/menus and pages.
-  */
-  var Origin = require('core/origin');
   var ContentObjectModel = require('core/models/contentObjectModel');
+  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var EditorMenuSidebarView = require('./views/editorMenuSidebarView');
   var EditorPageEditSidebarView = require('./views/editorPageEditSidebarView');
   var EditorPageEditView = require('./views/editorPageEditView');
@@ -15,9 +15,13 @@ define(function(require) {
 
   Origin.on('editor:contentObject', function(data) {
     var route = function() {
-      if(data.action === 'edit') renderContentObjectEdit(data);
-      else if(data.id) renderPageStructure(data);
-      else renderMenuStructure(data);
+      if(data.action === 'edit') {
+        return renderContentObjectEdit(data);
+      }
+      Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+      Origin.editor.data.componentTypes.fetch({
+        success: () => data.id ? renderPageStructure(data) : renderMenuStructure(data)
+      });
     }
     if(!data.id) {
       return route();
