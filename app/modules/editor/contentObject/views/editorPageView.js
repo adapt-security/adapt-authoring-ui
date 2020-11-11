@@ -121,12 +121,7 @@ define(function(require){
           articleView._skipRender = true; // prevent render of blocks in postRender
           articleView.addBlock();
         }, this),
-        error: function() {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.erroraddingarticle')
-          });
-        }
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingarticle') })
       });
     },
 
