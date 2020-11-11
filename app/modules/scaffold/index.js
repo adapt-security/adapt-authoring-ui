@@ -229,28 +229,28 @@ define([
 
   Scaffold.buildForm = async function(options) {
     var model = options.model;
-    var type = model.get('_type') || model._type || options.schemaType;
+    var schemaType = contentType = model.get('_type') || model._type || options.schemaType;
     options.isTheme = false;
 
-    switch (type) {
+    switch (schemaType) {
       case 'menu':
       case 'page':
-        type = 'contentobject';
+        contentType = 'contentobject';
         break;
       case 'component':
-        type = model.get('_component');
+        contentType = model.get('_component');
         break;
       case 'theme':
-        type = options.schemaType;
+        contentType = options.schemaType;
         options.isTheme = true;
     }
     let schema;
     try {
-      schema = await $.getJSON(`api/content/schema?type=${type}&courseId=${model.get('_courseId')}`);
+      schema = await $.getJSON(`api/content/schema?type=${schemaType}&courseId=${model.get('_courseId')}`);
     } catch(e) {
       console.error(e);
     }
-    options.model.schema = buildSchema(schema.required, schema.properties, options, type);
+    options.model.schema = buildSchema(schema.required, schema.properties, options, contentType);
     options.fieldsets = buildFieldsets(schema.properties, options);
     alternativeModel = options.alternativeModelToSave;
     alternativeAttribute = options.alternativeAttributeToSave;
