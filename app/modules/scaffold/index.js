@@ -129,6 +129,9 @@ define([
   function buildSchema(requiredKeys, schema, options, type) {
     var scaffoldSchema = {};
     var field = { type: 'object', properties: Object.assign({}, schema) };
+    
+    trimEmptyProperties(field.properties);
+    
     var nestedProps = field.properties;
     var key = 'properties';
 
@@ -145,6 +148,13 @@ define([
       setUpSchemaFields(nestedProps[innerKey], innerKey, nestedProps, scaffoldSchema);
     }
     return scaffoldSchema;
+  }
+
+  function trimEmptyProperties(object) {
+    for (var key in object) {
+      if (!object.hasOwnProperty(key) || object[key].type !== 'object') continue;
+      if (_.isEmpty(object[key].properties)) delete object[key];
+    }
   }
 
   function buildFieldsets(schema, options) {
