@@ -21,23 +21,20 @@ define([
 
     initialize: function(options) {
       this.listenTo(Origin, 'scaffold:assets:autofill', this.onAutofill);
-
       Backbone.Form.editors.Base.prototype.initialize.call(this, options);
     },
 
     render: function() {
       if (!Helpers.isAssetExternal(this.value)) {
         // don't have asset ID, so query courseassets for matching URL && content ID
-        this.fetchCourseAsset({
-          _fieldName: this.value.split('/').pop()
-        }, function(error, collection) {
-          if (error) return console.error(error);
-
-          if (collection.length) {
-            // re-render once data is loaded
+        this.fetchCourseAsset({ _fieldName: this.value.split('/').pop() }, (error, collection) => {
+          if (error) {
+            return console.error(error);
+          }
+          if (collection.length) { // re-render once data is loaded
             this.renderData(collection.at(0).get('_assetId'));
           }
-        }.bind(this));
+        });
       }
 
       this.setValue(this.value);
