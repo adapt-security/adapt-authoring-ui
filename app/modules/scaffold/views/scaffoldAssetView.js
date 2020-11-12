@@ -134,16 +134,13 @@ define([
     },
 
     saveModel: function(attributesToSave) {
-      var isUsingAlternativeModel = false;
       var currentModel = Origin.scaffold.getCurrentModel();
       var alternativeModel = Origin.scaffold.getAlternativeModel();
       var alternativeAttribute = Origin.scaffold.getAlternativeAttribute();
       // Check if alternative model should be used
       if (alternativeModel) {
         currentModel = alternativeModel;
-        isUsingAlternativeModel = true;
       }
-
       // run schema validation
       Origin.scaffold.getCurrentForm().commit({ validate: false });
       // Check if alternative attribute should be used
