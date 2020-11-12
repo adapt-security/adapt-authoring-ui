@@ -32,20 +32,12 @@ define(function(require){
       });
     },
 
-    fetchChildren: function(callback) {
-      (new ContentCollection(undefined, { _parentId: this.model.get('_id') }))
-        .fetch({ 
-          success: callback, 
-          error: callback 
-        });
+    getChildren: function() {
+      return Origin.editor.data.content.where({ _parentId: this.model.get('_id') });
     },
     
-    fetchSiblings: function(callback) {
-      (new ContentCollection(undefined, { _parentId: this.model.get('_parentId') }))
-        .fetch({ 
-          success: callback, 
-          error: callback 
-        });
+    getSiblings: function() {
+      return Origin.editor.data.content.where({ _parentId: this.model.get('_parentId') });
     },
 
     render: function() {
