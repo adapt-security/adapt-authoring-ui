@@ -89,15 +89,8 @@ define([
         _assetId : courseAssetObject.assetId,
         _contentTypeParentId: courseAssetObject.contentTypeParentId
       }, {
-        success: function() {
-          this.saveModel();
-        }.bind(this),
-        error: function(error) {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorsaveasset')
-          });
-        }
+        success: () => this.saveModel(),
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
       });
     },
 
@@ -108,12 +101,8 @@ define([
 
       (new ContentCollection(null, { _type: 'courseasset' })).fetch({
         data: searchCriteria,
-        success: function(collection) {
-          cb(null, collection);
-        },
-        error: function(model, response) {
-          cb('Failed to fetch data for', model.get('filename') + ':', response.statusText);
-        }
+        success: docs => cb(null, docs),
+        error: (model, response) => cb(`Failed to fetch data for ${model.get('filename')}: ${response.statusText}`)
       });
     },
 
@@ -172,16 +161,11 @@ define([
 
       currentModel.save(attributesToSave, {
         patch: attributesToSave !== undefined,
-        success: function() {
+        success: () => {
           this.render();
           this.trigger('change', this);
-        }.bind(this),
-        error: function() {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorsaveasset')
-          });
-        }
+        },
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
       });
     },
 
