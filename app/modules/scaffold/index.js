@@ -246,7 +246,8 @@ define([
     }
     let schema;
     try {
-      schema = await $.getJSON(`api/content/schema?type=${schemaType}&courseId=${model.get('_courseId')}`);
+      const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
+      schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
     } catch(e) {
       console.error(e);
     }
