@@ -235,7 +235,7 @@ define([
     switch (schemaType) {
       case 'menu':
       case 'page':
-        contentType = 'contentobject';
+        schemaType = contentType = 'contentobject';
         break;
       case 'component':
         contentType = model.get('_component');
