@@ -3,7 +3,7 @@ define(function(require) {
   var ApiCollection = require('core/collections/apiCollection');
   var ContentPluginModel = require('core/models/contentPluginModel');
 
-  var ContentCollection = ApiCollection.extend({
+  var ContentPluginCollection = ApiCollection.extend({
     url: 'api/contentplugins',
     model: ContentPluginModel,
     comparator: 'displayName',
@@ -18,5 +18,5 @@ define(function(require) {
     }
   });
 
-  return ContentCollection;
+  return ContentPluginCollection;
 });
