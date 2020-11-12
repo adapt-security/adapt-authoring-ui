@@ -124,7 +124,7 @@ define([
         if (!listModel) return;
 
         listModel.destroy({
-          success: this.saveModel(),
+          success: () => this.saveModel(),
           error: function() {
             console.error('Failed to destroy courseasset record', listModel.get('_id'));
             return;
