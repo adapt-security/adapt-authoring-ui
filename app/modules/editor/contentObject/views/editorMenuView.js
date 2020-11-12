@@ -2,11 +2,8 @@
 define(function(require){
   var Backbone = require('backbone');
   var Origin = require('core/origin');
-  var Helpers = require('core/helpers');
-  var ContentCollection = require('core/collections/contentCollection');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorMenuLayerView = require('./editorMenuLayerView');
-  var EditorMenuItemView = require('./editorMenuItemView');
 
   var EditorMenuView = EditorOriginView.extend({
     className: "editor-menu",
