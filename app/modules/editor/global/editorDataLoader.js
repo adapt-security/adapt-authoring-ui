@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var _ = require('underscore');
-  var ConfigModel = require('core/models/configModel');
   var ContentCollection = require('core/collections/contentCollection');
   var ContentModel = require('core/models/contentModel');
   var Origin = require('core/origin');
