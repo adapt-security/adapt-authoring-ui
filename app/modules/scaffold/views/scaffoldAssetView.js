@@ -1,13 +1,11 @@
 define([
-  'core/origin',
-  'backbone-forms',
-  'core/helpers',
-  'core/models/courseAssetModel',
-  'core/collections/contentCollection',
+  'core/collections/apiCollection',
+  'modules/assetManagement/collections/assetCollection',
   'modules/assetManagement/views/assetManagementModalView',
-  'modules/assetManagement/collections/assetCollection'
-], function(Origin, BackboneForms, Helpers, CourseAssetModel, ContentCollection, AssetManagementModalView, AssetCollection) {
-
+  'core/models/courseAssetModel',
+  'core/helpers',
+  'core/origin'
+], function(ApiCollection, AssetCollection, AssetManagementModalView, CourseAssetModel, Helpers, Origin) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -96,9 +94,9 @@ define([
       if (!searchCriteria._contentTypeId) {
         searchCriteria._courseId = Origin.editor.data.course.get('_id');
       }
-      (new ContentCollection(null, { _type: 'courseasset' })).fetch({
-        data: searchCriteria,
-        success: docs => cb(null, docs),
+      const coll = new ApiCollection(null, {  url: 'api/courseassets', filter: searchCriteria });
+      coll.fetch({
+        success: () => cb(null, coll),
         error: (model, response) => cb(`Failed to fetch data for ${model.get('filename')}: ${response.statusText}`)
       });
     },
