@@ -117,9 +117,7 @@ define([
           this.saveModel();
           return;
         }
-
-        var listModels = courseassets.models ? courseassets.models.slice() : courseassets.slice();
-        var listModel = listModels[0];
+        var listModel = (courseassets.models ? courseassets.models.slice() : courseassets.slice())[0];
 
         if (!listModel) return;
 
