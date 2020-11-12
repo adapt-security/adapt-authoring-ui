@@ -156,39 +156,37 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         right: false,
         full: false
       };
-      this.fetchSiblings(_.bind(function(siblings) {
-        var showFull = supportedLayout.full && siblings.length < 1;
-        switch(this.model.get('_layout')) {
-          case 'left':
-            movePositions.right = supportedLayout.half;
-            movePositions.full = showFull;
-            break;
-          case 'right':
-            movePositions.left = supportedLayout.half;
-            movePositions.full = showFull;
-            break;
-          case 'full':
-            movePositions.left = supportedLayout.half;
-            movePositions.right = supportedLayout.half;
-            break
-        }
-        cb(movePositions);
-      }, this));
+      const siblings = this.getSiblings();
+      var showFull = supportedLayout.full && siblings.length < 1;
+      switch(this.model.get('_layout')) {
+        case 'left':
+          movePositions.right = supportedLayout.half;
+          movePositions.full = showFull;
+          break;
+        case 'right':
+          movePositions.left = supportedLayout.half;
+          movePositions.full = showFull;
+          break;
+        case 'full':
+          movePositions.left = supportedLayout.half;
+          movePositions.right = supportedLayout.half;
+          break
+      }
+      cb(movePositions);
     },
 
     evaluateMove: function(event) {
       event && event.preventDefault();
       var $btn = $(event.currentTarget);
-      this.model.fetchSiblings(_.bind(function(siblings) {
-        var isLeft = $btn.hasClass('component-move-left');
-        var isRight = $btn.hasClass('component-move-right');
-        var isFull = $btn.hasClass('component-move-full');
-        // move self to layout of clicked button
-        this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
-        // move sibling to inverse of self
-        var siblingId = siblings && siblings.length > 0 && siblings.models[0].get('_id');
-        if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
-      }, this));
+      const siblings = sthis.getSiblings();
+      var isLeft = $btn.hasClass('component-move-left');
+      var isRight = $btn.hasClass('component-move-right');
+      var isFull = $btn.hasClass('component-move-full');
+      // move self to layout of clicked button
+      this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
+      // move sibling to inverse of self
+      var siblingId = siblings && siblings.length > 0 && siblings.models[0].get('_id');
+      if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
     },
 
     moveComponent: function (id, layout) {

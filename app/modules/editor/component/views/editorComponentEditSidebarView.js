@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var SidebarItemView = require('modules/sidebar/views/sidebarItemView');
 
@@ -18,13 +17,14 @@ define(function(require) {
 
     cancelEditing: function(event) {
       event.preventDefault();
-      // FIXME got to be a better way to do this
-      this.model.fetchParent(function(parentBlock) {
-        parentBlock.fetchParent(function(parentArticle) {
-          parentArticle.fetchParent(function(parentPage) {
-            Origin.router.navigateTo('editor/' + Origin.editor.data.course.get('_id') + '/page/' + parentPage.get('_id'));
-          });
-        });
+      const page = this.getParent(this.getParent(this.getParent(this.model)));
+      Origin.router.navigateTo(`editor/${page.get('_courseId')}/page/${page.get('_id')}`);
+      
+    },
+
+    getParent: function(model) {
+      return Origin.editor.data.content.findWhere({ 
+        _id: model.get('_parentId') 
       });
     }
   }, {

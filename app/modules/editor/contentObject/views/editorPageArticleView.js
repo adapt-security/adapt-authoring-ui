@@ -77,12 +77,9 @@ define(function(require){
       });
       this.$('.article-blocks').append(view.$el);
       // Iterate over each block and add it to the article
-      this.fetchChildren(_.bind(function(children) {
-        Origin.editor.blockCount += children.length;
-        for(var i = 0, count = children.length; i < count; i++) {
-          this.addBlockView(children.at(i));
-        }
-      }, this));
+      const children = this.getChildren();
+      Origin.editor.blockCount += children.length;
+      children.forEach(c => this.addBlockView(c));
     },
 
     addBlockView: function(blockModel, scrollIntoView) {
