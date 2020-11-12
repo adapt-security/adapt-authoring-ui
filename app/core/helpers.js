@@ -1,9 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require){
-  var Handlebars = require('handlebars');
-  var Origin = require('core/origin');
-  var Moment = require('moment');
-
+define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Origin) {
   var helpers = {
     console: function(context) {
       return console.log(context);
