@@ -9,9 +9,7 @@ define([
 ], function(Origin, BackboneForms, Helpers, CourseAssetModel, ContentCollection, AssetManagementModalView, AssetCollection) {
 
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
-
     assetType: null,
-
     events: {
       'change input': function() { this.trigger('change', this); },
       'focus input': function() { this.trigger('focus', this); },
@@ -98,7 +96,6 @@ define([
       if (!searchCriteria._contentTypeId) {
         searchCriteria._courseId = Origin.editor.data.course.get('_id');
       }
-
       (new ContentCollection(null, { _type: 'courseasset' })).fetch({
         data: searchCriteria,
         success: docs => cb(null, docs),
@@ -112,8 +109,9 @@ define([
         _contentType: contentType,
         _fieldName: fieldname
       }, function(error, courseassets) {
-        if (error) return console.error(error);
-
+        if (error) {
+          return console.error(error);
+        }
         if (!courseassets.length) {
           this.setValue('');
           this.saveModel();
@@ -140,7 +138,6 @@ define([
       var currentModel = Origin.scaffold.getCurrentModel();
       var alternativeModel = Origin.scaffold.getAlternativeModel();
       var alternativeAttribute = Origin.scaffold.getAlternativeAttribute();
-
       // Check if alternative model should be used
       if (alternativeModel) {
         currentModel = alternativeModel;
@@ -149,16 +146,13 @@ define([
 
       // run schema validation
       Origin.scaffold.getCurrentForm().commit({ validate: false });
-
       // Check if alternative attribute should be used
       if (alternativeAttribute) {
         attributesToSave[alternativeAttribute] = Origin.scaffold.getCurrentModel().attributes;
       }
-
       if (!attributesToSave) {
         currentModel.pruneAttributes();
       }
-
       currentModel.save(attributesToSave, {
         patch: attributesToSave !== undefined,
         success: () => {
@@ -174,15 +168,11 @@ define([
     */
 
     focus: function() {
-      if (!this.hasFocus) {
-        this.$('input').focus();
-      }
+      if (!this.hasFocus) this.$('input').focus();
     },
 
     blur: function() {
-      if (this.hasFocus) {
-        this.$('input').blur();
-      }
+      if (this.hasFocus) this.$('input').blur();
     },
 
     onAssetButtonClicked: function(event) {
