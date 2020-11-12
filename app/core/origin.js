@@ -2,11 +2,10 @@
 define([
   'underscore', 
   'backbone', 
-  'core/constants',
   'core/l10n',
   'core/router',
   'modules/user/models/sessionModel'
-], function(_, Backbone, Constants, l10n, Router, SessionModel) {
+], function(_, Backbone, l10n, Router, SessionModel) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
@@ -23,19 +22,15 @@ define([
       this.trigger('origin:dataReady');
     }),
     
-    loadUtilities: _.once(function(callback) {
-      var constantsLoaded = false;
-      var l10nLoaded = false;
-      this.constants = new Constants(this);
-      this.l10n = new l10n(this);
-      this.once('constants:loaded', function() {
-        constantsLoaded = true;
-        if(l10nLoaded) callback();
-      });
-      this.once('l10n:loaded', function() {
-        l10nLoaded = true;
-        if(constantsLoaded) callback();
-      });
+    loadUtilities: _.once(async function(callback) {
+      try {
+        this.constants = await $.get('/api/config');
+        this.l10n = new l10n(this);
+        await this.l10n.load();
+        callback();
+      } catch(e) {
+        console.error(e.message);
+      }
     }),
     /**
      * Saves session on the Origin object
