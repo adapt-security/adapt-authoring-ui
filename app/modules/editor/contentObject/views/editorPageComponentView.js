@@ -63,10 +63,8 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     },
 
     loadComponentEdit: function(event) {
-      var courseId = Origin.editor.data.course.get('_id');
-      var type = this.model.get('_type');
-      var id = this.model.get('_id');
-      Origin.router.navigateTo(`editor/${courseId}/${type}/${id}/edit`);
+      const { _courseId, _id, _type } = this.model.attributes;
+      Origin.router.navigateTo(`editor/${_courseId}/${_type}/${_id}/edit`);
     },
 
     setupDragDrop: function() {
