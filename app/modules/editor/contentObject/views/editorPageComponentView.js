@@ -43,10 +43,8 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t('app.deletecomponent'),
-        text: Origin.l10n.t('app.confirmdeletecomponent') + '<br />' + '<br />' + Origin.l10n.t('app.confirmdeletecomponentwarning'),
-        callback: _.bind(function(confirmed) {
-          if(confirmed) this.deleteComponent();
-        }, this)
+        text: `${Origin.l10n.t('app.confirmdeletecomponent')}<br/><br/>${Origin.l10n.t('app.confirmdeletecomponentwarning')}`,
+        callback: confirmed => confirmed && this.deleteComponent()
       });
     },
 
