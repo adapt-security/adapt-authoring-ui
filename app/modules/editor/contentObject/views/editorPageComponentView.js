@@ -181,7 +181,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       // move self to layout of clicked button
       this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
       // move sibling to inverse of self
-      var siblingId = siblings && siblings.length > 0 && siblings.models[0].get('_id');
+      var siblingId = siblings && siblings.length > 0 && siblings[0].get('_id');
       if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
     },
 
