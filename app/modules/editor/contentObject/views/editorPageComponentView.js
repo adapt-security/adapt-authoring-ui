@@ -188,8 +188,8 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     moveComponent: function (id, layout) {
       var parentId = this.model.get('_parentId');
       $.ajax({
-        type: 'PUT',
-        url:`api/content/component/${id}`,
+        type: 'PATCH',
+        url:`api/content/${id}`,
         data: { _layout: layout, _parentId: parentId },
         success: () => Origin.trigger(`editorView:moveComponent:${parentId}`),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
