@@ -178,7 +178,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     evaluateMove: function(event) {
       event && event.preventDefault();
       var $btn = $(event.currentTarget);
-      const siblings = sthis.getSiblings();
+      const siblings = this.getSiblings();
       var isLeft = $btn.hasClass('component-move-left');
       var isRight = $btn.hasClass('component-move-right');
       var isFull = $btn.hasClass('component-move-full');
