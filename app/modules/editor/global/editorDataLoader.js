@@ -47,7 +47,7 @@ define(function(require) {
   };
 
   function handleError() {
-    Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
+    Origin.Notify.alert({ type: 'error', text: 'Failed to fetch course data' });
     Origin.router.navigateTo('dashboard');
   }
   
