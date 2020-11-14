@@ -11,15 +11,11 @@ define(function(require) {
   Origin.on('router:project', route1 => route1 === 'new' && createNewCourse());
   Origin.on('editor:course', renderCourseEdit);
 
-  function renderCourseEdit() {
-    var courseModel = new CourseModel({ _id: Origin.location.route1 });
-    // FIXME need to fetch config to ensure scaffold has the latest extensions data
-    CoreHelpers.multiModelFetch([ courseModel, Origin.editor.data.config ], async function(data) {
-      EditorHelpers.setPageTitle(courseModel);
-      var form = await Origin.scaffold.buildForm({ model: courseModel });
-      Origin.contentPane.setView(EditorCourseEditView, { model: courseModel, form: form });
-      Origin.sidebar.addView(new EditorCourseEditSidebarView({ form: form }).$el);
-    });
+  async function renderCourseEdit() {
+    EditorHelpers.setPageTitle(Origin.editor.data.course);
+    var form = await Origin.scaffold.buildForm({ model: Origin.editor.data.course });
+    Origin.contentPane.setView(EditorCourseEditView, { model: Origin.editor.data.course, form: form });
+    Origin.sidebar.addView(new EditorCourseEditSidebarView({ form: form }).$el);
   }
 
   async function createNewCourse() {
