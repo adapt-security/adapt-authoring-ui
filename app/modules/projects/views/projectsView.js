@@ -75,9 +75,8 @@ define(function(require){
         clearTimeout(this.resizeTimer);
         this.resizeTimer = -1;
       }
-      // we need to load one course first to check page size
-      this.pageSize = 1;
-      this.resetCollection(function(collection) {
+      this.pageSize = 50; // make initial page size BIG to make sure we load enough courses for any window size
+      this.resetCollection(() => {
         var containerHeight = $(window).height()-this.$el.offset().top;
         var containerWidth = this.$('.projects-inner').width();
         var itemHeight = $('.project-list-item').outerHeight(true);
@@ -88,8 +87,8 @@ define(function(require){
         if((containerHeight % itemHeight) > 0) rows++;
         this.pageSize = columns*rows;
         // need another reset to get the actual pageSize number of items
-        this.resetCollection(this.setViewToReady);
-      }.bind(this));
+        this.setViewToReady();
+      });
     },
 
     getProjectsContainer: function() {
