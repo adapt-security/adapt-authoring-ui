@@ -8,9 +8,7 @@ define(function(require) {
   var CoreHelpers = require('core/helpers');
   var EditorHelpers = require('../global/helpers');
 
-  Origin.on('router:project', function(route1, route2, route3, route4) {
-    if(route1 === 'new') createNewCourse();
-  });
+  Origin.on('router:project', route1 => route1 === 'new' && createNewCourse());
   Origin.on('editor:course', renderCourseEdit);
 
   function renderCourseEdit() {
