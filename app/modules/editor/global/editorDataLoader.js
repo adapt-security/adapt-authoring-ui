@@ -20,21 +20,22 @@ define(function(require) {
       if(!Origin.editor) Origin.editor = {};
       if(!Origin.editor.data) Origin.editor.data = {};
 
-      Origin.editor.data.course = new ContentModel({ _id: Origin.location.route1 });
+      Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+      Origin.editor.data.content.fetch({
+       success: function(content) {
+          isLoaded = true;
 
-      Origin.editor.data.course.fetch({
-        success: function (course) {
-          Origin.editor.data.content = new ContentCollection(undefined, { _courseId: course.get('_id') });
-          Origin.editor.data.content.fetch({
-           success: function(content) {
-              isLoaded = true;
-              Origin.editor.data.config = content.findWhere({ _type: 'config' });
-              if(_.isFunction(callback)) callback();
-              Origin.trigger('editor:dataLoaded');
-            }, 
-            error: handleError
-          });
-        },
+          Origin.editor.data.course = content.findWhere({ _type: 'course' });
+          Origin.editor.data.config = content.findWhere({ _type: 'config' });
+
+          if(!Origin.editor.data.course || !Origin.editor.data.config) {
+            return handleError();
+          }
+          if(_.isFunction(callback)) {
+            callback();
+          }
+          Origin.trigger('editor:dataLoaded');
+        }, 
         error: handleError
       });
     },
