@@ -20,18 +20,12 @@ define(function(require){
     },
 
     postRender: function() {
-      Origin.editor.data.content.fetch({
-        success: (function(content) {
-          this.contentobjects = new Backbone.Collection(content.filter(function(c) { return c.get('_type') === 'menu' || c.get('_type') === 'page'; }));
-          this.renderLayers();
-          _.defer(this.setViewToReady);
-        }).bind(this),
-        error: (function(error) {
-          Origin.Notify.alert({ type: 'error', text: error.message });
-        }).bind(this)
-      });
+      this.contentobjects = new Backbone.Collection(Origin.editor.data.content.filter(c => {
+        return c.get('_type') === 'menu' || c.get('_type') === 'page';
+      }));
+      this.renderLayers();
+      _.defer(this.setViewToReady);
     },
-
     /**
     * Renders all menu layers from the current course to the Origin.editor.currentContentObject
     */
