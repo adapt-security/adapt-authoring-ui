@@ -45,12 +45,9 @@ define(function(require) {
         group: 'sort'
       }
     ]);
-
-    var tagsCollection = new TagsCollection();
-
-    tagsCollection.fetch({
-      success: function() {
-        Origin.sidebar.addView(new ProjectsSidebarView({ collection: tagsCollection }).$el);
+    (new TagsCollection()).fetch({
+      success: function(collection) {
+        Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
         Origin.trigger('dashboard:loaded', { type: location || 'all' });
       },
       error: function() {
@@ -65,7 +62,7 @@ define(function(require) {
     if(!isMine && !isShared) {
       return;
     }
-    var titleKey = (isMine) ? 'myprojects' : 'sharedprojects';
+    var titleKey = isMine ? 'myprojects' : 'sharedprojects';
     var meId = Origin.sessionModel.get('user')._id;
     var coll = new ContentCollection(undefined, { 
       _type: 'course',
@@ -75,9 +72,7 @@ define(function(require) {
     Origin.contentPane.setView(ProjectsView, { collection: coll, _isShared: isShared });
   });
 
-  Origin.on('globalMenu:dashboard:open', function() {
-    Origin.router.navigateTo('dashboard');
-  });
+  Origin.on('globalMenu:dashboard:open', () => Origin.router.navigateTo('dashboard'));
 
   Origin.on('router:initialize login:changed', function() {
     Origin.globalMenu.addItem({
