@@ -149,6 +149,7 @@ define(function(require){
       this.model.pruneAttributes();
 
       var attrs = this.getAttributesToSave();
+
       this.model.save(attrs, {
         patch: (attrs) ? true : false,
         success: _.bind(this.onSaveSuccess, this),
