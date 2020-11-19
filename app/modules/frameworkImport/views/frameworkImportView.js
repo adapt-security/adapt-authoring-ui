@@ -13,6 +13,7 @@ define(function(require){
     preRender: function() {
       Origin.trigger('location:title:update', { title: Origin.l10n.t('app.frameworkimporttitle') });
       this.listenTo(Origin, {
+        'frameworkImport:import': this.importCourse,
         'frameworkImport:showDetails': this.showDetails,
         'frameworkImport:completeImport': this.completeImport
       });
@@ -44,6 +45,28 @@ define(function(require){
         $(uploadFileErrormsg).text('');
       }
       return validated;
+    },
+
+    importCourse: function(sidebarView) {
+      if(!this.isValid()) return;
+      this.sidebarView = sidebarView;
+      this.sidebarView.updateButton('.framework-import-sidebar-save-button', Origin.l10n.t('app.importing'));
+
+      if(this.model.get('tags')) {
+        this.$('#tags').val(this.model.get('tags').map(t => t._id));
+      }
+      // submit form data
+      this.$('form.frameworkImport').ajaxSubmit({
+        uploadProgress: function(event, position, total, percentComplete) {
+          $(".progress-container").css("visibility", "visible");
+          var percentVal = percentComplete + '%';
+          $(".progress-bar").css("width", percentVal);
+          $('.progress-percent').html(percentVal);
+        },
+        error: this.onAjaxError.bind(this),
+        success: this.displayDetails.bind(this)
+      });
+      return false;
     },
 
     showDetails: function(sidebarView) {

@@ -12,7 +12,7 @@ define(function(require) {
 
     showDetails: function(event) {
       event && event.preventDefault();
-      Origin.trigger('frameworkImport:showDetails', this);
+      Origin.trigger('frameworkImport:import', this);
     },
 
     importCourse: function(event) {

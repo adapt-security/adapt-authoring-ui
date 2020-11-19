@@ -1,8 +1,8 @@
 <div id="import_upload" class="inner">
-  <form class="frameworkImport forms" action="importsourcecheck" method="post" autocomplete="off">
+  <form class="frameworkImport forms" action="api/adapt/import" method="post" autocomplete="off">
     <div class="form-group">
       <div class="field field-file">
-        <label for="file">
+        <label for="course">
           {{t 'app.assetfile'}} <span class="req">*</span>
           <span class="error"></span>
         </label>
@@ -14,7 +14,7 @@
           {{t 'app.importframeworkfileuploaded'}}
         </div>
         {{else}}
-        <input type="file" class="asset-file" name="file">
+        <input type="file" class="asset-file" name="course">
         {{maxUploadSize}}
         <div class="progress-container">
           <div class="progress-bar">
