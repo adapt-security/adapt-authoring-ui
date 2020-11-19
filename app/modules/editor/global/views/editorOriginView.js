@@ -13,9 +13,7 @@ define(function(require){
 
     attributes: function() {
       var colorLabel = this.model && this.model.get('_colorLabel');
-      if (colorLabel) {
-        return { 'data-colorlabel': colorLabel };
-      }
+      if (colorLabel) return { 'data-colorlabel': colorLabel };
     },
 
     initialize: function(options) {
@@ -229,10 +227,11 @@ define(function(require){
     },
 
     onSaveError: function(pTitle, pText) {
-      var title = _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle');
-      var text = _.isString(pText) ? pText : Origin.l10n.t('app.errorsave');
-      Origin.Notify.alert({ type: 'error', title: title, text: text });
-
+      Origin.Notify.alert({ 
+        type: 'error', 
+        title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'), 
+        text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')
+      });
       Origin.trigger('sidebar:resetButtons');
     }
   });
