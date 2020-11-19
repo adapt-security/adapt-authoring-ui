@@ -168,7 +168,7 @@ define(function(require){
     },
 
     getAttributesToSave: function() {
-      return null;
+      return this.model.changedAttributes();
     },
 
     /**
