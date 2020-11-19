@@ -11,11 +11,7 @@ define(function(require) {
       return JSON.stringify(this);
     },
     pruneAttributes: function() {
-      if(this.attributeBlacklist) {
-        Object.keys(this.attributes).forEach(function(key) {
-          if(_.contains(this.attributeBlacklist, key)) this.unset(key);
-        }, this);
-      }
+      if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
     }
   });
 
