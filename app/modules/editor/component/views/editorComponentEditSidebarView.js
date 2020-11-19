@@ -19,13 +19,10 @@ define(function(require) {
       event.preventDefault();
       const page = this.getParent(this.getParent(this.getParent(this.model)));
       Origin.router.navigateTo(`editor/${page.get('_courseId')}/page/${page.get('_id')}`);
-      
     },
 
     getParent: function(model) {
-      return Origin.editor.data.content.findWhere({ 
-        _id: model.get('_parentId') 
-      });
+      return Origin.editor.data.content.findWhere({ _id: model.get('_parentId') });
     }
   }, {
     template: 'editorComponentEditSidebar'
