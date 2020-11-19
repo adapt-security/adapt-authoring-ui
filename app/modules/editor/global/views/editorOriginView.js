@@ -211,7 +211,7 @@ define(function(require){
         e.stopPropagation();
         e.preventDefault();
       }
-      Origin.trigger('editorView:paste', this.model.get('_parentId'), $(event.target).data('sort-order'), $(event.target).data('paste-layout'));
+      Origin.trigger('editorView:paste', this.model.get('_parentId'), $(e.target).data('sort-order'), $(e.target).data('paste-layout'));
     },
 
     onPasteCancel: function(e) {
