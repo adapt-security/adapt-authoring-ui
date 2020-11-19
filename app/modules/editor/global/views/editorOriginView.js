@@ -109,7 +109,6 @@ define(function(require){
       } else {
         $pasteZones = $(pasteZoneSelector);
       }
-
       $(pasteZoneSelector + ' a').addClass('display-none');
 
       $pasteZones
@@ -139,7 +138,6 @@ define(function(require){
         return;
       }
       var errors = this.form.validate();
-
       // MUST trigger as sidebar needs to know when the form has been resubmitted
       Origin.trigger('editorSidebar:showErrors', errors);
 
@@ -147,10 +145,8 @@ define(function(require){
         var errorText = `${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`;
         // TODO remove when we've got a better solution
         this.onSaveError(Origin.l10n.t('app.validationfailed'), errorText);
-
         return;
       }
-
       this.form.commit();
       this.model.pruneAttributes();
 
