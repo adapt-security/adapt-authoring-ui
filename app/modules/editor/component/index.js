@@ -1,21 +1,15 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
-  var Helpers = require('../global/helpers');
+  const EditorComponentEditSidebarView = require('./views/editorComponentEditSidebarView');
+  const EditorComponentEditView = require('./views/editorComponentEditView');
+  const Helpers = require('../global/helpers');
+  const Origin = require('core/origin');
 
-  var ComponentModel = require('core/models/componentModel');
-  var EditorComponentEditView = require('./views/editorComponentEditView');
-  var EditorComponentEditSidebarView = require('./views/editorComponentEditSidebarView');
-
-  Origin.on('editor:component', function(data) {
-    (new ComponentModel({ _id: data.id })).fetch({
-      success: async function(model) {
-        var form = await Origin.scaffold.buildForm({ model: model });
-        Helpers.setPageTitle(model);
-        Origin.sidebar.addView(new EditorComponentEditSidebarView({ model: model, form: form }).$el);
-        Origin.contentPane.setView(EditorComponentEditView, { model: model, form: form });
-      }
-    });
+  Origin.on('editor:component', async data => {
+    const model = Origin.editor.data.content.findWhere({ _id: data.id });
+    const form = await Origin.scaffold.buildForm({ model });
+    Helpers.setPageTitle(model);
+    Origin.sidebar.addView(new EditorComponentEditSidebarView({ model, form }).$el);
+    Origin.contentPane.setView(EditorComponentEditView, { model, form });
   });
 });
