@@ -143,11 +143,8 @@ define(function(require){
       // MUST trigger as sidebar needs to know when the form has been resubmitted
       Origin.trigger('editorSidebar:showErrors', errors);
 
-      if (errors) {
-        var errorText =
-          Origin.l10n.t('app.validationfailedmessage') + "<br/><br/>" +
-          this.buildErrorMessage(errors, '');
-
+      if(errors) {
+        var errorText = `${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`;
         // TODO remove when we've got a better solution
         this.onSaveError(Origin.l10n.t('app.validationfailed'), errorText);
 
