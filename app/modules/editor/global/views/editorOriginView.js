@@ -159,7 +159,7 @@ define(function(require){
     buildErrorMessage: function(errorObjs, message = "") {
       _.each(errorObjs, function(item, key) {
         if(item.hasOwnProperty('message')) {
-          message += '<span class="key">' + (item.title || key) + '</span>: ' + item.message + '<br/>';
+          message += `<span class="key">${item.title || key}</span>: ${item.message}<br/>`;
         } else if(_.isObject(item)) { // recurse
           message = this.buildErrorMessage(item, message);
         }
