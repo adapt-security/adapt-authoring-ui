@@ -190,7 +190,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       $.ajax({
         type: 'PATCH',
         url:`api/content/${id}`,
-        data: { _layout: layout, _parentId: parentId },
+        data: { _layout: layout },
         success: () => Origin.trigger(`editorView:moveComponent:${parentId}`),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
