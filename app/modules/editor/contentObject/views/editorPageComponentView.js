@@ -177,7 +177,6 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       const siblings = this.getSiblings();
       var isLeft = $btn.hasClass('component-move-left');
       var isRight = $btn.hasClass('component-move-right');
-      var isFull = $btn.hasClass('component-move-full');
       // move self to layout of clicked button
       this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
       // move sibling to inverse of self
