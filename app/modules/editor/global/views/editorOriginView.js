@@ -35,7 +35,11 @@ define(function(require){
     },
     
     getSiblings: function() {
-      return Origin.editor.data.content.where({ _parentId: this.model.get('_parentId') });
+      return Origin.editor.data.content.models.filter(m => {
+        const sameParent = m.get('_parentId') === this.model.get('_parentId')
+        const isMe = m.get('_id') === this.model.get('_id');
+        return sameParent & !isMe;
+      });
     },
 
     render: function() {
