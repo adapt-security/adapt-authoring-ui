@@ -180,17 +180,16 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       // move self to layout of clicked button
       this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
       // move sibling to inverse of self
-      var siblingId = siblings && siblings.length > 0 && siblings[0].get('_id');
+      var siblingId = siblings[0].get('_id');
       if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
     },
 
     moveComponent: function (id, layout) {
-      var parentId = this.model.get('_parentId');
       $.ajax({
         type: 'PATCH',
         url:`api/content/${id}`,
         data: { _layout: layout },
-        success: () => Origin.trigger(`editorView:moveComponent:${parentId}`),
+        success: () => Origin.trigger(`editorView:moveComponent:${this.model.get('_parentId')}`),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
     }
