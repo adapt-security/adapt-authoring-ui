@@ -85,10 +85,8 @@ define(function(require){
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t('app.deleteitem'+ this.model.get('_type')),
-        text: Origin.l10n.t('app.confirmdelete' + this.model.get('_type')) + '<br />' + '<br />' + Origin.l10n.t('app.confirmdeletewarning' + this.model.get('_type')),
-        callback: function(isConfirmed) {
-          self.onConfirmRemovePopup(isConfirmed);
-        }
+        text: Origin.l10n.t('app.confirmdelete' + this.model.get('_type')) + '<br/><br/>' + Origin.l10n.t('app.confirmdeletewarning' + this.model.get('_type')),
+        callback: isConfirmed => self.onConfirmRemovePopup(isConfirmed)
       });
     },
 
@@ -123,12 +121,7 @@ define(function(require){
           Origin.trigger('editorView:itemDeleted', model);
           this.remove()
         }, this),
-        error: function() {
-          Origin.Notify.alert({
-            type: 'error',
-            text: 'app.errordelete'
-          });
-        }
+        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errordelete' })
       });
     },
 
