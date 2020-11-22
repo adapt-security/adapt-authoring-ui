@@ -12,18 +12,15 @@ define(function(require) {
   async function renderCourseEdit() {
     EditorHelpers.setPageTitle(Origin.editor.data.course);
     var form = await Origin.scaffold.buildForm({ model: Origin.editor.data.course });
-    Origin.contentPane.setView(EditorCourseEditView, { model: Origin.editor.data.course, form: form });
-    Origin.sidebar.addView(new EditorCourseEditSidebarView({ form: form }).$el);
+    Origin.contentPane.setView(EditorCourseEditView, { model: Origin.editor.data.course, form });
+    Origin.sidebar.addView(new EditorCourseEditSidebarView({ form }).$el);
   }
 
   async function createNewCourse() {
     var model = new CourseModel();
-    Origin.trigger('location:title:update', {
-      breadcrumbs: ['dashboard'],
-      title: Origin.l10n.t('app.editornew')
-    });
-    var form = await Origin.scaffold.buildForm({ model: model });
-    Origin.contentPane.setView(EditorCourseEditView, { model: model, form: form });
-    Origin.sidebar.addView(new EditorCourseEditSidebarView({ form: form }).$el);
+    Origin.trigger('location:title:update', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
+    var form = await Origin.scaffold.buildForm({ model });
+    Origin.contentPane.setView(EditorCourseEditView, { model, form });
+    Origin.sidebar.addView(new EditorCourseEditSidebarView({ form }).$el);
   }
 });
