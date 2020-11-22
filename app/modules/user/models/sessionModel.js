@@ -6,8 +6,8 @@ define(['require', 'backbone'], function(require, Backbone) {
     initialize: function(Origin) {
       this.Origin = Origin;
 
-      this.on('sync', function() {  this.set('isAuthenticated', true); });
-      this.on('error', function() {  this.set('isAuthenticated', false); });
+      this.on('sync', () => this.set('isAuthenticated', true));
+      this.on('error', () => this.set('isAuthenticated', false));
     },
 
     hasScopes: function(scopes) {
@@ -21,37 +21,31 @@ define(['require', 'backbone'], function(require, Backbone) {
       if(!Array.isArray(scopes)) {
         return assignedScopes.includes(scopes);
       }
-      return scopes.every(function(s) { return assignedScopes.includes(s); });
+      return scopes.every(s => assignedScopes.includes(s));
     },
 
     login: function (email, password, shouldPersist) {
-      $.post('api/auth/local', { email: email, password: password })
-        .done((function (token) {
-          this.fetch({ 
-            success: (function() {
-              this.Origin.trigger('login:changed');
-              this.once('sync', (function() {
-                this.Origin.router.navigateToHome();
-              }).bind(this));
-            }).bind(this),
-            error: function(jqXhr) {
-              this.Origin.trigger('login:failed', jqXHR.status);
-            }
-          });
-        }).bind(this))
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          this.Origin.trigger('login:failed', jqXHR.status);
+      $.post('api/auth/local', { email, password })
+      .done(() => {
+        this.fetch({ 
+          success: () => {
+            this.Origin.trigger('login:changed');
+            this.once('sync', () => this.Origin.router.navigateToHome())
+          },
+          error: ({ status }) => this.Origin.trigger('login:failed', status)
         });
+      })
+      .fail(({ status }) => this.Origin.trigger('login:failed', status));
     },
-
+    
     logout: function () {
-      $.post('api/auth/disavow', _.bind(function() {
+      $.post('api/auth/disavow', () => {
         // revert to the defaults
         this.set(this.defaults);
         this.Origin.trigger('login:changed');
         this.Origin.router.navigateToLogin();
-      }, this));
-    },
+      });
+    }
   });
 
   return SessionModel;
