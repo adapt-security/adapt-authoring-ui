@@ -35,10 +35,10 @@ define(function(require){
 
       var type = this.model.get('_type');
 
-      this.on('contextMenu:' + type + ':edit', this.editMenuItem);
-      this.on('contextMenu:' + type + ':copy', this.copyMenuItem);
-      this.on('contextMenu:' + type + ':copyID', this.copyID);
-      this.on('contextMenu:' + type + ':delete', this.deleteItemPrompt);
+      this.on(`contextMenu:${type}:copy`, this.copyMenuItem);
+      this.on(`contextMenu:${type}:copyID`, this.copyID);
+      this.on(`contextMenu:${type}:delete`, this.deleteItemPrompt);
+      this.on(`contextMenu:${type}:edit`, this.editMenuItem);
 
       this.$el.closest('.editor-menu').on('mousemove', _.bind(this.handleDrag, this));
     },
