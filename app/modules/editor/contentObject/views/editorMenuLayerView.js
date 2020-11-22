@@ -43,14 +43,12 @@ define(function(require) {
       this.$el.html(template(data));
       this.renderMenuItems();
 
-      _.defer(_.bind(this.postRender, this));
+      _.defer(this.postRender.bind(this));
       return this;
     },
 
     renderMenuItems: function() {
-      for(var i = 0, count = this.models.length; i < count; i++) {
-        this.addMenuItemView(this.models[i]);
-      }
+      this.models.forEach(m => this.addMenuItemView(m));
     },
 
     postRender: function() {
@@ -134,7 +132,6 @@ define(function(require) {
         typeToAdd = 'block';
         var newChildModel = new BlockModel();
       }
-
       newChildModel.save({
         _parentId: model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id')
@@ -158,7 +155,7 @@ define(function(require) {
     },
 
     addMenuItemView: function(model) {
-      var newMenuItemView = new EditorMenuItemView({ model: model });
+      var newMenuItemView = new EditorMenuItemView({ model });
       this.$('.editor-menu-layer-inner').append(newMenuItemView.$el);
 
       newMenuItemView.on({
@@ -194,26 +191,18 @@ define(function(require) {
       Origin.trigger('editorView:menuView:updateSelectedItem', menuItem.model);
     },
 
-    onMenuItemDblclicked: function(menuItem) {
-      var courseId = Origin.editor.data.course.get('_id');
-      var id = menuItem.model.get('_id');
-      var type = menuItem.model.get('_type');
-
-      var route = 'editor/' + courseId + '/' + type + '/' + id;
+    onMenuItemDblclicked: function({ model }) {
+      var type = model.get('_type');
+      var route = `editor/${Origin.editor.data.course.get('_id')}/${type}/${model.get('_id')}`;
       if (type === 'menu') route += '/edit';
-
       Origin.router.navigateTo(route);
     },
 
     // called after a successful paste
     onPaste: function(data) {
       (new ContentObjectModel({ _id: data._id})).fetch({
-        success: _.bind(function(model) {
-          this.addMenuItemView(model);
-        }, this),
-        error: function() {
-
-        }
+        success: this.addMenuItemView.bind(this),
+        error: function() {}
       });
     },
 
