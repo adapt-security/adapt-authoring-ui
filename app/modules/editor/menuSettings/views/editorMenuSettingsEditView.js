@@ -43,10 +43,17 @@ define(function(require) {
 
       var selectedMenu = this.collection.findWhere({ _isSelected: true });
 
-      if(selectedMenu === undefined) {
+      if(!selectedMenu) {
         return this.onSaveError(null, Origin.l10n.t('app.errornomenuselected'));
       }
-      $.post('api/menu/' + selectedMenu.get('_id') + '/makeitso/' + this.model.get('_courseId'))
+      $.ajax({
+        url: `api/content/${this.model.get('_courseId')}`,
+        method: 'PATCH',
+        data: { 
+          _menu: selectedMenu.get('name'),
+          $push: { _enabledPlugins: selectedMenu.get('name') } 
+        }
+      })
         .error(_.bind(this.onSaveError, this))
         .done(_.bind(this.onSaveSuccess, this));
     }
