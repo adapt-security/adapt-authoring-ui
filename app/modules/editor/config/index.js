@@ -5,7 +5,7 @@ define(function(require) {
   var Helpers = require('../global/helpers');
   var Origin = require('core/origin');
 
-  Origin.on('editor:config', function(data) {
+  Origin.on('editor:config', async function(data) {
     var model = Origin.editor.data.config;
     var form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
