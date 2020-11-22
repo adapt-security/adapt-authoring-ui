@@ -8,13 +8,10 @@ define(function(require) {
   var Helpers = require('../global/helpers');
 
   Origin.on('editor:config', function(data) {
-    (new ConfigModel({ _courseId: Origin.location.route1 })).fetch({
-      success: async function(model) {
-        var form = await Origin.scaffold.buildForm({ model: model });
-        Helpers.setPageTitle(model);
-        Origin.sidebar.addView(new EditorConfigEditSidebarView({ form: form }).$el);
-        Origin.contentPane.setView(EditorConfigEditView, { model: model, form: form });
-      }
-    });
+    var model = Origin.editor.data.config;
+    var form = await Origin.scaffold.buildForm({ model });
+    Helpers.setPageTitle(model);
+    Origin.sidebar.addView(new EditorConfigEditSidebarView({ form }).$el);
+    Origin.contentPane.setView(EditorConfigEditView, { model, form });
   });
 });
