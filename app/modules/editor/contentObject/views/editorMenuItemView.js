@@ -161,7 +161,6 @@ define(function(require){
         else if (clientY > (($currentLayer.height()+offsetTop) - SCROLL_THRESHOLD)) {
           scrollAmount = SCROLL_INCREMENT;
         }
-
         if(scrollAmount) {
           $currentLayer.scrollTop($currentLayer.scrollTop()+scrollAmount);
         }
