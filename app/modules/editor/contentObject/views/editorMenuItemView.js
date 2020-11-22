@@ -4,12 +4,11 @@ define(function(require){
   var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorMenuItemView = EditorOriginView.extend({
-    className: "editor-menu-item",
-    tagName: "div",
-
     autoScrollTimer: false,
+    className: "editor-menu-item",
     clickTimer: undefined,
     clickTimerActive: false,
+    tagName: "div",
 
     events: {
       'click .editor-menu-item-inner': 'onMenuItemClicked',
