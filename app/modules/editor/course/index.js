@@ -1,9 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var CourseModel = require('core/models/courseModel');
-  var EditorCourseEditView = require('./views/editorCourseEditView');
   var EditorCourseEditSidebarView = require('./views/editorCourseEditSidebarView');
+  var EditorCourseEditView = require('./views/editorCourseEditView');
   var EditorHelpers = require('../global/helpers');
+  var Origin = require('core/origin');
 
   Origin.on('router:project', route1 => route1 === 'new' && createNewCourse());
   Origin.on('editor:course', renderCourseEdit);
