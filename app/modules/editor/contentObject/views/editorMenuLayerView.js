@@ -92,15 +92,6 @@ define(function(require) {
       newMenuItemView.$el.addClass('syncing');
 
       newMenuItemModel.save(null, {
-        error: function(error) {
-          // fade out menu item and alert
-          newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errormenueditorbody'),
-          });
-          _.delay(newMenuItemView.remove, 3000);
-        },
         success: _.bind(function(model) {
           Origin.trigger('editorView:menuView:addItem', model);
           // Force setting the data-id attribute as this is required for drag-drop sorting
@@ -113,7 +104,13 @@ define(function(require) {
           }
           newMenuItemView.$el.removeClass('syncing');
           this.setHeight();
-        }, this)
+        }, this),
+        error: function(error) {
+          // fade out menu item and alert
+          newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
+          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errormenueditorbody') });
+          _.delay(newMenuItemView.remove, 3000);
+        }
       });
     },
 
