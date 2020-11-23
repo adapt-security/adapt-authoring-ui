@@ -54,7 +54,7 @@ define(function(require) {
       $.ajax(Object.assign(this.ajaxOptions, {
         data: { 
           _enabledPlugins: [
-            Origin.editor.data.config.get('_enabledPlugins'), 
+            ...Origin.editor.data.config.get('_enabledPlugins'), 
             $(event.currentTarget).attr('data-name')
           ]
         } 
