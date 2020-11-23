@@ -55,41 +55,6 @@ define(function(require) {
       return 0;
     },
 
-    postRender: function() {
-      this.setViewToReady();
-    },
-
-    postData: function(url) {
-      $.post(url + this.model.get('_id'), { extensions: this.currentSelectedIds }, _.bind(function(result) {
-        if(!result.success) {
-          return Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
-        }
-        this.refreshData();
-      }, this));
-    },
-
-    refreshData: function() {
-      // ensure that the config model is up-to-date when entering this screen
-      if(!Origin.editor.data.config) {
-        return console.log('Missing the config model');
-      }
-      Origin.editor.data.config.fetch({
-        success: _.bind(function(model, response, options) {
-          // backbone won't do this for us...
-          if(!response._enabledExtensions) model.unset('_enabledExtensions');
-          this.setupExtensions();
-        }, this)
-      });
-    },
-
-    addExtension: function() {
-      this.postData('api/extension/enable/');
-    },
-
-    removeExtension: function() {
-      this.postData('api/extension/disable/');
-    },
-
     /**
     * Event handling
     */
