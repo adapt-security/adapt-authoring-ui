@@ -27,7 +27,7 @@ define(function(require) {
 
     renderMenuItemViews: function() {
       this.collection.each(function(menu) {
-        menu.set('_isSelected', menu.get('name') === this.model.get('_menu'));
+        menu.set('_isSelected', menu.get('name') === Origin.editor.data.config.get('_menu'));
         this.$('.menu-settings-list').append(new MenuSettingsView({ model: menu }).$el);
       }, this);
       this.setViewToReady();
