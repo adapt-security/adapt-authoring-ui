@@ -40,21 +40,28 @@ define(function(require) {
     saveData: function(event) {
       event && event.preventDefault();
 
-      var selectedMenu = this.collection.findWhere({ _isSelected: true });
-
+      const selectedMenu = this.collection.findWhere({ _isSelected: true });
+      const oldMenu = Origin.editor.data.config.get('_menu');
+      
       if(!selectedMenu) {
         return this.onSaveError(null, Origin.l10n.t('app.errornomenuselected'));
+      }
+      if(selectedMenu.get('name') === oldMenu) {
+        return this.onSaveSuccess();
       }
       $.ajax({
         url: `api/content/${this.model.get('_courseId')}`,
         method: 'PATCH',
         data: { 
           _menu: selectedMenu.get('name'),
-          $push: { _enabledPlugins: selectedMenu.get('name') } 
-        }
-      })
-        .error(_.bind(this.onSaveError, this))
-        .done(_.bind(this.onSaveSuccess, this));
+          _enabledPlugins: [
+            Origin.editor.data.config.get('_enabledPlugins').filter(p => p !== oldMenu),
+            selectedMenu.get('name')
+          ]
+        },
+        success: () => this.onSaveSuccess(),
+        error: () => this.onSaveError()
+      });
     }
   }, {
     template: "editorMenuSettingsEdit"
