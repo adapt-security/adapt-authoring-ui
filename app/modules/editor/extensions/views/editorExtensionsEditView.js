@@ -7,45 +7,36 @@ define(function(require) {
   var EditorExtensionsEditView = EditorOriginView.extend({
     className: "extension-management",
     tagName: "div",
-    // TODO do we need to turn this off?
-    settings: {
-      autoRender: false
-    },
     events: {
       'click button.remove-extension': 'onRemoveExtensionClicked',
       'click button.add-extension': 'onAddExtensionClicked'
     },
 
     preRender: function() {
-      this.currentSelectedIds = [];
-
-      this.listenTo(Origin, {
-        'editorExtensionsEdit:views:add': this.addExtension,
-        'editorExtensionsEdit:views:remove': this.removeExtension
-      });
-      // assumption: extensions are always switched between enabled and available
+      this.ajaxOptions = {
+        url: `api/content/${this.model.get('_id')}`, 
+        method: 'PATCH',
+        success: () => this.setupExtensions(), 
+        error: jqXhr => Origin.Notify.alert({ type: 'error', text: jqXhr.status })
+      };
       this.listenTo(this.model, 'change:enabledExtensions', this.render);
-      this.setupExtensions(this.postRender.bind(this));
+      this.setupExtensions(() => this.setViewToReady());
     },
 
     setupExtensions: function(callback) {
       var plugins = new ContentPluginCollection(undefined, { type: 'extension' });
-      
       plugins.fetch({
-        success: (function() {
-          var partitioned = _.partition(plugins.models, function(e) {
-            return _.indexOf(Origin.editor.data.config.get('_enabledPlugins'), e.get('name')) > -1;
-          });
+        success: () => {
+          const enabledPlugins = Origin.editor.data.config.get('_enabledPlugins');
+          var [enabled, available] = _.partition(plugins.models, e => enabledPlugins.includes(e.get('name')));
           this.model.set({
-            enabledExtensions: partitioned[0].sort(this.sortByDisplayName),
-            availableExtensions: partitioned[1].sort(this.sortByDisplayName)
+            enabledExtensions: enabled.sort(this.sortByDisplayName),
+            availableExtensions: available.sort(this.sortByDisplayName)
           });
           if(callback) callback();
 
-        }).bind(this),
-        error: function(e) {
-          if(callback) return callback(e);
-        }
+        },
+        error: e => callback && callback(e)
       })
     },
 
@@ -60,23 +51,32 @@ define(function(require) {
     */
 
     onAddExtensionClicked: function(event) {
-      this.currentSelectedIds = [$(event.currentTarget).attr('data-id')];
-      Origin.trigger('editorExtensionsEdit:views:add');
+      $.ajax(Object.assign(this.ajaxOptions, {
+        data: { 
+          _enabledPlugins: [
+            Origin.editor.data.config.get('_enabledPlugins'), 
+            $(event.currentTarget).attr('data-name')
+          ]
+        } 
+      }));
     },
 
     onRemoveExtensionClicked: function(event) {
-      this.currentSelectedIds = [$(event.currentTarget).attr('data-id')];
-
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t('app.deleteextension'),
         text: Origin.l10n.t('app.confirmdeleteextension'),
-        callback: _.bind(this.onRemoveExtensionConfirmed, this)
+        callback: confirmed => {
+          if(confirmed) {
+            const toRemove = $(event.currentTarget).attr('data-name');
+            $.ajax(Object.assign(this.ajaxOptions, {
+              data: { 
+                _enabledPlugins: Origin.editor.data.config.get('_enabledPlugins').filter(e => e !== toRemove) 
+              }
+            }));
+          }
+        }
       });
-    },
-
-    onRemoveExtensionConfirmed: function(confirmed) {
-      if(confirmed) Origin.trigger('editorExtensionsEdit:views:remove');
     }
   }, {
     template: 'editorExtensionsEdit'
