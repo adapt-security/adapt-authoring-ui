@@ -16,7 +16,7 @@ define(function(require) {
       this.ajaxOptions = {
         url: `api/content/${Origin.editor.data.config.get('_id')}`, 
         method: 'PATCH',
-        success: () => this.setupExtensions(), 
+        success: () => Origin.editor.data.config.fetch({ success: () => this.setupExtensions() }), 
         error: jqXhr => Origin.Notify.alert({ type: 'error', text: jqXhr.status })
       };
       this.listenTo(this.model, 'change:enabledExtensions', this.render);
