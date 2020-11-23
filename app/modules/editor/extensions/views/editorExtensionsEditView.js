@@ -14,7 +14,7 @@ define(function(require) {
 
     preRender: function() {
       this.ajaxOptions = {
-        url: `api/content/${this.model.get('_id')}`, 
+        url: `api/content/${Origin.editor.data.config.get('_id')}`, 
         method: 'PATCH',
         success: () => this.setupExtensions(), 
         error: jqXhr => Origin.Notify.alert({ type: 'error', text: jqXhr.status })
