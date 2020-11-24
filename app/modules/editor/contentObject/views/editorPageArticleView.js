@@ -151,9 +151,7 @@ define(function(require){
 
     loadArticleEdit: function (event) {
       var courseId = Origin.editor.data.course.get('_id');
-      var type = this.model.get('_type');
-      var id = this.model.get('_id');
-      Origin.router.navigateTo('editor/' + courseId + '/' + type + '/' + id + '/edit');
+      Origin.router.navigateTo(`editor/${courseId}/${this.model.get('_type')}/${this.model.get('_id')}/edit`);
     },
 
     setupDragDrop: function() {
@@ -180,9 +178,9 @@ define(function(require){
           // This is in the helper method because the height needs to be
           // manipulated before the drag start method due to adding drop zones
           view.showDropZones();
-          $(this).attr('data-' + view.model.get('_type') + '-id', view.model.get('_id'));
-          $(this).attr('data-'+ view.model.get('_parent') + '-id', view.model.get('_parentId'));
-          return $('<div class="drag-helper">' + view.model.get('title') + '</div>');
+          $(this).attr(`data-${view.model.get('_type')}-id`, view.model.get('_id'));
+          $(this).attr(`data-${view.model.get('_parent')}-id`, view.model.get('_parentId'));
+          return $(`<div class="drag-helper">${view.model.get('title')}</div>`);
         },
         start: function(event) {
           // Using the initial offset we're able to position the window back in place
