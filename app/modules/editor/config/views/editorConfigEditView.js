@@ -16,13 +16,9 @@ define(function(require) {
 
     getAttributesToSave: function() {
       var changed = this.model.changedAttributes();
-      if(!changed) {
-        return null;
+      if(changed) {
+        return Object.assign(changed, { _id: this.model.get('_id'), _courseId: this.model.get('_courseId') });
       }
-      return _.extend(changed, {
-        _id: this.model.get('_id'),
-        _courseId: this.model.get('_courseId')
-      });
     }
   }, {
     template: 'editorConfigEdit'
