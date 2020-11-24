@@ -27,12 +27,6 @@ define(function(require) {
       this.parentView = options.parentView;
 
       this.setupFilters();
-      this.setupCollection();
-    },
-
-    setupCollection: function() {
-      var available = Origin.editor.data.componentTypes.where({ _isAvailableInEditor: true });
-      this.collection = new Backbone.Collection(available, { comparator: 'displayName' });
     },
 
     setupFilters: function() {
@@ -86,19 +80,17 @@ define(function(require) {
     renderComponentList: function() {
       Origin.trigger('editorComponentListView:removeSubviews');
 
-      this.collection.each(function(componentType) {
+      Origin.editor.data.componentTypes.forEach(function(componentType) {
         var properties = componentType.get('properties');
         var availablePositions = _.clone(this.availablePositions);
         
         if (properties && properties.hasOwnProperty('_supportedLayout')) {
           var supportedLayout = properties._supportedLayout.enum;
-
           // Prune the available positions
           if (_.indexOf(supportedLayout, 'half-width') == -1) {
             availablePositions.left = false;
             availablePositions.right = false;
           }
-
           if (_.indexOf(supportedLayout, 'full-width') == -1) {
             availablePositions.full = false;
           }
