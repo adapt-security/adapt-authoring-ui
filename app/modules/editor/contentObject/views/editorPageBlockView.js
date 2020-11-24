@@ -79,9 +79,9 @@ define(function(require){
         'editorView:removeSubViews editorPageView:removePageSubViews': this.remove
       };
       events[
-        'editorView:addComponent:' + id + ' ' +
-        'editorView:removeComponent:' + id + ' ' +
-        'editorView:moveComponent:' + id
+        `editorView:addComponent:${id} ` +
+        `editorView:removeComponent:${id} ` +
+        `editorView:moveComponent:${id}`
       ] = this.render;
       events['editorView:pasted:' + id] = this.onPaste;
       this.listenTo(Origin, events);
@@ -234,7 +234,7 @@ define(function(require){
       var courseId = Origin.editor.data.course.get('_id');
       var type = this.model.get('_type');
       var id = this.model.get('_id');
-      Origin.router.navigateTo('editor/' + courseId + '/' + type + '/' + id + '/edit');
+      Origin.router.navigateTo(`editor/${courseId}/${type}/${id}/edit`);
     },
 
     showComponentList: function(event) {
