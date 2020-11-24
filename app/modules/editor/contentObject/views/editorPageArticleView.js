@@ -124,12 +124,8 @@ define(function(require){
         }],
         _type: 'block'
       }, {
-        success: _.bind(function(model, response, options) {
-          this.addBlockView(model, true);
-        }, this),
-        error: function() {
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingblock') });
-        }
+        success: model => this.addBlockView(model, true),
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingblock') })
       });
     },
 
@@ -155,10 +151,8 @@ define(function(require){
       event && event.preventDefault();
 
       this.model.destroy({
-        success: _.bind(this.remove, this),
-        error: function(error) {
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
-        }
+        success: () => this.remove(),
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
       });
     },
 
