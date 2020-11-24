@@ -122,19 +122,15 @@ define(function(require){
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t('app.deleteblock'),
-        text: Origin.l10n.t('app.confirmdeleteblock') + '<br />' + '<br />' + Origin.l10n.t('app.confirmdeleteblockwarning'),
-        callback: _.bind(function(confirmed) {
-          if (confirmed) this.deleteBlock();
-        }, this)
+        text: `${Origin.l10n.t('app.confirmdeleteblock')}<br/><br/>${Origin.l10n.t('app.confirmdeleteblockwarning')}`,
+        callback: confirmed => confirmed && this.deleteBlock()
       });
     },
 
     deleteBlock: function(event) {
       this.model.destroy({
-        success: _.bind(this.remove, this),
-        error: function(model, response) {
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
-        }
+        success: () => this.remove(),
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
       });
     },
 
@@ -287,12 +283,7 @@ define(function(require){
           this.children.push(model);
           this.render();
         }, this),
-        error: function(data) {
-          Origin.Notify.alert({
-            type: 'error',
-            text: 'app.errorfetchingdata'
-          });
-        }
+        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })
       });
     }
 
