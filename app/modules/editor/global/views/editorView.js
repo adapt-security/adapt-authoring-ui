@@ -70,7 +70,10 @@ define(function(require) {
       $('.editor-common-sidebar-previewing').removeClass('display-none');
 
       $.post('api/adapt/preview/' + this.currentCourseId + '?force='+(forceRebuild === true))
-        .done(data => previewWindow.location.href = data.preview_url)
+        .done(data => {
+          this.resetPreviewProgress();
+          previewWindow.location.href = data.preview_url;
+        })
         .fail(function(jqXHR, textStatus, errorThrown) {
           this.resetPreviewProgress();
           Origin.Notify.alert({
