@@ -5,7 +5,6 @@ define(function(require){
 
   var EditorPageComponentPasteZone = EditorPasteZoneView.extend({
     className : 'paste-zone paste-zone-component display-none',
-
     events: {
       'click .editor-paste-zone-paste': 'onPasteElementClicked'
     },
@@ -19,7 +18,7 @@ define(function(require){
       var view = this;
       this.$el.addClass('paste-zone-component-' + this.model.get('_pasteZoneLayout'));
       this.$el.droppable({
-        accept: () =>  el.hasClass('component-draggable') && $(this).css('visibility') == 'visible',
+        accept: el =>  el.hasClass('component-draggable') && $(this).css('visibility') == 'visible',
         hoverClass: 'paste-zone-droppable',
         drop: function (e, ui) {
           var isLeft = $(this).hasClass('paste-zone-component-left');
