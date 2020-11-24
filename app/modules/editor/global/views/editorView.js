@@ -3,18 +3,15 @@
  * TODO I think this exists to add extra functionality to the menu/page structure pages
  */
 define(function(require) {
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
-  var helpers = require('core/helpers');
-
-  var EditorOriginView = require('./editorOriginView');
-  var EditorMenuView = require('../../contentObject/views/editorMenuView');
-  var EditorPageView = require('../../contentObject/views/editorPageView');
-
-  var ContentObjectModel = require('core/models/contentObjectModel');
   var ArticleModel = require('core/models/articleModel');
   var BlockModel = require('core/models/blockModel');
   var ComponentModel = require('core/models/componentModel');
+  var ContentObjectModel = require('core/models/contentObjectModel');
+  var EditorMenuView = require('../../contentObject/views/editorMenuView');
+  var EditorOriginView = require('./editorOriginView');
+  var EditorPageView = require('../../contentObject/views/editorPageView');
+  var helpers = require('core/helpers');
+  var Origin = require('core/origin');
 
   var EditorView = EditorOriginView.extend({
     className: "editor-view",
