@@ -23,7 +23,7 @@ define(function(require){
       
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
-        'pageView:itemAnimated': this.evaluateChildStatus,
+        'pageView:itemAnimated': this.onChildRendered,
         'editorView:renderPage': this.render
       });
       Origin.options.addItems([
@@ -55,13 +55,6 @@ define(function(require){
         },
         error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorfetchingdata') })
       });
-    },
-
-    evaluateChildStatus: function() {
-      this.childrenRenderedCount++;
-
-      if (this.childrenRenderedCount < Origin.editor.blockCount) return;
-      this.allChildrenRendered();
     },
 
     postRender: function() {
@@ -160,7 +153,12 @@ define(function(require){
       $('.contentPane').off('scroll', this._onScroll);
     },
 
-    allChildrenRendered: function() {
+    onChildRendered: function() {
+      this.childrenRenderedCount++;
+
+      if (this.childrenRenderedCount < Origin.editor.blockCount) {
+        return;
+      }
       if (Origin.editor.scrollTo > 0) {
         this.removeScrollListener();
       }
