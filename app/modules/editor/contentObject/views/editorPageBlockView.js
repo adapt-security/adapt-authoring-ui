@@ -75,17 +75,14 @@ define(function(require){
 
     listenToEvents: function() {
       var id = this.model.get('_id');
-      var events = {
-        'editorView:removeSubViews editorPageView:removePageSubViews': this.remove
-      };
-      events[
-        `editorView:addComponent:${id} ` +
-        `editorView:removeComponent:${id} ` +
-        `editorView:moveComponent:${id}`
-      ] = this.render;
-      events['editorView:pasted:' + id] = this.onPaste;
-      this.listenTo(Origin, events);
 
+      this.listenTo(Origin, {
+        'editorView:removeSubViews editorPageView:removePageSubViews': this.remove,
+        [`editorView:addComponent:${id}`]: this.render,
+        [`editorView:moveComponent:${id}`]: this.render,
+        [`editorView:pasted:${id}`]: this.onPaste,
+        [`editorView:removeComponent:${id}`]: this.render,
+      });
       this.listenTo(this, {
         'contextMenu:block:edit': this.loadBlockEdit,
         'contextMenu:block:copy': this.onCopy,
