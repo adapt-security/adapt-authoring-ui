@@ -20,7 +20,6 @@ define(function(require){
 
     preRender: function() {
       Origin.editor.blockCount = 0;
-      var id = this.model.get('_id');
       
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
