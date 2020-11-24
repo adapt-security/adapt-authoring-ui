@@ -232,19 +232,14 @@ define(function(require){
 
     showComponentList: function(event) {
       event.preventDefault();
-      // If adding a new component
-      // get current layoutOptions
-      var layoutOptions = this.model.get('layoutOptions');
-
-      var componentSelectModel = new Backbone.Model({
-        title: Origin.l10n.t('app.addcomponent'),
-        body: Origin.l10n.t('app.pleaseselectcomponent'),
-        _parentId: this.model.get('_id'),
-        layoutOptions: layoutOptions
-      });
 
       $('body').append(new EditorPageComponentListView({
-        model: componentSelectModel,
+        model: new Backbone.Model({
+          title: Origin.l10n.t('app.addcomponent'),
+          body: Origin.l10n.t('app.pleaseselectcomponent'),
+          _parentId: this.model.get('_id'),
+          layoutOptions: this.model.get('layoutOptions')
+        }),
         $parentElement: this.$el,
         parentView: this
       }).$el);
