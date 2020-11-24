@@ -62,7 +62,7 @@ define(function(require) {
     addComponent: function(layout) {
       Origin.trigger('editorComponentListView:remove');
 
-      var componentType = Origin.editor.data.componenttypes.findWhere({ name: this.model.get('name') });
+      var componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
       var model = new ComponentModel();
 
       model.save({
