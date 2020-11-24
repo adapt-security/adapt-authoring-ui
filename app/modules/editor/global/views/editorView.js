@@ -146,24 +146,7 @@ define(function(require) {
         }
       });
     },
-
-    updateDownloadProgress: function(url) {
-      // Check for updated progress every 3 seconds
-      var pollId = setInterval(_.bind(function pollURL() {
-        $.get(url, function(jqXHR, textStatus, errorThrown) {
-          if (jqXHR.progress < "100") {
-            return;
-          }
-          clearInterval(pollId);
-          this.resetDownloadProgress();
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-          clearInterval(pollId);
-          this.resetDownloadProgress();
-          Origin.Notify.alert({ type: 'error', text: errorThrown });
-        });
-      }, this), 3000);
-    },
-
+  
     resetPreviewProgress: function() {
       $('.editor-common-sidebar-preview-inner').removeClass('display-none');
       $('.editor-common-sidebar-previewing').addClass('display-none');
