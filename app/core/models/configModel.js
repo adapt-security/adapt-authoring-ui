@@ -12,9 +12,9 @@ define(function(require) {
       options = options || {};
 
       var _id = this.get('_id');
-      var query = '?_type=config&_courseId=' + this.get('_courseId');
+      var query = `?_type=config&_courseId=${this.get('_courseId')}`;
 
-      options.url = 'api/content/' + (_id ? _id : query);
+      options.url = `api/content/${_id ? _id : query}`;
 
       return Backbone.sync.apply(this, arguments);
     }
