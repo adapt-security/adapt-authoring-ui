@@ -77,9 +77,9 @@ define(function(require) {
       }, {
         success: _.bind(function(model) {
           var parentId = model.get('_parentId');
-          Origin.trigger('editorView:addComponent:' + parentId);
+          Origin.trigger(`editorView:addComponent:${parentId}`);
           $('html').css('overflow-y', '');
-          $.scrollTo('.block[data-id=' + parentId + ']');
+          $.scrollTo(`.block[data-id=${parentId}]`);
         }, this),
         error: function() {
           $('html').css('overflow-y', '');
