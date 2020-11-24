@@ -16,12 +16,10 @@ define(function(require) {
   var EditorView = EditorOriginView.extend({
     className: "editor-view",
     tagName: "div",
-
     settings: {
       autoRender: false
     },
     exporting: false,
-
     events: {
       "click a.page-add-link": "addNewPage",
       "click a.load-page": "loadPage",
@@ -157,28 +155,6 @@ define(function(require) {
       });
     },
 
-    updatePreviewProgress: function(url, previewWindow) {
-      var self = this;
-
-      var pollUrl = function() {
-        $.get(url, function(jqXHR, textStatus, errorThrown) {
-          if (jqXHR.progress < "100") {
-            return;
-          }
-          clearInterval(pollId);
-          self.updateCoursePreview(previewWindow);
-          self.resetPreviewProgress();
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-          clearInterval(pollId);
-          self.resetPreviewProgress();
-          Origin.Notify.alert({ type: 'error', text: errorThrown });
-          previewWindow.close();
-        });
-      }
-      // Check for updated progress every 3 seconds
-      var pollId = setInterval(pollUrl, 3000);
-    },
-
     updateDownloadProgress: function(url) {
       // Check for updated progress every 3 seconds
       var pollId = setInterval(_.bind(function pollURL() {
@@ -209,11 +185,7 @@ define(function(require) {
       $('.editor-common-sidebar-downloading').addClass('display-none');
       Origin.editor.isDownloadPending = false;
     },
-
-    updateCoursePreview: function(previewWindow) {
-      previewWindow.location.href = 'adapt/preview/' + Origin.editor.data.course.get('_id') + '/';
-    },
-
+    
     addToClipboard: function(model) {
       var postData = {
         objectId: model.get('_id'),
