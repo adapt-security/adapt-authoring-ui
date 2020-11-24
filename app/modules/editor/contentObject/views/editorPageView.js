@@ -108,22 +108,20 @@ define(function(require){
       (new ArticleModel()).save({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
-        _type:'article'
+        _type: 'article'
       }, {
-        success: _.bind(function(model, response, options) {
+        success: model => {
           var articleView = this.addArticleView(model);
           articleView._skipRender = true; // prevent render of blocks in postRender
           articleView.addBlock();
-        }, this),
+        },
         error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingarticle') })
       });
     },
 
     loadPageEdit: function(event) {
       event && event.preventDefault();
-      var courseId = this.model.get('_courseId');
-      var id = this.model.get('_id');
-       Origin.router.navigateTo('editor/' + courseId + '/page/' + id + '/edit');
+       Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/page/${this.model.get('_id')}/edit`);
     },
 
     // TODO fragile HACK, refactor context menu code to allow what I want to do later...
@@ -166,9 +164,7 @@ define(function(require){
       }
       $('.contentPane').scrollTo(Origin.editor.scrollTo, {
         duration: 200,
-        onAfter: _.bind(function() {
-          this.setupScrollListener();
-        }, this)
+        onAfter: () => this.setupScrollListener()
       });
     },
 
