@@ -141,33 +141,20 @@ define(function(require) {
       $('.editor-common-sidebar-download-inner').addClass('display-none');
       $('.editor-common-sidebar-downloading').removeClass('display-none');
 
-      var url = 'api/output/' + Origin.constants.outputPlugin + '/publish/' + this.currentCourseId;
-      $.get(url, function(data, textStatus, jqXHR) {
-        if (!data.success) {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorgeneric') +
-              Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
+      $.ajax({
+        url: `api/adapt/publish/${this.currentCourseId}`,
+        method: 'POST',
+        success: (data, textStatus, jqXHR) => {
           this.resetDownloadProgress();
-          return;
+          var $downloadForm = $('#downloadForm');
+          $downloadForm.attr('action', data.publish_url);
+          $downloadForm.submit();
+        },
+        error: () => {
+          this.resetDownloadProgress();
+          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
         }
-        const pollUrl = data.payload && data.payload.pollUrl;
-        if (pollUrl) {
-          // Ping the remote URL to check if the job has been completed
-          this.updateDownloadProgress(pollUrl);
-          return;
-        }
-        this.resetDownloadProgress();
-
-        var $downloadForm = $('#downloadForm');
-        $downloadForm.attr('action', 'download/' + Origin.sessionModel.get('tenantId') + '/' + Origin.editor.data.course.get('_id') + '/' + data.payload.zipName + '/download.zip');
-        $downloadForm.submit();
-
-      }.bind(this)).fail(function(jqXHR, textStatus, errorThrown) {
-        this.resetDownloadProgress();
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
-      }.bind(this));
+      });
     },
 
     updatePreviewProgress: function(url, previewWindow) {
