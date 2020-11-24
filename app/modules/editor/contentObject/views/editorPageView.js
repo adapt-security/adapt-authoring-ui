@@ -150,8 +150,7 @@ define(function(require){
     },
 
     onScroll: function(event) {
-      var scrollPos = event.currentTarget.scrollTop;
-      Origin.editor.scrollTo = scrollPos;
+      Origin.editor.scrollTo = event.currentTarget.scrollTop;
     },
 
     removeScrollListener: function() {
