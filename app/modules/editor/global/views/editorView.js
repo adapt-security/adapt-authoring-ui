@@ -318,20 +318,9 @@ define(function(require) {
     },
 
     renderEditorPage: function() {
-      (new ContentObjectModel({
-        _id: this.currentPageId
-      })).fetch({
-        success: function(model) {
-          var view = new EditorPageView({ model: model });
-          this.$('.editor-inner').html(view.$el);
-        },
-        error: function() {
-          Origin.Notify.alert({
-            type: 'error',
-            text: 'app.errorfetchingdata'
-          });
-        }
-      });
+      var model = Origin.editor.data.content.findWhere({ _id: this.currentPageId });
+      var view = new EditorPageView({ model });
+      this.$('.editor-inner').html(view.$el);
     },
 
     /**
