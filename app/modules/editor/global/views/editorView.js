@@ -87,9 +87,6 @@ define(function(require) {
       // aleady processing, don't try again
       if(error || this.exporting) return;
 
-      var courseId = Origin.editor.data.course.get('_id');
-      var tenantId = Origin.sessionModel.get('tenantId');
-
       var $btn = $('button.editor-common-sidebar-export');
 
       this.showExportAnimation(true, $btn);
@@ -97,26 +94,22 @@ define(function(require) {
 
       var self = this;
       $.ajax({
-        url: 'export/' + tenantId + '/' + courseId,
-        success: function(data, textStatus, jqXHR) {
+        url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
+        method: 'POST',
+        success: data => {
           self.showExportAnimation(false, $btn);
           self.exporting = false;
-
-          // get the zip
-          var form = document.createElement('form');
-          self.$el.append(form);
-          form.setAttribute('action', 'export/' + tenantId + '/' + courseId + '/download.zip');
-          form.submit();
+          var $downloadForm = $('#downloadForm');
+          $downloadForm.attr('action', data.export_url);
+          $downloadForm.submit();
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: jqXHR => {
           self.showExportAnimation(false, $btn);
           self.exporting = false;
-
           Origin.Notify.alert({
             type: 'error',
             title: Origin.l10n.t('app.exporterrortitle'),
-            text: Origin.l10n.t('app.errorgeneric') +
-              Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
+            text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
           });
         }
       });
