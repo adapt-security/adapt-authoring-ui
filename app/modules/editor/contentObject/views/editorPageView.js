@@ -21,14 +21,13 @@ define(function(require){
     preRender: function() {
       Origin.editor.blockCount = 0;
       var id = this.model.get('_id');
-      var originEvents = {
+      
+      this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
-        'pageView:itemAnimated': this.evaluateChildStatus
-      };
-      originEvents['editorView:moveArticle:' + id] = this.render;
-      originEvents['editorView:pasted:' + id] = this.render;
-      this.listenTo(Origin, originEvents);
-
+        'pageView:itemAnimated': this.evaluateChildStatus,
+        [`editorView:moveArticle:${id}`]: this.render,
+        [`editorView:pasted:${id}`]: this.render
+      });
       Origin.options.addItems([
         {
           title: Origin.l10n.t('app.collapseAllArticles'),
