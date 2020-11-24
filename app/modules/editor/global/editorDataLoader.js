@@ -2,7 +2,6 @@
 define(function(require) {
   var _ = require('underscore');
   var ContentCollection = require('core/collections/contentCollection');
-  var ContentModel = require('core/models/contentModel');
   var Origin = require('core/origin');
   
   var isLoaded;
