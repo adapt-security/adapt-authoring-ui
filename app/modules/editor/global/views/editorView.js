@@ -92,20 +92,19 @@ define(function(require) {
       this.showExportAnimation(true, $btn);
       this.exporting = true;
 
-      var self = this;
       $.ajax({
         url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
         method: 'POST',
         success: data => {
-          self.showExportAnimation(false, $btn);
-          self.exporting = false;
+          this.showExportAnimation(false, $btn);
+          this.exporting = false;
           var $downloadForm = $('#downloadForm');
           $downloadForm.attr('action', data.export_url);
           $downloadForm.submit();
         },
         error: jqXHR => {
-          self.showExportAnimation(false, $btn);
-          self.exporting = false;
+          this.showExportAnimation(false, $btn);
+          this.exporting = false;
           Origin.Notify.alert({
             type: 'error',
             title: Origin.l10n.t('app.exporterrortitle'),
@@ -178,7 +177,7 @@ define(function(require) {
       $('.editor-common-sidebar-downloading').addClass('display-none');
       Origin.editor.isDownloadPending = false;
     },
-    
+
     addToClipboard: function(model) {
       var postData = {
         objectId: model.get('_id'),
