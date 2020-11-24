@@ -70,15 +70,7 @@ define(function(require) {
       $('.editor-common-sidebar-previewing').removeClass('display-none');
 
       $.post('api/adapt/preview/' + this.currentCourseId + '?force='+(forceRebuild === true))
-        .done(function(data, textStatus, jqXHR) {
-          var pollUrl = data.payload && data.payload.pollUrl;
-          if (pollUrl) { // Ping the remote URL to check if the job has been completed
-            this.updatePreviewProgress(pollUrl, previewWindow);
-            return;
-          }
-          this.updateCoursePreview(previewWindow);
-          this.resetPreviewProgress();
-        })
+        .done(data => previewWindow.location.href = data.preview_url)
         .fail(function(jqXHR, textStatus, errorThrown) {
           this.resetPreviewProgress();
           Origin.Notify.alert({
