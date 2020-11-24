@@ -195,12 +195,8 @@ define(function(require) {
       Origin.router.navigateTo(route);
     },
 
-    // called after a successful paste
     onPaste: function(data) {
-      (new ContentObjectModel({ _id: data._id})).fetch({
-        success: this.addMenuItemView.bind(this),
-        error: function() {}
-      });
+      this.addMenuItemView(Origin.editor.data.content.findWhere({ _id: data._id }));
     },
 
     removeChildViews: function() {
