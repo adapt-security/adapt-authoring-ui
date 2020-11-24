@@ -269,14 +269,11 @@ define(function(require) {
       };
       $.post('api/content/clipboard/paste', postData, function(data) {
         Origin.editor.clipboardId = null;
-        Origin.trigger('editorView:pasted:' + postData.parentId, {
-          _id: data._id,
-          sortOrder: postData.sortOrder
-        });
-      }).fail(function(jqXHR, textStatus, errorThrown) {
+        Origin.trigger(`editorView:pasted:${postData.parentId}`, { _id: data._id, sortOrder: postData.sortOrder });
+      }).fail(jqXHR => {
         Origin.Notify.alert({
           type: 'error',
-          text: Origin.l10n.t('app.errorpaste') + (jqXHR.message ? '\n\n' + jqXHR.message : '')
+          text: `${Origin.l10n.t('app.errorpaste')}${jqXHR.message ? `\n\n${jqXHR.message}` : ''}`
         });
       });
     },
@@ -308,7 +305,6 @@ define(function(require) {
       } else if(this.currentView === 'page') {
         this.renderEditorPage();
       }
-
       Origin.trigger('editorSidebarView:addOverviewView');
     },
 
