@@ -25,8 +25,7 @@ define(function(require){
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
         'pageView:itemAnimated': this.evaluateChildStatus,
-        [`editorView:moveArticle:${id}`]: this.render,
-        [`editorView:pasted:${id}`]: this.render
+        'editorView:renderPage': this.render
       });
       Origin.options.addItems([
         {
@@ -49,9 +48,14 @@ define(function(require){
     },
 
     render: function() {
-      var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
-      this.addArticleViews();
-      return returnVal;
+      Origin.editor.data.content.fetch({
+        success: () => {
+          var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
+          this.addArticleViews();
+          return returnVal;
+        },
+        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorfetchingdata') })
+      });
     },
 
     evaluateChildStatus: function() {

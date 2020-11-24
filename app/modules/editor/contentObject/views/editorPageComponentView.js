@@ -52,7 +52,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       this.model.destroy({
         success: _.bind(function(model) {
           this.remove();
-          Origin.trigger('editorView:removeComponent:' + model.get('_parentId'));
+          Origin.trigger('editorView:renderPage');
         }, this),
         error: function(response) {
           console.error(response);
@@ -189,7 +189,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         type: 'PATCH',
         url:`api/content/${id}`,
         data: { _layout: layout },
-        success: () => Origin.trigger(`editorView:moveComponent:${this.model.get('_parentId')}`),
+        success: () => Origin.trigger('editorView:renderPage'),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
     }

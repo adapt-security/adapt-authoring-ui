@@ -42,16 +42,9 @@ define(function(require){
         'editorView:collapseArticle:expand': this.expandAllArticles,
         'editorView:removeSubViews editorPageView:removePageSubViews': this.remove
       });
-
       if (!this.model.isNew()) {
-        var id = this.model.get('_id');
-        var events = {};
-        events['editorView:moveBlock:' + id] = this.render;
-        events['editorView:deleteArticle:' + id] = this.deletePageArticle;
-        events['editorView:pasted:' + id] = this.render;
-        this.listenTo(Origin, events);
+        this.listenTo(Origin, `editorView:deleteArticle:${this.model.get('_id')}`, this.deletePageArticle);
       }
-
       this.listenTo(this.model, 'change:_isCollapsed', this.onIsCollapsedChange);
 
       this.listenTo(this, {
