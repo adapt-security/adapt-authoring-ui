@@ -5,7 +5,7 @@ define(function(require) {
   var EditorThemingSidebarView = require('./views/editorThemingSidebarView.js');
 
   Origin.on('editorCommon:theme', function() {
-    Origin.router.navigate('#/editor/' + Origin.editor.data.course.get('_id') + '/' + ROUTE, { trigger: true });
+    Origin.router.navigate(`#/editor/${Origin.editor.data.course.get('_id')}/${ROUTE}`, { trigger: true });
   });
 
   Origin.on('editor:selecttheme', () => {
