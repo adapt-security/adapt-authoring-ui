@@ -53,7 +53,6 @@ define(function(require){
 
     onFormSuccess: function(userData, userStatus, userXhr) {
       this.goBack();
-
     },
 
     onFormError: function(jqXhr) {
