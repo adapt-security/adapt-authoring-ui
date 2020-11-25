@@ -18,7 +18,7 @@ define(function(require){
     initialize: function(options) {
       this.currentPluginType = options.pluginType;
 
-      this.contentPlugins = new ContentPluginCollection();
+      this.contentPlugins = new ContentPluginCollection(); // all plugins
       this.pluginCollections = {}; // sorted plugins go here
 
       this.refreshPluginList();
