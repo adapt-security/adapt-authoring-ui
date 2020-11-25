@@ -17,9 +17,7 @@ define([
   Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('editor:resetData', EditorData.reset);
   // handle routing
-  Origin.on('router:editor', function(route1, route2, route3, route4) {
-    EditorData.waitForLoad(triggerEvent);
-  });
+  Origin.on('router:editor', () => EditorData.waitForLoad(triggerEvent));
   /**
   * Acts as a sub-router to send out more useful events
   */
