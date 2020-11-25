@@ -44,9 +44,9 @@ define(function(require){
 
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
-      if(this.model) {
-        this.$el.attr('data-id', this.model.get('_id'));
-      }
+      
+      if(this.model) this.$el.attr('data-id', this.model.get('_id'));
+
       return this;
     },
 
@@ -61,19 +61,17 @@ define(function(require){
 
     filterForm: function(filter) {
       // toggle filter
-      if(_.contains(this.filters, filter)) {
-        this.filters = _.reject(this.filters, function(filterItem) { return filterItem === filter; });
+      if(this.filters.includes(filter)) {
+        this.filters = _.reject(this.filters, filterItem => filterItem === filter);
       } else {
         this.filters.push(filter);
       }
       // Now actually filter the form
-      if(this.filters.length === 0) {
-        $('.form-container > form > div > fieldset').removeClass('display-none');
-      } else {
+      if(this.filters.length) {
         $('.form-container > form > div > fieldset').addClass('display-none');
-        _.each(this.filters, function(filter) {
-          $('fieldset[data-key=' + filter + ']').removeClass('display-none');
-        });
+        this.filters.forEach(f => $(`fieldset[data-key=${f}]`).removeClass('display-none'));
+      } else {
+        $('.form-container > form > div > fieldset').removeClass('display-none');
       }
     },
 
@@ -93,7 +91,7 @@ define(function(require){
     showDropZones: function (supportedLayout) {
       $('.paste-zone').addClass('display-none');
       $('.add-control').addClass('display-none');
-      $('.paste-zone-'+ this.model.get('_type') + ' a').addClass('display-none');
+      $(`.paste-zone-${this.model.get('_type')} a`).addClass('display-none');
       // Components may be restricted to either full or half width so
       // make sure only the appropriate paste zones are displayed
       var type = this.model.get('_type');
@@ -225,10 +223,10 @@ define(function(require){
     },
 
     onSaveSuccess: function() {
-      Origin.trigger('editor:refreshData', _.bind(function() {
+      Origin.trigger('editor:refreshData', () => {
         Origin.router.navigateBack();
         this.remove();
-      }, this));
+      });
     },
 
     onSaveError: function(pTitle, pText) {
