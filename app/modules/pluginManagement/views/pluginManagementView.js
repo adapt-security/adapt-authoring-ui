@@ -68,20 +68,20 @@ define(function(require){
        * but this'll do until this page is refactored
        */
       this.contentPlugins.fetch({ 
-        success: _.bind(function(plugins) {
-          // sort the plugins by type
-          this.pluginCollections = plugins.reduce(function(memo, p) {
-            var type = p.get('type');
-            if(!memo[type]) memo[type] = [];
-            memo[type].push(p);
-            return memo;
-          }, {});
-          // make sure each list is sorted by name
-          Object.keys(this.pluginCollections).forEach(function(k) { 
-            this.pluginCollections[k].sort(function(a, b) { return a.get('name').localeCompare(b.get('name')); }); 
-          }, this);
+        success: plugins => {
+          // sort the plugins by name and group by type
+          this.pluginCollections = plugins
+            .sort((a,b) => a.get('name').localeCompare(b.get('name')))
+            .reduce((memo,p) => {
+              var type = p.get('type');
+              if(!memo[type]) memo[type] = [];
+              memo[type].push(p);
+              return memo;
+            }, {});
+          // reset the button
+          if(e) $(e.currentTarget).attr('disabled', false);
           this.renderPluginTypeViews();
-        }, this), 
+        }, 
         error: console.error 
       });
     }
