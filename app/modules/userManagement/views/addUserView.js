@@ -31,9 +31,7 @@ define(function(require){
 
         $error.toggleClass('display-none', isValid);
 
-        if (!isValid) {
-          valid = false;
-        }
+        if (!isValid) valid = false;
       });
 
       return valid;
@@ -43,58 +41,30 @@ define(function(require){
       if(!this.isValid()) {
         return;
       }
-      // submit form data
       this.$('form.addUser').ajaxSubmit({
-        error: _.bind(this.onAjaxError, this),
-        success: _.bind(this.onFormSubmitSuccess, this)
+        success: () => this.onFormSuccess(),
+        error: jqXhr => this.onFormError(jqXhr)
       });
-
-      return false;
     },
 
     goBack: function() {
       Origin.router.navigateTo('userManagement');
     },
 
-    onFormSubmitSuccess: function(userData, userStatus, userXhr) {
-      this.createdUserId = userData._id;
-
-      var self = this;
-      var chosenRole = $('form.addUser select[name=role]').val();
-      var defaultRole = userData.roles[0];
-
-      if(chosenRole !== defaultRole) {
-        // unassign the default role
-        $.ajax('api/role/' + defaultRole + '/unassign/' + userData._id,{
-          method: 'POST',
-          error: _.bind(self.onAjaxError, self),
-          success: function() {
-            // assign chosen role
-            $.ajax('api/role/' + chosenRole + '/assign/' + userData._id,{
-              method: 'POST',
-              error: _.bind(self.onAjaxError, self),
-              success: _.bind(self.onAjaxSuccess, self)
-            });
-          }
-        });
-      } else {
-        this.onAjaxSuccess();
-      }
-    },
-
-    onAjaxSuccess: function() {
+    onFormSuccess: function(userData, userStatus, userXhr) {
       this.goBack();
+
     },
 
-    onAjaxError: function(data, status, error) {
+    onFormError: function(jqXhr) {
       // We may have a partially created user, make sure it's gone
       if(this.createdUserId) {
-        $.ajax('api/user/' + this.createdUserId, { method: 'DELETE', error: _.bind(this.onAjaxError, this) });
+        $.ajax('api/users/' + this.createdUserId, { method: 'DELETE', error: _.bind(this.onAjaxError, this) });
       }
       Origin.Notify.alert({
         type: 'error',
         title: "Couldn't add user",
-        text: data.responseText || error
+        text: jqXhr.responseText || error
       });
     }
   }, {
