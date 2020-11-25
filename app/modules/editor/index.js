@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define([
-  'require',
   'core/origin',
   './global/editorDataLoader',
   './article/index',
@@ -12,7 +11,7 @@ define([
   './extensions/index',
   './menuSettings/index',
   './themeEditor/index'
-], function(require, Origin, EditorData) {
+], function(Origin, EditorData) {
   // loads editor data
   Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('editor:resetData', EditorData.reset);
