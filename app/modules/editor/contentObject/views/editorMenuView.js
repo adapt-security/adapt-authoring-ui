@@ -42,7 +42,6 @@ define(function(require){
             this.renderLayer(item);
           }
         }
-
         // remove all unused layerviews 
         for (var id in this.layerViews) {
           if (!this.layerViews.hasOwnProperty(id) || ids.indexOf(id) > -1) {
@@ -51,7 +50,6 @@ define(function(require){
           this.layerViews[id].remove();
           delete this.layerViews[id];
         }
-
         _.defer(_.bind(function() {
           this.removeSelectedItemStyling();
           this.addSelectedItemStyling(selectedModel.get('_id'));
@@ -203,17 +201,10 @@ define(function(require){
     },
 
     onItemDeleted: function(oldModel) {
+      const parentId = this.contentobjects.findWhere({ _id: oldModel.get('_parentId') });
       this.contentobjects.fetch({
-        success: _.bind(function() {
-          // select the parent of the deleted item
-          Origin.trigger('editorView:menuView:updateSelectedItem', this.contentobjects.findWhere({ _id: oldModel.get('_parentId') }));
-        }, this),
-        error: function() {
-          Origin.Notify.alert({
-            type: 'error',
-            text: 'app.errorfetchingdata'
-          });
-        }
+        success: () => Origin.trigger('editorView:menuView:updateSelectedItem', parentId),
+        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })
       });
     }
   }, {
