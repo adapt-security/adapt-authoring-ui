@@ -64,7 +64,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       mm = (zero+mm).slice(-2);
       ss = (zero+ss).slice(-2);
 
-      return hh + ':' + mm + ':' + ss;
+      return `${hh}:${mm}:${ss}`;
     },
 
     // checks for http/https and www. prefix
@@ -129,14 +129,8 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     },
 
     renderBooleanOptions: function(selectedValue) {
-      var options = ["true", "false"];
-      var html = '';
-
-      for (var i = 0; i < options.length; i++) {
-        var selected = selectedValue == options[i] ? ' selected' : '';
-        html += '<option value="' + options[i] + '"' + selected + '>' + options[i] + '</option>';
-      }
-      return new Handlebars.SafeString(html);
+      const html = val => `<option value="${val}"${selectedValue === val ? ' selected' : ''}>${val}</option>`;
+      return `${html(true)}${html(false)}`;
     },
 
     pickCSV: function(list, key, separator) {
