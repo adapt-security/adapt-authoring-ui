@@ -140,12 +140,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       if (!separator || !separator.length) {
         separator = ',';
       }
-      var vals = [];
-      for (var i = 0, l = list.length; i < l; i++) {
-        var val = list[i];
-        var nestedVal = key && val[key];
-        vals.push(nestedVal || val);
-      }
+      var vals = list.map(l => (key && val[key] )|| val);
       return vals.join(separator);
     },
 
@@ -324,10 +319,9 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
   };
 
   for(var name in helpers) {
-    if(!helpers.hasOwnProperty(name)) {
-      continue;
+    if(helpers.hasOwnProperty(name)) {
+      Handlebars.registerHelper(name, helpers[name]);
     }
-    Handlebars.registerHelper(name, helpers[name]);
   }
 
   return helpers;
