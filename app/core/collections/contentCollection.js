@@ -17,9 +17,7 @@ define([
       this._courseId = options._courseId;
       this._parentId = options._parentId;
     
-      this.on('reset', function() {
-        Origin.trigger('contentCollection:dataLoaded', this._type);
-      }, this);
+      this.on('reset', () => Origin.trigger('contentCollection:dataLoaded', this._type));
     },
     buildQuery: function() {
       var query = ApiCollection.prototype.buildQuery.apply(this, arguments);
