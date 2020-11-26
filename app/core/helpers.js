@@ -163,7 +163,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       for (var i = 0; i < list.length; ++i) {
         var item = list[i];
         var tag = Handlebars.Utils.escapeExpression(key && item[key] || item);
-        html += '<li class="tag-item" title="' + tag + '"><span class="tag-value">' + tag  + '</span></li>';
+        html += `<li class="tag-item" title="${tag}"><span class="tag-value">${tag}</span></li>`;
       }
       return new Handlebars.SafeString(html + '</ul>');
     },
