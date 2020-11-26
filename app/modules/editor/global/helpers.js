@@ -74,24 +74,17 @@ define(function(require) {
   }
 
   function getNearestPage(model, cb) {
-    if(!model.get('_type') || model.get('_type') === 'course') {
-      return cb();
-    }
-    var map = {
-      component: ComponentModel,
-      block: BlockModel,
-      article: ArticleModel,
-      page: ContentObjectModel
-    };
-    var mapKeys = Object.keys(map);
     var _recurse = function(model) {
       var type = model.get('_type');
-      if (type === 'page' || type === 'menu') {
-        return cb(model);
+      
+      if(!type || type === 'course' || type === 'config') {
+        return cb(); // pages don't apply here, so just return
       }
-      var parentType = mapKeys[mapKeys.indexOf(type) + 1];
-      (new map[parentType]({ _id: model.get('_parentId') })).fetch({ success: _recurse });
-    }
+      if (type === 'page' || type === 'menu') {
+        return cb(model); // we're at the top of the hierarchy
+      }
+      _recurse(Origin.editor.data.content.findWhere({ _id: model.get('_parentId') }));
+    };
     // start recursion
     _recurse(model);
   }
