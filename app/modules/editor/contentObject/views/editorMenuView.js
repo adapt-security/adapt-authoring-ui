@@ -176,18 +176,12 @@ define(function(require){
         stop: _.bind(function(event,ui) {
           var $draggedElement = ui.item;
           var id = $('.editor-menu-item-inner', $draggedElement).attr('data-id');
-          var sortOrder = $draggedElement.index() + 1;
-          var parentId = $draggedElement.closest('.editor-menu-layer').attr('data-parentId');
+          var _sortOrder = $draggedElement.index() + 1;
+          var _parentId = $draggedElement.closest('.editor-menu-layer').attr('data-parentId');
           var currentModel = this.contentobjects.findWhere({ _id: id });
-          var previousParent = currentModel.get('_parentId');
-          currentModel.save({
-            _sortOrder: sortOrder,
-            _parentId: parentId 
-          }, {
+          currentModel.save({ _sortOrder, _parentId }, {
             patch: true,
-            success: _.bind(function(model, response, options) {
-              this.updateItemViews(previousParent, model);
-            }, this)
+            success: model => this.updateItemViews(currentModel.get('_parentId'), model)
           });
           currentModel.set('_isDragging', false);
         }, this),
