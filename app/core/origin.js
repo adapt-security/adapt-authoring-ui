@@ -4,7 +4,7 @@ define([
   'backbone', 
   'core/l10n',
   'core/router',
-  'modules/user/models/sessionModel'
+  'core/models/sessionModel'
 ], function(_, Backbone, l10n, Router, SessionModel) {
   var initialized = false;
   var eventTaps = [];
