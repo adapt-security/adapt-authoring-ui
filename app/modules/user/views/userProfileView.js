@@ -131,19 +131,17 @@ define(function(require){
       self.model.save(toChange, {
         wait: true,
         patch: true,
-        error: function(data, error) {
-          Origin.trigger('sidebar:resetButtons');
-          Origin.Notify.alert({
-            type: 'error',
-            text: error.responseText || Origin.l10n.t('app.errorgeneric')
-          });
-        },
         success: function(model) {
           if (prevEmail !== model.get('email')) {
             Origin.router.navigateTo('user/logout');
           } else {
             Backbone.history.history.back();
           }
+        },
+        error: function(data, error) {
+          Origin.trigger('sidebar:resetButtons');
+          const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
+          Origin.Notify.alert({ type: 'error', text });
         }
       });
     },
