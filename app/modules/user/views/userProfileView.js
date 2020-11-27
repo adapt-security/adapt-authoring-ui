@@ -105,7 +105,7 @@ define(function(require){
 
     saveUser: function() {
       var self = this;
-      var prevEmail = self.model.get('email');
+      var email_prev = self.model.get('email');
 
       this.$('.error-text').addClass('display-none');
       this.$('.error').text('');
@@ -115,18 +115,13 @@ define(function(require){
         lastName: self.$('#lastName').val().trim(),
         email: self.$('#email').val().trim()
       };
-
       if (self.model.get('_isNewPassword')) {
         toChange._isNewPassword = true;
         toChange.password = self.$('#password').val();
       } else {
         self.model.unset('password');
       }
-
-      _.extend(toChange, {
-        _id: self.model.get('_id'),
-        email_prev: prevEmail
-      });
+      _.extend(toChange, { _id: self.model.get('_id'), email_prev });
 
       self.model.save(toChange, {
         wait: true,
