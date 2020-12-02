@@ -13,10 +13,6 @@ define(function(require) {
       'click button.dash'             : 'goHome'
     },
 
-    preRender: function() {
-      this.listenTo(Origin, 'login:failed', this.loginFailed, this);
-    },
-
     postRender: function() {
       this.setViewToReady();
       Origin.trigger('login:loaded');
@@ -57,35 +53,33 @@ define(function(require) {
       } else {
         $('#login-input-username').removeClass('input-error');
       }
-
-      var userModel = this.model;
-
-      userModel.login(inputUsernameEmail, inputPassword, shouldPersist);
+      this.model.login(inputUsernameEmail, inputPassword, shouldPersist, error => {
+        if(error) {
+          return this.loginFailed(null, error.message);
+        }
+        Origin.router.navigateToHome();
+      });
     },
 
-    loginFailed: function(errorCode) {
-      var errorMessage = '';
+    loginFailed: function(errorCode, message) {
+      $('#login-input-username').addClass('input-error');
+      $('#login-input-password').val('');
+      $('#loginErrorMessage').text(message || this.errorCodeToMessage(errorCode));
+      $('#loginError').removeClass('display-none');
+    },
 
+    errorCodeToMessage: function(errorCode) {
       switch (errorCode) {
         case LoginView.ERR_INVALID_CREDENTIALS:
         case LoginView.ERR_MISSING_FIELDS:
-          errorMessage = Origin.l10n.t('app.invalidusernameorpassword');
-          break;
+          return Origin.l10n.t('app.invalidusernameorpassword');
         case LoginView.ERR_ACCOUNT_LOCKED:
-          errorMessage = Origin.l10n.t('app.accountislocked');
-          break;
+          return Origin.l10n.t('app.accountislocked');
         case LoginView.ERR_TENANT_DISABLED:
-          errorMessage = Origin.l10n.t('app.tenantnotenabled');
-          break;
+          return Origin.l10n.t('app.tenantnotenabled');
         case LoginView.ERR_ACCOUNT_INACTIVE:
-          errorMessage = Origin.l10n.t('app.accountnotactive');
-          break;
+          return Origin.l10n.t('app.accountnotactive');
       }
-
-      $('#login-input-username').addClass('input-error');
-      $('#login-input-password').val('');
-      $('#loginErrorMessage').text(errorMessage);
-      $('#loginError').removeClass('display-none');
     }
 
   }, {

@@ -24,18 +24,18 @@ define(['require', 'backbone'], function(require, Backbone) {
       return scopes.every(s => assignedScopes.includes(s));
     },
 
-    login: function (email, password, shouldPersist) {
+    login: function (email, password, shouldPersist, cb) {
       $.post('api/auth/local', { email, password })
       .done(() => {
         this.fetch({ 
           success: () => {
             this.Origin.trigger('login:changed');
-            this.once('sync', () => this.Origin.router.navigateToHome())
+            this.once('sync', () => cb());
           },
-          error: ({ status }) => this.Origin.trigger('login:failed', status)
+          error: ({ responseJSON }) => cb(responseJSON)
         });
       })
-      .fail(({ status }) => this.Origin.trigger('login:failed', status));
+      .fail(({ responseJSON }) => cb(responseJSON));
     },
     
     logout: function () {
