@@ -104,26 +104,25 @@ define(function(require){
     },
 
     saveUser: function() {
-      var self = this;
-      var email_prev = self.model.get('email');
+      var email_prev = this.model.get('email');
 
       this.$('.error-text').addClass('display-none');
       this.$('.error').text('');
 
       var toChange = {
-        firstName: self.$('#firstName').val().trim(),
-        lastName: self.$('#lastName').val().trim(),
-        email: self.$('#email').val().trim()
+        firstName: this.$('#firstName').val().trim(),
+        lastName: this.$('#lastName').val().trim(),
+        email: this.$('#email').val().trim()
       };
-      if (self.model.get('_isNewPassword')) {
+      if (this.model.get('_isNewPassword')) {
         toChange._isNewPassword = true;
-        toChange.password = self.$('#password').val();
+        toChange.password = this.$('#password').val();
       } else {
-        self.model.unset('password');
+        this.model.unset('password');
       }
-      _.extend(toChange, { _id: self.model.get('_id'), email_prev });
+      _.extend(toChange, { _id: this.model.get('_id'), email_prev });
 
-      self.model.save(toChange, {
+      this.model.save(toChange, {
         wait: true,
         patch: true,
         success: function(model) {
