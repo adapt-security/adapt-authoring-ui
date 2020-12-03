@@ -12,7 +12,6 @@ define(function(require){
     events: {
       'click a.change-password' : 'togglePassword',
       'keyup #password'         : 'onPasswordKeyup',
-      'keyup #passwordText'         : 'onPasswordTextKeyup',
       'click .toggle-password'  : 'togglePasswordView'
     },
 
@@ -148,10 +147,6 @@ define(function(require){
       } else {
         this.$('.toggle-password').addClass('display-none');
       }
-    },
-
-    onPasswordTextKeyup: function() {
-
     }
   }, {
     template: 'userProfile'
