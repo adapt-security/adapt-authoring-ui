@@ -124,13 +124,7 @@ define(function(require){
       this.model.save(toChange, {
         wait: true,
         patch: true,
-        success: function(model) {
-          if (prevEmail !== model.get('email')) {
-            Origin.router.navigateTo('user/logout');
-          } else {
-            Backbone.history.history.back();
-          }
-        },
+        success: () => Backbone.history.history.back(),
         error: function(data, error) {
           Origin.trigger('sidebar:resetButtons');
           const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
