@@ -123,8 +123,12 @@ define(function(require){
       _.each(this.model.get('tags'), function (item) {
         item._id && tags.push(item._id);
       });
-      this.$('#tags').val(tags);
-
+      if(tags.length) {
+        const $tags = this.$('.asset-form').append('<input type="hidden" name="tags" id="tags" />');
+        $tags.val(tags);
+      } else {
+        this.$('.asset-form #tags').remove();
+      }
       this.$('.asset-form').ajaxSubmit({
         uploadProgress: function(event, position, total, percentComplete) {
           $(".progress-container").css("visibility", "visible");
@@ -146,11 +150,10 @@ define(function(require){
           this.remove();
         }, this)
       });
-
       // Return false to prevent the page submitting
       return false;
     },
-
+    
     onAddTag: function (tag) {
       var model = this.model;
       $.ajax({

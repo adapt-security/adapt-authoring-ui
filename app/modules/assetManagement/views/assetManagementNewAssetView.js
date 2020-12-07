@@ -103,8 +103,12 @@ define(function(require){
       _.each(this.model.get('tags'), function (item) {
         item._id && tags.push(item._id);
       });
-      this.$('#tags').val(tags);
-
+      if(tags.length) {
+        const $tags = this.$('.asset-form').append('<input type="hidden" name="tags" id="tags" />');
+        $tags.val(tags);
+      } else {
+        this.$('.asset-form #tags').remove();
+      }
       var self = this;
       this.$('.asset-form').ajaxSubmit({
 
