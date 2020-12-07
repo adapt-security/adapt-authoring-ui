@@ -63,8 +63,8 @@ define(function(require){
           $(".progress-bar").css("width", percentVal);
           $('.progress-percent').html(percentVal);
         },
-        error: this.onAjaxError.bind(this),
-        success: this.displayDetails.bind(this)
+        success: () => Origin.router.navigateToHome(),
+        error: this.onAjaxError.bind(this)
       });
       return false;
     },
