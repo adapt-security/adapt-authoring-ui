@@ -103,9 +103,14 @@ define(function(require) {
 
     duplicateProject: function() {
       $.ajax({
-        url: this.model.getDuplicateURI(),
-        success: function (data) {
-          Origin.router.navigateTo('editor/' + data.newCourseId + '/settings');
+        url: 'api/content/clone',
+        method: 'post',
+        data: {
+          _id: this.model.get('_id'),
+          _parentId: this.model.get('_parentId')
+        },
+        success: function ({ _id }) {
+          Origin.router.navigateTo(`editor/${_id}/settings`);
         },
         error: function() {
           Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorduplication') });
