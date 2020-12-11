@@ -1,8 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var _ = require('underscore');
-  var Backbone = require('backbone');
-  var Handlebars = require('handlebars');
   var OriginView = require('core/views/originView');
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
