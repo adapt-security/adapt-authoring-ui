@@ -96,9 +96,7 @@ define(function(require) {
           this.remove();
         }.bind(this),
         error: function(model, response, options) {
-          _.delay(function() {
-            Origin.Notify.alert({ type: 'error', text: response.responseJSON.message });
-          }, 1000);
+          _.delay(() => Origin.Notify.alert({ type: 'error', text: response.responseJSON.message }), 1000);
         }
       });
     },
