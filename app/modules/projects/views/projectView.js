@@ -47,12 +47,12 @@ define(function(require) {
 
     editProjectSettings: function(event) {
       event && event.preventDefault();
-      Origin.router.navigateTo('editor/' + this.model.get('_id') + '/settings');
+      Origin.router.navigateTo(`editor/${this.model.get('_id')}/settings`);
     },
 
     editProject: function(event) {
       event && event.preventDefault();
-      Origin.router.navigateTo('editor/' + this.model.get('_id') + '/menu');
+      Origin.router.navigateTo(`editor/${this.model.get('_id')}/menu`);
     },
 
     selectProject: function(event) {
