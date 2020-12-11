@@ -17,10 +17,6 @@ define(function(require) {
 
     isEditable: function () {
       return this.get('_isShared') || this.get('createdBy') == Origin.sessionModel.get('id');
-    },
-
-    getDuplicateURI: function () {
-      return 'api/duplicatecourse/' + this.get('_id');
     }
   });
 
