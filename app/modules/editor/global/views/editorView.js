@@ -72,7 +72,7 @@ define(function(require) {
           this.resetPreviewProgress();
           previewWindow.location.href = data.preview_url;
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
+        .fail((jqXHR, textStatus, errorThrown) => {
           this.resetPreviewProgress();
           Origin.Notify.alert({
             type: 'error',
