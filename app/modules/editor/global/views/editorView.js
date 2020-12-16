@@ -142,7 +142,7 @@ define(function(require) {
         },
         error: () => {
           this.resetDownloadProgress();
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') });
+          text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
         }
       });
     },
