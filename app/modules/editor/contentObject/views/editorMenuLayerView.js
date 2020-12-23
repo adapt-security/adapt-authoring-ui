@@ -196,7 +196,7 @@ define(function(require) {
     },
 
     onPaste: function(data) {
-      this.addMenuItemView(Origin.editor.data.content.findWhere({ _id: data._id }));
+      this.addMenuItemView(data);
     },
 
     removeChildViews: function() {

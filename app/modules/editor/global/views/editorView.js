@@ -162,21 +162,8 @@ define(function(require) {
     },
 
     addToClipboard: function(model) {
-      var postData = {
-        objectId: model.get('_id'),
-        courseId: Origin.editor.data.course.get('_id'),
-        referenceType: model._siblingTypes
-      };
-      $.post('api/content/clipboard/copy', postData, _.bind(function(jqXHR) {
-        Origin.editor.clipboardId = jqXHR.clipboardId;
-        this.showPasteZones(model.get('_type'));
-      }, this)).fail(_.bind(function (jqXHR, textStatus, errorThrown) {
-        Origin.Notify.alert({
-          type: 'error',
-          text: Origin.l10n.t('app.errorcopy') + (jqXHR.message ? '\n\n' + jqXHR.message : '')
-        });
-        this.hidePasteZones();
-      }, this));
+      this.showPasteZones(model.get('_type'));
+      Origin.editor.clipboardId = model.get('_id');
     },
 
     copyIdToClipboard: function(model) {
@@ -195,23 +182,13 @@ define(function(require) {
       }
     },
 
-    pasteFromClipboard: function(parentId, sortOrder, layout) {
+    pasteFromClipboard: function(_parentId, sortOrder, layout) {
       Origin.trigger('editorView:pasteCancel');
-      var postData = {
-        id: Origin.editor.clipboardId,
-        parentId: parentId,
-        layout: layout,
-        sortOrder: sortOrder,
-        courseId: Origin.editor.data.course.get('_id')
-      };
-      $.post('api/content/clipboard/paste', postData, function(data) {
+      $.post('api/content/clone', { _id: Origin.editor.clipboardId, layout, _parentId, sortOrder }, newData => {
         Origin.editor.clipboardId = null;
-        Origin.trigger(`editorView:pasted:${postData.parentId}`, { _id: data._id, sortOrder: postData.sortOrder });
-      }).fail(jqXHR => {
-        Origin.Notify.alert({
-          type: 'error',
-          text: `${Origin.l10n.t('app.errorpaste')}${jqXHR.message ? `\n\n${jqXHR.message}` : ''}`
-        });
+        Origin.trigger(`editorView:pasted:${_parentId}`, newData);
+      }).fail(({ message }) => {
+        Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
       });
     },
 
