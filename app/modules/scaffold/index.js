@@ -126,9 +126,37 @@ define([
     }
   }
 
+  /**
+   * @HACK @TODO this should be filtered with some useful logic
+   */
+  var ATTRIBUTE_BLACKLIST = [
+    '_colorLabel',
+    '_component',
+    '_componentType',
+    '_courseId',
+    '_enabledExtensions',
+    '_hasPreview',
+    '_id',
+    '_isSelected',
+    '_latestTrackingId',
+    '_layout',
+    '_menu',
+    '_parentId',
+    '_theme',
+    '_themePreset',
+    '_trackingId',
+    '_type',
+    'createdAt',
+    'createdBy',
+    'menuSettings',
+    'themeSettings',
+    'themeVariables',
+    'updatedAt',
+    'userGroups',
+  ];
   function buildSchema(requiredKeys, schema, options, type) {
     var scaffoldSchema = {};
-    var field = { type: 'object', properties: Object.assign({}, schema) };
+    var field = { type: 'object', properties: Object.assign({}, _.omit(schema, ATTRIBUTE_BLACKLIST)) };
     
     trimEmptyProperties(field.properties);
     
@@ -136,7 +164,7 @@ define([
     var key = 'properties';
 
     schema = { properties: field };
-    setRequiredValidators(requiredKeys, nestedProps);
+    setRequiredValidators(_.without(requiredKeys, ...ATTRIBUTE_BLACKLIST), nestedProps);
 
     if (!options.isTheme || !nestedProps) {
       setUpSchemaFields(field, key, schema, scaffoldSchema);
