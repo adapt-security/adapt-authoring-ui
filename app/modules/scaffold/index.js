@@ -118,7 +118,7 @@ define([
 
     for (var i in objectSchema) {
       if (!objectSchema.hasOwnProperty(i)) continue;
-
+      
       var objectField = objectSchema[i];
 
       setRequiredValidators(objectField.required, objectField.properties);
