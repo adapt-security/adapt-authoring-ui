@@ -235,7 +235,6 @@ define(function(require) {
     * Data persistence
     */
 
-    // checks form for errors, returns boolean
     validateForm: function() {
       var selectedTheme = this.getSelectedTheme();
       if (!selectedTheme) {
@@ -423,9 +422,8 @@ define(function(require) {
     },
 
     updateRestorePresetButton: function(shouldShow) {
+      // no flag, so compare default settings with current settings to determine restore button visibility
       if (typeof shouldShow === 'undefined') {
-        // If flag was not passed in then compare default settings with current settings
-        // and show restore button if there are differences
         var currentSettings = this.flattenNestedProperties(this.getCurrentSettings());
         var preset = this.getSelectedPreset();
         var baseSettings = this.flattenNestedProperties((preset) ? preset.get('properties') : this.getDefaultThemeSettings());
