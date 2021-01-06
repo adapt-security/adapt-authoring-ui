@@ -9,7 +9,7 @@ define(function(require) {
     if(data.action !== 'edit') {
       return;
     }
-    var model = Origin.editor.data.findWhere({ _id: data.id });
+    var model = Origin.editor.data.content.findWhere({ _id: data.id });
     var form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
     Origin.sidebar.addView(new EditorBlockEditSidebarView({ model, form }).$el);
