@@ -391,19 +391,21 @@ define(function(require) {
 
     getDefaultThemeSettings: function() {
       var defaults = {};
-      var t = this.getSelectedTheme();
-      var props = this.getSelectedTheme().get('properties').variables;
-      for (var key in props) {
-        // Check for nested properties
-        if (typeof props[key].properties === 'object') {
-          defaults[key] = {};
-          for (var innerKey in props[key].properties) {
-            defaults[key][innerKey] = props[key].properties[innerKey].default;
-          }
-        } else {
-          defaults[key] = props[key].default;
-        }
+      var props;
+      try {
+        props = this.getSelectedTheme().get('properties').variables;
+      } catch(e) {
+        return defaults;
       }
+      Object.keys(props).forEach(k => {
+        if (typeof props[k].properties !== 'object') {
+          defaults[k] = props[k].default;
+          return;
+        }
+        // Check for nested properties
+        defaults[k] = {};
+        Object.keys(props[k].properties).forEach(k2 => defaults[k][k2] = props[k].properties[k2].default);
+      });
       return defaults;
     },
 
