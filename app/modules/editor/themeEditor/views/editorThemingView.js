@@ -279,47 +279,64 @@ define(function(require) {
       });
     },
 
-    saveData: function(event) {
+    saveData: async function(event) {
       event && event.preventDefault();
 
       if (!this.validateForm()) {
         return Origin.trigger('sidebar:resetButtons');
       }
-      this.postThemeData(function(){
-        this.postPresetData(function() {
-          this.postSettingsData(this.onSaveSuccess);
+      try {
+        await this.postThemeData();
+        await this.postPresetData();
+        await this.postSettingsData();
+        this.onSaveSuccess();
+      } catch(e) {
+        this.onSaveError();
+      }
+    },
+
+    postThemeData: function() {
+      return new Promise((resolve, reject) => {
+        console.log(this.model);
+        const oldTheme = this.model.get('_theme');
+        const newTheme = this.getSelectedTheme().get('name');
+        $.ajax({
+          url: `api/content/${this.model.get('_id')}`,
+          method: 'PATCH',
+          data: { 
+            _theme: newTheme,
+            _enabledPlugins: [
+              ...this.model.get('_enabledPlugins').filter(p => p !== oldTheme),
+              newTheme
+            ]
+          },
+          success: () => resolve(),
+          error: () => reject()
         });
       });
     },
 
-    postThemeData: function(callback) {
-      var selectedTheme = this.getSelectedTheme();
-      var selectedThemeId = selectedTheme.get('_id');
-      $.post('api/theme/' + selectedThemeId + '/makeitso/' + this.model.get('_courseId'))
-        .error(this.onSaveError.bind(this))
-        .done(callback.bind(this));
+    postPresetData: function() {
+      return new Promise((resolve, reject) => {
+        var selectedPreset = this.getSelectedPreset(false);
+        if(!selectedPreset) {
+          return resolve();
+        }
+        $.post(`api/coursethemepresets/${selectedPreset.get('_id')}/apply/${this.model.get('_courseId')}`)
+          .error(() => reject())
+          .done(() => resolve());
+      });
     },
 
-    postPresetData: function(callback) {
-      var selectedPreset = this.getSelectedPreset(false);
-      var selectedPresetId = null;
-      if (selectedPreset) selectedPresetId = selectedPreset.get('_id');
-
-      $.post('api/themepreset/' + selectedPresetId + '/makeitso/' + this.model.get('_courseId'))
-      .error(this.onSaveError.bind(this))
-      .done(callback.bind(this));
-    },
-
-    postSettingsData: function(callback) {
-      if (!this.form) {
-        return callback.apply(this);
-      }
-      this.form.commit();
-      var settings = this.extractData(this.form.model.attributes);
-      Origin.editor.data.course.set('themeVariables', settings);
-      Origin.editor.data.course.save(null, {
-        error: this.onSaveError.bind(this),
-        success: callback.bind(this)
+    postSettingsData: function() {
+      return new Promise((resolve, reject) => {
+        if (!this.form) {
+          return resolve();
+        }
+        this.form.commit();
+        var settings = this.extractData(this.form.model.attributes);
+        Origin.editor.data.course.set('themeVariables', settings);
+        Origin.editor.data.course.save(null, { error: () => reject(), success: () => resolve() });
       });
     },
 
