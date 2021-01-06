@@ -55,7 +55,7 @@ define(function(require) {
         data: { 
           _menu: selectedMenu.get('name'),
           _enabledPlugins: [
-            Origin.editor.data.config.get('_enabledPlugins').filter(p => p !== oldMenu),
+            ...Origin.editor.data.config.get('_enabledPlugins').filter(p => p !== oldMenu),
             selectedMenu.get('name')
           ]
         },
