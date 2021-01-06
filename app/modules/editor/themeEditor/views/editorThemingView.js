@@ -222,18 +222,17 @@ define(function(require) {
 
     restorePresetSettings: function(event) {
       event && event.preventDefault();
-      var self = this;
       Origin.Notify.confirm({
         type: 'warning',
         text: Origin.l10n.t('app.restorepresettext'),
-        callback: function(confirmed) {
+        callback: confirmed => {
           if (!confirmed) {
             return;
           }
-          var preset = self.getSelectedPreset();
-          var settings = (preset) ? preset.get('properties') : self.getDefaultThemeSettings();
-          self.updateRestorePresetButton(false);
-          self.restoreFormSettings(settings);
+          var preset = this.getSelectedPreset();
+          var settings = (preset) ? preset.get('properties') : this.getDefaultThemeSettings();
+          this.updateRestorePresetButton(false);
+          this.restoreFormSettings(settings);
         }
       });
     },
@@ -259,18 +258,14 @@ define(function(require) {
         parentTheme: this.getSelectedTheme().get('theme'),
         properties: this.extractData(this.form.model.attributes)
       });
-
-      var self = this;
       presetModel.save(null, {
-        error: function(model, response, options) {
-          Origin.Notify.alert({ type: 'error', text: response });
+        success: () => {
+          this.presets.add(presetModel);
+          this.updateRestorePresetButton(false);
+          this.setPresetSelection(presetModel.get('_id'));
+          window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
         },
-        success: function() {
-          self.presets.add(presetModel);
-          self.updateRestorePresetButton(false);
-          self.setPresetSelection(presetModel.get('_id'));
-          window.setTimeout(function() { self.$('.preset select').val(presetModel.get('_id')); }, 1);
-        }
+        error: (model, response, options) => Origin.Notify.alert({ type: 'error', text: response })
       });
     },
 
