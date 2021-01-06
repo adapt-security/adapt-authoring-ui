@@ -266,7 +266,7 @@ define([
         schemaType = contentType = 'contentobject';
         break;
       case 'component':
-        contentType = model.get('_component');
+        schemaType = contentType = model.get('_component');
         break;
       case 'theme':
         contentType = options.schemaType;
