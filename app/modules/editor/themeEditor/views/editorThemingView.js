@@ -257,7 +257,7 @@ define(function(require) {
           this.setPresetSelection(presetModel.get('_id'));
           window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
         },
-        error: (m, text, o) => Origin.Notify.alert({ type: 'error', text })
+        error: this.onError
       });
     },
 
