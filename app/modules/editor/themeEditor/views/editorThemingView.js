@@ -209,10 +209,9 @@ define(function(require) {
     showPresetEdit: function(event) {
       event && event.preventDefault();
       var parentTheme = this.getSelectedTheme().get('theme');
-      var pev = new PresetEditView({
-        model: new Backbone.Model({ presets: new Backbone.Collection(this.presets.where({ parentTheme: parentTheme })) })
-      });
-      $('body').append(pev.el);
+      var presets = new Backbone.Collection(this.presets.where({ parentTheme: parentTheme }));
+      var view = new PresetEditView({ model: new Backbone.Model({ presets })});
+      $('body').append(view.el);
     },
 
     restorePresetSettings: function(event) {
