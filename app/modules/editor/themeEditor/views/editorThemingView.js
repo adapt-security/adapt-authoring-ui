@@ -245,7 +245,6 @@ define(function(require) {
     // checks form for errors, returns boolean
     validateForm: function() {
       var selectedTheme = this.getSelectedTheme();
-
       if (!selectedTheme) {
         Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errornothemeselected') });
         return false;
@@ -254,9 +253,7 @@ define(function(require) {
     },
 
     savePreset: function(presetName) {
-      // first, save the form data
       this.form.commit();
-
       var presetModel = new PresetModel({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('theme'),
