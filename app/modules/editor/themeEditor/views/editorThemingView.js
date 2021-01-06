@@ -145,7 +145,7 @@ define(function(require) {
       if (oldVal) return select.val(oldVal);
       // select current theme
       var selectedTheme = this.getSelectedTheme();
-      if (selectedTheme) select.val(selectedTheme.get('theme'));
+      if (selectedTheme) select.val(selectedTheme.get('displayName'));
     },
 
     updatePresetSelect: function() {
