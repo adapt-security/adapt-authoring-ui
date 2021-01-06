@@ -86,7 +86,7 @@ define(function(require) {
 
       var toRestore = this.getDefaultThemeSettings();
       // Only restore theme variables if currently selected theme = saved theme
-      if (selectedTheme.get('name') === Origin.editor.data.config.get('_theme') && Origin.editor.data.course.get('themeVariables')) {
+      if (selectedTheme.get('name') === this.model.get('_theme') && Origin.editor.data.course.get('themeVariables')) {
         toRestore = Origin.editor.data.course.get('themeVariables');
       }
       _.defer(function() { this.restoreFormSettings(toRestore); }.bind(this));
