@@ -200,7 +200,7 @@ define(function(require) {
       } else if (inputType.indexOf('Asset') > -1) {
         fieldView.setValue(value);
         fieldView.render();
-        $('div[data-editor-id*="' + key + '"]').append(fieldView.editor.$el);
+        $(`div[data-editor-id*="${key}"]`).append(fieldView.editor.$el);
       } else {
         fieldView.editor.$el.val(value.toString())
       }
