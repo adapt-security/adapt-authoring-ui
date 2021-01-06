@@ -112,14 +112,12 @@ define(function(require) {
       this.presets = new PresetCollection();
 
       this.themes.fetch({
-        success: (function() {
+        success: () => {
           this.presets.fetch({
-            success: (function() {
-              this.trigger('dataReady');
-            }).bind(this),
+            success: () => this.trigger('dataReady'),
             error: this.onError
           });
-        }).bind(this),
+        },
         error: this.onError
       });
     },
