@@ -137,7 +137,7 @@ define(function(require) {
       // add options
       this.themes.models.forEach(function(item) {
         if (item.get('_isAvailableInEditor') === false) return;
-        select.append($('<option data-name="' + item.get('name') + '">', { value: item.get('theme') }).text(item.get('displayName')));
+        select.append($(`<option data-name="${item.get('name')}">`, { value: item.get('name') }).text(item.get('displayName')));
       }, this);
       // disable if no options
       select.attr('disabled', this.themes.models.length === 0);
