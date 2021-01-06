@@ -236,8 +236,7 @@ define(function(require) {
     */
 
     validateForm: function() {
-      var selectedTheme = this.getSelectedTheme();
-      if (!selectedTheme) {
+      if (!this.getSelectedTheme()) {
         Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errornothemeselected') });
         return false;
       }
@@ -258,7 +257,7 @@ define(function(require) {
           this.setPresetSelection(presetModel.get('_id'));
           window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
         },
-        error: (model, response, options) => Origin.Notify.alert({ type: 'error', text: response })
+        error: (m, text, o) => Origin.Notify.alert({ type: 'error', text })
       });
     },
 
@@ -288,10 +287,7 @@ define(function(require) {
           method: 'PATCH',
           data: { 
             _theme: newTheme,
-            _enabledPlugins: [
-              ...this.model.get('_enabledPlugins').filter(p => p !== oldTheme),
-              newTheme
-            ]
+            _enabledPlugins: [...this.model.get('_enabledPlugins').filter(p => p !== oldTheme), newTheme]
           },
           success: () => resolve(),
           error: () => reject()
