@@ -168,13 +168,8 @@ define(function(require) {
       }
       var selectedPreset = this.getSelectedPreset();
       if (selectedPreset && selectedPreset.get('parentTheme') === theme) {
-        $.get('api/themepreset/exists/' + selectedPreset.get('_id'), function(data) {
-          if (data.success) {
-            select.val(selectedPreset.get('_id'))
-          } else {
-            this.removePresetOption(selectedPreset.get('_id'));
-          }
-        }.bind(this));
+        const id = selectedPreset.get('_id');
+        $.get(`api/coursethemepresets/${id}`, () => select.val(id)).error(() => this.removePresetOption(id));
       }
       select.attr('disabled', false);
       this.$('button.edit').show();
