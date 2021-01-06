@@ -411,10 +411,7 @@ define(function(require) {
       if (!this.form) {
         return Origin.editor.data.course.get('themeVariables');
       }
-
-      return _.mapObject(this.form.fields, function(field) {
-        return field.getValue();
-      });
+      return _.mapObject(this.form.fields, field => field.getValue());
     },
 
     themeIsEditable: function(theme) {
