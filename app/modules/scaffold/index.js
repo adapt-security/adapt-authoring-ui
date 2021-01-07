@@ -257,10 +257,10 @@ define([
 
   Scaffold.buildForm = async function(options) {
     var model = options.model;
-    var schemaType = contentType = model.get('_type') || model._type || options.schemaType;
+    var schemaType = contentType = model.get('_type') || model._type || model.get('type') || model.type || options.schemaType;
     options.isTheme = false;
 
-    switch (schemaType) {
+    switch (contentType) {
       case 'menu':
       case 'page':
         schemaType = contentType = 'contentobject';
@@ -269,7 +269,7 @@ define([
         schemaType = contentType = model.get('_component');
         break;
       case 'theme':
-        contentType = options.schemaType;
+        schemaType = options.schemaType;
         options.isTheme = true;
     }
     let schema;
