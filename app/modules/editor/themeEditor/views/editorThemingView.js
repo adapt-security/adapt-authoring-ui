@@ -52,12 +52,12 @@ define(function(require) {
       this.renderForm();
     },
 
-    renderForm: function() {
+    renderForm: async function() {
       this.removeForm();
 
-      var selectedTheme = this.getSelectedTheme();
+      let selectedTheme = this.getSelectedTheme();
 
-      if (!this.themeIsEditable(selectedTheme)) {
+      if(!selectedTheme.get('schemaName')) {
         this.$('.theme-selector').removeClass('show-preset-select');
         this.$('.empty-message').show();
         this.$('.editable-theme').hide();
@@ -69,21 +69,21 @@ define(function(require) {
       this.$('.editable-theme').show();
       $('.editor-theming-sidebar-reset').show();
       try {
-        this.form = Origin.scaffold.buildForm({
+        this.form = await Origin.scaffold.buildForm({
           model: selectedTheme,
-          schemaType: selectedTheme.get('theme')
+          schemaType: selectedTheme.get('schemaName')
         });
       } catch(e) {
         console.log(e);
       }
-      if (this.form) {
+      if(this.form) {
         this.$('.form-container').html(this.form.el);
       }
       this.$el.find('fieldset:not(:has(>.field))').addClass('empty-fieldset');
       this.$('.theme-customiser').show();
       Origin.trigger('theming:showPresetButton', true);
 
-      var toRestore = this.getDefaultThemeSettings();
+      let toRestore = this.getDefaultThemeSettings();
       // Only restore theme variables if currently selected theme = saved theme
       if (selectedTheme.get('name') === this.model.get('_theme') && Origin.editor.data.course.get('themeVariables')) {
         toRestore = Origin.editor.data.course.get('themeVariables');
