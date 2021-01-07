@@ -32,7 +32,6 @@ define(function(require) {
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
-
       this.loadCollections();
 
       EditorOriginView.prototype.initialize.apply(this, arguments);
@@ -349,7 +348,6 @@ define(function(require) {
     getSelectedTheme: function() {
       return this.themes.findWhere({ name: $('select#theme', this.$el).attr('data-name') || this.model.get('_theme') });
     },
-
     // param used to only return the val() (and ignore model data)
     getSelectedPreset: function(includeCached) {
       var storedId = this.getPresetSelection();
