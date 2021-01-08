@@ -166,7 +166,7 @@ define([
     schema = { properties: field };
     setRequiredValidators(_.without(requiredKeys, ...ATTRIBUTE_BLACKLIST), nestedProps);
 
-    if (!options.isTheme || !nestedProps) {
+    if (!nestedProps) {
       setUpSchemaFields(field, key, schema, scaffoldSchema);
       return scaffoldSchema.properties.subSchema;
     }
@@ -211,20 +211,10 @@ define([
         fieldsets[key].fields.push(key);
         continue;
       }
-      var nestedProps = value.properties;
-      var fields = [];
-      // process nested properties on edit theme page
-      if (options.isTheme) {
-        for (var innerKey in nestedProps) {
-          if (nestedProps.hasOwnProperty(innerKey)) {
-            fields.push(innerKey);
-          }
-        }
-      }
       fieldsets[key] = {
         key: key,
         legend: value.title,
-        fields: fields.length ? fields : [ key ]
+        fields: [key]
       };
     }
     if (!schema._extensions) {
