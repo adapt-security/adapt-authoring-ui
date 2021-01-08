@@ -222,7 +222,7 @@ define([
       const fields = fieldsets[k].fields;
       if(!fields) {
         return;
-    }
+      }
       /*
       * Delete any 'empty' fieldsets:
       * - No fields specified 
