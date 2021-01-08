@@ -190,7 +190,7 @@ define([
       general: { key: 'general', legend: Origin.l10n.t('app.scaffold.general'), fields: [] },
       properties: { key: 'properties', legend: Origin.l10n.t('app.scaffold.properties'), fields: [] },
       settings: { key: 'settings', legend: Origin.l10n.t('app.scaffold.settings'), fields: [] },
-      extensions: { key: 'extensions', legend: Origin.l10n.t('app.scaffold.extensions'), fields: [ '_extensions' ] }
+      _extensions: { key: 'extensions', legend: Origin.l10n.t('app.scaffold.extensions'), fields: [ '_extensions' ] }
     };
 
     for (var key in schema) {
@@ -217,15 +217,22 @@ define([
         fields: [key]
       };
     }
-    if (!schema._extensions) {
-      delete fieldsets.extensions;
+    // remove any empty fieldsets
+    Object.keys(fieldsets).forEach(k => {
+      const fields = fieldsets[k].fields;
+      if(!fields) {
+        return;
     }
-    if (!fieldsets.settings.fields.length) {
-      delete fieldsets.settings;
-    }
-    if (!fieldsets.properties.fields.length) {
-      delete fieldsets.properties;
-    }
+      /*
+      * Delete any 'empty' fieldsets:
+      * - No fields specified 
+      * - Only an empty object with no sub-props exists on the schema, so there's nothing to render
+      * */
+     const noFieldsOnSchema = fields.some(f => {
+      return !schema[f] || (schema[f].type === 'object' && schema[f].properties === undefined);
+     });
+      if(!fields.length || noFieldsOnSchema) delete fieldsets[k];
+    });
     return _.values(fieldsets);
   }
 
