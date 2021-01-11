@@ -10,12 +10,11 @@ define(function(require) {
       breadcrumbs: ['dashboard', 'course', { title: Origin.l10n.t('app.editorextensions') }],
       title: Origin.editor.data.course.get('title')
     });
-    var route1 = Origin.location.route1;
     // Check whether the user came from the page editor or menu editor
-    var backButtonRoute = "#/editor/" + route1 + "/menu";
+    var backButtonRoute = `#/editor/${Origin.location.route1}/menu`;
     var backButtonText = Origin.l10n.t('app.backtomenu');
     if (Origin.previousLocation.route2 === "page") {
-      backButtonRoute = "#/editor/" + route1 + "/page/" + Origin.previousLocation.route3;
+      backButtonRoute = `#/editor/${Origin.location.route1}/page/${Origin.previousLocation.route3}`;
       backButtonText = Origin.l10n.t('app.backtopage');
     }
     Origin.sidebar.addView(new EditorExtensionsEditSidebarView().$el, {
