@@ -75,7 +75,7 @@ define(function(require){
         clearTimeout(this.resizeTimer);
         this.resizeTimer = -1;
       }
-      this.pageSize = 50; // make initial page size BIG to make sure we load enough courses for any window size
+      this.collection.options.limit = 50; // make initial page size BIG to make sure we load enough courses for any window size
       this.resetCollection(() => {
         var containerHeight = $(window).height()-this.$el.offset().top;
         var containerWidth = this.$('.projects-inner').width();
@@ -85,7 +85,7 @@ define(function(require){
         var rows = Math.floor(containerHeight/itemHeight);
         // columns stack nicely, but need to add extra row if it's not a clean split
         if((containerHeight % itemHeight) > 0) rows++;
-        this.pageSize = columns*rows;
+        this.collection.options.limit = columns*rows;
         // need another reset to get the actual pageSize number of items
         this.setViewToReady();
       });
@@ -114,7 +114,7 @@ define(function(require){
 
     resetCollection: function(cb) {
       this.emptyProjectsContainer();
-      this.fetchCount = 0;
+      this.collection.options.skip = 0;
       this.shouldStopFetches = false;
       this.collection.reset();
       this.fetchCollection(cb);
@@ -127,26 +127,15 @@ define(function(require){
       this.isCollectionFetching = true;
 
       this.collection.fetch({
-        /*
-        data: {
-          search: _.extend(this.search, { tags: { $all: this.tags } }),
-          operators : {
-            skip: this.fetchCount,
-            limit: this.pageSize,
-            sort: this.sort,
-            collation: { locale: navigator.language.substring(0, 2) }
-          }
-        },
-        */
-        success: function(collection, response) {
+        success: (collection, response) => {
           this.isCollectionFetching = false;
-          this.fetchCount += response.length;
+          this.collection.options.limit += response.length;
           // stop further fetching if this is the last page
-          if(response.length < this.pageSize) this.shouldStopFetches = true;
+          if(response.length < this.collection.options.limit) this.shouldStopFetches = true;
 
-          this.$('.no-projects').toggleClass('display-none', this.fetchCount > 0);
+          this.$('.no-projects').toggleClass('display-none', this.collection.options.limit > 0);
           if(typeof cb === 'function') cb(collection);
-        }.bind(this)
+        }
       });
     },
 
@@ -171,15 +160,15 @@ define(function(require){
     doSort: function(sort, fetch) {
       switch(sort) {
         case "desc":
-          this.sort = { title: -1 };
+          this.collection.options.sort = { title: -1 };
           break;
         case "updated":
-          this.sort = { updatedAt: -1 };
+          this.collection.options.sort = { updatedAt: -1 };
           break;
         case "asc":
         default:
           sort = "asc";
-          this.sort = { title: 1 };
+          this.collection.options.sort = { title: 1 };
       }
       this.setUserPreference('sort', sort);
       if(fetch !== false) this.resetCollection();
