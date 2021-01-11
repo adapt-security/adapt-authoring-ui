@@ -155,15 +155,15 @@ define(function(require){
     doSort: function(sort, fetch) {
       switch(sort) {
         case "desc":
-          this.collection.options.sort = { title: -1 };
+          this.collection.options.sort = 'title:-1';
           break;
         case "updated":
-          this.collection.options.sort = { updatedAt: -1 };
+          this.collection.options.sort = 'updatedAt:-1';
           break;
         case "asc":
         default:
           sort = "asc";
-          this.collection.options.sort = { title: 1 };
+          this.collection.options.sort = 'title:1';
       }
       this.setUserPreference('sort', sort);
       if(fetch !== false) this.resetCollection();
