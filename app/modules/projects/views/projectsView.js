@@ -52,8 +52,8 @@ define(function(require){
       this.doSort(prefs.sort, false);
       this.doFilter(prefs.search, prefs.tags, false);
       // set relevant filters as selected
-      $("a[data-callback='dashboard:layout:" + prefs.layout + "']").addClass('selected');
-      $("a[data-callback='dashboard:sort:" + prefs.sort + "']").addClass('selected');
+      $(`a[data-callback='dashboard:layout:${prefs.layout}']`).addClass('selected');
+      $(`a[data-callback='dashboard:sort:${prefs.sort}']`).addClass('selected');
       // need to refresh this to get latest filters
       prefs = this.getUserPreferences();
       Origin.trigger('options:update:ui', prefs);
@@ -102,7 +102,7 @@ define(function(require){
 
     appendProjectItem: function(model) {
       var creator = model.get('createdBy') || { email: Origin.l10n.t('app.unknownuser') };
-      var name = creator.firstName ? creator.firstName + ' ' + creator.lastName : creator.email;
+      var name = creator.firstName ? `${creator.firstName} ${creator.lastName}` : creator.email;
       if(this._isShared && name) model.set('creatorName', name);
       this.getProjectsContainer().append(new ProjectView({ model: model }).$el);
     },
