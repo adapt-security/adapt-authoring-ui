@@ -107,11 +107,6 @@ define(function(require){
       this.getProjectsContainer().append(new ProjectView({ model: model }).$el);
     },
 
-    convertFilterTextToPattern: function(filterText) {
-      var pattern = '.*' + filterText.toLowerCase() + '.*';
-      return { title: pattern };
-    },
-
     resetCollection: function(cb) {
       this.emptyProjectsContainer();
       this.collection.options.skip = 0;
@@ -174,15 +169,12 @@ define(function(require){
       if(fetch !== false) this.resetCollection();
     },
 
-    doFilter: function(text, tags, fetch) {
-      text = text || '';
-      this.filterText = text;
-      this.search = this.convertFilterTextToPattern(text);
+    doFilter: function(text = "", tags = [], fetch) {
+      this.collection.options.filter = { title: `.*${text.toLowerCase()}.*` };
       this.setUserPreference('search', text, true);
 
-      tags = tags || [];
       this.tags = _.pluck(tags, 'id');
-      this.setUserPreference('tags', tags, true);
+      this.setUserPreference('tags', this.tags, true);
 
       if(fetch !== false) this.resetCollection();
     },
