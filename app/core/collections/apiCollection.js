@@ -8,8 +8,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       this.customQuery = options.filter || {};
     },
     buildQuery: function() {
-      var query = _.assign({}, this.customQuery);
-      return query;
+      return _.assign({}, this.customQuery);
     },
     fetch: function(options) {
       Backbone.Collection.prototype.fetch.call(this, _.assign({
