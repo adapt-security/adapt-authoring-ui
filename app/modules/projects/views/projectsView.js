@@ -170,7 +170,7 @@ define(function(require){
     },
 
     doFilter: function(text = "", tags = [], fetch) {
-      this.collection.options.filter = { title: `.*${text.toLowerCase()}.*` };
+      this.collection.customQuery = { title: `.*${text.toLowerCase()}.*` };
       this.setUserPreference('search', text, true);
 
       this.tags = _.pluck(tags, 'id');
