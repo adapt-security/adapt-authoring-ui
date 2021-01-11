@@ -135,7 +135,7 @@ define(function(require) {
       select.append($('<option>', { value: "", disabled: 'disabled', selected: 'selected' }).text(Origin.l10n.t('app.selectinstr')));
       // add options
       this.themes.models.forEach(function(item) {
-        if (item.get('_isAvailableInEditor') === false) return;
+        if (item.get('isEnabled') === false) return;
         select.append($(`<option data-name="${item.get('name')}">`, { value: item.get('name') }).text(item.get('displayName')));
       }, this);
       // disable if no options

@@ -30,7 +30,7 @@ define(function(require) {
     },
 
     postRender: function() {
-      if (this.model.get('_isAvailableInEditor') == false) {
+      if (this.model.get('isEnabled') == false) {
         this.$el.addClass('restricted');
       }
     },

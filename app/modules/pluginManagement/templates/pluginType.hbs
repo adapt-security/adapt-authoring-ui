@@ -1,4 +1,4 @@
-<div class="pluginType-inner {{#if _isAvailableInEditor}}{{else}}row-disabled{{/if}}">
+<div class="pluginType-inner {{#if isEnabled}}{{else}}row-disabled{{/if}}">
   <div class="pluginType-description col-row">
     <div class="pluginType-title col-20">
       <h4 class="pluginType-title-inner tb-col-inner">{{displayName}}</h4>
@@ -17,7 +17,7 @@
       <span class="pluginType-version-number tb-col-inner">{{version}}</span>
     </div>
     <div class="pluginType-active col-10 col-centered">
-      <input class="pluginType-enabled" type="checkbox" {{#if _isAvailableInEditor}} checked {{/if}}/>
+      <input class="pluginType-enabled" type="checkbox" {{#if isEnabled}} checked {{/if}}/>
     </div>
     {{#if extension}}
       <div class="pluginType-addedDefault col-10 col-centered">

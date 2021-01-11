@@ -30,8 +30,8 @@ define(function(require){
     },
 
     toggleEnabled: function () {
-      this.model.save({
-        _isAvailableInEditor: this.$('.pluginType-enabled').is(':checked')
+      this.model.save({ 
+        isEnabled: this.$('.pluginType-enabled').is(':checked') 
       }, { patch: true });
     },
 
