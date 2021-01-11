@@ -12,9 +12,12 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     buildQuery: function() {
       return _.assign({}, this.customQuery);
     },
+    buildQueryParams: function() {
+      return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${v},`, '?');
+    },
     fetch: function(options) {
       Backbone.Collection.prototype.fetch.call(this, _.assign({
-        url: `${this.url}/query`,
+        url: `${this.url}/query${this.buildQueryParams()}`,
         method: 'POST',
         data: this.buildQuery()
       }, options));
