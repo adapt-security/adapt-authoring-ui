@@ -21,6 +21,6 @@ define(function(require) {
       backButtonText: backButtonText,
       backButtonRoute: backButtonRoute
     });
-    Origin.contentPane.setView(EditorExtensionsEditView, { model: new Backbone.Model({ _id: route1 }) });
+    Origin.contentPane.setView(EditorExtensionsEditView, { model: new Backbone.Model({ _id: Origin.location.route1 }) });
   });
 });
