@@ -204,10 +204,8 @@ define(function(require){
 
     remove: function() {
       $('.contentPane').off('scroll', this._doLazyScroll);
-
       OriginView.prototype.remove.apply(this, arguments);
     }
-
   }, {
     template: 'projects'
   });
