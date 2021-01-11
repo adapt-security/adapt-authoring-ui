@@ -29,15 +29,15 @@ define(function(require){
 
       this.listenTo(Origin, {
         'window:resize dashboard:refresh': this._onResize,
-        'dashboard:dashboardSidebarView:filterBySearch': function(text) { this.doFilter(text) },
-        'dashboard:dashboardSidebarView:filterByTags': function(tags) { this.doFilter(null, tags) },
-        'dashboard:sort:asc': function() { this.doSort('asc'); },
-        'dashboard:sort:desc': function() { this.doSort('desc'); },
-        'dashboard:sort:updated': function() { this.doSort('updated'); }
+        'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
+        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(null, tags),
+        'dashboard:sort:asc': () => this.doSort('asc'),
+        'dashboard:sort:desc': () => this.doSort('desc'),
+        'dashboard:sort:updated': () => this.doSort('updated')
       });
 
       this.supportedLayouts.forEach(function(layout) {
-        this.listenTo(Origin, 'dashboard:layout:' + layout, function() { this.doLayout(layout); });
+        this.listenTo(Origin, `dashboard:layout:${layout}`, () => this.doLayout(layout));
       }, this);
 
       this.listenTo(this.collection, 'add', this.appendProjectItem);
