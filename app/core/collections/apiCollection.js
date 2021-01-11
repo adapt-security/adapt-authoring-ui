@@ -12,7 +12,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     fetch: function(options) {
       Backbone.Collection.prototype.fetch.call(this, _.assign({
-        url: this.url + '/query',
+        url: `${this.url}/query`,
         method: 'POST',
         data: this.buildQuery()
       }, options));
