@@ -5,7 +5,7 @@ define(function(require) {
   var EditorExtensionsEditView = require('./views/editorExtensionsEditView');
   var Origin = require('core/origin');
 
-  Origin.on('editor:extensions', function(data) {
+  Origin.on('editor:extensions', function() {
     Origin.trigger('location:title:update', {
       breadcrumbs: ['dashboard', 'course', { title: Origin.l10n.t('app.editorextensions') }],
       title: Origin.editor.data.course.get('title')
