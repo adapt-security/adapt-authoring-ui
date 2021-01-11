@@ -24,7 +24,10 @@ define(function(require) {
     },
 
     setupExtensions: function(callback) {
-      var plugins = new ContentPluginCollection(undefined, { type: 'extension' });
+      var plugins = new ContentPluginCollection(undefined, { 
+        type: 'extension', 
+        filter: { _isEnabled: true }
+      });
       plugins.fetch({
         success: () => {
           const enabledPlugins = Origin.editor.data.config.get('_enabledPlugins');
