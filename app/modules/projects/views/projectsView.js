@@ -156,24 +156,32 @@ define(function(require){
     },
 
     doSort: function(sort, fetch) {
+      let data;
       switch(sort) {
         case "desc":
-          this.collection.options.sort = 'title:-1';
+          data = { title: -1 };
           break;
         case "updated":
-          this.collection.options.sort = 'updatedAt:-1';
+          data = { updatedAt: -1 };
           break;
         case "asc":
         default:
           sort = "asc";
-          this.collection.options.sort = 'title:1';
-      }
+          data = { title: 1 };
+        }
+      this.collection.options.sort = JSON.stringify(data);
       this.setUserPreference('sort', sort);
+
       if(fetch !== false) this.resetCollection();
     },
 
     doFilter: function(text = "", tags = [], fetch) {
-      this.collection.customQuery = { title: `.*${text.toLowerCase()}.*` };
+      this.collection.customQuery = { 
+        title: { 
+          $regex: `.*${text.toLowerCase()}.*`,
+          $options: 'i'
+        } 
+      };
       this.setUserPreference('search', text, true);
 
       this.tags = _.pluck(tags, 'id');
