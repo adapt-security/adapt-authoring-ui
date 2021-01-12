@@ -13,7 +13,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       return _.assign({}, this.customQuery);
     },
     buildQueryParams: function() {
-      return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${v},`, '?');
+      return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${v}&`, '?');
     },
     fetch: function(options) {
       Backbone.Collection.prototype.fetch.call(this, _.assign({
