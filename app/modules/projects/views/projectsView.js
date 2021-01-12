@@ -77,6 +77,9 @@ define(function(require){
       }
       this.collection.options.limit = 50; // make initial page size BIG to make sure we load enough courses for any window size
       this.resetCollection(() => {
+        if(!this.collection.length) { // no results, so nothing to do
+          return this.setViewToReady();
+        }
         var containerHeight = $(window).height()-this.$el.offset().top;
         var containerWidth = this.$('.projects-inner').width();
         var itemHeight = $('.project-list-item').outerHeight(true);
