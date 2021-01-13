@@ -50,9 +50,7 @@ define(function(require) {
         Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
         Origin.trigger('dashboard:loaded', { type: location || 'all' });
       },
-      error: function() {
-        console.log('Error occured getting the tags collection - try refreshing your page');
-      }
+      error: () => console.log('Error occured getting the tags collection - try refreshing your page')
     });
   });
 
