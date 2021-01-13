@@ -25,10 +25,9 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
 
     render: function() {
       this.editor = window.ace.edit(this.$el[0], {
-        maxLines: 30,
+        maxLines: 50,
         minLines: 14,
-        mode: 'ace/mode/' + this.mode,
-        theme: 'ace/theme/chrome'
+        mode: `ace/mode/${this.mode}`,
       });
 
       this.editor.on('change', function() { this.trigger('change', this); }.bind(this));
@@ -41,7 +40,6 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
       if (this.mode === 'json') {
         value = JSON.stringify(value, null, '\t');
       }
-
       this.editor.setValue(value);
     },
 
