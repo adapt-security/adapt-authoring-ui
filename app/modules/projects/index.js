@@ -60,14 +60,16 @@ define(function(require) {
     if(!isMine && !isShared) {
       return;
     }
-    var titleKey = isMine ? 'myprojects' : 'sharedprojects';
     var meId = Origin.sessionModel.get('user')._id;
-    var coll = new ContentCollection(undefined, { 
+    var collection = new ContentCollection(undefined, { 
       _type: 'course',
       filter: { createdBy: isMine ? meId : { $ne: meId } }
     });
-    Origin.trigger('location:title:update', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.' + titleKey) });
-    Origin.contentPane.setView(ProjectsView, { collection: coll, _isShared: isShared });
+    Origin.trigger('location:title:update', { 
+      breadcrumbs: ['dashboard'], 
+      title: Origin.l10n.t(`app.${isMine ? 'myprojects' : 'sharedprojects'}`) 
+    });
+    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared });
   });
 
   Origin.on('globalMenu:dashboard:open', () => Origin.router.navigateTo('dashboard'));
