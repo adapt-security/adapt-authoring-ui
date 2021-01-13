@@ -2,7 +2,6 @@
 (function() {
   function loadLibraries(callback) {
     require([
-      'ace/ace',
       'handlebars',
       'imageReady',
       'inview',
@@ -14,7 +13,7 @@
       'selectize',
       'sweetalert',
       'velocity'
-    ], function(Ace, Handlebars) {
+    ], function(Handlebars) {
       window.Handlebars = $.extend(Handlebars, window.Handlebars);
       callback();
     });

@@ -40,12 +40,6 @@ module.exports = function(grunt) {
             ],
             dest: 'build/css/assets/',
             filter: 'isFile'
-          },
-          {
-            expand: true,
-            flatten: true,
-            src: ['app/libraries/ace/*'],
-            dest: 'build/js/ace'
           }
         ]
       }
