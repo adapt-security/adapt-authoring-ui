@@ -112,6 +112,7 @@ define(function(require){
 
     resetCollection: function(cb) {
       this.emptyProjectsContainer();
+      this.collection.options.collation = { locale: navigator.language.substring(0, 2) };
       this.collection.options.skip = 0;
       this.shouldStopFetches = false;
       this.collection.reset();
