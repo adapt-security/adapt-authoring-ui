@@ -37,8 +37,8 @@ define(function(require){
       });
 
       this.supportedLayouts.forEach(l => {
-        this.listenTo(Origin, `dashboard:layout:${l}`, () => this.doLayout(l);
-      }), this);
+        this.listenTo(Origin, `dashboard:layout:${l}`, () => this.doLayout(l));
+      }, this);
 
       this.listenTo(this.collection, 'add', this.appendProjectItem);
 
