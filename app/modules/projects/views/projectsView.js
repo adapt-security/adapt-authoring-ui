@@ -36,9 +36,9 @@ define(function(require){
         'dashboard:sort:updated': () => this.doSort('updated')
       });
 
-      this.supportedLayouts.forEach(function(layout) {
-        this.listenTo(Origin, `dashboard:layout:${layout}`, () => this.doLayout(layout));
-      }, this);
+      this.supportedLayouts.forEach(l => {
+        this.listenTo(Origin, `dashboard:layout:${l}`, () => this.doLayout(l);
+      }), this);
 
       this.listenTo(this.collection, 'add', this.appendProjectItem);
 
