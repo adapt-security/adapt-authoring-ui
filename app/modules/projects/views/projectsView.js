@@ -169,7 +169,7 @@ define(function(require){
           sort = "asc";
           data = { title: 1 };
         }
-      this.collection.options.sort = JSON.stringify(data);
+      this.collection.options.sort = data;
       this.setUserPreference('sort', sort);
 
       if(fetch !== false) this.resetCollection();
