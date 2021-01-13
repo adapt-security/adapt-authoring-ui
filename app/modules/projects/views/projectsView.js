@@ -124,7 +124,6 @@ define(function(require){
         return;
       }
       this.isCollectionFetching = true;
-
       this.collection.fetch({
         success: (collection, response) => {
           this.isCollectionFetching = false;
@@ -181,7 +180,7 @@ define(function(require){
         title: { 
           $regex: `.*${text.toLowerCase()}.*`,
           $options: 'i'
-        } 
+        }
       };
       this.setUserPreference('search', text, true);
 
