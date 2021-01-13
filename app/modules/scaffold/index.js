@@ -154,7 +154,7 @@ define([
     'updatedAt',
     'userGroups',
   ];
-  function buildSchema(requiredKeys, schema, options, type) {
+  function buildSchema(requiredKeys, schema) {
     var scaffoldSchema = {};
     var field = { type: 'object', properties: Object.assign({}, _.omit(schema, ATTRIBUTE_BLACKLIST)) };
     
@@ -276,7 +276,7 @@ define([
     } catch(e) {
       console.error(e);
     }
-    options.model.schema = buildSchema(schema.required, schema.properties, options, contentType);
+    options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);
     alternativeModel = options.alternativeModelToSave;
     alternativeAttribute = options.alternativeAttributeToSave;
