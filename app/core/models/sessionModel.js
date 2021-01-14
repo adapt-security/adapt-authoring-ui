@@ -25,6 +25,10 @@ define(['require', 'backbone'], function(require, Backbone) {
     },
 
     login: function (email, password, shouldPersist, cb) {
+      const onError = ({ responseJSON }) => {
+        this.clear();
+        cb(responseJSON);
+      };
       $.post('api/auth/local', { email, password })
         .done(() => {
           this.fetch({ 
@@ -32,10 +36,10 @@ define(['require', 'backbone'], function(require, Backbone) {
               this.Origin.trigger('login:changed');
               this.once('sync', () => cb());
             },
-            error: ({ responseJSON }) => cb(responseJSON)
+            error: onError
           });
         })
-        .fail(({ responseJSON }) => cb(responseJSON));
+        .fail(onError);
     },
     
     logout: async function() {
