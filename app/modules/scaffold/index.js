@@ -322,19 +322,19 @@ define([
     if (value.length < 3) return err;
   });
   */
-  Scaffold.getCurrentModel = function() { return currentModel; };
-  Scaffold.getCurrentForm = function() { return currentForm; };
-  Scaffold.getAlternativeModel = function() { return alternativeModel; };
-  Scaffold.getAlternativeAttribute = function() { return alternativeAttribute; };
-  Scaffold.getCurrentActiveModals = function() { return ActiveItemsModal; };
-  Scaffold.isOverlayActive = function() { return isOverlayActive; };
-  Scaffold.setOverlayActive = function(booleanValue) { isOverlayActive = booleanValue; };
+  Scaffold.getCurrentModel = () => currentModel;
+  Scaffold.getCurrentForm = () => currentForm;
+  Scaffold.getAlternativeModel = () => alternativeModel;
+  Scaffold.getAlternativeAttribute = () => alternativeAttribute;
+  Scaffold.getCurrentActiveModals = () => ActiveItemsModal;
+  Scaffold.isOverlayActive = () => isOverlayActive;
+  Scaffold.setOverlayActive = value => isOverlayActive = value;
   Scaffold.addCustomField('Boolean', Backbone.Form.editors.Checkbox);
   Scaffold.addCustomField('QuestionButton', Backbone.Form.editors.Text);
 
   Origin.on({
-    'scaffold:increaseActiveModals': function() { ActiveItemsModal++; },
-    'scaffold:decreaseActiveModals': function() { ActiveItemsModal--; },
+    'scaffold:increaseActiveModals': () => ActiveItemsModal++,
+    'scaffold:decreaseActiveModals': () => ActiveItemsModal--
   });
 
   Origin.scaffold = Scaffold;
