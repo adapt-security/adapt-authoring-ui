@@ -9,11 +9,10 @@ define([
     tagName: 'input',
 
     className: 'scaffold-colour-picker',
-
     events: {
-      'change': function() { this.trigger('change', this); },
-      'focus': function() { this.trigger('focus', this); },
-      'blur': function() { this.trigger('blur', this); }
+      'change': () => this.trigger('change', this),
+      'focus': () => this.trigger('focus', this),
+      'blur': () => this.trigger('blur', this)
     },
 
     render: function() {
@@ -36,12 +35,8 @@ define([
         showSelectionPalette: true,
         maxSelectionSize: 24,
         localStorageKey: "adapt-authoring.spectrum.colourpicker",
-        show: function(colour) {
-          Origin.contentPane.disableScroll();
-        },
-        hide: function(colour) {
-          Origin.contentPane.enableScroll();
-        }
+        show: () => Origin.contentPane.disableScroll(),
+        hide: () => Origin.contentPane.enableScroll()
       });
       // remove class beacuse we aren't using the clear button
       $('.sp-container').removeClass('sp-clear-enabled');
