@@ -16,9 +16,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       Origin.trigger('router:initialize');
       this.locationKeys = ['module', 'route1', 'route2', 'route3', 'route4'];
       this.resetLocation();
-      Origin.on('origin:dataReady', (function() {
-        Backbone.history.start();
-      }).bind(this));
+      Origin.on('origin:dataReady', () => Backbone.history.start());
     },
 
     updateLocation: function(routeArgs) {
