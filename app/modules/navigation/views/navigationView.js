@@ -17,6 +17,9 @@ define(function(require){
     },
 
     render: function() {
+      if(!Origin.sessionModel.get('isAuthenticated')) {
+        return;
+      }
       var data = this.model ? this.model.toJSON() : null;
       var template = Handlebars.templates[this.constructor.template];
       this.$el.html(template(data));
