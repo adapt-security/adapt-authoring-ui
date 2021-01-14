@@ -38,13 +38,15 @@ define(['require', 'backbone'], function(require, Backbone) {
       .fail(({ responseJSON }) => cb(responseJSON));
     },
     
-    logout: function () {
-      $.post('api/auth/disavow', () => {
-        // revert to the defaults
-        this.set(this.defaults);
-        this.Origin.trigger('login:changed');
-        this.Origin.router.navigateToLogin();
-      });
+    logout: async function() {
+      try {
+        await $.post('api/auth/disavow');
+      } catch(e) {
+        return console.error(e);
+      }
+      this.clear();
+      this.Origin.trigger('login:changed');
+      this.Origin.router.navigateToLogin();
     }
   });
 
