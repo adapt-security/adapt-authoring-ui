@@ -4,7 +4,6 @@ define(function(require) {
   var UserManagementSidebarView = require('./views/userManagementSidebarView');
   var AddUserView = require('./views/addUserView');
   var AddUserSidebarView = require('./views/addUserSidebarView');
-  var CustomHelpers = require('./helpers');
   var UserCollection = require('./collections/userCollection');
 
   var isReady = false;
