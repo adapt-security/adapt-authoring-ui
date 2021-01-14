@@ -176,11 +176,9 @@ define(function(require){
     },
 
     doFilter: function(text = "", tags = [], fetch) {
-      this.collection.customQuery = { 
-        title: { 
-          $regex: `.*${text.toLowerCase()}.*`,
-          $options: 'i'
-        }
+      this.collection.customQuery.title = { 
+        $regex: `.*${text.toLowerCase()}.*`,
+        $options: 'i'
       };
       this.setUserPreference('search', text, true);
 
