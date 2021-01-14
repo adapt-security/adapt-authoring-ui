@@ -34,7 +34,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       var route1 = routeArgs[1];
       $('body')
         .removeClass()
-        .addClass('module-' + mod + ((route1) ? ' location-' + route1 : ''));
+        .addClass(`module-${mod}${route1 ? ` location-${route1}` : ''}`);
 
       Origin.trigger('location:change', Origin.location);
     },
