@@ -23,7 +23,7 @@ define(function(require) {
 
     settings.authenticate = false;
 
-    switch (location) {
+    switch(location) {
       case 'login':
         Origin.trigger('location:title:hide');
         currentView = LoginView;
@@ -45,9 +45,8 @@ define(function(require) {
         currentView = UserProfileView;
         break;
     }
-
-    if (currentView) {
-      switch (location) {
+    if(currentView) {
+      switch(location) {
         case 'profile':
           var profile = new UserProfileModel();
           profile.fetch({
