@@ -4,9 +4,7 @@ define([
 ], function(Origin, Spectrum) {
 
   var ScaffoldColourPickerView = Backbone.Form.editors.Base.extend({
-
     tagName: 'input',
-
     className: 'scaffold-colour-picker',
     events: {
       'change': () => this.trigger('change', this),
@@ -64,7 +62,6 @@ define([
       this.$el.spectrum('destroy');
       Backbone.Form.editors.Text.prototype.remove.call(this);
     }
-
   });
 
   Origin.on('origin:dataReady', function() {
