@@ -51,7 +51,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     restrictRoute: function(route, scopes) {
       if(this.restrictedRoutes[route]) {
-        return console.error('Route already restricted', route);
+        return console.warn(`Route '${route}' already restricted`);
       }
       this.restrictedRoutes[route] = scopes;
     },
