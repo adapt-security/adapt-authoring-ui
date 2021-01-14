@@ -48,21 +48,17 @@ define(function(require) {
     if(currentView) {
       switch(location) {
         case 'profile':
-          var profile = new UserProfileModel();
-          profile.fetch({
+          var model = new UserProfileModel();
+          model.fetch({
             success: function() {
               Origin.sidebar.addView(new UserProfileSidebarView().$el);
-              Origin.contentPane.setView(currentView, { model: profile });
+              Origin.contentPane.setView(currentView, { model });
             }
           });
           break;
         case 'reset':
-          var reset = new UserPasswordResetModel({token: subLocation});
-          reset.fetch({
-            success: function() {
-              Origin.contentPane.setView(currentView, { model: reset });
-            }
-          });
+          var model = new UserPasswordResetModel({ token: subLocation });
+          reset.fetch({ success: () => Origin.contentPane.setView(currentView, { model }) });
           break;
         default:
           Origin.contentPane.setView(currentView, { model: Origin.sessionModel });
