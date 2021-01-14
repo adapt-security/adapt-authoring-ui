@@ -26,16 +26,16 @@ define(['require', 'backbone'], function(require, Backbone) {
 
     login: function (email, password, shouldPersist, cb) {
       $.post('api/auth/local', { email, password })
-      .done(() => {
-        this.fetch({ 
-          success: () => {
-            this.Origin.trigger('login:changed');
-            this.once('sync', () => cb());
-          },
-          error: ({ responseJSON }) => cb(responseJSON)
-        });
-      })
-      .fail(({ responseJSON }) => cb(responseJSON));
+        .done(() => {
+          this.fetch({ 
+            success: () => {
+              this.Origin.trigger('login:changed');
+              this.once('sync', () => cb());
+            },
+            error: ({ responseJSON }) => cb(responseJSON)
+          });
+        })
+        .fail(({ responseJSON }) => cb(responseJSON));
     },
     
     logout: async function() {
