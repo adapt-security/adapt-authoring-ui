@@ -28,9 +28,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       this.evaluateDashboardRoute();
 
       this.resetLocation();
-      _.each(this.locationKeys, function(key, index) {
-        Origin.location[key] = routeArgs[index];
-      });
+      this.locationKeys.forEach((k,i) => Origin.location[k] = routeArgs[i]);
 
       var mod = routeArgs[0];
       var route1 = routeArgs[1];
