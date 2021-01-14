@@ -24,7 +24,7 @@ define(['require', 'backbone'], function(require, Backbone) {
       return scopes.every(s => assignedScopes.includes(s));
     },
 
-    login: function (email, password, shouldPersist, cb) {
+    login: function (email, password, cb) {
       const onError = ({ responseJSON }) => {
         this.clear();
         cb(responseJSON);
