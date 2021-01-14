@@ -30,8 +30,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       this.resetLocation();
       this.locationKeys.forEach((k,i) => Origin.location[k] = routeArgs[i]);
 
-      var mod = routeArgs[0];
-      var route1 = routeArgs[1];
+      var [mod, route1] = routeArgs;
       $('body')
         .removeClass()
         .addClass(`module-${mod}${route1 ? ` location-${route1}` : ''}`);
