@@ -53,15 +53,11 @@ define([
     },
 
     focus: function() {
-      if (!this.hasFocus) {
-        this.$el.focus();
-      }
+      if(!this.hasFocus) this.$el.focus();
     },
 
     blur: function() {
-      if (this.hasFocus) {
-        this.$el.blur();
-      }
+      if(this.hasFocus) this.$el.blur();
     },
 
     remove: function() {
