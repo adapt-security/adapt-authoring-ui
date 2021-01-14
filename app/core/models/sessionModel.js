@@ -33,8 +33,10 @@ define(['require', 'backbone'], function(require, Backbone) {
         .done(() => {
           this.fetch({ 
             success: () => {
-              this.Origin.trigger('login:changed');
-              this.once('sync', () => cb());
+              this.once('sync', () => {
+                cb();
+                this.Origin.trigger('login:changed');
+              });
             },
             error: onError
           });
