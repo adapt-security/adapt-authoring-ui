@@ -24,9 +24,7 @@ define(function(require) {
         render: function() {
             var template = Handlebars.templates[this.constructor.template];
             this.$el.html(template(this.data));
-            _.defer(_.bind(function() {
-                this.postRender();
-            }, this));
+            _.defer(() => this.postRender());
             return this;
         },
 
@@ -39,7 +37,7 @@ define(function(require) {
             if(offsetTop+sidebarHeight > windowHeight) {
                 offsetTop = windowHeight - (sidebarHeight + 10); 
             }
-            this.$el.css({'top': offsetTop, 'display': 'block'});
+            this.$el.css({ top: offsetTop, display: 'block' });
             // resize
             var popupHeight = $('.sidebar-filter').outerHeight();
             var top = $('.sidebar-filter').offset().top;
@@ -56,84 +54,57 @@ define(function(require) {
         },
 
         onSearchKeyDown: function(event) {
-            // This is to stop the cursor moving around the input
-            // element when pressing up and down
-            if (event.which === 38) {
-                event.preventDefault();
-            }
-            if (event.which === 40) {
-                event.preventDefault();
-            }
+            // This is to stop the cursor moving around the input element when pressing up and down
+            if(event.which === 38 || event.which === 40) event.preventDefault();
         },
 
         onSearchKeyUp: function(event) {
-            // Check whether the key pressed is up or down
-            if (event.which === 38) {
-                return this.moveUpThroughItems();
-            }
-            if (event.which === 40) {
-                return this.moveDownThroughItems();
-            }
-            if (event.which === 13) {
-                return this.addFilter();
+            switch(evemt.which) {
+              case 38: return this.moveUpThroughItems(); // up
+              case 40: return this.moveDownThroughItems(); // down
+              case 13: return this.addFilter(); // enter
             }
             this.searchItems(event);
         },
 
         moveUpThroughItems: function() {
-            // Check if the element is the first one
-            // as the first item cannot go any further
             var $selectedItem = this.$('.sidebar-filter-item.selected');
             var $prevItem = $selectedItem.prevAll('.sidebar-filter-item:visible:first');
-            // First check if there's any more visible elements to navigate through
-            if ($prevItem.length === 0) {
-                return;
+            if($prevItem.length === 0 || $selectedItem.is(':first-child')) {
+                return; // no more items
             }
-            if (!$selectedItem.is(':first-child')) {
-                this.$('.sidebar-filter-item.selected')
-                    .removeClass('selected')
-                    .prevAll('.sidebar-filter-item:visible:first')
-                    .addClass('selected')
-                    .focus();
-                this.$('.sidebar-filter-search-input').focus();
-            }
+            this.$('.sidebar-filter-item.selected')
+                .removeClass('selected')
+                .prevAll('.sidebar-filter-item:visible:first')
+                .addClass('selected')
+                .focus();
+                
+            this.$('.sidebar-filter-search-input').focus();
         },
 
         moveDownThroughItems: function() {
-            // Check if the element is the last visible one
-            // as the last item cannot go any further
             var $selectedItem = this.$('.sidebar-filter-item.selected');
             var $nextItem = $selectedItem.nextAll('.sidebar-filter-item:visible:first');
-
-            // First check if there's any more visible elements to navigate through
-            if ($nextItem.length === 0) {
-                return;
+            if($nextItem.length === 0 || $selectedItem.is(':last-child')) {
+                return; // no more items
             }
-            if (!$selectedItem.is(':last-child')) {
-                this.$('.sidebar-filter-item.selected')
-                    .removeClass('selected')
-                    .nextAll('.sidebar-filter-item:visible:first')
-                    .addClass('selected')
-                    .focus();
-                this.$('.sidebar-filter-search-input').focus();
-            }
+            this.$('.sidebar-filter-item.selected')
+                .removeClass('selected')
+                .nextAll('.sidebar-filter-item:visible:first')
+                .addClass('selected')
+                .focus();
+                
+            this.$('.sidebar-filter-search-input').focus();
         },
 
         searchItems: function(event) {
-
-            var searchText = $(event.currentTarget).val().toLowerCase();
-            this.$('.sidebar-filter-item').removeClass('selected');
-
+            var search = $(event.currentTarget).val().toLowerCase();
             this.$('.sidebar-filter-item').each(function(event) {
                 var itemText = $('.sidebar-filter-item-inner', $(this)).text().toLowerCase();
-
-                if (itemText.indexOf(searchText) > -1) {
-                    $(this).removeClass('display-none');
-                } else {
-                    $(this).addClass('display-none');
-                }
+                $(this).toggleClass('display-none', !itemText.includes(search));
             });
             // Should always select the top one on search
+            this.$('.sidebar-filter-item').removeClass('selected');
             this.$('.sidebar-filter-item:visible:first').addClass('selected').focus();
             this.$('.sidebar-filter-search-input').focus();
         },
@@ -143,7 +114,7 @@ define(function(require) {
                 title: this.$('.sidebar-filter-item.selected').attr('data-title'),
                 id: this.$('.sidebar-filter-item.selected').attr('data-id')
             };
-            if (!selectedTag.title || !selectedTag.id) {
+            if(!selectedTag.title || !selectedTag.id) {
                 return;
             }
             Origin.trigger('sidebarFilter:filterByTags', selectedTag);
