@@ -1,13 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-
     var Origin = require('core/origin');
     var OriginView = require('core/views/originView');
 
     var SidebarFilterView = OriginView.extend({
-
         className: 'sidebar-filter',
-
         events: {
             'click .sidebar-filter-toolbar-close': 'onCloseButtonClicked',
             'keydown .sidebar-filter-search-input': 'onSearchKeyDown',
@@ -42,15 +39,12 @@ define(function(require) {
             if(offsetTop+sidebarHeight > windowHeight) {
                 offsetTop = windowHeight - (sidebarHeight + 10); 
             }
- 
             this.$el.css({'top': offsetTop, 'display': 'block'});
-
             // resize
             var popupHeight = $('.sidebar-filter').outerHeight();
             var top = $('.sidebar-filter').offset().top;
             var containerTop = $('.sidebar-filter-items').offset().top;
             $('.sidebar-filter-items').height(popupHeight-(containerTop-top));
-
             // Bring focus to the filter input field
             this.$('.sidebar-filter-search-input').focus();
             // First item should be selected so the user can press enter
@@ -67,11 +61,9 @@ define(function(require) {
             if (event.which === 38) {
                 event.preventDefault();
             }
-
             if (event.which === 40) {
                 event.preventDefault();
             }
-
         },
 
         onSearchKeyUp: function(event) {
@@ -79,17 +71,13 @@ define(function(require) {
             if (event.which === 38) {
                 return this.moveUpThroughItems();
             }
-
             if (event.which === 40) {
                 return this.moveDownThroughItems();
             }
-
             if (event.which === 13) {
                 return this.addFilter();
             }
-
             this.searchItems(event);
-
         },
 
         moveUpThroughItems: function() {
@@ -97,12 +85,10 @@ define(function(require) {
             // as the first item cannot go any further
             var $selectedItem = this.$('.sidebar-filter-item.selected');
             var $prevItem = $selectedItem.prevAll('.sidebar-filter-item:visible:first');
-
             // First check if there's any more visible elements to navigate through
             if ($prevItem.length === 0) {
                 return;
             }
-
             if (!$selectedItem.is(':first-child')) {
                 this.$('.sidebar-filter-item.selected')
                     .removeClass('selected')
@@ -111,7 +97,6 @@ define(function(require) {
                     .focus();
                 this.$('.sidebar-filter-search-input').focus();
             }
-            
         },
 
         moveDownThroughItems: function() {
@@ -124,7 +109,6 @@ define(function(require) {
             if ($nextItem.length === 0) {
                 return;
             }
-
             if (!$selectedItem.is(':last-child')) {
                 this.$('.sidebar-filter-item.selected')
                     .removeClass('selected')
@@ -133,7 +117,6 @@ define(function(require) {
                     .focus();
                 this.$('.sidebar-filter-search-input').focus();
             }
-
         },
 
         searchItems: function(event) {
@@ -142,7 +125,6 @@ define(function(require) {
             this.$('.sidebar-filter-item').removeClass('selected');
 
             this.$('.sidebar-filter-item').each(function(event) {
-
                 var itemText = $('.sidebar-filter-item-inner', $(this)).text().toLowerCase();
 
                 if (itemText.indexOf(searchText) > -1) {
@@ -150,9 +132,7 @@ define(function(require) {
                 } else {
                     $(this).addClass('display-none');
                 }
-
             });
-
             // Should always select the top one on search
             this.$('.sidebar-filter-item:visible:first').addClass('selected').focus();
             this.$('.sidebar-filter-search-input').focus();
@@ -163,7 +143,6 @@ define(function(require) {
                 title: this.$('.sidebar-filter-item.selected').attr('data-title'),
                 id: this.$('.sidebar-filter-item.selected').attr('data-id')
             };
-
             if (!selectedTag.title || !selectedTag.id) {
                 return;
             }
@@ -177,11 +156,9 @@ define(function(require) {
             $(event.currentTarget).addClass('selected');
             this.addFilter();
         }
-
     }, {
         template: 'sidebarFilter'
     });
 
     return SidebarFilterView;
-
 })
