@@ -56,7 +56,7 @@ define(function(require) {
         },
 
         onSearchKeyUp: function(event) {
-            switch(evemt.which) {
+            switch(event.which) {
               case 38: return this.moveUpThroughItems(); // up
               case 40: return this.moveDownThroughItems(); // down
               case 13: return this.addFilter(); // enter
