@@ -13,11 +13,8 @@ define(function(require) {
         },
 
         initialize: function(options) {
-            this.data = {};
-            this.data.title = options.title;
-            this.data.items = options.items;
-            this.listenTo(Origin, 'remove:views', this.remove);
-            this.listenTo(Origin, 'sidebar:sidebarFilter:remove', this.remove);
+            this.data = { title: options.title, items: options.items };
+            this.listenTo(Origin, 'remove:views sidebar:sidebarFilter:remove', this.remove);
             this.render();
         },
 
