@@ -40,10 +40,7 @@ define(function(require) {
         'editorView:copyID': this.copyIdToClipboard,
         'editorView:paste': this.pasteFromClipboard,
         'editorCommon:download': this.downloadProject,
-        'editorCommon:preview': function(isForceRebuild) {
-          var previewWindow = window.open('loading', 'preview');
-          this.previewProject(previewWindow, isForceRebuild);
-        },
+        'editorCommon:preview': this.previewProject,
         'editorCommon:export': this.exportProject
       });
       this.render();
@@ -58,7 +55,7 @@ define(function(require) {
       this.renderCurrentEditorView();
     },
 
-    previewProject: function(previewWindow, forceRebuild) {
+    previewProject: function() {
       if(Origin.editor.isPreviewPending) {
         return;
       }
@@ -66,8 +63,10 @@ define(function(require) {
       $('.navigation-loading-indicator').removeClass('display-none');
       $('.editor-common-sidebar-preview-inner').addClass('display-none');
       $('.editor-common-sidebar-previewing').removeClass('display-none');
-
-      $.post('api/adapt/preview/' + this.currentCourseId + '?force='+(forceRebuild === true))
+      
+      const previewWindow = window.open('loading', 'preview');
+      
+      $.post(`api/adapt/preview/${this.currentCourseId}`)
         .done(data => {
           this.resetPreviewProgress();
           previewWindow.location.href = data.preview_url;
