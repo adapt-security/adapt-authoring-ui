@@ -4,10 +4,9 @@ define(function(require) {
   var ContentObjectModel = require('core/models/contentObjectModel');
   var ArticleModel = require('core/models/articleModel');
   var BlockModel = require('core/models/blockModel');
+  var ConfigModel = require('core/models/configModel');
   var ComponentModel = require('core/models/componentModel');
-  var ComponentTypeModel = require('core/models/componentTypeModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
-  var EditorCollection = require('../../global/collections/editorCollection');
 
   var EditorCourseEditView = EditorOriginView.extend({
     className: "course-edit",
@@ -40,86 +39,53 @@ define(function(require) {
       return null;
     },
 
-    onSaveSuccess: function(model, response, options) {
+    onSaveSuccess: async function(model, response, options) {
       if(!this.isNew) {
         EditorOriginView.prototype.onSaveSuccess.apply(this, arguments);
         return;
       }
-      this.populateNewCourse(model);
-    },
-
-    // FIXME not really  good enough to handle model save errors and other errors here
-    onSaveError: function(model, response, options) {
-      if(arguments.length === 2) {
-        EditorOriginView.prototype.onSaveError.apply(this, arguments);
-        return;
+      try {
+        await this.populateNewCourse();
+        Origin.router.navigateTo(`editor/${model.get('_id')}/menu`);
+      } catch(e) {
+        EditorOriginView.prototype.onSaveError.call(this, null, e.message);
       }
-      var messageText = typeof response.responseJSON == 'object' && response.responseJSON.message;
-      EditorOriginView.prototype.onSaveError.call(this, null, messageText);
     },
-
     /**
      * When a new course is created it gets populated with a page, article, block and text component
      * so that it can be previewed immediately.
      * @param model
      */
-    populateNewCourse: function(model) {
-      this.createGenericPage(model);
-    },
-
-    createGenericPage: function(courseModel) {
-      var contentObjectModel = new ContentObjectModel({
-        _type: 'page',
-        _courseId: courseModel.get('_id'),
-        _parentId: courseModel.get('_id')
-      });
-      contentObjectModel.save(null, {
-        error: _.bind(this.onSaveError, this),
-        success: _.bind(this.createGenericArticle, this)
-      });
-    },
-
-    createGenericArticle: function(pageModel) {
-      var articleModel = new ArticleModel({
-        _courseId: pageModel.get('_courseId'),
-        _parentId: pageModel.get('_id'),
-        _type: 'article'
-      });
-      articleModel.save(null, {
-        error: _.bind(this.onSaveError, this),
-        success: _.bind(this.createGenericBlock, this)
-      });
-    },
-
-    createGenericBlock: function(articleModel) {
-      var blockModel = new BlockModel({
-        _courseId: articleModel.get('_courseId'),
-        _parentId: articleModel.get('_id'),
-        _type: 'block',
+    populateNewCourse: async function() {
+      const config = await this.createNewContentObject(ConfigModel);
+      const page = await this.createNewContentObject(ContentObjectModel, { _type: 'page', _parentId: this.model.get('_id') });
+      const article = await this.createNewContentObject(ArticleModel, { _parentId: page.get('_id') });
+      const block = await this.createNewContentObject(BlockModel, {
+        _parentId: article.get('_id'),
         layoutOptions: [
           { type: 'left', name: 'app.layoutleft', pasteZoneRenderOrder: 2 },
           { type: 'full', name: 'app.layoutfull', pasteZoneRenderOrder: 1 },
           { type: 'right', name: 'app.layoutright', pasteZoneRenderOrder: 3 }
         ]
       });
-      blockModel.save(null, {
-        error: _.bind(this.onSaveError, this),
-        success: _.bind(this.createGenericComponent, this)
+      const component = await this.createNewContentObject(ComponentModel, {
+        _parentId: block.get('_id'),
+        body: Origin.l10n.t('app.projectcontentbody'),
+        _component: 'text',
+        _layout: 'full'
       });
     },
 
-    createGenericComponent: function(blockModel) {
-      const _courseId = blockModel.get('_courseId');
-      (new ComponentModel({
-        _courseId,
-        _parentId: blockModel.get('_id'),
-        body: Origin.l10n.t('app.projectcontentbody'),
-        _type: 'component',
-        _component: 'text',
-        _layout: 'full'
-      })).save(null, {
-        error: _.bind(this.onSaveError, this),
-        success: () => Origin.router.navigateTo(`editor/${_courseId}/menu`)
+    createNewContentObject: function(Model, data) {
+      return new Promise((resolve, reject) => {
+        const model = new Model(Object.assign({ _courseId: this.model.get('_id') }, data));
+        model.save(null, {
+          success: model => resolve(model),
+          error: (model, response) => {
+            const message = response.responseJson && response.responseJson.message || 'Failed to create data';
+            reject(new Error(message));
+          }
+        });
       });
     }
   }, {
