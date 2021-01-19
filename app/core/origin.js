@@ -40,7 +40,7 @@ define([
       this.loadUtilities((function() {
         Origin.sessionModel = new SessionModel(this);
         Origin.sessionModel.fetch({
-          success: callback,
+          success: () => callback(),
           error: function(model, jqXhr) {
             if(jqXhr.status === 401) return callback();
             callback(new Error(jqXhr.responseJSON.message));
