@@ -3,6 +3,7 @@ define(function(require) {
   var ContentModel = require('./contentModel');
 
   var BlockModel = ContentModel.extend({
+    _type: 'block',
     _parentType: 'article',
     _siblingTypes: 'block',
     _childTypes: 'component',

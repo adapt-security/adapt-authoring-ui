@@ -7,6 +7,10 @@ define(function(require) {
     attributeBlacklist: null,
     urlRoot: 'api/content',
 
+    initialize: function() {
+      if(!this.get('_type')) this.set('_type', this._type);
+    },
+
     serialize: function() {
       return JSON.stringify(this);
     },
