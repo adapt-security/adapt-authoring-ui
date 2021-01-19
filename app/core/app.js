@@ -13,7 +13,7 @@
       'selectize',
       'sweetalert',
       'velocity'
-    ], function(Handlebars) {
+    ], Handlebars => {
       window.Handlebars = $.extend(Handlebars, window.Handlebars);
       callback();
     });
@@ -24,9 +24,7 @@
       'templates/templates',
       'core/origin',
       'core/helpers',
-    ], function(Templates, Origin) {
-      callback(Origin);
-    });
+    ], (Templates, Origin) => callback(Origin));
   }
 
   function loadExtras(callback) {
@@ -35,12 +33,11 @@
   /**
    * Start app load
    */
-  loadLibraries(function() {
-    loadCore(function(Origin) {
-      Origin.startSession(function() {
-        loadExtras(function() {
-          Origin.initialize();
-        });
+  loadLibraries(() => {
+    loadCore(Origin => {
+      Origin.startSession(error => {
+        if(error) return console.error(error);
+        loadExtras(() => Origin.initialize());
       });
     });
   });
