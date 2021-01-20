@@ -37,7 +37,7 @@ define(function(require){
 
     toggleAddedDefault: function() {
       this.model.save({
-        _isAddedByDefault: this.$('.pluginType-addedDefault').is(':checked')
+        isAddedByDefault: this.$('.pluginType-addedDefault').is(':checked')
       }, { patch: true });
     },
 
