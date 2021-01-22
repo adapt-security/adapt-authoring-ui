@@ -13,14 +13,14 @@
     <div class="col-25">
       <div class="tb-col-inner">
         <span class="read no-wrap">{{email}}</span>
-        {{#ifUserNotMe _id}}{{#unless _isDeleted}}
+        {{#ifUserNotMe _id}}{{#if isEnabled}}
           <a class="edit read edit-mode"><i class="fa fa-pencil-square-o"></i></a>
           <div class="input-container write">
             <input class="input" type="email" data-modelKey="email" autocomplete="off">
             <a class="save"><i class="fa fa-check-square-o"></i></a>
             <a class="cancel"><i class="fa fa-times"></i></a>
           </div>
-        {{/unless}}{{/ifUserNotMe}}
+        {{/if}}{{/ifUserNotMe}}
       </div>
     </div>
     <div class="col-15">
@@ -32,7 +32,7 @@
           {{/each}}
           </ul>
         </div>
-        {{#ifUserNotMe _id}}{{#unless _isDeleted}}
+        {{#ifUserNotMe _id}}{{#if isEnabled}}
             <a class="edit read edit-mode"><i class="fa fa-pencil-square-o"></i></a>
             <div class="write">
               <select class="input" data-modelKey="roles">
@@ -45,7 +45,7 @@
               <a class="saveRoles"><i class="fa fa-check-square-o"></i></a>
               <a class="cancel"><i class="fa fa-times"></i></a>
             </div>
-        {{/unless}}{{/ifUserNotMe}}
+        {{/if}}{{/ifUserNotMe}}
       </div>
     </div>
     <div class="col-10 col-centered">
@@ -63,9 +63,6 @@
     <div class="col-10 col-centered">
       <div class="tb-col-inner">
         {{failedLoginAttempts}}
-        {{#if _isLocked}}
-          <i class="fa fa-lock"></i>
-        {{/if}}
       </div>
     </div>
     <div class="col-15 col-centered">
@@ -73,8 +70,8 @@
     </div>
     <div class="col-10 col-centered temp">
       <div class="tb-col-inner">
-        {{#if _isTempLocked}}<i class="fa fa-lock temp"></i>{{/if}}
-        {{#if _isPermLocked}}<i class="fa fa-lock perm"></i>{{/if}}
+        {{#if isTempLocked}}<i class="fa fa-lock temp"></i>{{/if}}
+        {{#if isPermLocked}}<i class="fa fa-lock perm"></i>{{/if}}
       </div>
     </div>
     <div class="col-15">
@@ -85,8 +82,7 @@
               {{t 'app.changeadminaccounts'}}
             </div>
           {{/ifUserIsMe}}
-          {{#if _isDeleted}}
-          {{else}}
+          {{#if isEnabled}}
             <div class="group">
               {{#ifMailEnabled}}
                 <button class="btn primary invite">{{t 'app.inviteuser'}}</button>
@@ -95,7 +91,11 @@
                 <button class="btn tertiary changePassword">{{t 'app.changepassword'}}</button>
               {{/ifMailEnabled}}
             </div>
-            {{#if _isLocked}}
+            {{#if isTempLocked}}
+              <div class="group">
+                <button class="btn secondary unlock">{{t 'app.unlockuser'}}</button>
+              </div>
+            {{else if isPermLocked}}
               <div class="group">
                 <button class="btn secondary unlock">{{t 'app.unlockuser'}}</button>
               </div>
@@ -107,13 +107,14 @@
                 </div>
               {{/ifValueEquals}}
             {{/if}}
+          {{else}}
           {{/if}}
           {{#ifUserNotMe _id}}
             <div class="group">
-              {{#if _isDeleted}}
-                <button class="btn action-primary restore">{{t 'app.restoreuser'}}</button>
-              {{else}}
+              {{#if isEnabled}}
                 <button class="btn warning disable">{{t 'app.disableuser'}}</button>
+              {{else}}
+                <button class="btn action-primary restore">{{t 'app.restoreuser'}}</button>
               {{/if}}
               <hr>
               <button class="btn alert edit-input delete">{{t 'app.deleteuser'}}</button>
