@@ -22,7 +22,7 @@ define(['core/views/originView'], function(OriginView) {
 
     updateClasses: function() {
       this.$('.color-item').removeClass('selected');
-      this.$('[data-colorlabel="'+this.selected+'"]').addClass('selected');
+      this.$(`[data-colorlabel="${this.selected}"]`).addClass('selected');
     },
 
     onReset: function() {
