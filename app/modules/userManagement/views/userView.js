@@ -76,16 +76,6 @@ define(function(require){
       }
     },
 
-    setEditMode: function() {
-      this.editMode = true;
-      this.applyStyles();
-    },
-
-    setViewMode: function() {
-      this.editMode = false;
-      this.applyStyles();
-    },
-
     // utilities in case the classes change
     getColumnFromDiv: div => $(div).closest('.tb-col-inner'),
     getInputFromDiv: div => $('.input', this.getColumnFromDiv(div)),
