@@ -228,11 +228,11 @@ define(function(require){
     },
 
     onDisableClicked: function() {
-      this.updateModel('_isDeleted', true);
+      this.updateModel('isEnabled', false);
     },
 
     onRestoreClicked: function() {
-      this.updateModel('_isDeleted', false);
+      this.updateModel('isEnabled', true);
     },
 
     onDeleteClicked: function() {
