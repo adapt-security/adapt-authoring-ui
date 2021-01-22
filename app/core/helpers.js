@@ -154,7 +154,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
         var tag = Handlebars.Utils.escapeExpression(key && item[key] || item);
         html += `<li class="tag-item" title="${tag}"><span class="tag-value">${tag}</span></li>`;
       }
-      return new Handlebars.SafeString(html + '</ul>');
+      return new Handlebars.SafeString(`${html}</ul>`);
     },
 
     ifHasScopes: function(scopes, block) {
