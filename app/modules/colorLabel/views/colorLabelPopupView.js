@@ -1,10 +1,5 @@
-define([
-    'core/origin',
-    'core/views/originView'
-], function(Origin, OriginView) {
-
+define(['core/views/originView'], function(OriginView) {
     var ColorLabelPopUpView = OriginView.extend({
-
         className: 'colorlabel',
 
         events: {
