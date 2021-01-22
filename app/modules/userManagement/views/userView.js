@@ -38,8 +38,10 @@ define(function(require){
     preRender: function() {
       this.listenTo(Origin, 'userManagement:user:reset', this.resetView);
       this.listenTo(this, 'remove', this.remove);
-      this.listenTo(this.model, 'destroy', this.remove);
-      this.listenTo(this.model, 'change:_isHidden', this.toggleHidden);
+      this.listenTo(this.model, {
+        'destroy': this.remove,
+        'change:_isHidden': this.toggleHidden
+      });
     },
 
     render: function() {
