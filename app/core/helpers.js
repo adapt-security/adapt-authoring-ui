@@ -162,7 +162,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     },
 
     ifMailEnabled: function(block) {
-      return Origin.constants['adapt-authoring-mailer.useSmtp'] === true ? block.fn(this) : block.inverse(this);
+      return Origin.constants['adapt-authoring-mailer.enable'] === true ? block.fn(this) : block.inverse(this);
     },
 
     ifImageIsCourseAsset: function(url, block) {
