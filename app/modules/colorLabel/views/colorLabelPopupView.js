@@ -31,13 +31,12 @@ define(['core/views/originView'], function(OriginView) {
 
       model.save('_colorLabel', '', {
         patch: true,
-        success: _.bind(this.onSuccess, this),
-        error: _.bind(this.onError, this)
+        success: () => this.onSuccess(),
+        error: (model, response) => this.onError(response)
       });
     },
     onApply: function(event) {
-      if (!this.selected) return;
-      this.addItem();
+      if(this.selected) this.addItem();
     },
 
     postRender: function() {
@@ -56,8 +55,8 @@ define(['core/views/originView'], function(OriginView) {
 
       model.save('_colorLabel', this.selected, {
         patch: false,
-        success: _.bind(this.onSuccess, this),
-        error: _.bind(this.onError, this)
+        success: () => this.onSuccess(),
+        error: (model, response) => this.onError(response)
       });
     },
 
@@ -66,7 +65,7 @@ define(['core/views/originView'], function(OriginView) {
       this.remove();
     },
 
-    onError: function(model, response, options) {
+    onError: function(response) {
       this.remove();
       alert(response);
     }
