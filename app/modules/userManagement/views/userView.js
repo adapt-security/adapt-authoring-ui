@@ -87,8 +87,8 @@ define(function(require){
     },
 
     // utilities in case the classes change
-    getColumnFromDiv: function(div) { return $(div).closest('.tb-col-inner'); },
-    getInputFromDiv: function(div) { return $('.input', this.getColumnFromDiv(div)); },
+    getColumnFromDiv: div => $(div).closest('.tb-col-inner'),
+    getInputFromDiv: div => $('.input', this.getColumnFromDiv(div)),
 
     disableFieldEdit: function(div) {
       $('.read', div).removeClass('display-none');
@@ -172,32 +172,28 @@ define(function(require){
     onInviteClicked: function(e) {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmsendinvite', { email: this.model.get('email') }),
-        callback: function(confirmed) {
+        callback: confirmed => {
           if(!confirmed) {
             return;
           }
           var $btn = $(e.target);
           $btn.addClass('submitted');
-          Helpers.ajax('api/user/invite', { email: this.model.get('email') }, 'POST', function() {
-            $btn.removeClass('submitted');
-          });
-        }.bind(this)
+          Helpers.ajax('api/user/invite', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+        }
       });
     },
 
     onResetPasswordClicked: function(e) {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmsendreset', { email: this.model.get('email') }),
-        callback: function(confirmed) {
+        callback: confirmed => {
           if (!confirmed) {
             return;
           }
           var $btn = $(e.currentTarget);
           $btn.addClass('submitted');
-          Helpers.ajax('api/createtoken', { email: this.model.get('email') }, 'POST', function() {
-            $btn.removeClass('submitted');
-          });
-        }.bind(this)
+          Helpers.ajax('api/createtoken', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+        }
       });
     },
 
@@ -273,13 +269,8 @@ define(function(require){
     },
 
     onError: function(error) {
-      /**
-      * HACK setTimeout to make sure the alert opens.
-      * If we've come straight from a confirm, sweetalert will still be cleaning up, and won't show.
-      */
-      setTimeout(function() {
-        Origin.Notify.alert({ type: 'error', text: error.message || error });
-      }, 100);
+      // HACK setTimeout workaround to give sweetalert time to clean up after a confirm
+      setTimeout(() => Origin.Notify.alert({ type: 'error', text: error.message || error }), 100);
     }
   }, {
     template: 'user'
