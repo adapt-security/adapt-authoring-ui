@@ -5,65 +5,25 @@ define(function(require) {
 
   var UserModel = Backbone.Model.extend({
     idAttribute: '_id',
-
-    url: function() {
-      var root = 'api/users';
-      return root + ((this.isNew()) ? '' : '/' + this.id);
-    },
+    url: () =>  `api/users/${!this.isNew() ? this.id : ''}`,
 
     initialize: function() {
-      this.on('change:globalData', this.onGlobalDataChanged);
-      this.on('change:roles', this.setRoleNames);
-      this.on('change:_tenantId', this.setTenantName);
-      this.on('change:failedLoginCount', this.setLockStatus);
-
-      this.setLockStatus();
+      this.on('change:globalData change:roles', this.setRoleNames);
     },
-
-    onGlobalDataChanged: function(model, value, options) {
-      this.setRoleNames(model, model.get('roles'), options);
-      this.setTenantName(model, model.get('_tenantId'), options);
-    },
-
     // pull the human-readable role names from the list of all roles
-    setRoleNames: function(model, value, options) {
+    setRoleNames: function(model) {
       if(!model.get('globalData')) {
         return;
       }
+      const roles = model.get('roles');
+      const allRoles = model.get('globalData').allRoles;
       var roleNames;
-      if(typeof value === 'object') { // array
-        roleNames = value.map(function(role, index) {
-          var id = role._id || role;
-          return model.get('globalData').allRoles.findWhere({ _id:id }).get('name');
-        });
+      if(typeof roles === 'object') { // array
+        roleNames = roles.map(role => allRoles.findWhere({ _id: role._id || role }).get('name'));
       } else { // string
-        roleNames = model.get('globalData').allRoles.findWhere({ _id:value }).get('name');
+        roleNames = allRoles.findWhere({ _id: roles }).get('name');
       }
       model.set('roleNames', roleNames);
-    },
-
-    // pull the human-readable tenant name from the list of all tenants
-    setTenantName: function(model, value, options) {
-      var tenantId = model.get('_tenantId');
-      if(!tenantId) return;
-
-      var tenantName;
-      if (typeof tenantId === 'string') {
-        tenantName =  model.get('globalData').allTenants.findWhere({ _id: tenantId }).get('displayName');
-      } else if (tenantId.hasOwnProperty('displayName')) {
-        tenantName = tenantId.displayName;
-      } else {
-        tenantName =  model.get('globalData').allTenants.findWhere({ _id: tenantId._id }).get('displayName');
-      }
-
-      model.set('tenantName', tenantName);
-    },
-
-    setLockStatus: function(model, value, options) {
-      var newLocked = this.get('failedLoginCount') >= Origin.constants.maxLoginAttempts;
-      if(newLocked !== this.get('_isLocked')) {
-        this.set('_isLocked', newLocked);
-      }
     }
   });
 
