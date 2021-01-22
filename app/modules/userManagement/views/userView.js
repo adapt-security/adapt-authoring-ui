@@ -7,13 +7,15 @@ define(function(require){
   var UserView = OriginView.extend({
     tagName: 'div',
     className: function() {
-      var className = 'user-item tb-row' + ' ' + this.model.get('_id');
-      // 'current user styling
-      if (this.model.get('_id') === Origin.sessionModel.get('id')) className += ' me';
-      if (this.model.get('_isHidden')) className += ' display-none';
-      return className;
+      const classes = ['user-item', 'tb-row', this.model.get('_id')];
+      if(this.model.get('_id') === Origin.sessionModel.get('id')) {
+        classes.push('me');
+      }
+      if(this.model.get('_isHidden')) {
+        classes.push('display-none');
+      }
+      return classes.join(' ');
     },
-    isSelected: false,
 
     events: {
       'click': 'onClicked',
