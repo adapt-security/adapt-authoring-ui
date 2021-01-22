@@ -123,9 +123,7 @@ define(function(require){
       this.disableFieldEdit($column);
       // save if not the same as old value
       var $input = this.getInputFromDiv($column);
-      if($input.val() && this.model.get($input.attr('data-modelKey')) !== $input.val()) {
-        this.updateModel($input.attr('data-modelKey'), $input.val());
-      }
+      this.updateModel($input.attr('data-modelKey'), $input.val());
     },
 
     onCancelClicked: function(event) {
@@ -246,6 +244,9 @@ define(function(require){
     },
 
     updateModel: function(key, value) {
+      if(this.model.get(key) === value) {
+        return; // no point saving if there's no change
+      }
       this.model.save({ [key]: value }, {
         patch: true,
         wait: true,
