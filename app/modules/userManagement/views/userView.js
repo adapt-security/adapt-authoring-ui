@@ -53,17 +53,9 @@ define(function(require){
 
     applyStyles: function() {
       // disabled user styling
-      if(this.model.get('_isDeleted') === true) {
-        this.$el.addClass('inactive');
-      } else {
-        this.$el.removeClass('inactive');
-      }
+      this.$el.toggleClass('inactive', !this.model.get('isEnabled'));
       // locked user styling
-      if(this.model.get('_isLocked') === true) {
-        this.$el.addClass('locked');
-      } else {
-        this.$el.removeClass('locked');
-      }
+      this.$el.toggleClass('locked', (this.model.get('isTempLocked') || this.model.get('isPermLocked')));
       // selected user styling
       if(this.isSelected) {
         this.$el.addClass('selected');
