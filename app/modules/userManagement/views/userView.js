@@ -109,11 +109,11 @@ define(function(require){
     },
 
     onClicked: function(event) {
-      if(!this.isSelected) {
-        Origin.trigger('userManagement:user:reset');
-        this.isSelected = true;
-        this.applyStyles();
-      }
+      if(this.isSelected) return;
+      // will reset the old selection
+      Origin.trigger('userManagement:user:reset');
+      this.isSelected = true;
+      this.applyStyles();
     },
 
     onSaveClicked: function(event) {
