@@ -5,6 +5,7 @@ define(function(require){
   var Helpers = require('../helpers');
 
   var UserView = OriginView.extend({
+    isSelected: false,
     tagName: 'div',
     className: function() {
       const classes = ['user-item', 'tb-row', this.model.get('_id')];
@@ -155,21 +156,16 @@ define(function(require){
       if(!newRole || this.model.get($input.attr('data-modelKey')) === newRole) {
         return;
       }
-      var self = this;
-      Helpers.ajax('api/role/' + oldRole + '/unassign/' + this.model.get('_id'), null, 'POST', function() {
-        Helpers.ajax('api/role/' + newRole + '/assign/' + self.model.get('_id'), null, 'POST', function() {
-          self.model.fetch();
-        });
+      var _id = this.model.get('_id');
+      Helpers.ajax(`api/role/${oldRole}/unassign/${_id}`, null, 'POST', () => {
+        Helpers.ajax(`api/role/${newRole}/assign/${_id}`, null, 'POST', () => this.model.fetch());
       });
     },
 
     onResetLoginsClicked: function() {
-      var self = this;
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmresetlogins', { email: this.model.get('email') }),
-        callback: function(confirmed) {
-          if(confirmed) self.updateModel('failedLoginCount', 0);
-        }
+        callback: confirmed => confirmed && this.updateModel('failedLoginCount', 0)
       });
     },
 
@@ -206,7 +202,6 @@ define(function(require){
     },
 
     onChangePasswordClicked: function() {
-      var self = this;
       Origin.Notify.confirm({
         type: 'input',
         title: Origin.l10n.t('app.resetpasswordtitle'),
@@ -214,18 +209,18 @@ define(function(require){
         inputType: 'password',
         confirmButtonText: 'Save',
         closeOnConfirm: false,
-        callback: function(newPassword) {
+        callback: newPassword => {
           if(newPassword === false) return;
           else if(newPassword === "") return swal.showInputError(Origin.l10n.t('app.invalidempty'));
           var postData = {
-            "email": self.model.get('email'),
-            "password": newPassword
+            email: this.model.get('email'),
+            password: newPassword
           };
-          Helpers.ajax('api/user/resetpassword', postData, 'POST', function() {
-            self.model.fetch();
+          Helpers.ajax('api/user/resetpassword', postData, 'POST', () => {
+            this.model.fetch();
             Origin.Notify.alert({
               type: 'success',
-              text: Origin.l10n.t('app.changepasswordtext', { email: self.model.get('email') })
+              text: Origin.l10n.t('app.changepasswordtext', { email: this.model.get('email') })
             });
           });
         }
@@ -247,21 +242,19 @@ define(function(require){
         delete: Origin.l10n.t('app.confirmdeleteuserdelete'),
         share: Origin.l10n.t('app.confirmdeleteusershare')
       };
-      var self = this;
       Origin.Notify.confirm({
         type: 'confirm',
         text: Origin.l10n.t('app.confirmdeleteuser', {
           courseOption: optionMsg[option],
           email: this.model.get('email')
         }),
-        callback: function(confirmed) {
-          if(confirmed) {
-            self.model.destroy({
-              data: { userCourseOption: option },
-              processData: true,
-              error: self.onError
-            });
-          }
+        callback: confirmed => {
+          if(!confirmed) return; 
+          self.model.destroy({ 
+            data: { userCourseOption: option }, 
+            processData: true, 
+            error: this.onError 
+          });
         }
       });
     },
