@@ -260,9 +260,7 @@ define(function(require){
     },
 
     updateModel: function(key, value) {
-      var toSave = {};
-      toSave[key] = value;
-      this.model.save(toSave, {
+      this.model.save({ [key]: value }, {
         patch: true,
         wait: true,
         error: (model, response)  => {
