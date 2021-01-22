@@ -55,9 +55,8 @@ define(['core/views/originView'], function(OriginView) {
 
         addItem: function() {
             var model = this.parentView.model;
-            var color = this.selected;
 
-            model.save('_colorLabel', color, {
+            model.save('_colorLabel', this.selected, {
                 patch: false,
                 success: _.bind(this.onSuccess, this),
                 error: _.bind(this.onError, this)
