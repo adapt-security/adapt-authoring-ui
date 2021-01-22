@@ -15,8 +15,7 @@ define(['core/views/originView'], function(OriginView) {
     },
 
     onItemClick: function(event) {
-      var $elm = $(event.currentTarget);
-      this.selected = $elm.data('colorlabel');
+      this.selected = $(event.currentTarget).data('colorlabel');
       this.updateClasses();
     },
 
