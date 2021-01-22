@@ -265,12 +265,12 @@ define(function(require){
       this.model.save(toSave, {
         patch: true,
         wait: true,
-        error: (function(model, response, options) {
+        error: (model, response)  => {
           if(response.responseJSON && response.responseJSON.code === 11000) { // duplicate key
-            return self.onError(Origin.l10n.t('app.duplicateuservalueerror', { key: key, value: value }));
+            return this.onError(Origin.l10n.t('app.duplicateuservalueerror', { key, value }));
           }
-          self.onError(Origin.l10n.t('app.uservalueerror') + ' (' + response.responseText + ')');
-        }).bind(this)
+          this.onError(`${Origin.l10n.t('app.uservalueerror')} (${response.responseText})`);
+        }
       });
     },
 
