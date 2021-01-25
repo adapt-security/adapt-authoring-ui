@@ -153,7 +153,7 @@ define(function(require){
     onResetLoginsClicked: function() {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmresetlogins', { email: this.model.get('email') }),
-        callback: confirmed => confirmed && this.updateModel('failedLoginCount', 0)
+        callback: confirmed => confirmed && this.updateModel('failedLoginAttempts', 0)
       });
     },
 
