@@ -5,7 +5,9 @@ define(function(require) {
 
   var UserModel = Backbone.Model.extend({
     idAttribute: '_id',
-    url: () =>  `api/users/${!this.isNew() ? this.id : ''}`,
+    url: function() {
+      return `api/users/${!this.isNew() ? this.id : ''}`;
+    },
 
     initialize: function() {
       this.on('change:globalData change:roles', this.setRoleNames);
