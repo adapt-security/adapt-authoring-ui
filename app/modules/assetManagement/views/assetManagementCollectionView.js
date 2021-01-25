@@ -76,18 +76,17 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
+      this.collection.customQuery.tags = { $all: this.tags };
+
+      if(this.filters.length) {
+        this.collection.customQuery.type = { $in: this.filters };
+      }
+      Object.assign(this.collection.options, {
+        skip: this.fetchCount,
+        limit: this.pageSize,
+        sort: this.sort
+      });
       this.collection.fetch({
-        data: {
-          search: _.extend(this.search, {
-            tags: { $all: this.tags },
-            assetType: { $in: this.filters }
-          }),
-          operators : {
-            skip: this.fetchCount,
-            limit: this.pageSize,
-            sort: this.sort
-          }
-        },
         success: _.bind(function(collection, response) {
           this.isCollectionFetching = false;
           this.fetchCount += response.length;
@@ -123,21 +122,15 @@ define(function(require){
     * Filtering
     */
 
-    filterCollection: function() {
-      this.resetCollection(null, false);
-      this.search.assetType = this.filters.length ? { $in: this.filters } : null;
-      this.fetchCollection();
-    },
-
     addFilter: function(filterType) {
       this.filters.push(filterType);
-      this.filterCollection();
+      this.resetCollection();
     },
 
     removeFilter: function(filterType) {
       // remove filter from this.filters
       this.filters = _.filter(this.filters, function(item) { return item !== filterType; });
-      this.filterCollection();
+      this.resetCollection();
     },
 
     filterBySearchInput: function (filterText) {
