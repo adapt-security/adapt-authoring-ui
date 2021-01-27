@@ -234,7 +234,7 @@ define(function(require){
         }),
         callback: confirmed => {
           if(!confirmed) return; 
-          self.model.destroy({ 
+          this.model.destroy({ 
             data: { userCourseOption: option }, 
             processData: true, 
             error: this.onError 
