@@ -7,7 +7,13 @@
     <link rel="stylesheet" href="font-awesome-4.5.0/css/font-awesome.min.css">
     <script type="text/javascript" src="/modernizr.js"></script>
     <script src="//cdn.ckeditor.com/4.5.7/full-all/ckeditor.js"></script>
+    {{#if isProduction}}
     <script type="text/javascript" src="/require.js" data-main="/js/origin.js"></script>
+    {{else}}
+    <script src="/require.js"></script>
+    <script src="/core/config.js"></script>
+    <script src="/core/app.js"></script>
+    {{/if}}
     <script src="//pagecdn.io/lib/ace/1.4.12/ace.js"></script>
     <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-store, no-cache" />
