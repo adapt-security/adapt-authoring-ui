@@ -57,13 +57,6 @@ define(function(require) {
 
       let selectedTheme = this.getSelectedTheme();
 
-      if(!selectedTheme.get('schemaName')) {
-        this.$('.theme-selector').removeClass('show-preset-select');
-        this.$('.empty-message').show();
-        this.$('.editable-theme').hide();
-        $('.editor-theming-sidebar-reset').hide();
-        return;
-      }
       this.$('.theme-selector').addClass('show-preset-select');
       this.$('.empty-message').hide();
       this.$('.editable-theme').show();
@@ -71,10 +64,13 @@ define(function(require) {
       try {
         this.form = await Origin.scaffold.buildForm({
           model: selectedTheme,
-          schemaType: selectedTheme.get('schemaName')
+          schemaType: `${selectedTheme.get('theme')}-theme`
         });
       } catch(e) {
-        console.log(e);
+        this.$('.theme-selector').removeClass('show-preset-select');
+        this.$('.empty-message').show();
+        this.$('.editable-theme').hide();
+        $('.editor-theming-sidebar-reset').hide();
       }
       if(this.form) {
         this.$('.form-container').html(this.form.el);
