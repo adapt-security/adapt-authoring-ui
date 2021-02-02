@@ -11,9 +11,6 @@ define(function(require) {
   var ThemingView = EditorOriginView.extend({
     tagName: 'div',
     className: 'theming',
-    settings: {
-      presetSelection: null
-    },
     events: {
       'change .theme select': 'onThemeChanged',
       'change .preset select': 'onPresetChanged',
@@ -26,7 +23,6 @@ define(function(require) {
         'editorThemingSidebar:views:save': this.saveData,
         'editorThemingSidebar:views:savePreset': this.onSavePresetClicked,
         'editorThemingSidebar:views:resetToPreset': this.restorePresetSettings,
-        'editorThemingSidebar:views:cancel': () => this.settings.presetSelection = null,
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
@@ -182,7 +178,6 @@ define(function(require) {
         success: () => {
           this.presets.add(presetModel);
           this.updateRestorePresetButton(false);
-          this.settings.presetSelection = presetModel.get('_id');
           window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
         },
         error: this.onError
@@ -246,9 +241,6 @@ define(function(require) {
     },
     // param used to only return the val() (and ignore model data)
     getSelectedPreset: function(includeCached = true, key = 'properties') {
-      var storedId = this.settings.presetSelection;
-      if(storedId) return this.presets.findWhere({ _id: storedId });
-
       var $select = $('select#preset', this.$el);
       var presetId = $select && $select.val();
       if(presetId) return this.presets.findWhere({ _id: presetId });
@@ -294,14 +286,12 @@ define(function(require) {
     },
 
     onThemeChanged: function() {
-      this.settings.presetSelection = null;
       this.updatePresetSelect();
       this.renderForm();
       this.updateRestorePresetButton(false);
     },
 
     onPresetChanged: function(event) {
-      this.settings.presetSelection = $(event.currentTarget).val();
       this.updateRestorePresetButton(false);
       this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
     },
