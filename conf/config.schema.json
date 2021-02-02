@@ -6,6 +6,28 @@
       "description": "Run UI from compiled origin.js",
       "type": "boolean",
       "default": true
+    },
+    "ckEditor": {
+      "description": "WYSIWYG editor configuration",
+    	"type": "object",
+      "default": {},
+      "properties": {
+        "enterMode": {
+          "description": "Behaviour of the enter key",
+          "type": "string",
+          "default": "ENTER_BR",
+          "enum": [
+            "ENTER_P",
+            "ENTER_BR",
+            "ENTER_DIV"
+          ]
+        },
+        "extraAllowedContent": {
+          "description": "Additional allowed content rules",
+          "type": "string",
+          "default": "span(*)"
+        }
+      }
     }
   }
 }

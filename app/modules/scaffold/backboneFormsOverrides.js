@@ -67,12 +67,14 @@ define([
     textAreaRender.call(this);
 
     _.defer(function() {
+      const config = Origin.constants['adapt-authoring-ui.ckEditor'];
+
       this.editor = CKEDITOR.replace(this.$el[0], {
         dataIndentationChars: '',
         disableNativeSpellChecker: false,
-        enterMode: CKEDITOR[Origin.constants.ckEditorEnterMode],
+        enterMode: CKEDITOR[config.enterMode],
         entities: false,
-        extraAllowedContent: Origin.constants.ckEditorExtraAllowedContent,
+        extraAllowedContent: config.extraAllowedContent,
         on: {
           change: function() {
             this.trigger('change', this);
