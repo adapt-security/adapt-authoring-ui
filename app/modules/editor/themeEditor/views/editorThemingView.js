@@ -7,7 +7,6 @@ define(function(require) {
   var Origin = require('core/origin');
   var PresetCollection = require('../collections/editorPresetCollection.js');
   var PresetEditView = require('./editorPresetEditView.js');
-  var PresetModel = require('../models/editorPresetModel.js');
 
   var ThemingView = EditorOriginView.extend({
     tagName: 'div',
@@ -18,73 +17,77 @@ define(function(require) {
     events: {
       'change .theme select': 'onThemeChanged',
       'change .preset select': 'onPresetChanged',
-      'change .form-container form': 'onFieldChanged',
+      'change .form-container form': 'updateRestorePresetButton',
       'click button.edit': 'showPresetEdit'
     },
 
-    initialize: function() {
-      this.listenTo(this, 'dataReady', this.render);
+    initialize: async function() {
       this.listenTo(Origin, {
         'editorThemingSidebar:views:save': this.saveData,
         'editorThemingSidebar:views:savePreset': this.onSavePresetClicked,
         'editorThemingSidebar:views:resetToPreset': this.restorePresetSettings,
-        'editorThemingSidebar:views:cancel': this.setPresetSelection(null),
+        'editorThemingSidebar:views:cancel': () => this.settings.presetSelection = null,
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
-      this.loadCollections();
-
+      await this.initData();
       EditorOriginView.prototype.initialize.apply(this, arguments);
+      this.render();
     },
 
-    preRender: function() {
+    initData: async function() {
+      this.model = new Backbone.Model(Origin.editor.data.course.get('themeVariables'));
+      this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
+      this.presets = new PresetCollection();
+      
+      await Promise.all([this.themes.fetch(), this.presets.fetch()]);
+
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.themes, 'change', this.updateThemeSelect);
+      this.listenTo(this.presets, 'change', this.updatePresetSelect);
+    },
+
+    render: async function() {
       this.$el.hide();
-    },
 
-    render: function() {
       EditorOriginView.prototype.render.apply(this, arguments);
 
       Origin.trigger('location:title:update', {
         breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
         title: Origin.l10n.t('app.themingtitle')
       });
+      await this.renderForm();
+      this.updateThemeSelect();
+      this.updatePresetSelect();
       this.updateRestorePresetButton();
-      this.renderForm();
+      this.setViewToReady();
+
+      this.$el.show();
     },
 
     renderForm: async function() {
       this.removeForm();
-
-      let selectedTheme = this.getSelectedTheme();
-
+      
       this.$('.theme-selector').addClass('show-preset-select');
       this.$('.empty-message').hide();
       this.$('.editable-theme').show();
       $('.editor-theming-sidebar-reset').show();
       try {
-        this.form = await Origin.scaffold.buildForm({
-          model: selectedTheme,
-          schemaType: `${selectedTheme.get('theme')}-theme`
-        });
+        this.schemaName = `${this.getSelectedTheme().get('theme')}-theme`;
+        this.form = await Origin.scaffold.buildForm({ model: this.model, schemaType: this.schemaName });
+        this.$('.form-container').html(this.form.el);
+
       } catch(e) {
         this.$('.theme-selector').removeClass('show-preset-select');
         this.$('.empty-message').show();
         this.$('.editable-theme').hide();
         $('.editor-theming-sidebar-reset').hide();
       }
-      if(this.form) {
-        this.$('.form-container').html(this.form.el);
-      }
       this.$el.find('fieldset:not(:has(>.field))').addClass('empty-fieldset');
       this.$('.theme-customiser').show();
       Origin.trigger('theming:showPresetButton', true);
-
-      let toRestore = this.getDefaultThemeSettings();
-      // Only restore theme variables if currently selected theme = saved theme
-      if (selectedTheme.get('name') === this.model.get('_theme') && Origin.editor.data.course.get('themeVariables')) {
-        toRestore = Origin.editor.data.course.get('themeVariables');
-      }
-      _.defer(function() { this.restoreFormSettings(toRestore); }.bind(this));
+      // HACK defer needed to allow colour pickers to render
+      return new Promise((resolve) => _.defer(() => resolve()));
     },
 
     removeForm: function() {
@@ -96,116 +99,50 @@ define(function(require) {
       Origin.trigger('theming:showPresetButton', false);
     },
 
-    postRender: function() {
-      this.updateSelects();
-      this.setViewToReady();
-      this.$el.show();
-    },
+    updateSelect: function({ className, items, value }) {
+      var $select = this.$(`.${className} select`);
+      
+      $('option', $select).remove();
 
-    loadCollections: function() {
-      this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
-      this.presets = new PresetCollection();
-
-      this.themes.fetch({
-        success: () => {
-          this.presets.fetch({
-            success: () => this.trigger('dataReady'),
-            error: this.onError
-          });
-        },
-        error: this.onError
-      });
-    },
-
-    updateSelects: function() {
-      this.updateThemeSelect();
-      this.updatePresetSelect();
+      if(items.length) {
+        items.forEach(i => $select.append($(`<option>`, i)));
+      } else {
+        $select.attr('disabled', !items.length);
+      }
+      $select.val(value);
     },
 
     updateThemeSelect: function() {
-      var select = this.$('.theme select');
-      var oldVal = select.val();
-      // remove options first
-      $('option', select).remove();
-      // add 'no presets'
-      select.append($('<option>', { value: "", disabled: 'disabled', selected: 'selected' }).text(Origin.l10n.t('app.selectinstr')));
-      // add options
-      this.themes.models.forEach(function(item) {
-        if (item.get('isEnabled') === false) return;
-        select.append($(`<option data-name="${item.get('name')}">`, { value: item.get('name') }).text(item.get('displayName')));
-      }, this);
-      // disable if no options
-      select.attr('disabled', this.themes.models.length === 0);
-      // restore the previous value
-      if (oldVal) return select.val(oldVal);
-      // select current theme
-      var selectedTheme = this.getSelectedTheme();
-      if (selectedTheme) select.val(selectedTheme.get('displayName'));
+      this.updateSelect({
+        className: 'theme',
+        value: this.getSelectedTheme().get('name'),
+        items: [
+          { value: "", disabled: 'disabled', text: Origin.l10n.t('app.selectinstr') },
+          ...this.themes.filter(t => t.get('isEnabled')).map(t => Object({ value: t.get('name'), text: t.get('displayName') }))
+        ]
+      });
     },
 
     updatePresetSelect: function() {
       var theme = this.$('.theme select').val();
       var presets = this.presets.where({ parentTheme: theme });
-      var select = this.$('.preset select');
-      // remove options first
-      $('option', select).remove();
-      // add 'no presets'
-      select.append($('<option>', { value: "", selected: 'selected' }).text(Origin.l10n.t('app.nopresets')));
-      // add options
-      presets.forEach(function(item) {
-        select.append($('<option>', { value: item.get('_id') }).text(item.get('displayName')));
-      }, this);
-      // disable delete, hide manage preset buttons if empty
-      if (presets.length <= 0) {
-        select.attr('disabled', true);
-        this.$('button.edit').hide();
-        return;
-      }
-      var selectedPreset = this.getSelectedPreset();
-      if (selectedPreset && selectedPreset.get('parentTheme') === theme) {
-        const id = selectedPreset.get('_id');
-        $.get(`api/coursethemepresets/${id}`, () => select.val(id)).error(() => this.removePresetOption(id));
-      }
-      select.attr('disabled', false);
-      this.$('button.edit').show();
-    },
+      var selectedPresetId = this.getSelectedPreset(undefined, '_id');
 
-    restoreFormSettings: function(toRestore) {
-      if (!this.form || !this.form.el) return;
-
-      for (var key in toRestore) {
-        // Check for nested properties
-        if (typeof toRestore[key] === 'object') {
-          for (var innerKey in toRestore[key]) {
-            this.restoreField(this.form.fields[innerKey], toRestore[key][innerKey], innerKey);
-          }
-        } else {
-          this.restoreField(this.form.fields[key], toRestore[key], key)
-        }
-      }
-    },
-
-    restoreField: function(fieldView, value, key) {
-      if (!fieldView) {
-        return;
-      }
-      var inputType = fieldView.schema.inputType.type || fieldView.schema.inputType;
-      if (inputType === 'ColourPicker') {
-        fieldView.setValue(value);
-      } else if (inputType.indexOf('Asset') > -1) {
-        fieldView.setValue(value);
-        fieldView.render();
-        $(`div[data-editor-id*="${key}"]`).append(fieldView.editor.$el);
-      } else {
-        fieldView.editor.$el.val(value.toString())
-      }
+      this.updateSelect({
+        className: 'preset',
+        value: selectedPresetId,
+        items: [
+          { value: "", text: Origin.l10n.t('app.nopresets') },
+          ...presets.map(t => Object({ value: t.get('_id'), text: t.get('displayName') }))
+        ]
+      });
+      presets.length ? this.$('button.edit').show() : this.$('button.edit').hide();
     },
 
     showPresetEdit: function(event) {
       event && event.preventDefault();
-      var parentTheme = this.getSelectedTheme().get('theme');
-      var presets = new Backbone.Collection(this.presets.where({ parentTheme: parentTheme }));
-      var view = new PresetEditView({ model: new Backbone.Model({ presets })});
+      var presets = new Backbone.Collection(this.presets.where({ parentTheme: this.getSelectedTheme().get('theme') }));
+      var view = new PresetEditView({ model: new Backbone.Model({ presets }) });
       $('body').append(view.el);
     },
 
@@ -215,13 +152,10 @@ define(function(require) {
         type: 'warning',
         text: Origin.l10n.t('app.restorepresettext'),
         callback: confirmed => {
-          if (!confirmed) {
-            return;
+          if (confirmed) {
+            this.updateRestorePresetButton(false);
+            this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
           }
-          var preset = this.getSelectedPreset();
-          var settings = (preset) ? preset.get('properties') : this.getDefaultThemeSettings();
-          this.updateRestorePresetButton(false);
-          this.restoreFormSettings(settings);
         }
       });
     },
@@ -240,16 +174,15 @@ define(function(require) {
 
     savePreset: function(presetName) {
       this.form.commit();
-      var presetModel = new PresetModel({
+      new presetModel().save({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('theme'),
-        properties: this.extractData(this.form.model.attributes)
-      });
-      presetModel.save(null, {
+        properties: this.form.model.attributes
+      }, {
         success: () => {
           this.presets.add(presetModel);
           this.updateRestorePresetButton(false);
-          this.setPresetSelection(presetModel.get('_id'));
+          this.settings.presetSelection = presetModel.get('_id');
           window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
         },
         error: this.onError
@@ -266,69 +199,40 @@ define(function(require) {
         await this.postThemeData();
         await this.postPresetData();
         await this.postSettingsData();
-        this.onSaveSuccess();
+        Origin.trigger('editingOverlay:views:hide');
+        Origin.trigger('editor:refreshData', this.navigateBack.bind(this), this);
+
       } catch(e) {
-        this.onSaveError();
+        this.onError(undefined, Origin.l10n.t('app.errorsave'));
+        this.navigateBack();
       }
     },
 
     postThemeData: function() {
-      return new Promise((resolve, reject) => {
-        console.log(this.model);
-        const oldTheme = this.model.get('_theme');
-        const newTheme = this.getSelectedTheme().get('name');
-        $.ajax({
-          url: `api/content/${this.model.get('_id')}`,
-          method: 'PATCH',
-          data: { 
-            _theme: newTheme,
-            _enabledPlugins: [...this.model.get('_enabledPlugins').filter(p => p !== oldTheme), newTheme]
-          },
-          success: () => resolve(),
-          error: () => reject()
-        });
+      const oldTheme = Origin.editor.data.config.get('_theme');
+      const newTheme = this.getSelectedTheme().get('name');
+      return $.ajax({
+        url: `api/content/${Origin.editor.data.config.get('_id')}`,
+        method: 'PATCH',
+        data: { 
+          _theme: newTheme,
+          _enabledPlugins: [...Origin.editor.data.config.get('_enabledPlugins').filter(p => p !== oldTheme), newTheme]
+        }
       });
     },
 
     postPresetData: function() {
-      return new Promise((resolve, reject) => {
-        var selectedPreset = this.getSelectedPreset(false);
-        if(!selectedPreset) {
-          return resolve();
-        }
-        $.post(`api/coursethemepresets/${selectedPreset.get('_id')}/apply/${this.model.get('_courseId')}`)
-          .error(() => reject())
-          .done(() => resolve());
-      });
+      var selectedPresetId = this.getSelectedPreset(false, '_id');
+      if(!selectedPresetId) return Promise.resolve();
+      return $.post(`api/coursethemepresets/${selectedPresetId}/apply/${Origin.editor.data.config.get('_courseId')}`);
     },
 
     postSettingsData: function() {
       return new Promise((resolve, reject) => {
-        if (!this.form) {
-          return resolve();
-        }
+        if(!this.form) return resolve();
         this.form.commit();
-        var settings = this.extractData(this.form.model.attributes);
-        Origin.editor.data.course.set('themeVariables', settings);
-        Origin.editor.data.course.save(null, { error: () => reject(), success: () => resolve() });
+        Origin.editor.data.course.save({ themeVariables: this.form.model.attributes }, { error: () => reject(), success: () => resolve() });
       });
-    },
-
-    extractData: function(attributes) {
-      var data = {};
-      var properties = attributes.properties.variables;
-      for (var key in properties) {
-        // Check for nested properties
-        if (typeof properties[key].properties !== 'undefined') {
-            data[key] = {};
-            for (var innerKey in properties[key].properties) {
-            data[key][innerKey] = attributes[innerKey];
-          }
-        } else {
-          data[key] = attributes[key];
-        }
-      }
-      return data;
     },
 
     navigateBack: function(event) {
@@ -337,122 +241,52 @@ define(function(require) {
       this.remove();
     },
 
-    isDataLoaded: function() {
-      return this.themes.ready === true && this.presets.ready === true;
-    },
-
     getSelectedTheme: function() {
-      return this.themes.findWhere({ name: $('select#theme', this.$el).attr('data-name') || this.model.get('_theme') });
+      return this.themes.findWhere({ name: $('select#theme', this.$el).val() || Origin.editor.data.config.get('_theme') });
     },
     // param used to only return the val() (and ignore model data)
-    getSelectedPreset: function(includeCached) {
-      var storedId = this.getPresetSelection();
-      var presetId = $('select#preset', this.$el).val();
-      if (storedId) {
-        return this.presets.findWhere({ '_id': storedId });
-      }
-      if (presetId) {
-        return this.presets.findWhere({ '_id': presetId });
-      }
-      if (includeCached !== false){
-        var selectedTheme = this.getSelectedTheme();
-        if (!selectedTheme) return;
-        var parent = selectedTheme.get('theme');
-        return this.presets.findWhere({ '_id': this.model.get('_themePreset'), parentTheme: parent });
-      }
+    getSelectedPreset: function(includeCached = true, key = 'properties') {
+      var storedId = this.settings.presetSelection;
+      if(storedId) return this.presets.findWhere({ _id: storedId });
+
+      var $select = $('select#preset', this.$el);
+      var presetId = $select && $select.val();
+      if(presetId) return this.presets.findWhere({ _id: presetId });
+
+      if(includeCached) return this.presets.findWhere({ _id: Origin.editor.data.config.get('_themePreset') });
+
+      return preset && preset.get(key);
     },
 
-    getDefaultThemeSettings: function() {
-      var defaults = {};
-      var props;
-      try {
-        props = this.getSelectedTheme().get('properties').variables;
-      } catch(e) {
-        return defaults;
-      }
-      Object.keys(props).forEach(k => {
-        if (typeof props[k].properties !== 'object') {
-          defaults[k] = props[k].default;
-          return;
-        }
-        // Check for nested properties
-        defaults[k] = {};
-        Object.keys(props[k].properties).forEach(k2 => defaults[k][k2] = props[k].properties[k2].default);
-      });
-      return defaults;
+    getDefaultThemeSettings: async function() {
+      const getSchemaDefaults = (m, o) => {
+        Object.entries(o).forEach(([k,v]) => m[k] = v.subSchema ? getSchemaDefaults({}, v.subSchema) : v.default);
+        return m;
+      };
+      return getSchemaDefaults({}, this.form.schema);
     },
 
     getCurrentSettings: function() {
-      if (!this.form) {
-        return Origin.editor.data.course.get('themeVariables');
-      }
-      return _.mapObject(this.form.fields, field => field.getValue());
-    },
-
-    themeIsEditable: function(theme) {
-      var props = theme && theme.get('properties');
-      return props && props.variables;
-    },
-
-    flattenNestedProperties: function(properties) {
-      var flatProperties = {};
-      if (typeof properties !== 'undefined') {
-        for (var key in properties) {
-          // Check for nested properties
-          if (typeof properties[key] === 'object') {
-            for (var innerKey in properties[key]) {
-              flatProperties[innerKey] = properties[key][innerKey];
-            }
-          } else {
-            flatProperties[key] = properties[key];
-          }
-        }
-      }
-      return flatProperties;
+      return !this.form ? this.model.attributes : _.mapObject(this.form.fields, field => field.getValue());
     },
 
     updateRestorePresetButton: function(shouldShow) {
-      // no flag, so compare default settings with current settings to determine restore button visibility
-      if (typeof shouldShow === 'undefined') {
-        var currentSettings = this.flattenNestedProperties(this.getCurrentSettings());
-        var preset = this.getSelectedPreset();
-        var baseSettings = this.flattenNestedProperties((preset) ? preset.get('properties') : this.getDefaultThemeSettings());
-        shouldShow = !_.isEqual(currentSettings, baseSettings);
+      if(typeof shouldShow === 'undefined') { // no flag, so determine button visibility based on changed settings
+        shouldShow = !_.isEqual(this.getSelectedPreset() || this.getDefaultThemeSettings(), this.getCurrentSettings());
       }
-      var $reset = $('.editor-theming-sidebar-reset');
-      shouldShow ? $reset.css('visibility', 'visible') : $reset.css('visibility', 'hidden');
-    },
-
-    getPresetSelection: function() {
-      return this.settings.presetSelection;
-    },
-
-    setPresetSelection: function(id) {
-      this.settings.presetSelection = id;
+      $('.editor-theming-sidebar-reset').css('visibility', shouldShow ? 'visible' : 'hidden');
     },
 
     /**
     * Event handling
     */
 
-    onEditPreset: function(data) {
-      var model = this.presets.findWhere({ displayName: data.oldValue });
-      model.set('displayName', data.newValue);
-      model.save();
+    onEditPreset: function({ oldValue, newValue }) {
+      this.presets.findWhere({ displayName: oldValue }).save({ displayName: newValue });
     },
 
     onDeletePreset: function(preset) {
-      var toDestroy = this.presets.findWhere({ displayName: preset });
-      this.removePresetOption(toDestroy.get('_id'));
-      toDestroy.destroy();
-    },
-
-    removePresetOption: function(id) {
-      var select = this.$('.preset select');
-      if (select.val() === id) {
-          select.val('');
-      }
-      select.find('option[value="' + id + '"]').remove();
+      this.presets.findWhere({ displayName: preset }).destroy();
     },
 
     onError: function(collection, response, options) {
@@ -460,55 +294,35 @@ define(function(require) {
     },
 
     onThemeChanged: function() {
-      this.setPresetSelection(null);
+      this.settings.presetSelection = null;
       this.updatePresetSelect();
       this.renderForm();
       this.updateRestorePresetButton(false);
     },
 
     onPresetChanged: function(event) {
-      var preset = this.presets.findWhere({ _id: $(event.currentTarget).val() });
-      var settings = preset && preset.get('properties') || this.getDefaultThemeSettings();
-      this.setPresetSelection($(event.currentTarget).val());
-      this.restoreFormSettings(settings);
+      this.settings.presetSelection = $(event.currentTarget).val();
       this.updateRestorePresetButton(false);
-    },
-
-    onFieldChanged: function() {
-      this.updateRestorePresetButton();
+      this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
     },
 
     onSavePresetClicked: function() {
-      var self = this;
       Origin.Notify.alert({
         type: 'input',
         text: Origin.l10n.t('app.presetinputtext'),
         closeOnConfirm: false,
         showCancelButton: true,
-        callback: function(presetName) {
-          if (presetName === false) return;
-          if (presetName === "") return swal.showInputError(Origin.l10n.t('app.invalidempty'));
-          var theme = self.$('.theme select').val();
-          var presets = self.presets.where({ parentTheme: theme, displayName: presetName });
-          if (presets.length > 0) {
-            swal.showInputError(Origin.l10n.t('app.duplicatepreseterror'));
-          } else {
-            // watch out for injection attacks
-            self.savePreset(Helpers.escapeText(presetName));
-            swal.close();
-          }
+        callback: presetName => {
+          if(presetName === false) return // user cancel
+          if(!presetName) return swal.showInputError(Origin.l10n.t('app.invalidempty')); // no falsies
+          
+          var presets = this.presets.where({ displayName: presetName, parentTheme: this.$('.theme select').val() });
+          if(presets.length > 0) return swal.showInputError(Origin.l10n.t('app.duplicatepreseterror'));
+          
+          this.savePreset(Helpers.escapeText(presetName)); // escape text to avoid injection attacks
+          swal.close();
         }
       });
-    },
-
-    onSaveError: function() {
-      Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsave') });
-      this.navigateBack();
-    },
-
-    onSaveSuccess: function() {
-      Origin.trigger('editingOverlay:views:hide');
-      Origin.trigger('editor:refreshData', this.navigateBack.bind(this), this);
     }
   }, {
     template: 'editorTheming'
