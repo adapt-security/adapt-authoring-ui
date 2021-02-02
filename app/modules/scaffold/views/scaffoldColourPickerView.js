@@ -7,9 +7,9 @@ define([
     tagName: 'input',
     className: 'scaffold-colour-picker',
     events: {
-      'change': () => this.trigger('change', this),
-      'focus': () => this.trigger('focus', this),
-      'blur': () => this.trigger('blur', this)
+      'change': function() { this.trigger('change', this) },
+      'focus': function() { this.trigger('focus', this) },
+      'blur': function() { this.trigger('blur', this) }
     },
 
     render: function() {
