@@ -1,15 +1,10 @@
 define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
 
   var ScaffoldCodeEditorView =  Backbone.Form.editors.Base.extend({
-
     defaultValue: '',
-
     className: 'scaffold-code-editor',
-
     editor: null,
-
     mode: 'text',
-
     session: null,
 
     initialize: function(options) {
@@ -18,9 +13,7 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
       var inputType = options.schema.inputType;
       var mode = inputType.mode || inputType.split(':')[1];
 
-      if (mode) {
-        this.mode = mode;
-      }
+      if(mode) this.mode = mode;
     },
 
     render: function() {
@@ -29,26 +22,20 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
         minLines: 14,
         mode: `ace/mode/${this.mode}`,
       });
-
-      this.editor.on('change', function() { this.trigger('change', this); }.bind(this));
+      this.editor.on('change', () => this.trigger('change', this));
       this.setValue(this.value);
 
       return this;
     },
 
     setValue: function(value) {
-      if (this.mode === 'json') {
-        value = JSON.stringify(value, null, '\t');
-      }
-      this.editor.setValue(value);
+      this.editor.setValue(this.mode === 'json' ? JSON.stringify(value, null, '\t') : value);
     },
 
     getValue: function() {
       var value = this.editor.getValue();
 
-      if (this.mode !== 'json') {
-        return value;
-      }
+      if(this.mode !== 'json') return value;
 
       try {
         return JSON.parse(value);
@@ -59,26 +46,13 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
 
     validate: function() {
       var error = Backbone.Form.editors.Base.prototype.validate.call(this);
-
-      if (error) {
-        return error;
-      }
-
-      if (this.isSyntaxError()) {
-        return { message: Origin.l10n.t('app.errorsyntax') };
-      }
+      if(error) return error;
+      if(this.isSyntaxError()) return { message: Origin.l10n.t('app.errorsyntax') };
     },
 
     isSyntaxError: function() {
-      var annotations = this.editor.getSession().getAnnotations();
-
-      for (var i = 0, j = annotations.length; i < j; i++) {
-        if (annotations[i].type === 'error') {
-          return true;
-        }
-      }
+      return this.editor.getSession().getAnnotations().every(a => a.type !== 'error');
     }
-
   });
 
   Origin.on('origin:dataReady', function() {
@@ -88,5 +62,4 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
   });
 
   return ScaffoldCodeEditorView;
-
 });
