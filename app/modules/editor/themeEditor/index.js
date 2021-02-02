@@ -10,6 +10,6 @@ define(function(require) {
 
   Origin.on('editor:selecttheme', () => {
     Origin.sidebar.addView(new EditorThemingSidebarView().$el);
-    Origin.contentPane.setView(EditorThemingView, { model: Origin.editor.data.config });
+    Origin.contentPane.setView(EditorThemingView);
   });
 });
