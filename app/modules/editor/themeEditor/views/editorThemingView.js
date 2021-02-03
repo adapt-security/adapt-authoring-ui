@@ -102,9 +102,8 @@ define(function(require) {
 
       if(items.length) {
         items.forEach(i => $select.append($(`<option>`, i)));
-      } else {
-        $select.attr('disabled', !items.length);
       }
+      $select.attr('disabled', !items.length);
       $select.val(value);
     },
 
