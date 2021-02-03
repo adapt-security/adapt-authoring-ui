@@ -242,10 +242,7 @@ define(function(require) {
     getSelectedPreset: function(includeCached = true, key = 'properties') {
       var $select = $('select#preset', this.$el);
       var presetId = $select && $select.val();
-      if(presetId) return this.presets.findWhere({ _id: presetId });
-
-      if(includeCached) return this.presets.findWhere({ _id: Origin.editor.data.config.get('_themePreset') });
-
+      var preset = this.presets.findWhere({ _id: presetId ? presetId : includeCached && Origin.editor.data.config.get('_themePreset') })
       return preset && preset.get(key);
     },
 
