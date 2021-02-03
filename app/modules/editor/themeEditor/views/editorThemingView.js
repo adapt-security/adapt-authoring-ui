@@ -113,7 +113,7 @@ define(function(require) {
         value: this.getSelectedTheme().get('name'),
         items: [
           { value: "", disabled: 'disabled', text: Origin.l10n.t('app.selectinstr') },
-          ...this.themes.filter(t => t.get('isEnabled')).map(t => Object({ value: t.get('name'), text: t.get('displayName') }))
+          ...this.themes.where({ isEnabled: true }).map(t => Object({ value: t.get('name'), text: t.get('displayName') }))
         ]
       });
     },
