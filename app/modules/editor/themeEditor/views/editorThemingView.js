@@ -95,14 +95,9 @@ define(function(require) {
 
     updateSelect: function({ className, items, value }) {
       var $select = this.$(`.${className} select`);
-      
       $('option', $select).remove();
-
-      if(items.length) {
-        items.forEach(i => $select.append($(`<option>`, i)));
-      }
-      $select.attr('disabled', !items.length);
-      $select.val(value);
+      if(items.length) items.forEach(i => $select.append($(`<option>`, i)));
+      $select.attr({ disabled: !items.length, value });
     },
 
     updateThemeSelect: function() {
