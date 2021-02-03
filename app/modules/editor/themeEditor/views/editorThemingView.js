@@ -38,7 +38,7 @@ define(function(require) {
       
       await Promise.all([this.themes.fetch(), this.presets.fetch()]);
 
-      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'change', this.renderForm);
       this.listenTo(this.themes, 'change', this.updateThemeSelect);
       this.listenTo(this.presets, 'change', this.updatePresetSelect);
     },
