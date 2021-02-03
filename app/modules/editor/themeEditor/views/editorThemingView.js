@@ -63,22 +63,19 @@ define(function(require) {
 
     renderForm: async function() {
       this.removeForm();
-      
-      this.$('.theme-selector').addClass('show-preset-select');
-      this.$('.empty-message').hide();
-      this.$('.editable-theme').show();
-      $('.editor-theming-sidebar-reset').show();
+      let didError = false;
       try {
         this.schemaName = `${this.getSelectedTheme().get('theme')}-theme`;
         this.form = await Origin.scaffold.buildForm({ model: this.model, schemaType: this.schemaName });
-        this.$('.form-container').html(this.form.el);
-
+        this.$('.form-container').html(this.form.el);  
       } catch(e) {
-        this.$('.theme-selector').removeClass('show-preset-select');
-        this.$('.empty-message').show();
-        this.$('.editable-theme').hide();
-        $('.editor-theming-sidebar-reset').hide();
+        didError = true;
       }
+      this.$('.theme-selector').toggleClass('show-preset-select', !didError);
+      this.$('.empty-message').toggle(!didError);
+      this.$('.editable-theme').toggle(didError);
+      $('.editor-theming-sidebar-reset').toggle(!didError);
+      
       this.$el.find('fieldset:not(:has(>.field))').addClass('empty-fieldset');
       this.$('.theme-customiser').show();
       Origin.trigger('theming:showPresetButton', true);
