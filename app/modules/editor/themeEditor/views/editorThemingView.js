@@ -249,7 +249,7 @@ define(function(require) {
       return preset && preset.get(key);
     },
 
-    getDefaultThemeSettings: async function() {
+    getDefaultThemeSettings: function() {
       const getSchemaDefaults = (m, o) => {
         Object.entries(o).forEach(([k,v]) => m[k] = v.subSchema ? getSchemaDefaults({}, v.subSchema) : v.default);
         return m;
