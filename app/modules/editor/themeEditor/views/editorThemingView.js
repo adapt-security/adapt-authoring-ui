@@ -6,6 +6,7 @@ define(function(require) {
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var PresetCollection = require('../collections/editorPresetCollection.js');
+  var PresetModel = require('../models/editorPresetModel.js');
   var PresetEditView = require('./editorPresetEditView.js');
 
   var ThemingView = EditorOriginView.extend({
@@ -157,7 +158,7 @@ define(function(require) {
 
     savePreset: function(presetName) {
       this.form.commit();
-      new presetModel().save({
+      new PresetModel().save({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('theme'),
         properties: this.form.model.attributes
@@ -280,14 +281,12 @@ define(function(require) {
         type: 'input',
         text: Origin.l10n.t('app.presetinputtext'),
         closeOnConfirm: false,
-        showCancelButton: true,
         callback: presetName => {
           if(presetName === false) return // user cancel
           if(!presetName) return swal.showInputError(Origin.l10n.t('app.invalidempty')); // no falsies
-          
-          var presets = this.presets.where({ displayName: presetName, parentTheme: this.$('.theme select').val() });
-          if(presets.length > 0) return swal.showInputError(Origin.l10n.t('app.duplicatepreseterror'));
-          
+          if(this.presets.findWhere({ displayName: presetName, parentTheme: this.$('.theme select').val() })) {
+            return swal.showInputError(Origin.l10n.t('app.duplicatepreseterror'));
+          }
           this.savePreset(Helpers.escapeText(presetName)); // escape text to avoid injection attacks
           swal.close();
         }
