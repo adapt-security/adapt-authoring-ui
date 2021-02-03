@@ -1,4 +1,4 @@
-define(['core/origin'], function(Origin) {
+define(['core/origin', 'backbone-forms'], function(Origin) {
   var ScaffoldCodeEditorView =  Backbone.Form.editors.Base.extend({
     defaultValue: '',
     className: 'scaffold-code-editor',
