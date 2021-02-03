@@ -13,7 +13,7 @@ define(function(require) {
     className: 'theming',
     events: {
       'change .theme select': 'onThemeChanged',
-      'change .preset select': 'onPresetChanged',
+      'change .preset select': 'resetFormSettings',
       'change .form-container form': 'updateRestorePresetButton',
       'click button.edit': 'showPresetEdit'
     },
@@ -22,7 +22,7 @@ define(function(require) {
       this.listenTo(Origin, {
         'editorThemingSidebar:views:save': this.saveData,
         'editorThemingSidebar:views:savePreset': this.onSavePresetClicked,
-        'editorThemingSidebar:views:resetToPreset': this.restorePresetSettings,
+        'editorThemingSidebar:views:resetToPreset': this.resetFormSettings,
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
@@ -140,19 +140,10 @@ define(function(require) {
       var view = new PresetEditView({ model: new Backbone.Model({ presets }) });
       $('body').append(view.el);
     },
-
-    restorePresetSettings: function(event) {
-      event && event.preventDefault();
-      Origin.Notify.confirm({
-        type: 'warning',
-        text: Origin.l10n.t('app.restorepresettext'),
-        callback: confirmed => {
-          if (confirmed) {
-            this.updateRestorePresetButton(false);
-            this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
-          }
-        }
-      });
+    
+    resetFormSettings: function() {
+      this.updateRestorePresetButton(false);
+      this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
     },
 
     /**
@@ -285,11 +276,6 @@ define(function(require) {
       this.updatePresetSelect();
       this.renderForm();
       this.updateRestorePresetButton(false);
-    },
-
-    onPresetChanged: function(event) {
-      this.updateRestorePresetButton(false);
-      this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
     },
 
     onSavePresetClicked: function() {

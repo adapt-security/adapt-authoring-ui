@@ -39,7 +39,13 @@ define(function(require) {
 
     reset: function(event) {
       event && event.preventDefault();
-      Origin.trigger('editorThemingSidebar:views:resetToPreset');
+      Origin.Notify.confirm({
+        type: 'warning',
+        text: Origin.l10n.t('app.restorepresettext'),
+        callback: confirmed => {
+          if(confirmed) Origin.trigger('editorThemingSidebar:views:resetToPreset')
+        }
+      });
     },
 
     cancelEditing: function(event) {
