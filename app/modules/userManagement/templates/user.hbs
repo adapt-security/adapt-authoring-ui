@@ -70,8 +70,11 @@
     </div>
     <div class="col-10 col-centered temp">
       <div class="tb-col-inner">
-        {{#if isTempLocked}}<i class="fa fa-lock temp"></i>{{/if}}
-        {{#if isPermLocked}}<i class="fa fa-lock perm"></i>{{/if}}
+        {{#if isTempLocked}}
+          <i class="fa fa-lock temp"></i>
+        {{else if isPermLocked}}
+          <i class="fa fa-lock perm"></i>
+        {{/if}}
       </div>
     </div>
     <div class="col-15">
