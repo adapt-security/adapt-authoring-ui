@@ -150,6 +150,7 @@ define(function(require){
       this.model.pruneAttributes();
 
       var attrs = this.getAttributesToSave();
+      if(attrs) attrs._type = this.model.get('_type');
 
       this.model.save(attrs, {
         patch: !!attrs,
