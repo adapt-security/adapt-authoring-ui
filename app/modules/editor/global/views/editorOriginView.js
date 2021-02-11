@@ -152,9 +152,9 @@ define(function(require){
       var attrs = this.getAttributesToSave();
 
       this.model.save(attrs, {
-        patch: (attrs) ? true : false,
-        success: _.bind(this.onSaveSuccess, this),
-        error: _.bind(this.onSaveError, this)
+        patch: !!attrs,
+        success: this.onSaveSuccess.bind(this),
+        error: this.onSaveError.bind(this)
       });
     },
 
@@ -170,7 +170,7 @@ define(function(require){
     },
 
     getAttributesToSave: function() {
-      return this.model.changedAttributes();
+      return this.model.changedAttributes() || undefined;
     },
 
     /**
