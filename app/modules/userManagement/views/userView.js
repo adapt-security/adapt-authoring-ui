@@ -166,7 +166,7 @@ define(function(require){
           }
           var $btn = $(e.target);
           $btn.addClass('submitted');
-          Helpers.ajax('api/user/invite', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+          Helpers.ajax('api/auth/local/invite', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
         }
       });
     },
@@ -180,7 +180,7 @@ define(function(require){
           }
           var $btn = $(e.currentTarget);
           $btn.addClass('submitted');
-          Helpers.ajax('api/createtoken', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+          Helpers.ajax('api/auth/local/forgotpass', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
         }
       });
     },
@@ -200,7 +200,7 @@ define(function(require){
             email: this.model.get('email'),
             password: newPassword
           };
-          Helpers.ajax('api/user/resetpassword', postData, 'POST', () => {
+          Helpers.ajax('api/auth/local/changepass', postData, 'POST', () => {
             this.model.fetch();
             Origin.Notify.alert({
               type: 'success',
