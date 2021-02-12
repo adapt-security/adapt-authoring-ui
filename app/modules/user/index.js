@@ -4,7 +4,6 @@ define(function(require) {
   var LoginView = require('./views/loginView');
   var Origin = require('core/origin');
   var ResetPasswordView = require('./views/resetPasswordView');
-  var UserPasswordResetModel = require('./models/userPasswordResetModel');
   var UserProfileModel = require('./models/userProfileModel');
   var UserProfileSidebarView = require('./views/userProfileSidebarView');
   var UserProfileView = require('./views/userProfileView');
