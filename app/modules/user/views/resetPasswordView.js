@@ -49,29 +49,26 @@ define(function(require) {
       }
     },
 
-    resetPassword: function(event) {
+    resetPassword: async function(event) {
       event.preventDefault();
 
-      var toChange = {
-        password: this.$('#password').val(),
-        confirmPassword: this.$('#confirmPassword').val(),
-        id: this.model.get('_id'),
-        token: this.model.get('token')
-      };
-      this.model.save(toChange, {
-        patch: true,
-        success: _.bind(function(model, response, options) {
-          this.$('.form-reset-password').addClass('display-none');
-          this.$('.reset-introduction').addClass('display-none');
-          this.$('.message .success').removeClass('display-none');
-        },this),
-        error: _.bind(function(model, response, options) {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.resetpassworderror')
-          });
-        },this)
-      });
+      const password = this.$('#password').val();
+
+      if(password !== this.$('#confirmPassword').val()) {
+        return alert('NOMATCH');
+      }
+      try {
+        await $.post('api/auth/local/changepass', { password, email: this.model.get('email'), token: this.model.get('token') });
+        this.$('.form-reset-password').addClass('display-none');
+        this.$('.reset-introduction').addClass('display-none');
+        this.$('.message .success').removeClass('display-none');
+      } catch(e) {
+        Origin.Notify.alert({
+          type: 'error',
+          text: Origin.l10n.t('app.resetpassworderror')
+        });
+        console.error(e);
+      }
     }
   }, {
     template: 'resetPassword'
