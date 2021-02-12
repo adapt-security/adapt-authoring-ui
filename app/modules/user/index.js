@@ -16,10 +16,20 @@ define(function(require) {
     Origin.router.navigateTo('user/profile');
   });
 
-  Origin.on('router:user', function(location, subLocation, action) {
+  Origin.on('router:user', async function(location, subLocation, action) {
     var currentView;
+    var model = Origin.sessionModel;
     var settings = {};
-
+    var query = {};
+    
+    if(location.indexOf('reset') === 0) { // hack fix this
+      $('body').removeClass(`location-${location}`);
+      try {
+        query = parseQueryString(location);
+      } catch {}
+      location = 'reset';
+      $('body').addClass(`location-${location}`);
+    }
     settings.authenticate = false;
 
     switch(location) {
@@ -37,32 +47,28 @@ define(function(require) {
       case 'reset':
         Origin.trigger('sidebar:sidebarContainer:hide');
         currentView = ResetPasswordView;
+        model = new Backbone.Model(query);
         break;
       case 'profile':
         settings.authenticate = true;
         Origin.trigger('location:title:update', {title: Origin.l10n.t('app.editprofiletitle')});
+        model = new UserProfileModel();
+        await model.fetch();
         currentView = UserProfileView;
+        Origin.sidebar.addView(new UserProfileSidebarView().$el);
         break;
     }
-    if(currentView) {
-      switch(location) {
-        case 'profile':
-          var model = new UserProfileModel();
-          model.fetch({
-            success: function() {
-              Origin.sidebar.addView(new UserProfileSidebarView().$el);
-              Origin.contentPane.setView(currentView, { model });
-            }
-          });
-          break;
-        case 'reset':
-          var model = new UserPasswordResetModel({ token: subLocation });
-          reset.fetch({ success: () => Origin.contentPane.setView(currentView, { model }) });
-          break;
-        default:
-          Origin.contentPane.setView(currentView, { model: Origin.sessionModel });
-      }
-    }
+    if(currentView) Origin.contentPane.setView(currentView, { model });
   });
 
-})
+  function parseQueryString(queryString) {
+    try {
+      queryString.split('?')[1].split('&').reduce((m,s) => {
+        const [k,v] = s.split('=');
+        return { ...m, [k]: v };
+      }, {});
+    } catch {
+      return {};
+    }
+  }
+});
