@@ -26,7 +26,7 @@ define(function(require) {
       $('body').removeClass(`location-${location}`);
       try {
         query = parseQueryString(location);
-      } catch {}
+      } catch(e) {}
       location = 'reset';
       $('body').addClass(`location-${location}`);
     }
