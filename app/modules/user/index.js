@@ -63,7 +63,7 @@ define(function(require) {
 
   function parseQueryString(queryString) {
     try {
-      queryString.split('?')[1].split('&').reduce((m,s) => {
+      return queryString.split('?')[1].split('&').reduce((m,s) => {
         const [k,v] = s.split('=');
         return { ...m, [k]: v };
       }, {});
