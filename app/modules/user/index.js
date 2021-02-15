@@ -65,9 +65,9 @@ define(function(require) {
     try {
       return queryString.split('?')[1].split('&').reduce((m,s) => {
         const [k,v] = s.split('=');
-        return { ...m, [k]: v };
+        return Object.assign(m, { [k]: v });
       }, {});
-    } catch {
+    } catch(e) {
       return {};
     }
   }
