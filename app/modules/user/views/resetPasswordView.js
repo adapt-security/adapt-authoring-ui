@@ -29,24 +29,16 @@ define(function(require) {
       Origin.router.navigateToLogin();
     },
 
-    handleValidationError: function(model, error) {
-      if (!error) {
-        return;
+    handleValidationError: function(model, errors) {
+      if(errors) {
+        this.$('.resetError .message').text(this.errors.reduce((m,e) => `${m}${e}. `, ''));
+        this.$('.resetError').removeClass('display-none');
       }
-      var msg = "";
-      _.each(error, function(value, key) {
-        msg += value + '. ';
-      }, this);
-
-      this.$('.resetError .message').text(msg);
-      this.$('.resetError').removeClass('display-none');
     },
 
     verifyToken: function() {
       // Invalid token entered, take the user to login
-      if (!this.model.get('user')) {
-        Origin.router.navigateToLogin();
-      }
+      if(!this.model.get('user')) Origin.router.navigateToLogin();
     },
 
     resetPassword: async function(event) {
@@ -63,10 +55,7 @@ define(function(require) {
         this.$('.reset-introduction').addClass('display-none');
         this.$('.message .success').removeClass('display-none');
       } catch(e) {
-        Origin.Notify.alert({
-          type: 'error',
-          text: Origin.l10n.t('app.resetpassworderror')
-        });
+        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.resetpassworderror') });
         console.error(e);
       }
     }
