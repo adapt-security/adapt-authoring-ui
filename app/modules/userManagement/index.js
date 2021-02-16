@@ -59,7 +59,7 @@ define(function(require) {
     refreshUsers();
   };
   
-  function refreshUsers() {
+  async function refreshUsers() {
     try {
       await userCollection.fetch();
       users.forEach(user => {
