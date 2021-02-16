@@ -35,21 +35,15 @@ define(function(require) {
     });
   });
 
-  Origin.on('globalMenu:userManagement:open', function() {
-    Origin.router.navigateTo('userManagement');
-  });
+  Origin.on('globalMenu:userManagement:open', () => Origin.router.navigateTo('userManagement'));
 
   Origin.on('router:userManagement', function(location, subLocation, action) {
-    if(isReady) {
-      return onRoute(location, subLocation, action);
-    }
-    Origin.once('userManagement:dataReady', function() {
-      onRoute(location, subLocation, action);
-    });
+    if(isReady) return onRoute(location, subLocation, action);
+    Origin.once('userManagement:dataReady', () => onRoute(location, subLocation, action));
   });
 
   var onRoute = function(location, subLocation, action) {
-    var model = new Backbone.Model({ allRoles: allRoles });
+    var model = new Backbone.Model({ allRoles });
 
     if (location && location === 'addUser') {
       Origin.contentPane.setView(AddUserView, { model: model });
@@ -57,14 +51,8 @@ define(function(require) {
       return;
     }
     userCollection.once('sync', function() {
-      Origin.contentPane.setView(UserManagementView, {
-        model: model,
-        collection: userCollection
-      });
-      Origin.sidebar.addView(new UserManagementSidebarView({
-        model: model,
-        collection: userCollection
-      }).$el);
+      Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
+      Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
     });
 
     Origin.on('userManagement:refresh', refreshUsers);
@@ -72,21 +60,16 @@ define(function(require) {
   };
   
   function refreshUsers() {
-    console.log('refreshUsers');
-    userCollection.fetch({
-      success: function(users) {
-        console.log('success');
-        users.forEach(function(user) {
-          user.set({
-            allRoles: allRoles,
-            roles: user.get('roles').map(function(r) { return allRoles.findWhere({ _id: r }); }, this)
-          });
+    try {
+      await userCollection.fetch();
+      users.forEach(user => {
+        user.set({ 
+          allRoles, 
+          roles: user.get('roles').map(r => allRoles.findWhere({ _id: r })) 
         });
-      },
-      error: function() {
-        console.log('error');
-        Origin.notify.alert({ type: 'error', message: error });
-      }
-    });
+      });
+    } catch(e) {
+      Origin.notify.alert({ type: 'error', message: e });
+    }
   }
 });
