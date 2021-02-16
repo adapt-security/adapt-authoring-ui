@@ -166,7 +166,13 @@ define(function(require){
           }
           var $btn = $(e.target);
           $btn.addClass('submitted');
-          Helpers.ajax('api/auth/local/invite', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+          Helpers.ajax('api/auth/local/invite', { email: this.model.get('email') }, 'POST', () => {
+            $btn.removeClass('submitted');
+            Origin.Notify.alert({
+              type: 'success',
+              text: Origin.l10n.t('app.invitesent', { email: this.model.get('email') })
+            });
+          });
         }
       });
     },
@@ -180,7 +186,13 @@ define(function(require){
           }
           var $btn = $(e.currentTarget);
           $btn.addClass('submitted');
-          Helpers.ajax('api/auth/local/forgotpass', { email: this.model.get('email') }, 'POST', () => $btn.removeClass('submitted'));
+          Helpers.ajax('api/auth/local/forgotpass', { email: this.model.get('email') }, 'POST', () => {
+            $btn.removeClass('submitted');
+            Origin.Notify.alert({
+              type: 'success',
+              text: Origin.l10n.t('app.resetsent', { email: this.model.get('email') })
+            });
+          });
         }
       });
     },
