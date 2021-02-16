@@ -4,22 +4,20 @@ define(function(require){
   var Origin = require('core/origin');
 
   var jsHelpers = {
-    // shortcut for jQuery ajax
     ajax: function(route, data, method, success) {
-      var self = this;
       $.ajax(route, {
         data: data,
         method: method,
         error: function(data, status, error) {
-          var message = error + ': ';
-          if(data.responseText) message += data.responseText;
-          Origin.Notify.alert({ type: 'error', text: message });
+          Origin.Notify.alert({ 
+            type: 'error', 
+            text: error + (data.responseText ? `: ${data.responseText}` : '') 
+          });
         },
         success: success
       });
     }
   };
-
   // accessible to Handlebars only!
   var hbsHelpers = {
     ifIsCurrentTenant: function(tenantId, block) {
@@ -29,7 +27,6 @@ define(function(require){
         return block.inverse(this);
       }
     },
-
     ifUserNotMe: function(userId, block) {
       if (userId !== Origin.sessionModel.get('id')) {
         return block.fn(this);
@@ -38,10 +35,8 @@ define(function(require){
       }
     }
   };
-
   for(var name in hbsHelpers) {
     if(hbsHelpers.hasOwnProperty(name)) Handlebars.registerHelper(name, hbsHelpers[name]);
   }
-
   return jsHelpers;
 });
