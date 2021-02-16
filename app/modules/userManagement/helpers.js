@@ -8,10 +8,10 @@ define(function(require){
       $.ajax(route, {
         data: data,
         method: method,
-        error: function(data, status, error) {
+        error: function({ responseText }, status, error) {
           Origin.Notify.alert({ 
             type: 'error', 
-            text: error + (data.responseText ? `: ${data.responseText}` : '') 
+            text: error + (responseText ? `: ${responseText}` : '') 
           });
         },
         success: success
