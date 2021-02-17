@@ -50,7 +50,7 @@ define(['core/origin', 'backbone-forms'], function(Origin) {
     },
 
     isSyntaxError: function() {
-      return this.editor.getSession().getAnnotations().every(a => a.type !== 'error');
+      return this.editor.getSession().getAnnotations().some(a => a.type === 'error');
     }
   });
 
