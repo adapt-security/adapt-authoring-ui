@@ -63,7 +63,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
       // FIXME routes shouldn't be hard-coded
       if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login')) {
-        return this.blockUserAccess(Origin.l10n.t('app.errorsessionexpired'), true);
+        return this.blockUserAccess(Origin.sessionModel.get('error'), true);
       }
       return true;
     },

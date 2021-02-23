@@ -7,7 +7,10 @@ define(['require', 'backbone'], function(require, Backbone) {
       this.Origin = Origin;
 
       this.on('sync', () => this.set('isAuthenticated', true));
-      this.on('error', () => this.set('isAuthenticated', false));
+      this.on('error', (model, jqXhr) => {
+        const error = jqXhr?.responseJSON?.message;
+        this.set({ isAuthenticated: false, error });
+      });
     },
 
     hasScopes: function(scopes) {
