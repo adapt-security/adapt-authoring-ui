@@ -27,6 +27,9 @@
           "type": "string",
           "default": "span(*)"
         }
+      },
+      "_adapt": {
+        "isPublic": true
       }
     }
   }
