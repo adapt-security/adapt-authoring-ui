@@ -8,7 +8,7 @@ define(['require', 'backbone'], function(require, Backbone) {
 
       this.on('sync', () => this.set('isAuthenticated', true));
       this.on('error', (model, jqXhr) => {
-        const error = jqXhr?.responseJSON?.message;
+        const error = jqXhr.responseJSON && jqXhr.responseJSON.message;
         this.set({ isAuthenticated: false, error });
       });
     },
