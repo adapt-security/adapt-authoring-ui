@@ -36,7 +36,7 @@
   loadLibraries(() => {
     loadCore(Origin => {
       Origin.startSession(error => {
-        if(error) return console.error(error);
+        if(error) console.error(error);
         loadExtras(() => Origin.initialize());
       });
     });
