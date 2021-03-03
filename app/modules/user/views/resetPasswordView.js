@@ -47,7 +47,7 @@ define(function(require) {
       const password = this.$('#password').val();
 
       if(password !== this.$('#confirmPassword').val()) {
-        return alert('NOMATCH');
+        return this.handleValidationError(this.model, [Origin.l10n.t('app.passwordnomatcherror')]);
       }
       try {
         await $.post('api/auth/local/changepass', { password, email: this.model.get('email'), token: this.model.get('token') });
