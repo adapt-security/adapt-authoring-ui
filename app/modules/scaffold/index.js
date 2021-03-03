@@ -256,17 +256,10 @@ define([
     var model = options.model;
     var schemaType = model.get('_type') || model._type || model.get('type') || model.type || options.schemaType;
 
-    switch(schemaType) {
-      case 'menu':
-      case 'page':
-        schemaType = 'contentobject';
-        break;
-      case 'component':
-        schemaType = `${model.get('_component')}-${schemaType}`;
-        break;
-      case 'theme':
-        schemaType = `${model.get('theme')}-${schemaType}`;
-        break;
+    if(schemaType === 'menu' || schemaType === 'page') {
+      schemaType = 'contentobject';
+    } else if(schemaType === 'component') {
+      schemaType = `${model.get('_component')}-${schemaType}`;
     }
     let schema;
     try {
