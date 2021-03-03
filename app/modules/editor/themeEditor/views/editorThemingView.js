@@ -66,7 +66,7 @@ define(function(require) {
       this.removeForm();
       let didError = false;
       try {
-        this.schemaName = `${this.getSelectedTheme().get('theme')}-theme`;
+        this.schemaName = `${this.getSelectedTheme().get('targetAttribute').slice(1)}-theme`;
         this.form = await Origin.scaffold.buildForm({ model: this.model, schemaType: this.schemaName });
         this.$('.form-container').html(this.form.el);  
       } catch(e) {
