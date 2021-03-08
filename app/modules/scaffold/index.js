@@ -134,7 +134,7 @@ define([
     '_component',
     '_componentType',
     '_courseId',
-    '_enabledExtensions',
+    '_enabledPlugins',
     '_hasPreview',
     '_id',
     '_isSelected',
