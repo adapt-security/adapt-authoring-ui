@@ -69,11 +69,8 @@ define(function(require) {
         _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'component',
-        _componentType: componentType.get('_id'),
-        _componentTypeDisplayName: componentType.get('displayName'),
-        _component: componentType.get('component'),
-        _layout: layout,
-        version: componentType.get('version')
+        _component: componentType.get('name'),
+        _layout: layout
       }, {
         success: _.bind(function(model) {
           var parentId = model.get('_parentId');
