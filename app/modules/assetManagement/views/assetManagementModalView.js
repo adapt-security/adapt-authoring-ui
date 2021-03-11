@@ -16,7 +16,7 @@ define(function(require) {
     postRender: function() {
       this.setupSubViews();
       this.setupFilterAndSearchView();
-      if (this.options.assetType === "image" && Origin.scaffold.getCurrentModel().get('_component') === 'graphic') {
+      if (this.options.assetType === "image" && Origin.scaffold.getCurrentModel().get('_component') === 'adapt-contrib-graphic') {
       	this.setupImageAutofillButton();
       }
       this.resizePanels();
