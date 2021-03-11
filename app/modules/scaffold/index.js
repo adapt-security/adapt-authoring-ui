@@ -260,7 +260,12 @@ define([
     if(schemaType === 'menu' || schemaType === 'page') {
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
-      schemaType = `${model.get('_component')}-${schemaType}`;
+      try {
+        const [{ targetAttribute }] = await $.getJSON(`api/contentplugins?name=${model.get('_component')}`);
+        schemaType = `${targetAttribute.slice(1)}-${schemaType}`;
+      } catch(e) {
+        console.error(e);
+      }
     }
     let schema;
     try {
