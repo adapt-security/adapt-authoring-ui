@@ -127,6 +127,7 @@ define([
   }
 
   /**
+   * The following attributes won't be rendered in the front-end forms
    * @HACK @TODO this should be filtered with some useful logic
    */
   var ATTRIBUTE_BLACKLIST = [
