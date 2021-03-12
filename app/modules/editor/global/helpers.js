@@ -1,11 +1,6 @@
 define(function(require) {
   var Origin = require('core/origin');
 
-  var ContentObjectModel = require('core/models/contentObjectModel');
-  var ArticleModel = require('core/models/articleModel');
-  var BlockModel = require('core/models/blockModel');
-  var ComponentModel = require('core/models/componentModel');
-
   var Helpers = {
     /**
     * set the page title based on location
