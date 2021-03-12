@@ -16,7 +16,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${JSON.stringify(v)}&`, '?');
     },
     fetch: function(options) {
-      Backbone.Collection.prototype.fetch.call(this, _.assign({
+      return Backbone.Collection.prototype.fetch.call(this, _.assign({
         url: `${this.url}/query${this.buildQueryParams()}`,
         method: 'POST',
         data: this.buildQuery()
