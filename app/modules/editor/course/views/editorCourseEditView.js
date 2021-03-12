@@ -71,7 +71,7 @@ define(function(require) {
       const component = await this.createNewContentObject(ComponentModel, {
         _parentId: block.get('_id'),
         body: Origin.l10n.t('app.projectcontentbody'),
-        _component: 'text',
+        _component: 'adapt-contrib-text',
         _layout: 'full'
       });
     },
