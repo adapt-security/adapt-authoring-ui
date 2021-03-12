@@ -1,4 +1,5 @@
 define(function(require) {
+  var Handlebars = require('handlebars');
   var Origin = require('core/origin');
 
   var Helpers = {
@@ -83,6 +84,13 @@ define(function(require) {
     // start recursion
     _recurse(model);
   }
+
+  function getComponentDisplayName(name) {
+    const plugin = Origin.editor.data.componentTypes.findWhere({ name });
+    return plugin ? plugin.get('displayName') : '';
+  }
+
+  Handlebars.registerHelper('getComponentDisplayName', getComponentDisplayName);
 
   return Helpers;
 });

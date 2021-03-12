@@ -261,7 +261,7 @@ define([
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
       try {
-        const { targetAttribute } = Origin.editor.data.contentplugins.findWhere({ name: model.get('_component') });
+        const { targetAttribute } = Origin.editor.data.componentTypes.findWhere({ name: model.get('_component') });
         schemaType = `${targetAttribute.slice(1)}-${schemaType}`;
       } catch(e) {
         console.error(e);

@@ -20,10 +20,9 @@ define(function(require) {
       if(!Origin.editor) Origin.editor = {};
       if(!Origin.editor.data) Origin.editor.data = {};
 
-      Origin.editor.data.contentplugins = new ContentPluginCollection();
       Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
       try {
-        await Promise.all([Origin.editor.data.content.fetch(), Origin.editor.data.contentplugins.fetch()]);
+        await Origin.editor.data.content.fetch();
       } catch(e) {
         return handleError();
       }
