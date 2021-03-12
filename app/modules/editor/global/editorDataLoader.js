@@ -29,8 +29,8 @@ define(function(require) {
       }
       isLoaded = true;
 
-      Origin.editor.data.course = content.findWhere({ _type: 'course' });
-      Origin.editor.data.config = content.findWhere({ _type: 'config' });
+      Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
+      Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
 
       if(!Origin.editor.data.course || !Origin.editor.data.config) {
         return handleError();
