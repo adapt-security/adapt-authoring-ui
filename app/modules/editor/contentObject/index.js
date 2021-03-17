@@ -3,7 +3,6 @@
  * This module handles both sections/menus and pages.
  */
 define(function(require) {
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var EditorMenuSidebarView = require('./views/editorMenuSidebarView');
   var EditorPageEditSidebarView = require('./views/editorPageEditSidebarView');
   var EditorPageEditView = require('./views/editorPageEditView');
@@ -17,10 +16,10 @@ define(function(require) {
       if(data.action === 'edit') {
         return renderContentObjectEdit(data);
       }
-      Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
-      Origin.editor.data.componentTypes.fetch({
-        success: () => data.id ? renderPageStructure(data) : renderMenuStructure(data)
-      });
+      if(data.id) {
+        return renderPageStructure(data);
+      } 
+      renderMenuStructure(data);
     }
     if(!data.id) {
       return route();

@@ -21,8 +21,12 @@ define(function(require) {
       if(!Origin.editor.data) Origin.editor.data = {};
 
       Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+      Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
       try {
-        await Origin.editor.data.content.fetch();
+        await Promise.all([
+          Origin.editor.data.content.fetch(),
+          Origin.editor.data.componentTypes.fetch()
+        ]);
       } catch(e) {
         return handleError();
       }
