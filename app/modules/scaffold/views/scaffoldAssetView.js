@@ -18,30 +18,32 @@ define([
     },
 
     initialize: function(options) {
-      this.listenTo(Origin, 'scaffold:assets:autofill', this.onAutofill);
       Backbone.Form.editors.Base.prototype.initialize.call(this, options);
+      this.listenTo(Origin, 'scaffold:assets:autofill', this.setValue);
+      this.setValue(this.value);
     },
 
     render: function() {
-      this.setValue(this.value);
       this.renderData();
       return this;
     },
 
-    renderData: function(id) {
-      var inputType = this.schema.inputType;
-      var dataUrl = Helpers.isAssetExternal(this.value) ? this.value : '';
+    renderData: async function() {
+      this.assetType = this.schema.inputType.media || this.schema.inputType.replace(/Asset|:/g, '');
 
-      this.assetType = typeof inputType === 'string' ?
-        inputType.replace(/Asset|:/g, '') :
-        inputType.media;
-
-      this.$el.html(Handlebars.templates[this.constructor.template]({
-        value: this.value,
-        type: this.assetType,
-        url: id ? `api/assets/serve/${id}`: dataUrl,
-        thumbUrl: id ? `api/assets/serve/${id}?thumb=true` : dataUrl
-      }));
+      let url = thumbUrl = this.value;
+      
+      if(!Helpers.isAssetExternal(this.value)) {
+        try {
+          const [asset] = await $.post(`/api/assets/query`, { path: this.value.replace('course/assets/', '') });
+          url = `api/assets/serve/${asset._id}`;
+          thumbUrl = `${url}?thumb=true`;
+        } catch(e) {
+          return Origin.Notify.alert({ type: 'error', text: e.responseJson.message });
+        }
+      }
+      const template = Handlebars.templates[this.constructor.template];
+      this.$el.html(template({ value: this.value, type: this.assetType, url, thumbUrl }));
     },
 
     checkValueHasChanged: function() {
@@ -69,12 +71,14 @@ define([
       }
       currentModel.save(attributesToSave, {
         patch: attributesToSave !== undefined,
-        success: () => {
-          this.render();
-          this.trigger('change', this);
-        },
+        success: () => this.trigger('change', this),
         error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
       });
+    },
+
+    setValue: function(value) {
+      Backbone.Form.editors.Base.prototype.setValue.call(this, value);
+      this.render();
     },
 
     /**
@@ -97,24 +101,12 @@ define([
         assetType: this.assetType,
         _shouldShowScrollbar: false,
         onUpdate: function(data) {
-          if (!data) {
-            return;
+          if(data) {
+            this.setValue(data.assetLink);
+            if(data._shouldAutofill) {
+              Origin.trigger('scaffold:assets:autofill', data.assetLink);
+            }
           }
-          if (this.key === 'heroImage') {
-            this.setValue(data.assetId);
-            this.saveModel({ heroImage: data.assetId });
-            return;
-          }
-          // all ScaffoldAssetViews listen to the autofill event, so we trigger that rather than call code directly
-          if (data._shouldAutofill) {
-            var courseAssetObject = {
-              contentId: Origin.scaffold.getCurrentModel().get('_id') || '',
-              assetId: data.assetId
-            };
-            Origin.trigger('scaffold:assets:autofill', courseAssetObject, data.assetLink);
-            return;
-          }
-          this.setValue(data.assetLink);
         }
       }, this);
     },
@@ -124,10 +116,6 @@ define([
 
       this.checkValueHasChanged();
       this.setValue('');
-    },
-
-    onAutofill: function(courseAssetObject, value) {
-      this.setValue(value);
     },
 
     onExternalAssetButtonClicked: function(event) {
@@ -144,7 +132,6 @@ define([
       if (!inputValue.length) return this.toggleExternalAssetField(false);
 
       this.setValue(inputValue);
-      this.saveModel();
     },
 
     onExternalAssetCancelClicked: function(event) {
