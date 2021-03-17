@@ -165,11 +165,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return Origin.constants['adapt-authoring-mailer.isEnabled'] === true ? block.fn(this) : block.inverse(this);
     },
 
-    ifImageIsCourseAsset: function(url, block) {
-      var isCourseAsset = url.length !== 0 && url.indexOf('course/assets') === 0;
-      return isCourseAsset ? block.fn(this) : block.inverse(this);
-    },
-
     ifAssetIsExternal: function(url, block) {
       var isExternal = Handlebars.helpers.isAssetExternal(url);
       return isExternal ? block.fn(this) : block.inverse(this);
@@ -223,8 +218,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
         contentobject: 'core/models/contentObjectModel',
         article: 'core/models/articleModel',
         block: 'core/models/blockModel',
-        component: 'core/models/componentModel',
-        courseasset: 'core/models/courseAssetModel'
+        component: 'core/models/componentModel'
       };
       if(contentModels.hasOwnProperty(type)) {
         return require(contentModels[type]);
