@@ -76,11 +76,8 @@ define([
     createCourseAsset: function(courseAssetObject) {
       (new CourseAssetModel()).save({
         _courseId : Origin.editor.data.course.get('_id'),
-        _contentType : courseAssetObject.contentType,
-        _contentTypeId : courseAssetObject.contentTypeId,
-        _fieldName : courseAssetObject.fieldname,
+        _contentId : courseAssetObject.contentId,
         _assetId : courseAssetObject.assetId,
-        _contentTypeParentId: courseAssetObject.contentTypeParentId
       }, {
         success: () => this.saveModel(),
         error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
@@ -99,11 +96,7 @@ define([
     },
 
     removeCourseAsset: function(contentTypeId, contentType, fieldname) {
-      this.fetchCourseAsset({
-        _contentTypeId: contentTypeId,
-        _contentType: contentType,
-        _fieldName: fieldname
-      }, function(error, courseassets) {
+      this.fetchCourseAsset({ _contentId: contentTypeId }, function(error, courseassets) {
         if (error) {
           return console.error(error);
         }
@@ -184,13 +177,9 @@ define([
           var model = Origin.scaffold.getCurrentModel();
 
           var courseAssetObject = {
-            contentTypeId: model.get('_id') || '',
-            contentType: model.get('_type') || model._type,
-            contentTypeParentId: model.get('_parentId') || Origin.editor.data.course.get('_id'),
-            fieldname: data.assetFilename,
+            contentId: model.get('_id') || '',
             assetId: data.assetId
           };
-
           // all ScaffoldAssetViews listen to the autofill event, so we trigger
           // that rather than call code directly
           if (data._shouldAutofill) {
