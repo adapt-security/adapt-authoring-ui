@@ -143,6 +143,7 @@ define([
     '_layout',
     '_menu',
     '_parentId',
+    '_supportedLayout',
     '_theme',
     '_themePreset',
     '_trackingId',
