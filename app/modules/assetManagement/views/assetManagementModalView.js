@@ -64,7 +64,7 @@ define(function(require) {
       var previewView = new AssetManagementPreviewView({ model: model });
       this.$('.asset-management-preview-container-inner').html(previewView.$el);
 
-      var filename = model.get('filename');
+      var filename = model.get('path');
     	var assetObject = {
     		assetLink: 'course/assets/' + filename,
     		assetId: model.get('_id'),
