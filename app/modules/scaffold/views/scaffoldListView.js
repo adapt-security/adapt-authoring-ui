@@ -1,10 +1,8 @@
 define([
   'core/origin',
-  'core/helpers',
-  'core/models/courseAssetModel',
   'backbone-forms',
   'backbone-forms-lists'
-], function(Origin, Helpers, CourseAssetModel, BackboneForms) {
+], function(Origin) {
 
   var ScaffoldListView = Backbone.Form.editors.List.extend({
     defaultValue: [],
@@ -94,41 +92,6 @@ define([
     },
 
     cloneItem: function(event) {
-      var flatItem = Helpers.flattenNestedProperties(this.editor.value);
-      var itemValues = _.values(flatItem);
-      var parentAttributes = Origin.scaffold.getCurrentModel().attributes;
-      var parentId = parentAttributes._type === 'course' ? parentAttributes._id : parentAttributes._parentId;
-      itemValues.forEach(function(item) {
-        if (typeof item !== 'string' || item.indexOf('course/assets') === -1) return;
-
-        var itemFileName = item.substring(item.lastIndexOf('/')+1);
-        $.ajax({
-          url: 'api/asset/query',
-          type:'GET',
-          data: {search: { filename: itemFileName }},
-          success: function (result) {
-            (new CourseAssetModel()).save({
-              _courseId : Origin.editor.data.course.get('_id'),
-              _contentType : parentAttributes._type,
-              _contentTypeId : parentAttributes._id,
-              _fieldName : itemFileName,
-              _assetId : result[0]._id,
-              _contentTypeParentId: parentId
-            }, {
-              error: function(error) {
-                Origin.Notify.alert({
-                  type: 'error',
-                  text: Origin.l10n.t('app.errorsaveasset')
-                });
-              }
-            });
-          },
-          error: function() {
-            Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorduplication') });
-          }
-        });
-      });
-
       this.list.addItem(this.editor.value, true);
     }
   });

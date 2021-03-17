@@ -1,11 +1,9 @@
 define([
-  'core/collections/apiCollection',
   'modules/assetManagement/collections/assetCollection',
   'modules/assetManagement/views/assetManagementModalView',
-  'core/models/courseAssetModel',
   'core/helpers',
   'core/origin'
-], function(ApiCollection, AssetCollection, AssetManagementModalView, CourseAssetModel, Helpers, Origin) {
+], function(AssetCollection, AssetManagementModalView, Helpers, Origin) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -25,21 +23,8 @@ define([
     },
 
     render: function() {
-      if (!Helpers.isAssetExternal(this.value)) {
-        // don't have asset ID, so query courseassets for matching URL && content ID
-        this.fetchCourseAsset({ _fieldName: this.value.split('/').pop() }, (error, collection) => {
-          if (error) {
-            return console.error(error);
-          }
-          if (collection.length) { // re-render once data is loaded
-            this.renderData(collection.at(0).get('_assetId'));
-          }
-        });
-      }
-
       this.setValue(this.value);
       this.renderData();
-
       return this;
     },
 
@@ -61,62 +46,8 @@ define([
 
     checkValueHasChanged: function() {
       var value = this.getValue();
-
       if (this.key === 'heroImage') return this.saveModel({ heroImage: value });
       if (Helpers.isAssetExternal(value)) return this.saveModel();
-
-      var model = Origin.scaffold.getCurrentModel();
-      var contentTypeId = model.get('_id');
-      var contentType = model.get('_type');
-      var fieldname = value.replace('course/assets/', '');
-
-      this.removeCourseAsset(contentTypeId, contentType, fieldname);
-    },
-
-    createCourseAsset: function(courseAssetObject) {
-      (new CourseAssetModel()).save({
-        _courseId : Origin.editor.data.course.get('_id'),
-        _contentId : courseAssetObject.contentId,
-        _assetId : courseAssetObject.assetId,
-      }, {
-        success: () => this.saveModel(),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
-      });
-    },
-
-    fetchCourseAsset: function(searchCriteria, cb) {
-      if (!searchCriteria._contentTypeId) {
-        searchCriteria._courseId = Origin.editor.data.course.get('_id');
-      }
-      const coll = new ApiCollection(null, {  url: 'api/courseassets', filter: searchCriteria });
-      coll.fetch({
-        success: () => cb(null, coll),
-        error: (model, response) => cb(`Failed to fetch data for ${model.get('filename')}: ${response.statusText}`)
-      });
-    },
-
-    removeCourseAsset: function(contentTypeId, contentType, fieldname) {
-      this.fetchCourseAsset({ _contentId: contentTypeId }, function(error, courseassets) {
-        if (error) {
-          return console.error(error);
-        }
-        if (!courseassets.length) {
-          this.setValue('');
-          this.saveModel();
-          return;
-        }
-        var listModel = (courseassets.models ? courseassets.models.slice() : courseassets.slice())[0];
-
-        if (!listModel) return;
-
-        listModel.destroy({
-          success: () => this.saveModel(),
-          error: function() {
-            console.error('Failed to destroy courseasset record', listModel.get('_id'));
-            return;
-          }
-        });
-      }.bind(this));
     },
 
     saveModel: function(attributesToSave) {
@@ -166,29 +97,24 @@ define([
         assetType: this.assetType,
         _shouldShowScrollbar: false,
         onUpdate: function(data) {
-          if (!data) return;
-
+          if (!data) {
+            return;
+          }
           if (this.key === 'heroImage') {
             this.setValue(data.assetId);
             this.saveModel({ heroImage: data.assetId });
             return;
           }
-
-          var model = Origin.scaffold.getCurrentModel();
-
-          var courseAssetObject = {
-            contentId: model.get('_id') || '',
-            assetId: data.assetId
-          };
-          // all ScaffoldAssetViews listen to the autofill event, so we trigger
-          // that rather than call code directly
+          // all ScaffoldAssetViews listen to the autofill event, so we trigger that rather than call code directly
           if (data._shouldAutofill) {
+            var courseAssetObject = {
+              contentId: Origin.scaffold.getCurrentModel().get('_id') || '',
+              assetId: data.assetId
+            };
             Origin.trigger('scaffold:assets:autofill', courseAssetObject, data.assetLink);
             return;
           }
-
           this.setValue(data.assetLink);
-          this.createCourseAsset(courseAssetObject);
         }
       }, this);
     },
@@ -202,7 +128,6 @@ define([
 
     onAutofill: function(courseAssetObject, value) {
       this.setValue(value);
-      this.createCourseAsset(courseAssetObject);
     },
 
     onExternalAssetButtonClicked: function(event) {

@@ -3,10 +3,9 @@ define([
   'backbone-forms',
   'core/helpers',
   './scaffoldAssetView',
-  'core/models/courseAssetModel',
   'modules/assetManagement/views/assetManagementModalView',
   'modules/assetManagement/collections/assetCollection'
-], function(Origin, BackboneForms, Helpers, ScaffoldAssetView, CourseAssetModel, AssetManagementModalView, AssetCollection) {
+], function(Origin, BackboneForms, Helpers, ScaffoldAssetView, AssetManagementModalView, AssetCollection) {
 
   var ScaffoldAssetItemView = ScaffoldAssetView.extend({
 
@@ -154,18 +153,12 @@ define([
       var $parent = this.$('.scaffold-asset-item-img-holder');
       var left = (parseInt($dragHandle.css("left")) / ($parent.width() / 100)).toFixed(this.precision);
       var top = (parseInt($dragHandle.css("top")) / ($parent.height() / 100)).toFixed(this.precision);
-      var index = $dragHandle.css({left: left + '%', top: top+'%'}).data('index');
+      var child = _.find(this.dragItems, i => i.$el[0] === event.target);
 
-      var child = _.find(this.dragItems, function(i) {
-        return i.$el[0] === event.target;
-      });
-
-      if (!child) return;
-
-      var value = {};
-      value[this.leftAttr] = left;
-      value[this.topAttr] = top;
-      child.view.setValue(_.extend({}, child.view.value, value));
+      if (!child) {
+        return;
+      }
+      child.view.setValue(_.extend({}, child.view.value, { [this.leftAttr]: left, [this.topAttr]: top }));
       child.view.renderSummary();
     },
 
@@ -178,19 +171,7 @@ define([
         _shouldShowScrollbar: false,
         onUpdate: function(data) {
           if (!data) return;
-
-          var model = Origin.scaffold.getCurrentModel();
-
-          var courseAssetObject = {
-            contentTypeId: model.get('_id') || '',
-            contentType: model.get('_type') || model._type,
-            contentTypeParentId: model.get('_parentId') || Origin.editor.data.course.get('_id'),
-            fieldname: data.assetFilename,
-            assetId: data.assetId
-          };
-
           this.setValue(data.assetLink);
-          this.createCourseAsset(courseAssetObject);
         }
       }, this);
     },
