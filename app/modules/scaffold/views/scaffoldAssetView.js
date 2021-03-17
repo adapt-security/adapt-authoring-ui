@@ -54,8 +54,8 @@ define([
       this.$el.html(Handlebars.templates[this.constructor.template]({
         value: this.value,
         type: this.assetType,
-        url: id ? 'api/asset/serve/' + id : dataUrl,
-        thumbUrl: id ? 'api/asset/thumb/' + id : dataUrl
+        url: id ? `api/assets/serve/${id}`: dataUrl,
+        thumbUrl: id ? `api/assets/serve/${id}?thumb=true` : dataUrl
       }));
     },
 
