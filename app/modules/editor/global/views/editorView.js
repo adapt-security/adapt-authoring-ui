@@ -139,7 +139,7 @@ define(function(require) {
           $downloadForm.attr('action', data.publish_url);
           $downloadForm.submit();
         },
-        error: jqXhr => {
+        error: jqXHR => {
           this.resetDownloadProgress();
           text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
         }
