@@ -14,8 +14,7 @@ define(function(require){
     events: {
       'click a.confirm-select-asset' : 'selectAsset',
       'click .asset-preview-edit-button': 'onEditButtonClicked',
-      'click .asset-preview-delete-button': 'onDeleteButtonClicked',
-      'click .asset-preview-restore-button': 'onRestoreButtonClicked'
+      'click .asset-preview-delete-button': 'onDeleteButtonClicked'
     },
 
     preRender: function() {
@@ -45,58 +44,22 @@ define(function(require){
       });
     },
 
-    onDeleteConfirmed: function(confirmed) {
-      var self = this;
-
-      if (confirmed) {
-        $.ajax({
-          url: 'api/asset/trash/' + self.model.get('_id'),
-          type: 'PUT',
-          success: function() {
-            self.model.trigger('destroy', self.model, self.model.collection);
-            Origin.trigger('assetManagement:assetPreviewView:delete');
-            self.remove();
-          },
-          error: function(data) {
-            Origin.Notify.alert({
-              type: 'error',
-              text: Origin.l10n.t('app.errordeleteasset', { message: data.message })
-            });
-          }
-        });
+    onDeleteConfirmed: async function(confirmed) {
+      if (!confirmed) {
+        return;
       }
-    },
-
-    onRestoreButtonClicked: function(event) {
-      event.preventDefault();
-      Origin.Notify.confirm({
-        text: Origin.l10n.t('app.assetconfirmrestore'),
-        callback: _.bind(this.onRestoreConfirmed, this)
-      });
-    },
-
-    onRestoreConfirmed: function(confirmed) {
-      var self = this;
-
-      if (confirmed) {
-        $.ajax({
-          url: 'api/asset/restore/' + self.model.get('_id'),
-          type: 'PUT',
-          success: function() {
-            self.model.set({_isDeleted: false});
-            Origin.trigger('assetManagement:assetPreviewView:delete');
-            self.remove();
-          },
-          error: function(data) {
-            Origin.Notify.alert({
-              type: 'error',
-              text: Origin.l10n.t('app.errorrestoreasset', { message: data.message })
-            });
-          }
+      try {
+        await $.ajax({ url: `api/assets/${this.model.get('_id')}`, type: 'DELETE' });
+        this.model.trigger('destroy', this.model, this.model.collection);
+        Origin.trigger('assetManagement:assetPreviewView:delete');
+        this.remove();
+      } catch(e) {
+        Origin.Notify.alert({
+          type: 'error',
+          text: Origin.l10n.t('app.errordeleteasset', { message: data.message })
         });
       }
     }
-
   }, {
     template: 'assetManagementPreview'
   });
