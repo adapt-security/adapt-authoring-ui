@@ -31,7 +31,7 @@ define(function(require){
     onEditButtonClicked: function(event) {
       event.preventDefault();
       var assetId = this.model.get('_id');
-      Origin.router.navigateTo('assetManagement/' + assetId + '/edit');
+      Origin.router.navigateTo(`assetManagement/${assetId}/edit`);
     },
 
     onDeleteButtonClicked: function(event) {
