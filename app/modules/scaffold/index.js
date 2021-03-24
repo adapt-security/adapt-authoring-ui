@@ -156,28 +156,16 @@ define([
     'updatedAt',
     'userGroups',
   ];
-  function buildSchema(requiredKeys, schema) {
+  function buildSchema(requiredKeys, properties) {
     var scaffoldSchema = {};
-    var field = { type: 'object', properties: Object.assign({}, _.omit(schema, ATTRIBUTE_BLACKLIST)) };
-    
-    trimEmptyProperties(field.properties);
-    
-    var nestedProps = field.properties;
-    var key = 'properties';
 
-    schema = { properties: field };
-    setRequiredValidators(_.without(requiredKeys, ...ATTRIBUTE_BLACKLIST), nestedProps);
+    properties = _.omit(properties, ATTRIBUTE_BLACKLIST);
+    trimEmptyProperties(properties);
+    setRequiredValidators(_.without(requiredKeys, ...ATTRIBUTE_BLACKLIST), properties);
+    properties = { type: 'object', properties };
+    setUpSchemaFields(properties, 'properties', { properties }, scaffoldSchema);
 
-    if (!nestedProps) {
-      setUpSchemaFields(field, key, schema, scaffoldSchema);
-      return scaffoldSchema.properties.subSchema;
-    }
-    // process nested properties on edit theme page
-    for (var innerKey in nestedProps) {
-      if (!nestedProps.hasOwnProperty(innerKey)) continue;
-      setUpSchemaFields(nestedProps[innerKey], innerKey, nestedProps, scaffoldSchema);
-    }
-    return scaffoldSchema;
+    return scaffoldSchema.properties.subSchema;
   }
 
   function trimEmptyProperties(object) {
