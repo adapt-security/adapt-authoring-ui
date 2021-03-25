@@ -37,7 +37,7 @@ define([
         try {
           const [asset] = await $.post(`/api/assets/query`, { path: this.value.replace('course/assets/', '') });
           if(!asset) {
-            throw new Error('Failed to retrieve asset');
+            throw { responseJson: { message: 'Failed to retrieve asset' } };
           }
           url = `api/assets/serve/${asset._id}`;
           thumbUrl = `${url}?thumb=true`;
