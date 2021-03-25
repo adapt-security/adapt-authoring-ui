@@ -69,7 +69,7 @@ define(function(require) {
         });
       });
     } catch(e) {
-      Origin.notify.alert({ type: 'error', message: e });
+      Origin.Notify.alert({ type: 'error', message: e });
     }
   }
 });
