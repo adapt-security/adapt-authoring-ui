@@ -61,8 +61,7 @@ define(function(require) {
   
   async function refreshUsers() {
     try {
-      await userCollection.fetch();
-      users.forEach(user => {
+      (await userCollection.fetch()).forEach(user => {
         user.set({ 
           allRoles, 
           roles: user.get('roles').map(r => allRoles.findWhere({ _id: r })) 
