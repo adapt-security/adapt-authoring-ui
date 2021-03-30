@@ -64,14 +64,12 @@ define(function(require) {
       var previewView = new AssetManagementPreviewView({ model: model });
       this.$('.asset-management-preview-container-inner').html(previewView.$el);
 
-      var filename = model.get('path');
-    	var assetObject = {
-    		assetLink: 'course/assets/' + filename,
+    	this.data = {
+    		assetLink: `course/assets/${model.get('path')}`,
     		assetId: model.get('_id'),
-    		assetFilename: filename
+    		assetFilename: model.get('path')
     	};
-      this.data = assetObject;
-      Origin.trigger('modal:assetSelected', assetObject);
+      Origin.trigger('modal:assetSelected', this.data);
     },
 
     getData: function() {
