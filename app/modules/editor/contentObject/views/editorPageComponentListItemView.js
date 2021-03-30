@@ -62,27 +62,16 @@ define(function(require) {
     addComponent: function(layout) {
       Origin.trigger('editorComponentListView:remove');
 
-      var componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
-      var model = new ComponentModel();
-
-      model.save({
+      const componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
+      const model = new ComponentModel({
         _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'component',
         _component: componentType.get('name'),
         _layout: layout
-      }, {
-        success: _.bind(function(model) {
-          var parentId = model.get('_parentId');
-          Origin.trigger(`editorView:renderPage`);
-          $('html').css('overflow-y', '');
-          $.scrollTo(`.block[data-id=${parentId}]`);
-        }, this),
-        error: function() {
-          $('html').css('overflow-y', '');
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingcomponent') });
-        }
       });
+      Origin.editor.data.content.push(model);
+      Origin.trigger('editor:component', { model });
     }
   }, {
     template: 'editorPageComponentListItem'

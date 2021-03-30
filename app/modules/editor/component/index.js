@@ -6,7 +6,8 @@ define(function(require) {
   const Origin = require('core/origin');
 
   Origin.on('editor:component', async data => {
-    const model = Origin.editor.data.content.findWhere({ _id: data.id });
+    let model = data.model;
+    if(!model) model = Origin.editor.data.content.findWhere({ _id: data.id });
     const form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
     Origin.sidebar.addView(new EditorComponentEditSidebarView({ model, form }).$el);
