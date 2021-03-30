@@ -34,16 +34,8 @@ define([
       let url = thumbUrl = this.value;
       
       if(!Helpers.isAssetExternal(this.value)) {
-        try {
-          const [asset] = await $.post(`/api/assets/query`, { path: this.value.replace('course/assets/', '') });
-          if(!asset) {
-            throw { responseJson: { message: 'Failed to retrieve asset' } };
-          }
-          url = `api/assets/serve/${asset._id}`;
-          thumbUrl = `${url}?thumb=true`;
-        } catch(e) {
-          return Origin.Notify.alert({ type: 'error', text: e.responseJson.message });
-        }
+        url = `api/assets/serve/${this.value}`;
+        thumbUrl = `${url}?thumb=true`;
       }
       const template = Handlebars.templates[this.constructor.template];
       this.$el.html(template({ value: this.value, type: this.assetType, url, thumbUrl }));
