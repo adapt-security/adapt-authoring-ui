@@ -105,9 +105,9 @@ define([
         _shouldShowScrollbar: false,
         onUpdate: function(data) {
           if(data) {
-            this.setValue(data.assetLink);
+            this.setValue(data.assetId);
             if(data._shouldAutofill) {
-              Origin.trigger('scaffold:assets:autofill', data.assetLink);
+              Origin.trigger('scaffold:assets:autofill', data.assetId);
             }
           }
         }
