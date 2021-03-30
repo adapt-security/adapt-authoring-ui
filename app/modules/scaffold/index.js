@@ -252,9 +252,7 @@ define([
       try {
         const plugin = Origin.editor.data.componentTypes.findWhere({ name: model.get('_component') });
         schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
-      } catch(e) {
-        console.error(e);
-      }
+      } catch(e) {} // nothing to do
     }
     let schema;
     try {
