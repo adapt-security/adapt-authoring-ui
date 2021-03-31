@@ -12,7 +12,7 @@ define(function(require) {
       if(Helpers.isAssetExternal(this.get('heroImage'))) {
         return this.get('heroImage');
       }
-      return 'api/assets/serve/' + this.get('heroImage') + '?thumb=true';
+      return `api/assets/serve/${this.get('heroImage')}?thumb=true`;
     },
 
     isEditable: function () {
