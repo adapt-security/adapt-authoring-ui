@@ -80,6 +80,8 @@ define(function(require){
 
       if(this.filters.length) {
         this.collection.customQuery.type = { $in: this.filters };
+      } else {
+        delete this.collection.customQuery.type;
       }
       Object.assign(this.collection.options, {
         skip: this.fetchCount,
