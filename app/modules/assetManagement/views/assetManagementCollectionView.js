@@ -131,7 +131,7 @@ define(function(require){
 
     removeFilter: function(filterType) {
       // remove filter from this.filters
-      this.filters = _.filter(this.filters, function(item) { return item !== filterType; });
+      this.filters = this.filters.filter(item => item !== filterType);
       this.resetCollection();
     },
 
