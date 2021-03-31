@@ -6,14 +6,7 @@ define(function(require) {
   var EditorComponentEditView = EditorOriginView.extend({
     className: "component-edit",
     tagName: "div",
-
-    initialize: function() {
-      if(this.isNew) {
-        Origin.router.navigate(`#/editor/${this.model.get('_courseId')}/component/${this.model.get('_id')}`, { trigger: false });
-      }
-      EditorOriginView.prototype.initialize.call(this, arguments);
-    },
-
+    
     preRender: function() {
       this.listenTo(Origin, 'editorComponentEditSidebar:views:save', this.save);
     },

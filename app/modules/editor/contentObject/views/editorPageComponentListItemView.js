@@ -61,17 +61,16 @@ define(function(require) {
 
     addComponent: function(layout) {
       Origin.trigger('editorComponentListView:remove');
-
       const componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
-      const model = new ComponentModel({
+      const _courseId = Origin.editor.data.course.get('_id');
+      Origin.editor.data.newcomponent = new ComponentModel({
         _parentId: this._parentId,
-        _courseId: Origin.editor.data.course.get('_id'),
+        _courseId,
         _type: 'component',
         _component: componentType.get('name'),
         _layout: layout
       });
-      Origin.editor.data.content.push(model);
-      Origin.trigger('editor:component', { model });
+      Origin.router.navigateTo(`editor/${_courseId}/component/new/`);
     }
   }, {
     template: 'editorPageComponentListItem'
