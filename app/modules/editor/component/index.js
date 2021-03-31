@@ -10,7 +10,7 @@ define(function(require) {
     if(_id === 'new') {
       if(!Origin.editor.data.newcomponent) {
         Origin.Notify.alert({ 
-          type: 'error',
+          type: 'error', 
           text: 'Invalid data for new component',
           callback: () => Origin.router.navigateBack()
         });
@@ -19,8 +19,8 @@ define(function(require) {
       model = Origin.editor.data.newcomponent;
     } else {
       model = Origin.editor.data.content.findWhere({ _id });
-      Helpers.setPageTitle(model);
     }
+    Helpers.setPageTitle(model);
     const form = await Origin.scaffold.buildForm({ model });
     Origin.sidebar.addView(new EditorComponentEditSidebarView({ model, form }).$el);
     Origin.contentPane.setView(EditorComponentEditView, { model, form });
