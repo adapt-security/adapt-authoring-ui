@@ -31,6 +31,9 @@ define(function(require) {
   }
 
   function getAction() {
+    if(Origin.location.route2 === 'component' && Origin.location.route3 === 'new') {
+      return 'edit';
+    }
     return Origin.location.route4;
   }
 
