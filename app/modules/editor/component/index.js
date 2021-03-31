@@ -10,7 +10,7 @@ define(function(require) {
     if(_id === 'new') {
       if(!Origin.editor.data.newcomponent) {
         Origin.Notify.alert({ 
-          type: 'error', 
+          type: 'error',
           text: 'Invalid data for new component',
           callback: () => Origin.router.navigateBack()
         });
