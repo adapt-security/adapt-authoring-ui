@@ -27,7 +27,6 @@ define(function(require){
     },
     
     postRender: function() {
-      console.log(this.model.get('title'), this.model.get('_isSelected'));
       this.$el.toggleClass('selected', !!this.model.get('_isSelected'));
       if (this.model.get('_isSelected')) {
         Origin.trigger('assetManagement:assetItemView:preview', this.model);
