@@ -8,7 +8,7 @@ define(function(require){
     className: "asset-management-collection",
 
     sort: { createdAt: -1 },
-    search: {},
+    search: undefined,
     filters: [],
     tags: [],
     fetchCount: 0,
@@ -16,11 +16,6 @@ define(function(require){
     pageSize: 1,
 
     preRender: function(options) {
-      if(options.search) {
-        this.search = options.search;
-        var assetType = this.search.assetType;
-        if(assetType) this.filters = assetType.$in;
-      }
       this.initEventListeners();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);
@@ -77,7 +72,15 @@ define(function(require){
       this.isCollectionFetching = true;
 
       this.collection.customQuery.tags = { $all: this.tags };
-
+      
+      if(this.search) {
+        this.collection.customQuery.$or = [
+          { title: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } },
+          { description: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } } 
+        ]
+      } else {
+        delete this.collection.customQuery.$or;
+      }
       if(this.filters.length) {
         this.collection.customQuery.type = { $in: this.filters };
       } else {
@@ -107,7 +110,7 @@ define(function(require){
       });
     },
 
-    resetCollection: function(cb, shouldFetch) {
+    resetCollection: function(cb, shouldFetch = true) {
       // to remove old views
       Origin.trigger('assetManagement:assetViews:remove');
 
@@ -115,9 +118,7 @@ define(function(require){
       this.fetchCount = 0;
       this.collection.reset();
 
-      if (shouldFetch === undefined || shouldFetch === true) {
-        this.fetchCollection(cb);
-      }
+      if(shouldFetch) this.fetchCollection(cb);
     },
 
     /**
@@ -137,8 +138,7 @@ define(function(require){
 
     filterBySearchInput: function (filterText) {
       this.resetCollection(null, false);
-      var pattern = '.*' + filterText.toLowerCase() + '.*';
-      this.search = { title: pattern, description: pattern };
+      this.search = filterText;
       this.fetchCollection();
 
       $(".asset-management-modal-filter-search" ).focus();
