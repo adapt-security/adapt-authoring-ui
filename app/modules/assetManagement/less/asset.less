@@ -11,12 +11,16 @@
     }
 }
 
+.asset-management-inner {
+    display: flex;
+}
+
 .asset-management-sidebar-filter-image-icon {
     float: left;
 }
 
 .asset-management-assets-container {
-    float:left;
+    flex:3;
     overflow-y: auto;
     .asset-management-no-assets {
         text-align:center;
@@ -31,9 +35,7 @@
 }
 
 .asset-management-preview-container {
-    float:right;
-    position: fixed;
-    right: 0;
+    flex:1;
     overflow-x:hidden;
     text-align:center;
     background-color: @white;
