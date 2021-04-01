@@ -19,7 +19,6 @@ define(function(require) {
       if (this.options.assetType === "image" && Origin.scaffold.getCurrentModel().get('_component') === 'adapt-contrib-graphic') {
       	this.setupImageAutofillButton();
       }
-      this.resizePanels();
     },
 
     setupSubViews: function() {
@@ -45,17 +44,6 @@ define(function(require) {
 
     setupImageAutofillButton: function() {
     	new AssetManagementModelAutofillView({ modalView: this });
-    },
-
-    resizePanels: function() {
-      var actualHeight = $(window).height() - $('.modal-popup-toolbar').outerHeight();
-      var windowWidth = $(window).width();
-      this.$('.asset-management-assets-container')
-        .width(windowWidth*0.75)
-        .height(actualHeight);
-      this.$('.asset-management-preview-container')
-        .width(windowWidth*0.25)
-        .height(actualHeight);
     },
 
     onAssetClicked: function(model) {
