@@ -155,7 +155,7 @@ define(function(require){
       this.model.save(attrs, {
         patch: !!attrs,
         success: this.onSaveSuccess.bind(this),
-        error: this.onSaveError.bind(this)
+        error: (model, jqXhr) => this.onSaveError(undefined, jqXhr.responseJSON?.message)
       });
     },
 
