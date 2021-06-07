@@ -75,6 +75,11 @@ define([
       Backbone.Form.editors.Base.prototype.setValue.call(this, value);
       this.render();
     },
+    
+    getValue: function() {
+      const val = Backbone.Form.editors.Base.prototype.getValue.call(this);
+      if(!val) return undefined;
+    },
 
     /**
     * Event handling
