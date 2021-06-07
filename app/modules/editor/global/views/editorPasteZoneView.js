@@ -1,29 +1,25 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
-  var Backbone = require('backbone');
-  var Handlebars = require('handlebars');
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
   var EditorOriginView = require('./editorOriginView');
 
   var EditorPasteZoneView = EditorOriginView.extend({
     className: 'display-none paste-zone',
-
     events: {
       'click .editor-paste-zone-paste': 'onPasteElementClicked'
     },
 
     preRender: function() {
       this.listenTo(this.model, 'destroy', this.remove);
-      this.listenTo(Origin, 'editorView:removeSubViews', this.remove);
-      this.listenTo(Origin, 'editorPageView:removePageSubViews', this.remove);
+      this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
     },
 
     postRender: function () {
       var type = this.model.get('_type');
-      this.$el.addClass('paste-zone-' + type);
+      this.$el.addClass(`paste-zone-${type}`);
       this.$el.droppable({
-        accept: '.' + type + '-draggable',
+        accept: `.${type}-draggable`,
         hoverClass: 'paste-zone-droppable',
         drop: _.bind(this.onDrop, this)
       });
