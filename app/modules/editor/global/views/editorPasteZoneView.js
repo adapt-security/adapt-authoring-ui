@@ -41,21 +41,20 @@ define(function(require){
     onDrop: function(e, ui) {
       var type = this.model.get('_type');
       var $component = $(ui.draggable);
-      var contentId = $component.attr('data-' + type + '-id');
-      var parentId = this.model.get('_parentId');
-      var droppedOnId = $component.attr('data-' + this.model.get('_parent') + '-id');
+      var contentId = $component.attr(`data-${type}-id`);
+      var _parentId = this.model.get('_parentId');
+      var droppedOnId = $component.attr(`data-${this.model.get('_parent')}-id`);
+      var _sortOrder = Number($(`.paste-${type}`, this.$el).attr('data-sort-order'));
       $.ajax({
-        url: 'api/content/' + type + '/' + contentId,
-        type: 'PUT',
-        data: {
-          _parentId: parentId,
-          _sortOrder: $('.paste-' + type, this.$el).attr('data-sort-order')
-        },
+        url: `api/content/${contentId}`,
+        type: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({ _parentId, _sortOrder }),
         success: function() {
-          var eventPrefix = 'editorView:move' + Helpers.capitalise(type) + ':';
+          var eventPrefix = `editorView:move${Helpers.capitalise(type)}:`;
           Origin.trigger(eventPrefix + droppedOnId);
           // notify the old parent that the child's gone
-          if(droppedOnId !== parentId) Origin.trigger(eventPrefix + parentId);
+          if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + parentId);
         },
         error: function(jqXHR) {
           Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message });
