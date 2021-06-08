@@ -30,7 +30,9 @@ define(function(require){
     },
 
     getChildren: function() {
-      return Origin.editor.data.content.where({ _parentId: this.model.get('_id') });
+      return Origin.editor.data.content.where({ _parentId: this.model.get('_id') }).sort((a,b) => {
+        return a._sortOrder < b._sortOrder ? -1 : 1;
+      });
     },
     
     getSiblings: function() {
