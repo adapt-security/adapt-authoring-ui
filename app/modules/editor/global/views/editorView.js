@@ -186,6 +186,7 @@ define(function(require) {
       $.post('api/content/clone', { _id: Origin.editor.clipboardId, layout, _parentId, sortOrder }, newData => {
         Origin.editor.clipboardId = null;
         Origin.trigger(`editorView:pasted:${_parentId}`, newData);
+        this.render();
       }).fail(({ message }) => {
         Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
       });
