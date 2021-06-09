@@ -104,6 +104,7 @@ define(function(require) {
           }
           newMenuItemView.$el.removeClass('syncing');
           this.setHeight();
+          Origin.trigger('editorView:renderPage');
         }, this),
         error: function(error) {
           // fade out menu item and alert
@@ -146,6 +147,7 @@ define(function(require) {
             this.addNewPageArticleAndBlock(model, newMenuItemView);
           } else {
             newMenuItemView.$el.removeClass('syncing');
+            Origin.trigger('editorView:renderPage');
           }
         }, this)
       });
