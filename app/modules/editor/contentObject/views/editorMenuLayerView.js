@@ -62,7 +62,7 @@ define(function(require) {
       var offsetTop = $('.editor-menu-inner').offset().top;
       var controlsHeight = this.$('.editor-menu-layer-controls').outerHeight();
 
-      this.$('.editor-menu-layer-inner').height(windowHeight-(offsetTop+controlsHeight));
+      this.$('.editor-menu-layer-inner').height(windowHeight - (offsetTop + controlsHeight));
     },
 
     addNewMenu: function(event) {
