@@ -156,7 +156,7 @@ define(function(require) {
       new PresetModel().save({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('theme'),
-        properties: this.form.model.attributes
+        properties: this.model.attributes
       }, {
         success: () => {
           this.presets.add(presetModel);
@@ -209,7 +209,7 @@ define(function(require) {
       return new Promise((resolve, reject) => {
         if(!this.form) return resolve();
         this.form.commit();
-        Origin.editor.data.course.save({ themeVariables: this.form.model.attributes }, { error: () => reject(), success: () => resolve() });
+        Origin.editor.data.course.save({ themeVariables: this.model.attributes }, { error: () => reject(), success: () => resolve() });
       });
     },
 
