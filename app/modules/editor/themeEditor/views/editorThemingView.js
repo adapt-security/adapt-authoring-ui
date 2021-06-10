@@ -189,6 +189,9 @@ define(function(require) {
     postThemeData: function() {
       const oldTheme = Origin.editor.data.config.get('_theme');
       const newTheme = this.getSelectedTheme().get('name');
+      if(newTheme === oldTheme) {
+        return;
+      }
       return $.ajax({
         url: `api/content/${Origin.editor.data.config.get('_id')}`,
         method: 'PATCH',
