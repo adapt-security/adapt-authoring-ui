@@ -160,7 +160,6 @@ define(function(require) {
         'click': _.bind(this.onMenuItemClicked, this),
         'dblclick': _.bind(this.onMenuItemDblclicked, this)
       });
-
       this.childViews.push(newMenuItemView);
       return newMenuItemView;
     },
@@ -210,7 +209,6 @@ define(function(require) {
       this.removeChildViews();
       EditorOriginView.prototype.remove.apply(this, arguments);
     }
-
   }, {
     template: 'editorMenuLayer'
   });
