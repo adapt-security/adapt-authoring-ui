@@ -139,12 +139,9 @@ define(function(require){
     },
 
     setupHorizontalScroll: function(windowWidth, windowHeight) {
-      var $menuLayers = this.$('.editor-menu-layer');
-      var $menuView = this.$el;
-      var $menuControls = this.$('.editor-menu-layer-controls');
+      var menuLayersCount = this.$('.editor-menu-layer').length;
       var itemWidth = $menuLayers.first().outerWidth(true);
-
-      $('.editor-menu-inner').width(itemWidth * $menuLayers.length);
+      $('.editor-menu-inner').width(itemWidth * menuLayersCount);
     },
 
     scrollToElement: function() {
