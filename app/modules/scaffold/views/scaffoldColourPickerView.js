@@ -37,8 +37,10 @@ define(['core/origin', 'libraries/spectrum/spectrum'], function(Origin) {
 
     getValue: function() {
       var colour = this.$el.spectrum('get');
-      if (!colour) return '';
 
+      if(!colour || !colour.getAlpha) {
+        return this.value;
+      }
       return (colour.getAlpha() < 1) ? colour.toRgbString() : colour.toHexString();
     },
 
