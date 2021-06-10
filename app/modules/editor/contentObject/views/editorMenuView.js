@@ -19,10 +19,8 @@ define(function(require){
       });
     },
 
-    postRender: function() {
-      this.contentobjects = new Backbone.Collection(Origin.editor.data.content.filter(c => {
-        return c.get('_type') === 'menu' || c.get('_type') === 'page';
-      }));
+    postRender: async function() {
+      await this.updateContentObjects();
       this.renderLayers();
       _.defer(this.setViewToReady);
     },
@@ -68,6 +66,18 @@ define(function(require){
       });
       this.layerViews[model.get('_id')] = menuLayerView;
       $('.editor-menu-inner').append(menuLayerView.$el);
+    },
+
+    updateContentObjects: async function(fetch = false) {
+      const models = Origin.editor.data.content;
+      if(fetch) {
+        try {
+          await models.fetch();
+        } catch {
+          Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' });
+        }
+      }
+      this.contentobjects = new Backbone.Collection(models.filter(c => c.get('_type') === 'menu' || c.get('_type') === 'page'));
     },
     
     updateItemViews: function(previousParent, model) {
@@ -197,12 +207,9 @@ define(function(require){
       this.contentobjects.add(newModel);
     },
 
-    onItemDeleted: function(oldModel) {
-      const parentId = this.contentobjects.findWhere({ _id: oldModel.get('_parentId') });
-      this.contentobjects.fetch({
-        success: () => Origin.trigger('editorView:menuView:updateSelectedItem', parentId),
-        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })
-      });
+    onItemDeleted: async function(oldModel) {
+      await this.updateContentObjects(true);
+      Origin.trigger('editorView:menuView:updateSelectedItem', this.contentobjects.findWhere({ _id: oldModel.get('_parentId') }));
     }
   }, {
     template: 'editorMenu'
