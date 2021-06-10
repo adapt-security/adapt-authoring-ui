@@ -97,6 +97,7 @@ define(function(require) {
           // Force setting the data-id attribute as this is required for drag-drop sorting
           newMenuItemView.$el.attr('data-id', model.get('_id'));
           newMenuItemView.$el.children('.editor-menu-item-inner').attr('data-id', model.get('_id'));
+          newMenuItemView.render();
           if (type === 'page') {
             // HACK -- This should be removed and placed on the server-side
             this.addNewPageArticleAndBlock(model, newMenuItemView);
@@ -104,7 +105,6 @@ define(function(require) {
           }
           newMenuItemView.$el.removeClass('syncing');
           this.setHeight();
-          Origin.trigger('editorView:renderPage');
         }, this),
         error: function(error) {
           // fade out menu item and alert
@@ -147,7 +147,6 @@ define(function(require) {
             this.addNewPageArticleAndBlock(model, newMenuItemView);
           } else {
             newMenuItemView.$el.removeClass('syncing');
-            Origin.trigger('editorView:renderPage');
           }
         }, this)
       });
