@@ -195,17 +195,11 @@ define(function(require) {
     },
 
     onPaste: function(data) {
-      this.addMenuItemView(data);
-    },
-
-    removeChildViews: function() {
-      for (var i = 0; i < this.childViews.length; i++) {
-        this.childViews[i].remove();
-      }
+      this.addMenuItemView(new ContentObjectModel(data));
     },
 
     remove: function() {
-      this.removeChildViews();
+      this.childViews.forEach(c => c.remove());
       EditorOriginView.prototype.remove.apply(this, arguments);
     }
   }, {
