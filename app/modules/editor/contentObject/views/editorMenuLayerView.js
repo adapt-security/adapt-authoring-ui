@@ -172,9 +172,8 @@ define(function(require) {
     cancelPasteMenuItem: function(event) {
       event && event.preventDefault();
       this.hidePasteZones();
-      var parentId = this._parentId;
       var target = new ContentObjectModel({
-        _parentId: parentId,
+        _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id')
       });
       Origin.trigger('editorView:pasteCancel', target);
