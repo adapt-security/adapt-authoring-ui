@@ -196,22 +196,12 @@ define(function(require) {
     },
 
     createModel: function (type) {
-      var model;
       switch (type) {
-        case 'contentObjects':
-          model = new ContentObjectModel();
-          break;
-        case 'articles':
-          model = new ArticleModel();
-          break;
-        case 'blocks':
-          model = new BlockModel();
-          break;
-        case 'components':
-          model = new ComponentModel();
-          break;
+        case 'contentObjects': return new ContentObjectModel();
+        case 'articles': return new ArticleModel();
+        case 'blocks': return new BlockModel();
+        case 'components': return new ComponentModel();
       }
-      return model;
     },
 
     renderCurrentEditorView: function() {
