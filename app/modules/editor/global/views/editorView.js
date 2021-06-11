@@ -188,7 +188,7 @@ define(function(require) {
       Origin.trigger('editorView:pasteCancel');
       $.post('api/content/clone', { _id: Origin.editor.clipboardId, layout, _parentId, sortOrder }, newData => {
         Origin.editor.clipboardId = null;
-        this.renderCurrentEditorView();
+        Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
         Origin.trigger(`editorView:pasted:${_parentId}`, newData);
       }).fail(({ message }) => {
         Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
