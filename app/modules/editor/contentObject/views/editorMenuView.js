@@ -73,7 +73,7 @@ define(function(require){
       if(fetch) {
         try {
           await models.fetch();
-        } catch {
+        } catch(e) {
           Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' });
         }
       }

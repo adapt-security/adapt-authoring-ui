@@ -77,7 +77,7 @@ define([
     },
     
     getValue: function() {
-      return Backbone.Form.editors.Base.prototype.getValue.call(this) ?? undefined;
+      return Backbone.Form.editors.Base.prototype.getValue.call(this) || undefined;
     },
 
     /**
