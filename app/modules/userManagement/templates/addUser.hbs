@@ -26,8 +26,8 @@
       <div class="form-group">
         <label>{{t 'app.role'}}</label>
         <select name="role">
-          {{#each globalData.allRoles.models}}
-            <option value="{{{this.attributes._id}}}">{{this.attributes.name}}</option>
+          {{#each allRoles.models}}
+            <option value="{{{attributes._id}}}">{{attributes.displayName}}</option>
           {{/each}}
         </select>
       </div>
