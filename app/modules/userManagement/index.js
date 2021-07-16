@@ -11,7 +11,7 @@ define(function(require) {
   var userCollection = new UserCollection();
 
   Origin.on('origin:dataReady login:changed', function() {
-    var permissions = ["read:users"];
+    var permissions = ["write:users"];
 
     Origin.router.restrictRoute('userManagement', permissions);
     
