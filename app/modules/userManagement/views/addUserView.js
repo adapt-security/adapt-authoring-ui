@@ -41,10 +41,21 @@ define(function(require){
       if(!this.isValid()) {
         return;
       }
-      this.$('form.addUser').ajaxSubmit({
+      const $form = this.$('form.addUser');
+      const data = $form.serializeArray().reduce((memo,{ name, value }) => {
+        if(name === 'role') {
+          memo.roles = [value];
+          return memo;
+        }
+        return Object.assign(memo, { [name]: value });
+      }, {});
+      $.ajax($form.attr('action'), {
+        type: $form.attr('method'),
+        data: JSON.stringify(data),
+        contentType: 'application/json',
         success: () => this.onFormSuccess(),
         error: jqXhr => this.onFormError(jqXhr)
-      });
+      })
     },
 
     goBack: function() {
