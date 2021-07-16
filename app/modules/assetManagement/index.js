@@ -10,6 +10,14 @@ define(function(require) {
   var TagsCollection = require('core/collections/tagsCollection');
 
   Origin.on('origin:dataReady login:changed', function() {
+    const permissions = ['write:assets'];
+
+    Origin.router.restrictRoute('assetManagement', permissions);
+    
+  	if (!Origin.sessionModel.hasScopes(permissions)) {
+      isReady = true;
+      return;
+    }
     Origin.globalMenu.addItem({
       "location": "global",
       "text": Origin.l10n.t('app.assetmanagement'),
