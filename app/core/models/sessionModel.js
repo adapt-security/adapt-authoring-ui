@@ -51,7 +51,7 @@ define(['require', 'backbone'], function(require, Backbone) {
       try {
         await $.post('api/auth/disavow');
       } catch(e) {
-        return console.error(e);
+        console.error(e);
       }
       this.clear();
       this.Origin.trigger('login:changed');
