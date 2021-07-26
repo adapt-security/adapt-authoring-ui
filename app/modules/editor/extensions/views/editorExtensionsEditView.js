@@ -24,17 +24,14 @@ define(function(require) {
     },
 
     setupExtensions: function(callback) {
-      var plugins = new ContentPluginCollection(undefined, { 
-        type: 'extension', 
-        filter: { _isEnabled: true }
-      });
+      var plugins = new ContentPluginCollection(undefined, { type: 'extension' });
       plugins.fetch({
         success: () => {
           const enabledPlugins = Origin.editor.data.config.get('_enabledPlugins');
           var [enabled, available] = _.partition(plugins.models, e => enabledPlugins.includes(e.get('name')));
           this.model.set({
             enabledExtensions: enabled.sort(this.sortByDisplayName),
-            availableExtensions: available.sort(this.sortByDisplayName)
+            availableExtensions: available.filter(e => e.get('isEnabled')).sort(this.sortByDisplayName)
           });
           if(callback) callback();
 
