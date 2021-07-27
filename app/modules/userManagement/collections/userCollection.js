@@ -59,9 +59,6 @@ define(function(require) {
       if(!this.filterGroups || !this.filterGroups.roleNames) {
         return false;
       }
-      (model.get('roles').some(function(r) {
-        return this.filterGroups.roleNames.includes(r.get('shortName'));
-      }, this))
       return !(model.get('roles').some(function(r) {
         return this.filterGroups.roleNames.includes(r.get('shortName'));
       }, this));
