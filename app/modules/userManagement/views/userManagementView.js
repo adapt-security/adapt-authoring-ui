@@ -91,9 +91,10 @@ define(function(require){
       this.users.updateFilter();
     },
 
-    refreshUserViews: function(event) {
+    refreshUserViews: async function(event) {
       event && event.preventDefault();
-      Origin.trigger('userManagment:refresh');
+      await this.collection.fetch();
+      this.render();
     }
   }, {
     template: 'userManagement'
