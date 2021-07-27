@@ -43,6 +43,12 @@ define(function(require) {
       }
       Origin.trigger('editor:dataLoaded');
     },
+    resetCourseData: function() {
+      if(Origin.editor) {
+        Origin.editor.data.course = undefined;
+        Origin.editor.data.config = undefined;
+      }
+    },
     /**
     * Makes sure all data has been loaded and calls callback
     */
