@@ -49,7 +49,7 @@ define(function(require) {
     * Returns whether the model should be hidden 
     */
     mailFilter: function(model) {
-      return model.get('email').toLowerCase().indexOf(this.mailSearchTerm) === -1;
+      return model.get('email').toLowerCase().indexOf(this.mailSearchTerm.toLowerCase()) === -1;
     },
     /* 
     * Returns whether the model should be hidden   
