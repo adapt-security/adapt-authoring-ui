@@ -9,6 +9,9 @@ define(function(require) {
 
     initialize: function() {
       if(!this.get('_type')) this.set('_type', this._type);
+      if(this.get('_type') === 'article') {
+        this.set('_isCollapsible', true);
+      }
     },
 
     serialize: function() {
