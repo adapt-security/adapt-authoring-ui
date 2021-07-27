@@ -9,7 +9,6 @@ define(function(require) {
     direction: 1,
     mailSearchTerm: false,
     lastAccess: null,
-    filterGroups: { roleNames: [] },
 
     comparator: function(ma, mb) {
       var a = ma.get(this.sortBy);
@@ -32,7 +31,7 @@ define(function(require) {
       return 0;
     },
 
-    updateFilter: function(filterMap) {
+    updateFilter: function(filterMap = { roleNames: [] }) {
       this.filterGroups = filterMap;
       this.filter();
       this.sort();
