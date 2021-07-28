@@ -73,8 +73,8 @@ define(function(require) {
         didError = true;
       }
       this.$('.theme-selector').toggleClass('show-preset-select', !didError);
-      this.$('.empty-message').toggle(!didError);
-      this.$('.editable-theme').toggle(didError);
+      this.$('.empty-message').toggle(didError);
+      this.$('.editable-theme').toggle(!didError);
       $('.editor-theming-sidebar-reset').toggle(!didError);
       
       this.$el.find('fieldset:not(:has(>.field))').addClass('empty-fieldset');
