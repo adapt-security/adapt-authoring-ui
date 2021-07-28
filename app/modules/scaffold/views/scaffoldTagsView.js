@@ -9,7 +9,6 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
     },
 
     render: function() {
-      this.setValue(this.value);
       _.defer(this.postRender.bind(this));
       return this;
     },
@@ -17,26 +16,28 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
     postRender: function() {
       this.$el.selectize({
         create: true,
-        valueField: 'title',
+        valueField: '_id',
         labelField: 'title',
         searchField: 'title',
         loadingClass: 'selectize-loading',
-        load: async (query, callback) => {
+        preload: true,
+        load: (query, callback) => {
           $.post('api/tags/query', { title: { $regex: `.*${query}.*`, $options: 'i' } })
-            .done(tags => callback(tags))
-            .error(() => callback);
+            .done(callback)
+            .error(() => callback());
         },
+        onLoad: () => this.setValue(this.value),
         onItemAdd: this.onAddTag.bind(this),
         onItemRemove: this.onRemoveTag.bind(this)
       });
     },
 
     getValue: function() {
-      return this.model.get('tags');
+      return this.$el.val();
     },
 
     setValue: function(value) {
-      this.$el.val(_.pluck(value, 'title').join());
+      this.$el[0].selectize.setValue(value);
     },
 
     focus: function() {
