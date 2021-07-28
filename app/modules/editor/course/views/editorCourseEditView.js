@@ -18,25 +18,21 @@ define(function(require) {
       if (this.model.isNew()) {
         this.isNew = true;
         this.$el.addClass('project-detail-hide-hero');
-        // Initialise the 'tags' property for a new course
-        this.model.set('tags', []);
       }
       // This next line is important for a proper PATCH request on saveProject()
       this.originalAttributes = _.clone(this.model.attributes);
     },
 
     getAttributesToSave: function() {
-      this.model.set('tags', _.pluck(this.model.get('tags'), '_id'));
-
       var changedAttributes = this.model.changedAttributes(this.originalAttributes);
       // should also include anything that's new 
       var newAttributes = _.omit(this.model.attributes, Object.keys(this.originalAttributes));
       _.extend(changedAttributes, newAttributes);
 
-      if(changedAttributes) {
-        return _.pick(this.model.attributes, Object.keys(changedAttributes));
+      if(!changedAttributes) {
+        return null;
       }
-      return null;
+      return _.pick(this.model.attributes, Object.keys(changedAttributes));
     },
 
     onSaveSuccess: async function(model, response, options) {
