@@ -14,7 +14,9 @@ define([
 ], function(Origin, EditorData) {
   // loads editor data
   Origin.on('router:editor editor:refreshData', EditorData.load);
-  Origin.on('login:changed', EditorData.resetCourseData);
+  Origin.on('router', mod => {
+    if(mod !== 'editor') EditorData.resetCourseData();
+  });
   // handle routing
   Origin.on('router:editor', () => EditorData.waitForLoad(triggerEvent));
   /**

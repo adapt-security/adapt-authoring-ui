@@ -149,6 +149,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         return;
       }
       this.updateLocation(arguments);
+      Origin.trigger('router', module, route1, route2, route3, route4);
       Origin.trigger('router:' + module, route1, route2, route3, route4);
     }
   });
