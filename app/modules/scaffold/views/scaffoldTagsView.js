@@ -33,7 +33,8 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
     },
 
     getValue: function() {
-      return this.$el[0].selectize.getValue().split(',');
+      const val = this.$el[0].selectize.getValue();
+      return val ? val.split(',') : [];
     },
 
     setValue: function(value) {
