@@ -155,13 +155,13 @@ define(function(require) {
       this.form.commit();
       new PresetModel().save({
         displayName: presetName,
-        parentTheme: this.getSelectedTheme().get('theme'),
+        parentTheme: this.getSelectedTheme().get('name'),
         properties: this.model.attributes
       }, {
-        success: () => {
-          this.presets.add(presetModel);
+        success: model => {
+          this.presets.add(model);
           this.updateRestorePresetButton(false);
-          window.setTimeout(() => this.$('.preset select').val(presetModel.get('_id')), 1);
+          window.setTimeout(() => this.$('.preset select').val(model.get('_id')), 1);
         },
         error: this.onError
       });
