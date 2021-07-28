@@ -15,7 +15,7 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
 
     postRender: function() {
       this.$el.selectize({
-        create: true,
+        create: async (title, callback) => callback(await $.post('api/tags', { title })),
         valueField: '_id',
         labelField: 'title',
         searchField: 'title',
@@ -33,7 +33,7 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
     },
 
     getValue: function() {
-      return this.$el.val();
+      return this.$el[0].selectize.getValue().split(',');
     },
 
     setValue: function(value) {
@@ -48,17 +48,12 @@ define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
       if (this.hasFocus) this.$el.blur();
     },
 
-    onAddTag: async function(value) {
-      try {
-        const { _id, title } = await $.post('api/tags', { title: value });
-        this.model.set('tags', [...this.model.get('tags'), { _id, title }]);
-      } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: `Failed to add tag.<br/><br/>${e.responseJSON.message}` });
-      }
+    onAddTag: async function(_id) {
+      this.model.set('tags', [...this.model.get('tags'), _id]);
     },
 
-    onRemoveTag: function(value) {
-      this.model.set('tags', this.model.get('tags').filter(tag => tag.title !== value));
+    onRemoveTag: function(title) {
+      this.model.set('tags', this.model.get('tags').filter(tag => tag.title !== title));
     }
   });
 
