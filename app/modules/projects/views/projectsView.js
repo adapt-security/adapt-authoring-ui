@@ -14,6 +14,7 @@ define(function(require){
     preRender: function(options) {
       OriginView.prototype.preRender.apply(this, arguments);
       this._isShared = options._isShared;
+      this.allTags = options.tags.models.slice();
     },
 
     postRender: function() {
@@ -107,7 +108,8 @@ define(function(require){
       var creator = model.get('createdBy') || { email: Origin.l10n.t('app.unknownuser') };
       var name = creator.firstName ? `${creator.firstName} ${creator.lastName}` : creator.email;
       if(this._isShared && name) model.set('creatorName', name);
-      this.getProjectsContainer().append(new ProjectView({ model: model }).$el);
+      model.set('tagTitles', model.get('tags').map(tId => this.allTags.find(t => t.get('_id') === tId).get('title')));
+      this.getProjectsContainer().append(new ProjectView({ model }).$el);
     },
 
     resetCollection: function(cb) {

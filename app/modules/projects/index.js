@@ -48,15 +48,15 @@ define(function(require) {
     (new TagsCollection()).fetch({
       success: function(collection) {
         Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
-        Origin.trigger('dashboard:loaded', { type: location || 'all' });
+        Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
       },
       error: () => console.log('Error occured getting the tags collection - try refreshing your page')
     });
   });
 
-  Origin.on('dashboard:loaded', function (options) {
-    var isMine = options.type === 'all';
-    var isShared = options.type === 'shared';
+  Origin.on('dashboard:loaded', function ({ type, tags }) {
+    var isMine = type === 'all';
+    var isShared = type === 'shared';
     if(!isMine && !isShared) {
       return;
     }
@@ -69,7 +69,7 @@ define(function(require) {
       breadcrumbs: ['dashboard'], 
       title: Origin.l10n.t(`app.${isMine ? 'myprojects' : 'sharedprojects'}`) 
     });
-    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared });
+    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags });
   });
 
   Origin.on('globalMenu:dashboard:open', () => Origin.router.navigateTo('dashboard'));
