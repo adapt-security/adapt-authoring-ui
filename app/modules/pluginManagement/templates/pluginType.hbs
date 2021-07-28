@@ -19,11 +19,11 @@
     <div class="pluginType-active col-10 col-centered">
       <input class="pluginType-enabled" type="checkbox" {{#if isEnabled}} checked {{/if}}/>
     </div>
-    {{#if extension}}
+    {{#ifValueEquals type 'extension'}}
       <div class="pluginType-addedDefault col-10 col-centered">
         <input class="pluginType-addedDefault" type="checkbox" {{#if isAddedByDefault}}checked{{/if}}/>
       </div>
-    {{/if}}
+    {{/ifValueEquals}}
     <div class="pluginType-update col-10 col-centered">
       <div class="pluginType-update-inner tb-col-inner">
         {{#if isLocalPackage}}
