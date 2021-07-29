@@ -10,8 +10,7 @@ define(function(require){
     events: {
       'change input.pluginType-enabled': 'toggleEnabled',
       'change input.pluginType-addedDefault': 'toggleAddedDefault',
-      'click .plugin-update-check': 'checkForUpdates',
-      'click .plugin-update-confirm': 'updatePlugin',
+      'click .plugin-update': 'updatePlugin',
       'click .plugin-remove': 'deletePluginPrompt'
     },
 
@@ -41,47 +40,20 @@ define(function(require){
       }, { patch: true });
     },
 
-    checkForUpdates: function (event) {
-      event && event.preventDefault();
-
-      var $btn = this.$('.plugin-update-check');
-      var $icon = $btn.find('i');
-
-      if($btn.is(':disabled')) return false;
-
-      $btn.attr({title: Origin.l10n.t('app.checking')});
-      $icon.addClass('fa-spin');
-
-      $.get(this.model.urlRoot + '/checkversion/' + this.model.get('_id'), function(data) {
-        if(!data.isUpdateable) {
-          $btn.attr({
-              disabled: true,
-              title: Origin.l10n.t('app.uptodate')
-          });
-          $icon.removeClass().addClass('fa fa-check');
-          return;
-        }
-        $btn.attr({title: Origin.l10n.t('app.updateplugin')}).removeClass('plugin-update-check').addClass('plugin-update-confirm');
-        $icon.removeClass().addClass('fa fa-arrow-up');
-      });
-
-      return false;
-    },
-
     updatePlugin: function (event) {
       event && event.preventDefault();
-      var $btn = this.$('.plugin-update-confirm');
+      var $btn = this.$('.plugin-update');
       var $icon = $btn.find('i');
 
       if($btn.is(':disabled')) return false;
 
       $btn.attr({
-          disabled: true,
-          title: Origin.l10n.t('app.updating')
+        disabled: true,
+        title: Origin.l10n.t('app.updating')
       });
       $icon.removeClass().addClass('fa fa-refresh fa-spin');
 
-      $.post(this.model.urlRoot + '/update', { 'targets': [ this.model.get('_id') ] })
+      $.post(`${this.model.urlRoot}/${this.model.get('_id')}/update`)
         .done(function() {
           $btn.attr('title', Origin.l10n.t('app.uptodate'));
           $icon.removeClass().addClass('fa fa-check');
