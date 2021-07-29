@@ -31,7 +31,7 @@ define(function(require){
       this.listenTo(Origin, {
         'window:resize dashboard:refresh': this._onResize,
         'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
-        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(null, tags),
+        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(undefined, tags),
         'dashboard:sort:asc': () => this.doSort('asc'),
         'dashboard:sort:desc': () => this.doSort('desc'),
         'dashboard:sort:updated': () => this.doSort('updated')
@@ -184,8 +184,8 @@ define(function(require){
       };
       this.setUserPreference('search', text, true);
 
-      this.tags = _.pluck(tags, 'id');
-      this.setUserPreference('tags', this.tags, true);
+      this.collection.customQuery.tags = _.pluck(tags, 'id');
+      this.setUserPreference('tags', this.collection.customQuery.tags, true);
 
       if(fetch !== false) this.resetCollection();
     },
