@@ -159,9 +159,18 @@ define([
   function buildSchema(requiredKeys, properties) {
     var scaffoldSchema = {};
 
-    properties = _.omit(properties, ATTRIBUTE_BLACKLIST);
+    const blacklist = [...ATTRIBUTE_BLACKLIST];
+
+    Object.entries(properties).forEach(([k,v]) => {
+      try {
+        if(v._backboneForms.showInUi === false && !blacklist.includes(k)) {
+          blacklist.push(k)
+        }
+      } catch(e) {}
+    });
+    properties = _.omit(properties, blacklist);
     trimEmptyProperties(properties);
-    setRequiredValidators(_.without(requiredKeys, ...ATTRIBUTE_BLACKLIST), properties);
+    setRequiredValidators(_.without(requiredKeys, ...blacklist), properties);
     properties = { type: 'object', properties };
     setUpSchemaFields(properties, 'properties', { properties }, scaffoldSchema);
 
