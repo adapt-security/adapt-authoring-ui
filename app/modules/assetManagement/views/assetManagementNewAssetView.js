@@ -15,7 +15,8 @@ define([
     },
 
     postRender: async function() {
-      this.form = await Origin.scaffold.buildForm({ model: this.model, schemaType: 'asset' });
+      this.model.set('_type', 'asset');
+      this.form = await Origin.scaffold.buildForm({ model: this.model });
 
       const input = new ScaffoldFileView({ schema: { file: { type: "File" }, editorClass: 'field' }, key: 'file' });
       input.$el.insertBefore($('.field', this.form.$el).first());
