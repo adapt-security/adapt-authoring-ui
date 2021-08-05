@@ -11,7 +11,7 @@ define([
     },
 
     preRender: function() {
-        this.listenTo(Origin, 'assetManagement:newAsset', this.save);
+      this.listenTo(Origin, 'assetManagement:newAsset', this.save);
     },
 
     postRender: async function() {
