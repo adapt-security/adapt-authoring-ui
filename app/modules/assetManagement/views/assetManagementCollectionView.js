@@ -64,8 +64,8 @@ define(function(require){
       const tagsMapped = [];
       const assetTags = asset.get('tags');
       if(assetTags) {
-        assetTags.forEach(t => {
-          tagsMapped.push(this.tagsCollection.find(t2 => t2.get('_id') === t.get('_id')).attributes);
+        assetTags.forEach(tId => {
+          tagsMapped.push(this.tagsCollection.find(t => t.get('_id') === tId).attributes);
         });
         asset.set('tagsMapped', tagsMapped);
       }
