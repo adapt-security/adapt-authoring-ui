@@ -5,6 +5,7 @@ define([
   'modules/scaffold/views/scaffoldFileView'
 ], function(Origin, OriginView, ScaffoldFileView){
   var AssetManagementNewAssetView = OriginView.extend({
+    className: 'asset-management-new-asset',
     events: {
       'change .scaffold-file': 'updateTitle',
     },
@@ -20,7 +21,7 @@ define([
       input.$el.insertBefore($('.field', this.form.$el).first());
       input.render();
 
-      this.$el.append(this.form.el);
+      $('.form-container', this.$el).append(this.form.el);
       
       this.form.on('url:change', () => this.updateTitle());
       
@@ -62,13 +63,7 @@ define([
             if(dataArr[i].value === "") dataArr.splice(i, 1);
             else dataArr[i].value = JSON.stringify(dataArr[i].value.split(','));
           },
-          uploadProgress: function(event, position, total, percentComplete) {
-            $(".progress-container").css("visibility", "visible");
-            var percentVal = percentComplete + '%';
-            $(".progress-bar").css("width", percentVal);
-            $('.progress-percent').html(percentVal);
-          },
-          success: (data, status, xhr) => {
+          success: (data) => {
             Origin.trigger('assets:update');
             this.model.set({_id: data._id});
             this.model.fetch().done(() => Origin.trigger('assetItemView:preview', this.model));
@@ -88,7 +83,7 @@ define([
     }
 
   }, {
-    template: 'editor'
+    template: 'assetManagementNewAsset'
   });
 
   return AssetManagementNewAssetView;
