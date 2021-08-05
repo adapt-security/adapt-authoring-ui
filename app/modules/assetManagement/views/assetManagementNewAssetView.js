@@ -57,6 +57,11 @@ define([
         this.form.$el.ajaxSubmit({
           method: 'POST',
           url: '/api/assets',
+          beforeSubmit: function(dataArr) { // remove empty tags to avoid validation error
+            const i = dataArr.findIndex(({ name }) => name === 'tags');
+            if(dataArr[i].value === "") dataArr.splice(i, 1);
+            else dataArr[i].value = JSON.stringify(dataArr[i].value.split(','));
+          },
           uploadProgress: function(event, position, total, percentComplete) {
             $(".progress-container").css("visibility", "visible");
             var percentVal = percentComplete + '%';

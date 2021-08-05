@@ -3,6 +3,7 @@ define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var AssetItemView = require('./assetManagementItemView');
+  var TagsCollection = require('core/collections/tagsCollection');
 
   var AssetCollectionView = OriginView.extend({
     className: "asset-management-collection",
@@ -17,6 +18,8 @@ define(function(require){
 
     preRender: function(options) {
       this.initEventListeners();
+
+      this.tagsCollection = new TagsCollection();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);
       this._onResize = _.bind(_.debounce(this.onResize, 400), this);
@@ -58,6 +61,14 @@ define(function(require){
     },
 
     appendAssetItem: function (asset) {
+      const tagsMapped = [];
+      const assetTags = asset.get('tags');
+      if(assetTags) {
+        assetTags.forEach(t => {
+          if(tags.includes(t.get('_id'))) tagsMapped.push(t.attributes);
+        });
+        asset.set('tagsMapped', tagsMapped);
+      }
       this.$('.asset-management-collection-inner').append(new AssetItemView({ model: asset }).$el);
     },
 
@@ -65,7 +76,7 @@ define(function(require){
     * Collection manipulation
     */
 
-    fetchCollection: function(cb) {
+    fetchCollection: async function(cb) {
       if(this.shouldStopFetches || this.isCollectionFetching) {
         return;
       }
@@ -91,6 +102,8 @@ define(function(require){
         limit: this.pageSize,
         sort: this.sort
       });
+      await this.tagsCollection.fetch();
+      
       this.collection.fetch({
         success: _.bind(function(collection, response) {
           this.isCollectionFetching = false;
