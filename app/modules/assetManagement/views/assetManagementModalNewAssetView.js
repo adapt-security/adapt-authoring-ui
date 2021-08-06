@@ -1,5 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var AssetManagementNewAssetView = require('modules/assetManagement/views/assetManagementNewAssetView');
 
@@ -13,6 +14,10 @@ define(function(require){
 
     postRender: function() {
       this.childView = new AssetManagementNewAssetView({ model: this.model });
+      this.childView.onSaveSuccess = () => {
+        Origin.trigger('assetManagement:collection:refresh');
+        this.remove();
+      };
       $('.wrapper', this.$el).append(this.childView.$el);
     },
 

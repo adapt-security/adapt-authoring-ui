@@ -64,13 +64,8 @@ define([
             if(dataArr[i].value === "") dataArr.splice(i, 1);
             else dataArr[i].value = JSON.stringify(dataArr[i].value.split(','));
           },
-          success: (data) => {
-            Origin.trigger('assets:update');
-            this.model.set({_id: data._id});
-            this.model.fetch().done(() => Origin.trigger('assetItemView:preview', this.model));
-            Origin.router.navigateTo('assetManagement');
-          },
-          error: (xhr) => this.onError(xhr.responseJSON.message)
+          success: (data) => this.onSaveSuccess(data),
+          error: (xhr) => this.onSaveError(xhr.responseJSON.message)
         });
         return;
       }      
@@ -78,7 +73,14 @@ define([
       this.model.save(this.model.changedAttributes(), callbacks);
     },
 
-    onError: function(errorMessage) {
+    onSaveSuccess: function(data) {
+      Origin.trigger('assetManagement:collection:refresh');
+      this.model.set({_id: data._id});
+      this.model.fetch().done(() => Origin.trigger('assetItemView:preview', this.model));
+      Origin.router.navigateTo('assetManagement');
+    },
+
+    onSaveError: function(errorMessage) {
       Origin.trigger('sidebar:resetButtons');
       Origin.Notify.alert({ type: 'error', text: errorMessage });
     }
