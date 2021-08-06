@@ -55,10 +55,10 @@ define([
         success: () => Origin.router.navigateTo('assetManagement'),
         error: () => this.onError(Origin.l10n.t('app.errorassetupdate'))
       };
-      if(this.model.isNew()) { // handle file upload
+      if($('input[name="file"]').val()) { // handle file upload
         this.form.$el.ajaxSubmit({
-          method: 'POST',
-          url: '/api/assets',
+          method: this.model.isNew() ? 'POST' : 'PATCH',
+          url: `/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
           beforeSubmit: function(dataArr) { // remove empty tags to avoid validation error
             const i = dataArr.findIndex(({ name }) => name === 'tags');
             if(dataArr[i].value === "") dataArr.splice(i, 1);
@@ -75,7 +75,7 @@ define([
         return;
       }      
       this.form.commit();
-      model.save(this.model.changedAttributes(), callbacks);
+      this.model.save(this.model.changedAttributes(), callbacks);
     },
 
     onError: function(errorMessage) {

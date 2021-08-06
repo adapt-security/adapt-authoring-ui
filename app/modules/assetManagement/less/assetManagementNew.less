@@ -1,3 +1,5 @@
+@import 'sharedStyles';
+
 .asset-management-new-asset {
     .legend {
         display: none;
@@ -9,9 +11,50 @@
         max-width: 800px;
         margin: 20px;
         margin-bottom: 0;
+        
         img {
             border: 1px dashed #d6f2f9;
             background: white;
         }
+    }
+}
+
+.modal-popup {
+    .asset-management-modal-new-asset {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.4);
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+
+        &-inner {
+            .form-container-style;
+            animation: 0.3s ease-out slideIn;
+            margin-top: 100px;
+            margin-left: 50px;
+            max-width: 500px;
+
+            fieldset {
+                margin: 0;
+                border: none;
+            }
+
+            .buttons {
+                margin-bottom: 20px;
+                margin-left: 30px;
+            }
+        }
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-65px);
+    } 
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
