@@ -51,6 +51,10 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return Moment(date).format(format);
     },
 
+    timestring: function(date) {
+      return new Date(date).getTime();
+    },
+
     formatDuration: function(duration) {
       var zero = '0', hh, mm, ss;
       var time = new Date(0, 0, 0, 0, 0, Math.floor(duration), 0);

@@ -1,7 +1,7 @@
 <div class="asset-management-new-asset-inner">
     {{#if _id}}
         <div class="asset-thumb">
-            <img src="/api/assets/serve/{{_id}}?thumb=true"></img>
+            <img src="/api/assets/serve/{{_id}}?thumb=true&{{timestring updatedAt}}"></img>
         </div>
     {{/if}}
     <div class="form-container">
