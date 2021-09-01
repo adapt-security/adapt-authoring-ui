@@ -3,6 +3,7 @@ define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var ProjectView = require('./projectView');
+  var UserCollection = require('modules/userManagement/collections/userCollection');
 
   var ProjectsView = OriginView.extend({
     className: 'projects',
@@ -15,6 +16,7 @@ define(function(require){
       OriginView.prototype.preRender.apply(this, arguments);
       this._isShared = options._isShared;
       this.allTags = options.tags.models.slice();
+      this.usersCollection = new UserCollection();
     },
 
     postRender: function() {
@@ -105,9 +107,14 @@ define(function(require){
     },
 
     appendProjectItem: function(model) {
-      var creator = model.get('createdBy') || { email: Origin.l10n.t('app.unknownuser') };
-      var name = creator.firstName ? `${creator.firstName} ${creator.lastName}` : creator.email;
-      if(this._isShared && name) model.set('creatorName', name);
+      let creatorName;
+      try {
+        const { firstName, lastName } = this.usersCollection.findWhere({ _id: model.get('createdBy') }).attributes;
+        creatorName = `${firstName} ${lastName}`;
+      } catch(e) {
+        creatorName = Origin.l10n.t('app.unknownuser');
+      }
+      if(this._isShared && creatorName) model.set('creatorName', creatorName);
       model.set('tagTitles', model.get('tags').map(tId => this.allTags.find(t => t.get('_id') === tId).get('title')));
       this.getProjectsContainer().append(new ProjectView({ model }).$el);
     },
@@ -126,15 +133,19 @@ define(function(require){
         return;
       }
       this.isCollectionFetching = true;
-      this.collection.fetch({
+      this.usersCollection.fetch({
         success: (collection, response) => {
-          this.isCollectionFetching = false;
-          this.collection.options.limit += response.length;
-          // stop further fetching if this is the last page
-          if(response.length < this.collection.options.limit) this.shouldStopFetches = true;
-
-          this.$('.no-projects').toggleClass('display-none', this.collection.options.limit > 0);
-          if(typeof cb === 'function') cb(collection);
+          this.collection.fetch({
+            success: (collection, response) => {
+              this.isCollectionFetching = false;
+              this.collection.options.limit += response.length;
+              // stop further fetching if this is the last page
+              if(response.length < this.collection.options.limit) this.shouldStopFetches = true;
+    
+              this.$('.no-projects').toggleClass('display-none', this.collection.options.limit > 0);
+              if(typeof cb === 'function') cb(collection);
+            }
+          });
         }
       });
     },
