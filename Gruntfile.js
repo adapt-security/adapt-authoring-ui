@@ -44,16 +44,6 @@ module.exports = function(grunt) {
         ]
       }
     },
-    'generate-lang-json': {
-      options: {
-        langFileExt: '.json',
-        src: {
-          backend: 'routes/lang',
-          frontend: 'app/**/lang'
-        },
-        dest: 'temp/lang'
-      }
-    },
     handlebars: {
       compile: {
         options: {
@@ -157,45 +147,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('migration-conf', 'Creating migration Conf', function() {
-    var mongoUri = require('mongodb-uri');
-    var config = grunt.file.readJSON('conf/config.json');
-    var connectionString = '';
-
-    if (config.dbConnectionUri) {
-      connectionString = config.dbConnectionUri;
-
-      var dbConnectionUriParsed = mongoUri.parse(connectionString);
-      dbConnectionUriParsed.database = config.dbName;
-      connectionString = mongoUri.format(dbConnectionUriParsed);
-
-    } else {
-      // Construct the authentication part of the connection string.
-      var authenticationString = config.dbUser && config.dbPass ? config.dbUser + ':' + config.dbPass + '@' : '';
-
-      // Check if a MongoDB replicaset array has been specified.
-      if (config.dbReplicaset && Array.isArray(config.dbReplicaset) && config.dbReplicaset.length !== 0) {
-        // The replicaset should contain an array of hosts and ports
-        connectionString = 'mongodb://' + authenticationString + config.dbReplicaset.join(',') + '/' + config.dbName;
-      } else {
-        // Get the host and port number from the configuration.
-
-        var portString = config.dbPort ? ':' + config.dbPort : '';
-
-        connectionString = 'mongodb://' + authenticationString + config.dbHost + portString + '/' + config.dbName;
-      }
-      if (typeof config.dbAuthSource === 'string' && config.dbAuthSource !== '' ) {
-        connectionString += '?authSource=' + config.dbAuthSource;
-      }
-    }
-    var migrateConf = {
-      migrationsDir : 'migrations/lib',
-      es6 : false,
-      dbConnectionUri: connectionString
-    };
-    grunt.file.write('conf/migrate.json', JSON.stringify(migrateConf, null, 2));
-  });
-
   // Compiles frontend plugins
   grunt.registerMultiTask('requireBundle', 'Generates a .js file with a bunch of imports for the path files', function() {
     var modulePaths = '';
@@ -285,30 +236,6 @@ module.exports = function(grunt) {
       done();
     }
   });
-  grunt.registerTask('generate-lang-json', function() {
-    const fs = require('fs-extra');
-    const path = require('path');
-
-    const options = this.options();
-    const backendGlob = path.join(options.src.backend, `*${options.langFileExt}`);
-    const dest = options.dest;
-    // load each route lang file
-    /**
-    * NOTE there must be a file in routes/lang for the language to be loaded,
-    * won't work if you've only got lang files in frontend
-    */
-    grunt.file.expand({}, path.join(backendGlob)).forEach(backendPath => {
-      const basename = path.basename(backendPath);
-      const frontendGlob = path.join(options.src.frontend, basename);
-      let data = { ...fs.readJSONSync(backendPath) };
-      // load all matching frontend lang files
-      grunt.file.expand({}, frontendGlob).forEach(frontendPath => {
-        data = { ...data, ...fs.readJSONSync(frontendPath) };
-      });
-      fs.ensureDirSync(dest);
-      fs.writeJSONSync(path.join(dest, basename), data, { spaces: 2 });
-    });
-  });
 
   grunt.registerTask('default', ['build:dev']);
   grunt.registerTask('test', ['mochaTest']);
@@ -319,20 +246,7 @@ module.exports = function(grunt) {
   */
   grunt.registerTask('build', 'Running build', function(mode) {
     grunt.log.subhead(`Building application in ${mode === 'prod' ? 'production' : 'dev'} mode`);
-
-    var isProduction = mode === 'prod' ? true : false;
-    var compilation = isProduction ? 'compile' : 'dev';
-
-    try {
-      // add flag to config
-      var configFile = 'conf/config.json';
-      var config = grunt.file.readJSON(configFile);
-      config.isProduction = isProduction;
-      grunt.file.write(configFile, JSON.stringify(config, null, 2));
-      // run the task
-      grunt.task.run(['migration-conf', 'requireBundle', 'generate-lang-json', 'copy', 'less:' + compilation, 'handlebars', 'requirejs:'+ compilation, `babel:${compilation}`]);
-    } catch(e) {
-      grunt.task.run(['requireBundle', 'copy', 'less:' + compilation, 'handlebars', 'requirejs:' + compilation, `babel:${compilation}`]);
-    }
+    const compilation = mode === 'prod' ? 'compile' : 'dev';
+    grunt.task.run(['requireBundle', 'copy', `less:${compilation}`, 'handlebars', `requirejs:${compilation}`, `babel:${compilation}`]);
   });
 };
