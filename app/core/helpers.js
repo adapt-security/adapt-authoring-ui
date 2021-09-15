@@ -313,6 +313,20 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     importConstants: function() {
       this.constants = Origin.constants;
       return '';
+    },
+    /**
+     * Comparison operator (ifValueEquals left for compatibility)
+     */
+    when: (a, operator, b, block) => {
+      console.log(a, operator, b);
+      const ops = {
+        eq: (l,r) => l === r,
+        noteq: (l,r) => l !== r,
+        gt: (l,r) => Number(l) > Number(r),
+        or: (l,r) => l || r,
+        and: (l,r) => l && r
+      };
+      return ops[operator](a, b) ? block.fn(this) : block.inverse(this);
     }
   };
 
