@@ -14,3 +14,5 @@ The permissions mechanism has been completely rewritten to use 'scopes', and is 
 ### APIs
 
 The APIs have been changed.
+
+### Lang strings need moving to `/lang`
