@@ -1,5 +1,7 @@
 {
   "documentation": {
-    "enable": true
-  }
+    "enable": true,
+    "manualSections": {
+      "migrating-from-legacy.md": "advanced"
+    }
 }
