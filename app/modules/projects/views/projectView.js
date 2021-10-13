@@ -78,14 +78,14 @@ define(function(require) {
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t('app.' + titleKey),
-        text: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t('app.' + textKey),
-        destructive: isShared,
+        html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t('app.' + textKey),
+        destructive: true,
         callback: this.deleteProjectConfirm.bind(this)
       });
     },
 
-    deleteProjectConfirm: function(confirmed) {
-      if(!confirmed) {
+    deleteProjectConfirm: function(data) {
+      if(!data.isConfirmed) {
         return;
       }
       this.model.destroy({

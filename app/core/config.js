@@ -18,7 +18,6 @@ require.config({
     polyglot: 'libraries/polyglot.min',
     scrollTo: 'libraries/scrollTo',
     selectize: 'libraries/selectize/js/selectize',
-    sweetalert: 'libraries/sweetalert.min',
     typeahead: 'libraries/typeahead',
     underscore: 'libraries/underscore',
     velocity: 'libraries/velocity'
@@ -71,10 +70,6 @@ require.config({
     selectize: {
       deps: ['jquery'],
       exports: "$"
-    },
-    sweetalert: {
-      deps: ['jquery'],
-      exports: 'sweetAlert'
     },
     underscore: {
       exports: '_'

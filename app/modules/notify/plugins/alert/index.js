@@ -2,16 +2,13 @@
 define(function(require) {
 	var _ = require('underscore');
 	var Origin = require('core/origin');
-	var SweetAlert = require('sweetalert');
+	var SweetAlert = require('./sweetalert2-11.1.7.min.js');
 
 	function getSettings(data) {
 		var defaults = {
 			title: '',
-			animation: 'slide-from-bottom',
-			confirmButtonColor: '',
-			html: true
+			allowOutsideClick: false
 		};
-
 		switch(data.type) {
 			case 'confirm':
 				data.type = null;
@@ -40,31 +37,28 @@ define(function(require) {
 				}
 				data.type = null;
 		}
+		if(data.type) data.icon = data.type;
 		// combine settings, overwriting defaults with param
 		return _.defaults(data, defaults);
 	};
 
 	function openPopup(data) {
-		SweetAlert(getSettings(data), data.callback);
+		return SweetAlert.fire(getSettings(data)).then(data.callback);
 	}
 
 	var Alert = function(data) {
 		// allow for string input
 		if(_.isString(data)) {
-			data = {
-				title: data
-			};
+			data = { title: data };
 		}
-		openPopup(data);
+		const returnData = { popup: openPopup(data) };
+		returnData.SweetAlert = SweetAlert;
+		return returnData;
 	};
-
 	/**
 	* NOTE if callback isn't an annonymous function, it won't be called on cancel
 	* See: https://github.com/t4t5/sweetalert/issues/431
 	*/
-	var DISABLE_TIME_SECS = 5;
-	var interval;
-
 	var Confirm = function(data) {
 		// allow for string input
 		if (_.isString(data)) {
@@ -72,7 +66,6 @@ define(function(require) {
         text: data
 			};
 		}
-
 		// some defaults, in the case of an additional type being passed
 		var defaults = {
 			type: data.type || 'confirm',
@@ -80,43 +73,23 @@ define(function(require) {
 			confirmButtonText: Origin.l10n.t('app.confirmdefaultyes'),
 			cancelButtonText: Origin.l10n.t('app.no')
 		};
-
-		openPopup(_.extend(defaults, data));
-
-		$('.sweet-alert > .sa-button-container button').blur();
-
-		clearInterval(interval);
-
-		// forces the user to wait before the confirm button can be clicked
 		if(data.destructive === true) {
-			var setWaitText = function(n) {
-				$('.sweet-alert button.confirm').html(
-					'<span class="wait-text">' +
-					Origin.l10n.t('app.confirmwait') +
-					'</span> ' +
-					n
-				);
+			data.allowEnterKey = false;
+			data.timer = 5000;
+			data.timerProgressBar = true;
+			data.didOpen = (el) => {
+				$('.swal2-confirm', el).attr('disabled', true);
+				const timerInterval = setInterval(() => {
+					if(SweetAlert.getTimerLeft() < 100) {
+						SweetAlert.stopTimer();
+						$('.swal2-timer-progress-bar-container').hide();
+						$('.swal2-confirm', el).attr('disabled', false);
+						clearInterval(timerInterval);
+					}
+				}, 100);
 			};
-
-			var count = DISABLE_TIME_SECS;
-			var oldLabel = $('.sweet-alert button.confirm').text();
-
-			$('.sweet-alert').addClass('destructive');
-			$('.sweet-alert button.confirm').attr('disabled', true);
-
-			setWaitText(count);
-
-			interval = setInterval(function() {
-				if(--count > 0) {
-					$('.sweet-alert button.confirm').html('<span class="wait-text">' + Origin.l10n.t('app.confirmwait') + '</span> ' + count);
-				} else {
-					clearInterval(interval);
-					$('.sweet-alert button.confirm').text(oldLabel);
-					$('.sweet-alert button.confirm').attr('disabled', false);
-					$('.sweet-alert').removeClass('destructive');
-				}
-			}, 1000);
 		}
+		openPopup(_.extend(defaults, data));
 	};
 
 	var init = function() {
