@@ -11,7 +11,6 @@
       'polyfill',
       'scrollTo',
       'selectize',
-      'sweetalert',
       'velocity'
     ], Handlebars => {
       window.Handlebars = $.extend(Handlebars, window.Handlebars);
