@@ -82,5 +82,6 @@ require.config({
     'templates/templates': {
       deps:['handlebars']
     }
-  }
+  },
+  waitSeconds: 0
 });
