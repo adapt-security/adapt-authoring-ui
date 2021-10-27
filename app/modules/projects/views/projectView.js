@@ -119,7 +119,7 @@ define(function(require) {
     copyIdToClipboard: function() {
       var id = this.model.get('_id');
       if(Helpers.copyStringToClipboard(id)) {
-        Origin.Notify.alert({ type: 'info', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id }) });
+        Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id }) });
         return;
       }
       Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', { id: id }) });
