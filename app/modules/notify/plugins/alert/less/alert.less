@@ -2,7 +2,7 @@
 @import 'buttons';
 @import 'colours';
 
-.swal2-popup {
+.swal2-popup.swal2-modal {
   max-height: 91%;
   overflow-y: auto;
   details {
@@ -55,5 +55,20 @@
   }
   .swal2-timer-progress-bar {
     background: @secondary-color;
+  }
+}
+
+body.swal2-toast-shown .swal2-container.swal2-top-right {
+  top: 63px !important;
+  max-width: 500px;
+  width: 100%;
+  .swal2-popup.swal2-toast {
+    &.error { background-color: @alert-color; }
+    &.info { background-color: @info-color; }
+    &.warning { background-color: @warning-color; }
+    &.success { background-color: @success-color; }
+    .swal2-html-container {
+      color: white;
+    }
   }
 }

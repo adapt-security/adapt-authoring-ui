@@ -56,14 +56,14 @@ define(function(require) {
 		return returnData;
 	};
 	/**
-	* NOTE if callback isn't an annonymous function, it won't be called on cancel
-	* See: https://github.com/t4t5/sweetalert/issues/431
-	*/
+	 * NOTE if callback isn't an annonymous function, it won't be called on cancel
+	 * See: https://github.com/t4t5/sweetalert/issues/431
+	 */
 	var Confirm = function(data) {
 		// allow for string input
 		if (_.isString(data)) {
-      data = {
-        text: data
+			data = {
+				text: data
 			};
 		}
 		// some defaults, in the case of an additional type being passed
@@ -91,10 +91,30 @@ define(function(require) {
 		}
 		openPopup(_.extend(defaults, data));
 	};
+	var Toast = function(data) {
+		if(_.isString(data)) {
+			data = { text: data, type: 'info' };
+		}
+		return { 
+			popup: SweetAlert.fire(Object.assign(data, {
+				customClass: { popup: data.type },
+				icon: data.type,
+				iconColor: 'white',
+				position: 'top-right',
+				showConfirmButton: false,
+				showConfirmButton: false,
+				timer: 2500,
+				timerProgressBar: true,
+				toast: true,
+			})),
+			SweetAlert
+		};
+	};
 
 	var init = function() {
 		Origin.Notify.register('alert', Alert);
 		Origin.Notify.register('confirm', Confirm);
+		Origin.Notify.register('toast', Toast);
 		// shortcuts to override window methods
 		window.alert = alert = Alert;
 		window.confirm = confirm = Confirm;
