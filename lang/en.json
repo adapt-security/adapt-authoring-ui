@@ -33,6 +33,7 @@
   "app.assetmanagement": "Asset Management",
   "app.assetpreviewinstruction": "Select an asset to see a preview here",
   "app.assetsize": "Size",
+  "app.componentcopyerror": "Cannot copy component, there are no free locations",
   "app.assettitle": "Asset title",
   "app.atversion": "Installed Version",
   "app.autofill": "Autofill",
