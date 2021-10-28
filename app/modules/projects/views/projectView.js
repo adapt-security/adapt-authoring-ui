@@ -119,6 +119,7 @@ define(function(require) {
               }
             });
             Origin.router.navigateTo(`editor/${_id}/menu`);
+            Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.clonecoursesuccess', { id: _id }) });
           } catch(e) {
             SweetAlert.showValidationMessage(e);
           }
@@ -129,7 +130,7 @@ define(function(require) {
     copyIdToClipboard: function() {
       var opts = { id: this.model.get('_id') };
       if(Helpers.copyStringToClipboard(opts.id)) {
-        Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
+        Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
         return;
       }
       Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', opts) });
