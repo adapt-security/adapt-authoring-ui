@@ -99,19 +99,33 @@ define(function(require) {
       });
     },
 
-    duplicateProject: function() {
-      $.ajax({
-        url: 'api/content/clone',
-        method: 'post',
-        data: {
-          _id: this.model.get('_id'),
-          _parentId: this.model.get('_parentId')
-        },
-        success: function ({ _id }) {
-          Origin.router.navigateTo(`editor/${_id}/settings`);
-        },
-        error: function() {
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorduplication') });
+    duplicateProject: async function() {
+      Origin.Notify.alert({
+        title: Origin.l10n.t('app.clonecoursetitle'),
+        input: 'text',
+        inputLabel: Origin.l10n.t('app.clonecourseinstruction'),
+        showCancelButton: true,
+        inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
+        preConfirm: newTitle => {
+          $.ajax({
+            url: 'api/content/clone',
+            method: 'post',
+            data: {
+              _id: this.model.get('_id'),
+              _parentId: this.model.get('_parentId'),
+              title: newTitle
+            },
+            success: function ({ _id }) {
+              Origin.Notify.toast({
+                type: 'success',
+                text: Origin.l10n.t('app.clonecoursesuccess')
+              });
+              Origin.router.navigateTo(`editor/${_id}/menu`);
+            },
+            error: function() {
+              Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorduplication') });
+            }
+          });
         }
       });
     },
