@@ -100,43 +100,39 @@ define(function(require) {
     },
 
     duplicateProject: async function() {
-      Origin.Notify.alert({
+      const { SweetAlert } = Origin.Notify.alert({
         title: Origin.l10n.t('app.clonecoursetitle'),
         input: 'text',
         inputLabel: Origin.l10n.t('app.clonecourseinstruction'),
         showCancelButton: true,
+        showLoaderOnConfirm: true,
         inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
-        preConfirm: newTitle => {
-          $.ajax({
-            url: 'api/content/clone',
-            method: 'post',
-            data: {
-              _id: this.model.get('_id'),
-              _parentId: this.model.get('_parentId'),
-              title: newTitle
-            },
-            success: function ({ _id }) {
-              Origin.Notify.toast({
-                type: 'success',
-                text: Origin.l10n.t('app.clonecoursesuccess')
-              });
-              Origin.router.navigateTo(`editor/${_id}/menu`);
-            },
-            error: function() {
-              Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorduplication') });
-            }
-          });
+        preConfirm: async newTitle => {
+          try {
+            const { _id } = await $.ajax({
+              url: 'api/content/clone',
+              method: 'post',
+              data: {
+                _id: this.model.get('_id'),
+                _parentId: this.model.get('_parentId'),
+                title: newTitle
+              }
+            });
+            Origin.router.navigateTo(`editor/${_id}/menu`);
+          } catch(e) {
+            SweetAlert.showValidationMessage(e);
+          }
         }
       });
     },
 
     copyIdToClipboard: function() {
-      var id = this.model.get('_id');
-      if(Helpers.copyStringToClipboard(id)) {
-        Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id }) });
+      var opts = { id: this.model.get('_id') };
+      if(Helpers.copyStringToClipboard(opts.id)) {
+        Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
         return;
       }
-      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', { id: id }) });
+      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', opts) });
     },
 
     onProjectShowTagsButtonClicked: function(event) {
