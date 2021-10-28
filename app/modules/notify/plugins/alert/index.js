@@ -91,28 +91,10 @@ define(function(require) {
 		}
 		openPopup(_.extend(defaults, data));
 	};
-	var Toast = function(data) {
-		if(_.isString(data)) {
-			data = { text: data, type: 'info' };
-		}
-		Object.assign(data, {
-			customClass: { popup: data.type },
-			icon: data.type,
-			iconColor: 'white',
-			position: 'top-right',
-			showConfirmButton: false,
-			showConfirmButton: false,
-			timer: 2500,
-			timerProgressBar: true,
-			toast: true,
-		});
-		return { popup: SweetAlert.fire(data), SweetAlert };
-	};
 
 	var init = function() {
 		Origin.Notify.register('alert', Alert);
 		Origin.Notify.register('confirm', Confirm);
-		Origin.Notify.register('toast', Toast);
 		// shortcuts to override window methods
 		window.alert = alert = Alert;
 		window.confirm = confirm = Confirm;

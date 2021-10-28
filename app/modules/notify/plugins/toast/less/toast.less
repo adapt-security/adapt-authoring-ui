@@ -1,0 +1,58 @@
+@import 'colours';
+
+.toast-container {
+  position: absolute;
+  padding: 10px;
+  padding-right: 20px;
+  width: 400px;
+  top: 0;
+  right: 0;
+  z-index: 499;
+}
+
+.toast {
+  display: flex;
+  background-color: #9CABC4;
+  color: @white;
+  font-size: 110%;
+  text-align: left;
+  padding: 20px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  opacity: 0;
+  transition: opacity 0.5s;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &.visible { 
+    opacity: 1;
+  }
+  &.alert {
+    background-color: @alert-color;
+  }
+  &.info {
+    background-color: @info-color;
+  }
+  &.warning {
+    background-color: @warning-color;
+  }
+  &:hover {
+    border: 1px solid white;
+  }
+  
+  .icon {
+    flex: 1;
+    font-size: 45px;
+  }
+  
+  .body {
+    flex: 5;
+  }
+  
+  .close {
+    padding-left: 15px;
+    font-weight: @font-weight-bold;
+    color: @white;
+    font-size: 90%;
+  }
+}

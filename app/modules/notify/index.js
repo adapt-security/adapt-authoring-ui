@@ -9,25 +9,21 @@ define(function(require) {
 	if(!Notify) {
 		Notify = Origin.Notify = _.extend({}, Backbone.Events);
 
-		Notify.register = function(name, func) {
-			Notify[name] = func;
-		};
-
-		loadPLugins();
+		Notify.register = (name, func) => Notify[name] = func;
+		
+		loadPlugins();
 	}
 
-	// loads the built-in plugins in ./plugins
-	function loadPLugins() {
+	function loadPlugins() {
 		var notifyAlert = require('./plugins/alert/index');
 		notifyAlert();
 
 		var notifyConsole = require('./plugins/console/index');
 		notifyConsole();
 
-		var notifySnackbar = require('./plugins/snackbar/index');
-		notifySnackbar();
+		var notifyToast = require('./plugins/toast/index');
+		notifyToast();
 	};
 
 	return Notify;
-
 });
