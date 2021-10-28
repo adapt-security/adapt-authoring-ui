@@ -95,20 +95,18 @@ define(function(require) {
 		if(_.isString(data)) {
 			data = { text: data, type: 'info' };
 		}
-		return { 
-			popup: SweetAlert.fire(Object.assign(data, {
-				customClass: { popup: data.type },
-				icon: data.type,
-				iconColor: 'white',
-				position: 'top-right',
-				showConfirmButton: false,
-				showConfirmButton: false,
-				timer: 2500,
-				timerProgressBar: true,
-				toast: true,
-			})),
-			SweetAlert
-		};
+		Object.assign(data, {
+			customClass: { popup: data.type },
+			icon: data.type,
+			iconColor: 'white',
+			position: 'top-right',
+			showConfirmButton: false,
+			showConfirmButton: false,
+			timer: 2500,
+			timerProgressBar: true,
+			toast: true,
+		});
+		return { popup: SweetAlert.fire(data), SweetAlert };
 	};
 
 	var init = function() {
