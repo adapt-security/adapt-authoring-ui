@@ -8,7 +8,7 @@ define(function(require) {
     text: '',
     buttonText: Origin.l10n.t('app.close'),
     persist: false,
-    timeout: 100000,
+    timeout: 3000,
     callback: null
   };
   var $container;
