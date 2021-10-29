@@ -18,7 +18,6 @@ require.config({
     polyglot: 'libraries/polyglot.min',
     scrollTo: 'libraries/scrollTo',
     selectize: 'libraries/selectize/js/selectize',
-    typeahead: 'libraries/typeahead',
     underscore: 'libraries/underscore',
     velocity: 'libraries/velocity'
   },
