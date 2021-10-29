@@ -1,0 +1,40 @@
+#snackbar {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 498;
+  background-color: #9CABC4;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.5s;
+  cursor: pointer;
+  font-weight: bold;
+
+  &.visible { 
+    opacity: 1;
+  }
+  &.error {
+    background-color: @alert-color;
+  }
+  &.info {
+    background-color: @info-color;
+  }
+  &.warning {
+    background-color: @warning-color;
+  }
+  &.success {
+    background-color: @success-color;
+  }
+
+  .close {
+    padding-left: 15px;
+    font-weight: @font-weight-bold;
+    color: @white;
+    font-size: 90%;
+  }
+}
