@@ -54,6 +54,7 @@ define(function(require) {
       `);
       $('.app-inner').append($el);
       $el.on('click', close);
+      $('.close', $el).on('click', e => e.preventDefault());
     });
   };
 
