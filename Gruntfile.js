@@ -1,6 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 module.exports = function(grunt) {
-  require('matchdep').filterAll('grunt-*').forEach(grunt.loadNpmTasks);
+  // Load grunt- dependencies
+  const pkg = require('./package.json');
+  const deps = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies });
+  deps.forEach(d => d.startsWith('grunt-') && grunt.loadNpmTasks(d));
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),

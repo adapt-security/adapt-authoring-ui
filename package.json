@@ -13,7 +13,6 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-handlebars": "^2.0.0",
     "grunt-contrib-requirejs": "^1.0.0",
-    "less": "^3.12.2",
-    "matchdep": "^2.0.0"
+    "less": "^3.12.2"
   }
 }
