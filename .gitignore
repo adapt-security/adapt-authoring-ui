@@ -1,4 +1,4 @@
-/build/
+dist
 modules.js
 plugins.js
 templates.js
