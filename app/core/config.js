@@ -17,7 +17,11 @@ require.config({
     scrollTo: 'libraries/scrollTo',
     selectize: 'libraries/selectize/js/selectize',
     underscore: 'libraries/underscore',
-    velocity: 'libraries/velocity'
+    velocity: 'libraries/velocity',
+    // auto-generate bundles
+    'modules/modules': 'modules-bundle',
+    'plugins/plugins': 'plugins-bundle',
+    'templates/templates': 'templates'
   },
   shim: {
     // third-party
