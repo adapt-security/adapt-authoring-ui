@@ -1,1 +1,1 @@
-module.exports = require('./lib/uiModule');
+module.exports = require('./lib/UIModule');
