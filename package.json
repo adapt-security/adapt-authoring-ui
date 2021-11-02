@@ -4,8 +4,8 @@
   "description": "Front-end application for the Adapt authoring tool",
   "main": "index.js",
   "dependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
     "adapt-authoring-core": "adapt-security/adapt-authoring-core",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
