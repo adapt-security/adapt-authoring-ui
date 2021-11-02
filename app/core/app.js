@@ -8,6 +8,7 @@
       'jqueryForm',
       'jqueryTagsInput',
       'jqueryUI',
+      'polyfill',
       'scrollTo',
       'selectize',
       'velocity'

@@ -12,6 +12,7 @@ require.config({
     jqueryTagsInput: 'libraries/jquery.tagsinput.min',
     jqueryUI: 'libraries/jquery-ui.min',
     moment: 'libraries/moment.min',
+    polyfill: 'libraries/babel-polyfill.min',
     polyglot: 'libraries/polyglot.min',
     scrollTo: 'libraries/scrollTo',
     selectize: 'libraries/selectize/js/selectize',
