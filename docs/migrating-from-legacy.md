@@ -6,13 +6,14 @@
 
 ### Permissions
 
-The permissions mechanism has been completely rewritten to use 'scopes', and is now accessed via the SessionModel.
+The permissions mechanism has been completely rewritten to use permissions 'scopes' which are human-readable strings. Permissions utilities are now accessed directly from the SessionModel.
 
-- `Origin.permissions.hasPermission` -> `Origin.sessionModel.hasScopes`
-- `hasPermission` -> `ifHasScopes`
+- `Origin.permissions.hasPermission` => `Origin.sessionModel.hasScopes`
+- `hasPermission` => `ifHasScopes`
 
 ### APIs
 
-The APIs have been changed.
+#### TODO
 
-### Lang strings need moving to `/lang`
+### Language strings
+Language strings are now served directly from the back-end server, and therefore need to be stored in the root `lang` folder of your authoring tool module. The server will need to be restarted for any changes to these to be recognised.
