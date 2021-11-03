@@ -283,9 +283,11 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     },
 
     maxUploadSize: function(options) {
+      const sizeInB = Origin.constants['adapt-authoring-middleware.fileUploadMaxFileSize'];
+      const multiplier = 0.00000095367432;
       return new Handlebars.SafeString([
         '<span class="max-fileupload-size">',
-        Origin.l10n.t('app.maxfileuploadsize', {size: Origin.constants.humanMaxFileUploadSize}),
+        Origin.l10n.t('app.maxfileuploadsize', { size: `${Math.round(sizeInB*multiplier)}MB` }),
         '</span>'].join(''))
     },
 
