@@ -1,8 +1,10 @@
 {
   "documentation": {
     "enable": true,
-    "manualSections": {
-      "migrating-from-legacy.md": "advanced"
+    "manualPages": {
+      "migrating-from-legacy.md": "ui",
+      "ui-extensions.md": "ui",
+      "ui-libraries.md": "ui"
     }
   }
 }
