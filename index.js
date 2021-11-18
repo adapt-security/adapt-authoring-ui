@@ -1,1 +1,1 @@
-module.exports = require('./lib/UIModule');
+export { default } from './lib/UIModule.js';
