@@ -213,10 +213,8 @@ define(function(require){
     },
 
     onAjaxError: function(data, status, error) {
-      var resJson = data.responseJSON || {};
-      var title = resJson.title || Origin.l10n.t('app.importerrortitle');
-      var msg = resJson.body && resJson.body.replace(/\n/g, "<br />") || error;
-      this.promptUser(title, msg, true);
+      var msg = data.responseJSON && data.responseJSON.message || error;
+      this.promptUser(Origin.l10n.t('app.importerrortitle'), msg.replace(/\n/g, "<br />"), true);
       this.sidebarView.resetButtons();
     },
 
