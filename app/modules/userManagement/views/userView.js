@@ -247,8 +247,8 @@ define(function(require){
           courseOption: optionMsg[option],
           email: this.model.get('email')
         }),
-        callback: confirmed => {
-          if(!confirmed) return; 
+        callback: result => {
+          if(!result.isConfirmed) return; 
           this.model.destroy({ 
             data: { userCourseOption: option }, 
             processData: true, 
