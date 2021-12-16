@@ -66,15 +66,16 @@ define(function(require) {
         type: 'warning',
         title: Origin.l10n.t('app.deleteextension'),
         text: Origin.l10n.t('app.confirmdeleteextension'),
-        callback: confirmed => {
-          if(confirmed) {
+        callback: result => {
+          if(result.isConfirmed) {
+            return;
+          }
             const toRemove = $(event.currentTarget).attr('data-name');
             $.ajax(Object.assign(this.ajaxOptions, {
               data: { 
                 _enabledPlugins: Origin.editor.data.config.get('_enabledPlugins').filter(e => e !== toRemove) 
               }
             }));
-          }
         }
       });
     }

@@ -86,7 +86,7 @@ define(function(require){
         type: 'warning',
         title: Origin.l10n.t('app.deleteitem'+ this.model.get('_type')),
         text: Origin.l10n.t('app.confirmdelete' + this.model.get('_type')) + '<br/><br/>' + Origin.l10n.t('app.confirmdeletewarning' + this.model.get('_type')),
-        callback: isConfirmed => self.onConfirmRemovePopup(isConfirmed)
+        callback: result => self.onConfirmRemovePopup(result.isConfirmed)
       });
     },
 

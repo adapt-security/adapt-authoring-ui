@@ -44,7 +44,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         type: 'warning',
         title: Origin.l10n.t('app.deletecomponent'),
         text: `${Origin.l10n.t('app.confirmdeletecomponent')}<br/><br/>${Origin.l10n.t('app.confirmdeletecomponentwarning')}`,
-        callback: confirmed => confirmed && this.deleteComponent()
+        callback: result => result.isConfirmed && this.deleteComponent()
       });
     },
 

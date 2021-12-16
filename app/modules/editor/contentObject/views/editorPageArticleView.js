@@ -134,8 +134,8 @@ define(function(require){
 
     },
 
-    deleteArticleConfirm: function(confirmed) {
-      if (confirmed) {
+    deleteArticleConfirm: function(result) {
+      if (result.isConfirmed) {
         Origin.trigger('editorView:deleteArticle:' + this.model.get('_id'));
       }
     },

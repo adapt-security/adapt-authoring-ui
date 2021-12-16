@@ -42,8 +42,8 @@ define(function(require) {
       Origin.Notify.confirm({
         type: 'warning',
         text: Origin.l10n.t('app.restorepresettext'),
-        callback: confirmed => {
-          if(confirmed) Origin.trigger('editorThemingSidebar:views:resetToPreset')
+        callback: result => {
+          if(result.isConfirmed) Origin.trigger('editorThemingSidebar:views:resetToPreset')
         }
       });
     },

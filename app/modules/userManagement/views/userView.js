@@ -153,8 +153,8 @@ define(function(require){
     onResetLoginsClicked: function() {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmresetlogins', { email: this.model.get('email') }),
-        callback: confirmed => {
-          if(!confirmed) return;
+        callback: result => {
+          if(!result.isConfirmed) return;
           Helpers.ajax(`api/auth/local/unlock/${this.model.get('_id')}`, null, 'POST', () => this.model.fetch());
         }
       });
@@ -163,8 +163,8 @@ define(function(require){
     onInviteClicked: function(e) {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmsendinvite', { email: this.model.get('email') }),
-        callback: confirmed => {
-          if(!confirmed) {
+        callback: result => {
+          if(!result.isConfirmed) {
             return;
           }
           var $btn = $(e.target);
@@ -183,8 +183,8 @@ define(function(require){
     onResetPasswordClicked: function(e) {
       Origin.Notify.confirm({
         text: Origin.l10n.t('app.confirmsendreset', { email: this.model.get('email') }),
-        callback: confirmed => {
-          if (!confirmed) {
+        callback: result => {
+          if (!result.isConfirmed) {
             return;
           }
           var $btn = $(e.currentTarget);
@@ -208,19 +208,13 @@ define(function(require){
         inputType: 'password',
         confirmButtonText: 'Save',
         closeOnConfirm: false,
-        callback: newPassword => {
-          if(newPassword === false) return;
-          else if(newPassword === "") return swal.showInputError(Origin.l10n.t('app.invalidempty'));
-          var postData = {
-            email: this.model.get('email'),
-            password: newPassword
-          };
-          Helpers.ajax('api/auth/local/changepass', postData, 'POST', () => {
+        callback: ({ isConfirmed, value: password }) => {
+          if(!isConfirmed) return;
+          else if(password === "") return swal.showInputError(Origin.l10n.t('app.invalidempty'));
+          const email = this.model.get('email');
+          Helpers.ajax('api/auth/local/changepass', { email, password }, 'POST', () => {
             this.model.fetch();
-            Origin.Notify.alert({
-              type: 'success',
-              text: Origin.l10n.t('app.changepasswordtext', { email: this.model.get('email') })
-            });
+            Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.changepasswordtext', { email }) });
           });
         }
       });

@@ -44,8 +44,8 @@ define(function(require){
       });
     },
 
-    onDeleteConfirmed: async function(confirmed) {
-      if (!confirmed) {
+    onDeleteConfirmed: async function(result) {
+      if (!result.isConfirmed) {
         return;
       }
       try {

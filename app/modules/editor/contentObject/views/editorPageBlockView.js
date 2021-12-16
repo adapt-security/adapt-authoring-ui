@@ -112,7 +112,7 @@ define(function(require){
         type: 'warning',
         title: Origin.l10n.t('app.deleteblock'),
         text: `${Origin.l10n.t('app.confirmdeleteblock')}<br/><br/>${Origin.l10n.t('app.confirmdeleteblockwarning')}`,
-        callback: confirmed => confirmed && this.deleteBlock()
+        callback: result => result.isConfirmed && this.deleteBlock()
       });
     },
 

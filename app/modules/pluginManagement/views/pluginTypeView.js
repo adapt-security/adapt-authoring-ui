@@ -100,8 +100,8 @@ define(function(require){
       }.bind(this));
     },
 
-    deletePluginConfirm: function(confirmation) {
-      if (!confirmation) return;
+    deletePluginConfirm: function(result) {
+      if (!result.isConfirmed) return;
 
       $.ajax({
         method: 'DELETE',
