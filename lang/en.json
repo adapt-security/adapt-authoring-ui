@@ -91,9 +91,7 @@
   "app.confirmdeleteproject": "Are you sure you want to delete this project?",
   "app.confirmdeleteprojectwarning": "<b>IMPORTANT</b>: This will delete all the content in the project",
   "app.confirmdeletesharedprojectwarning": "<b>IMPORTANT</b>: This is a shared project and will affect all users of the system.",
-  "app.confirmdeleteuser": "Deleting<br/><b>%{email}</b>.<br/><br/>%{courseOption}<br/><br/>This is a one-way trip. Continue?",
-  "app.confirmdeleteuserdelete": "All of this user’s unshared courses will be deleted.<br><br>Ownership of their shared courses will be transferred to you.",
-  "app.confirmdeleteusershare": "All of this user’s courses will be shared and ownership will be transferred to you.",
+  "app.confirmdeleteuser": "Deleting<br/><b>%{email}</b>.<br/><br/>Please confirm what should happen to the user's existing courses.",
   "app.confirmdeleteusertransfer": "Ownership of this user’s courses will be transferred to you.",
   "app.confirmdeletewarningmenu": "<b>IMPORTANT</b>: You will lose all the contents of this section",
   "app.confirmdeletewarningpage": "<b>IMPORTANT</b>: You will lose all the contents of this page",
@@ -130,9 +128,8 @@
   "app.deleteproject": "Delete project",
   "app.deletesharedproject": "Delete shared project",
   "app.deleteuser": "Delete user",
-  "app.deleteuserdelete": "Delete all unshared courses",
-  "app.deleteusershare": "Share all courses",
-  "app.deleteusertransfer": "Transfer ownership to me",
+  "app.deleteusercoursesinstruction": "Enter new owner's email",
+  "app.onewaytrip": "This is a one-way trip. Continue?",
   "app.descending": "Z to A",
   "app.description": "Description",
   "app.disableuser": "Disable user",
@@ -424,5 +421,7 @@
   "app.view": "View",
   "app.viewtags": "View tags",
   "app.visitpluginhomepage": "Visit plugin homepage",
-  "app.warningdefaulttitle": "Warning"
+  "app.warningdefaulttitle": "Warning",
+  "app.transfercourses": "Transfer all courses to another user",
+  "app.deletecourses": "Delete all courses"
 }

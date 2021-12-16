@@ -230,19 +230,60 @@ define(function(require){
 
     onDeleteClicked: function() {
       var option = this.$('[name="delete-options"]').val();
-      var optionMsg = {
-        transfer: Origin.l10n.t('app.confirmdeleteusertransfer'),
-        delete: Origin.l10n.t('app.confirmdeleteuserdelete'),
-        share: Origin.l10n.t('app.confirmdeleteusershare')
-      };
       Origin.Notify.confirm({
         type: 'confirm',
-        text: Origin.l10n.t('app.confirmdeleteuser', {
-          courseOption: optionMsg[option],
-          email: this.model.get('email')
-        }),
-        callback: result => {
-          if(!result.isConfirmed) return; 
+        title: Origin.l10n.t('app.deleteuser'),
+        html:
+          Origin.l10n.t('app.confirmdeleteuser', { email: this.model.get('email') }) + 
+          '<select id="swal-courses" class="swal2-select">' + 
+            `<option value="delete">${Origin.l10n.t("app.deletecourses")}</option>` + 
+            `<option value="transfer">${Origin.l10n.t("app.transfercourses")}</option>` + 
+          '</select>' +
+          '<div class="email-container">' +
+            `<input id="swal-email" class="swal2-input" placeholder="${Origin.l10n.t("app.deleteusercoursesinstruction")}">` +
+          '</div>' +
+          Origin.l10n.t('app.onewaytrip'),
+        didOpen: () => {
+          const $container = $('.email-container');
+          const $select = $('select.swal2-select');
+          $container.hide();
+          $select.on('change', () => $container.toggle($select.val() === 'transfer'));
+        },
+        preConfirm: async () => {
+          const shouldTransferCourses = $('select.swal2-select').val() === 'transfer';
+          let transferCoursesToUser;
+
+          if(shouldTransferCourses) {
+            const [newOwner] = await $.ajax({ 
+              url: '/api/users', 
+              method: 'GET', 
+              data: { email: $('#swal-email').val() } 
+            });
+            if(!newOwner) {
+              Origin.Notify.Swal.showValidationMessage(Origin.l10n.t("app.unknownuser"));
+              return false;
+            }
+            transferCoursesToUser = newOwner._id;
+          }
+          this.model.set({ shouldTransferCourses, transferCoursesToUser });
+        },
+        callback: async result => {
+          if(!result.isConfirmed) {
+            return; 
+          }
+          try {
+            const courses = await $.get(`/api/content?_type=course&createdBy=${this.model.get('_id')}`);
+            await Promise.all(courses.map(async c => {
+              const url = `/api/content/${c._id}`;
+              if(this.model.get('shouldTransferCourses')) {
+                await $.ajax({ url, method: 'PATCH', data: { createdBy: this.model.get('transferCoursesToUser') } });
+              } else {
+                await $.ajax({ url, method: 'DELETE' });
+              }
+            }));
+          } catch(e) {
+            return this.onError(e.responseJSON.message);
+          }
           this.model.destroy({ 
             data: { userCourseOption: option }, 
             processData: true, 
