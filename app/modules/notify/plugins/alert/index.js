@@ -98,6 +98,8 @@ define(function(require) {
 		// shortcuts to override window methods
 		window.alert = alert = Alert;
 		window.confirm = confirm = Confirm;
+		// add a global reference
+		Origin.Notify.Swal = SweetAlert;
 	};
 
 	return init;
