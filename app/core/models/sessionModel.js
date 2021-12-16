@@ -27,12 +27,17 @@ define(['require', 'backbone'], function(require, Backbone) {
       return scopes.every(s => assignedScopes.includes(s));
     },
 
-    login: function (email, password, cb) {
+    login: function (email, password, persistSession, cb) {
       const onError = ({ responseJSON }) => {
         this.clear();
         cb(responseJSON);
       };
-      $.post('api/auth/local', { email, password })
+      $.ajax({ 
+        url: 'api/auth/local',
+        method: 'POST',
+        data: JSON.stringify({ email, password, persistSession }),
+        contentType: "application/json" 
+      })
         .done(() => {
           this.fetch({ 
             success: () => {

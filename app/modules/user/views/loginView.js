@@ -53,7 +53,7 @@ define(function(require) {
       } else {
         $('#login-input-username').removeClass('input-error');
       }
-      this.model.login(inputUsernameEmail, inputPassword, error => {
+      this.model.login(inputUsernameEmail, inputPassword, shouldPersist, error => {
         if(error) {
           return this.loginFailed(null, error.message);
         }
