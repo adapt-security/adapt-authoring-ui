@@ -299,7 +299,13 @@ define([
       customTemplates[templateName] = template;
     }
   };
-
+  /**
+   * @example
+   * Scaffold.addCustomValidator('title', function(value, formValues) {
+   *   if(value.length > 11) return;
+   *   return { type: 'password', message: 'Passwords must be at least 12 characters long' };
+   * });
+   */
   Scaffold.addCustomValidator = function(name, validatorMethod) {
     if (!name || !validatorMethod) {
       console.log('Custom validators need a name and validatorMethod');
@@ -307,17 +313,6 @@ define([
       customValidators.push({ name: name, validatorMethod: validatorMethod });
     }
   };
-  // example of customValidator
-  /*
-  Scaffold.addCustomValidator('title', function(value, formValues) {
-    var err = {
-      type: 'username',
-      message: 'Usernames must be at least three characters long'
-    };
-
-    if (value.length < 3) return err;
-  });
-  */
   Scaffold.getCurrentModel = () => currentModel;
   Scaffold.getCurrentForm = () => currentForm;
   Scaffold.getAlternativeModel = () => alternativeModel;
