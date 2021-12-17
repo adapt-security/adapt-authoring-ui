@@ -69,7 +69,7 @@ define([
     _.defer(function() {
       const config = Origin.constants['adapt-authoring-ui.ckEditor'];
 
-      this.editor = CKEDITOR.replace(this.$el[0], {
+      const ckConfig = {
         dataIndentationChars: '',
         disableNativeSpellChecker: false,
         enterMode: CKEDITOR[config.enterMode],
