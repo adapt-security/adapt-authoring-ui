@@ -26,6 +26,31 @@
           "description": "Additional allowed content rules",
           "type": "string",
           "default": "span(*)"
+        },
+        "textStyles": {
+          "description": "Custom block and inline styles which can be applied to content in the editor",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "A unique name for the style",
+                "type": "string"
+              },
+              "element": {
+                "description": "The type of HTML element this style can apply to",
+                "type": "string"
+              },
+              "styles": {
+                "description": "CSS styles to be applied",
+                "type": "object"
+              },
+              "attributes": {
+                "description": "HTML attributes to be applied",
+                "type": "object"
+              }
+            }
+          }
         }
       },
       "_adapt": {

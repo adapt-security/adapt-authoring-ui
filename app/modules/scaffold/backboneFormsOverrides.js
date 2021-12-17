@@ -96,22 +96,36 @@ define([
             elements.forEach(function(element) { writer.setRules(element, rules); });
           }
         },
-        toolbar: [
-          { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source', '-', 'ShowBlocks' ] },
-          { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-          { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
-          { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv' ] },
-          { name: 'direction', items: [ 'BidiLtr', 'BidiRtl' ] },
+        toolbarGroups: [
+          { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+          { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+          { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+          { name: 'forms', groups: [ 'forms' ] },
+          { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
           '/',
-          { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-          { name: 'styles', items: [ 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-          { name: 'links', items: [ 'Link', 'Unlink' ] },
-          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-          { name: 'insert', items: [ 'SpecialChar', 'Table' ] },
-          { name: 'tools', items: [] },
-          { name: 'others', items: [ '-' ] }
-        ]
-      });
+          { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+          { name: 'links', groups: [ 'links' ] },
+          { name: 'insert', groups: [ 'insert' ] },
+          { name: 'styles', groups: [ 'styles' ] },
+          { name: 'colors', groups: [ 'colors' ] },
+          { name: 'tools', groups: [ 'tools' ] },
+          { name: 'others', groups: [ 'others' ] },
+          { name: 'about', groups: [ 'about' ] }
+        ],
+        removeButtons: 'Save,NewPage,Preview,Print,Templates,PasteFromWord,Checkbox,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,Language,Anchor,Iframe,PageBreak,Image,Maximize,ShowBlocks,About,Font,FontSize,Smiley,Cut,Copy,Paste,Undo,Redo,Format',
+      };
+      /**
+       * Custom text styles
+       * @see {https://ckeditor.com/docs/ckeditor4/latest/features/styles.html#defining-styles}
+       */
+      if(config.textStyles) {
+        CKEDITOR.stylesSet.add( 'adapt_styles', config.textStyles);
+        ckConfig.stylesSet = 'adapt_styles';
+      } else {
+        ckConfig.removeButtons += ',Styles';
+      }
+      this.editor = CKEDITOR.replace(this.$el[0], ckConfig);
+
     }.bind(this));
 
     return this;
