@@ -119,8 +119,9 @@ define([
        * @see {https://ckeditor.com/docs/ckeditor4/latest/features/styles.html#defining-styles}
        */
       if(config.textStyles) {
-        CKEDITOR.stylesSet.add( 'adapt_styles', config.textStyles);
-        ckConfig.stylesSet = 'adapt_styles';
+        const name = 'adapt_styles';
+        if(!CKEDITOR.stylesSet.get(name)) CKEDITOR.stylesSet.add(name, config.textStyles);
+        ckConfig.stylesSet = name;
       } else {
         ckConfig.removeButtons += ',Styles';
       }
