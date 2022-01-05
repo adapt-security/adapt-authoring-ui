@@ -112,7 +112,7 @@ define([
           { name: 'others', groups: [ 'others' ] },
           { name: 'about', groups: [ 'about' ] }
         ],
-        removeButtons: 'Save,NewPage,Preview,Print,Templates,PasteFromWord,Checkbox,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,Language,Anchor,Iframe,PageBreak,Image,Maximize,ShowBlocks,About,Font,FontSize,Smiley,Cut,Copy,Paste,Undo,Redo,Format,Flash',
+        removeButtons: 'Save,NewPage,Preview,Print,Templates,PasteFromWord,Checkbox,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,Language,Anchor,Iframe,PageBreak,Image,Maximize,ShowBlocks,About,Font,FontSize,Smiley,Cut,Copy,Paste,Undo,Redo,Flash',
       };
       /**
        * Custom text styles
