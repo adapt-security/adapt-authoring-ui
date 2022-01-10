@@ -51,6 +51,10 @@ define(function(require) {
 		if(_.isString(data)) {
 			data = { title: data };
 		}
+		if(data.text) {
+			data.html = data.text;
+			delete data.text;
+		}
 		const returnData = { popup: openPopup(data) };
 		returnData.SweetAlert = SweetAlert;
 		return returnData;
@@ -62,9 +66,7 @@ define(function(require) {
 	var Confirm = function(data) {
 		// allow for string input
 		if (_.isString(data)) {
-			data = {
-				text: data
-			};
+			data = { html: data };
 		}
 		// some defaults, in the case of an additional type being passed
 		var defaults = {
