@@ -46,6 +46,18 @@ define([
       return message;
     },
 
+    sanitiseData: function(dataArr) {
+      for (let i = 0; i < dataArr.length; i++) {
+        const d = dataArr[i];
+        if(d.name === "tags") {
+          if(d.value === "") dataArr.splice(i--, 1);
+          d.value = JSON.stringify(d.value.split(','));
+        } else if(d.name === "url" && d.value === "") {
+          dataArr.splice(i--, 1);
+        }
+      }
+    },
+
     save: function() {
       const errors = this.form.validate();
       if(errors) {
@@ -59,11 +71,7 @@ define([
         this.form.$el.ajaxSubmit({
           method: this.model.isNew() ? 'POST' : 'PATCH',
           url: `/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
-          beforeSubmit: function(dataArr) { // remove empty tags to avoid validation error
-            const i = dataArr.findIndex(({ name }) => name === 'tags');
-            if(dataArr[i].value === "") dataArr.splice(i, 1);
-            else dataArr[i].value = JSON.stringify(dataArr[i].value.split(','));
-          },
+          beforeSubmit: this.sanitiseData,
           success: (data) => this.onSaveSuccess(data),
           error: (xhr) => this.onSaveError(xhr.responseJSON.message)
         });
