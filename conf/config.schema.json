@@ -2,11 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "isProduction": {
-      "description": "Run UI from compiled origin.js",
-      "type": "boolean",
-      "default": true
-    },
     "ckEditor": {
       "description": "WYSIWYG editor configuration",
     	"type": "object",
