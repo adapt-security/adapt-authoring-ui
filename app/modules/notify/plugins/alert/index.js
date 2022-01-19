@@ -38,6 +38,10 @@ define(function(require) {
 				data.type = null;
 		}
 		if(data.type) data.icon = data.type;
+		if(data.text) {
+			data.html = data.text;
+			delete data.text;
+		}
 		// combine settings, overwriting defaults with param
 		return _.defaults(data, defaults);
 	};
@@ -50,10 +54,6 @@ define(function(require) {
 		// allow for string input
 		if(_.isString(data)) {
 			data = { title: data };
-		}
-		if(data.text) {
-			data.html = data.text;
-			delete data.text;
 		}
 		const returnData = { popup: openPopup(data) };
 		returnData.SweetAlert = SweetAlert;
