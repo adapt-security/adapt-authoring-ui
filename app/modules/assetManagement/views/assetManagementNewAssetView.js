@@ -61,11 +61,11 @@ define([
     save: function() {
       const errors = this.form.validate();
       if(errors) {
-        return this.onError(`${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`);
+        return this.onSaveError(`${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`);
       }
       const callbacks = { 
         success: () => Origin.router.navigateTo('assetManagement'),
-        error: () => this.onError(Origin.l10n.t('app.errorassetupdate'))
+        error: () => this.onSaveError(Origin.l10n.t('app.errorassetupdate'))
       };
       if($('input[name="file"]').val()) { // handle file upload
         this.form.$el.ajaxSubmit({
