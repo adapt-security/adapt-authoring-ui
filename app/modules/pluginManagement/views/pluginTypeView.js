@@ -59,9 +59,10 @@ define(function(require){
           $icon.removeClass().addClass('fa fa-check');
           this.model.fetch();
         }.bind(this))
-        .fail(function() {
+        .fail(function(e) {
           $btn.attr('title', Origin.l10n.t('app.updatefailed'));
           $icon.removeClass().addClass('fa fa-times');
+          Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
         });
 
       return false;
