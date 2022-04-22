@@ -7,7 +7,7 @@ define(function(require) {
     model: UserModel,
     sortBy: 'email',
     direction: 1,
-    mailSearchTerm: false,
+    mailSearchTerm: '',
     lastAccess: null,
 
     comparator: function(ma, mb) {
@@ -39,28 +39,25 @@ define(function(require) {
 
     filter: function() {
       this.models.forEach(function(model) { 
-        var isHidden = [this.roleFilter, this.mailFilter].every(function(f) { 
-          return f.call(this, model); 
-        }, this);
-        model.set('_isHidden', isHidden);
+        this.mailFilter(model);
+        this.roleFilter(model);
       }, this);
     },
-    /* 
-    * Returns whether the model should be hidden 
-    */
+
     mailFilter: function(model) {
-      return model.get('email').toLowerCase().indexOf(this.mailSearchTerm.toLowerCase()) === -1;
+      var isHidden = model.get('email').toLowerCase().indexOf(this.mailSearchTerm.toLowerCase()) === -1;
+      model.set('_isHidden', isHidden);
     },
-    /* 
-    * Returns whether the model should be hidden   
-    */
+
     roleFilter: function(model) {
-      if(!this.filterGroups || !this.filterGroups.roleNames) {
-        return false;
-      }
-      return !(model.get('roles').some(function(r) {
+      if (model.get('_isHidden')) return;
+      if (!this.filterGroups.roleNames || this.filterGroups.roleNames.length < 1) return;
+
+      var isHidden = !(model.get('roles').some(function(r) {
         return this.filterGroups.roleNames.includes(r.get('shortName'));
       }, this));
+
+      model.set('_isHidden', isHidden);
     }
   });
 
