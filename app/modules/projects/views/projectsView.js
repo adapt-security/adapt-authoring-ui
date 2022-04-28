@@ -196,7 +196,7 @@ define(function(require){
       this.setUserPreference('search', text, true);
 
       this.collection.customQuery.tags = _.pluck(tags, 'id');
-      this.setUserPreference('tags', this.collection.customQuery.tags, true);
+      this.setUserPreference('tags', this.collection.options.tags, true);
 
       if(fetch !== false) this.resetCollection();
     },
