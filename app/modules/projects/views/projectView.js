@@ -32,7 +32,15 @@ define(function(require) {
         'dashboard:projectView:itemSelected': this.deselectItem,
         'dashboard:dashboardView:deselectItem': this.deselectItem
       });
-      this.model.set('heroImageURI', this.model.getHeroImageURI());
+      this.setHeroURI();
+    },
+
+    setHeroURI: function() {
+      let heroImageURI = this.model.get('heroImage');
+      if(heroImageURI && !Helpers.isAssetExternal(this.get('heroImage'))) {
+        heroImageURI = `api/asset/thumb/${heroImageURI}`;
+      }
+      this.model.set('heroImageURI', heroImageURI);
     },
 
     openContextMenu: function(event) {
