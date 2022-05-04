@@ -25,9 +25,7 @@ define(function(require){
       });
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     onPasteElementClicked: function(event) {
       event && event.preventDefault();

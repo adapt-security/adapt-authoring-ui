@@ -39,9 +39,7 @@ define(function(require) {
           this.getChildren().each(function(child) { child.setOnChildren.apply(child, arguments); });
         }
       },
-      /**
-       * Remove any attributes which are not on the whitelist (useful to call before a save)
-       */
+      // Remove any attributes which are not on the whitelist (useful to call before a save)
       pruneAttributes: function() {
         if(this.whitelistAttributes) { 
           Object.keys(this.attributes).forEach(function(key) {

@@ -186,9 +186,7 @@ define(function(require){
       return this.model.changedAttributes() || undefined;
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     openContextMenu: function (e) {
       if(e) {

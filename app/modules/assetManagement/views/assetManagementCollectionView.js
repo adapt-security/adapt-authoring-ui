@@ -72,9 +72,7 @@ define(function(require){
       this.$('.asset-management-collection-inner').append(new AssetItemView({ model: asset }).$el);
     },
 
-    /**
-    * Collection manipulation
-    */
+    // Collection manipulation
 
     fetchCollection: async function(cb) {
       if(this.shouldStopFetches || this.isCollectionFetching) {
@@ -134,9 +132,7 @@ define(function(require){
       if(shouldFetch) this.fetchCollection(cb);
     },
 
-    /**
-    * Filtering
-    */
+    // Filtering
 
     addFilter: function(filterType) {
       this.filters.push(filterType);
@@ -163,9 +159,7 @@ define(function(require){
       this.fetchCollection();
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     onResize: function() {
       this.initPaging();

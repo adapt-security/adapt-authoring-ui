@@ -80,9 +80,7 @@ define([
       return Backbone.Form.editors.Base.prototype.getValue.call(this) || undefined;
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     focus: function() {
       if (!this.hasFocus) this.$('input').focus();

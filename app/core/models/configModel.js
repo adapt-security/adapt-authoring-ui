@@ -5,9 +5,7 @@ define(function(require) {
   var ConfigModel = ContentModel.extend({
     _type: 'config',
     _parent: 'course',
-    /**
-     * Custom sync to allow a _courseId to be specified instead of an _id
-     */
+    // Custom sync to allow a _courseId to be specified instead of an _id
     sync: function(method, model, options) {
       options = options || {};
 

@@ -47,11 +47,9 @@ define(function(require) {
         EditorOriginView.prototype.onSaveError.call(this, null, e.message);
       }
     },
-    /**
-     * When a new course is created it gets populated with a page, article, block and text component
-     * so that it can be previewed immediately.
-     * @param model
-     */
+    // When a new course is created it gets populated with a page, article, block and text component
+    // so that it can be previewed immediately.
+    // @param model
     populateNewCourse: async function() {
       const config = await this.createNewContentObject(ConfigModel);
       const page = await this.createNewContentObject(ContentObjectModel, { _type: 'page', _parentId: this.model.get('_id') });

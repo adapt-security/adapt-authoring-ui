@@ -24,9 +24,7 @@ define(function(require){
       this.renderLayers();
       _.defer(this.setViewToReady);
     },
-    /**
-    * Renders all menu layers from the current course to the Origin.editor.currentContentObject
-    */
+    // Renders all menu layers from the current course to the Origin.editor.currentContentObject
     renderLayers: function() {
       var selectedModel = Origin.editor.currentContentObject || Origin.editor.data.course;
       this.getItemHeirarchy(selectedModel, function(hierarchy) {
@@ -56,9 +54,7 @@ define(function(require){
       });
     },
 
-    /**
-     * Renders a single menu layer
-     */
+    // Renders a single menu layer
     renderLayer: function(model) {
       var menuLayerView = new EditorMenuLayerView({
         _parentId: model.get('_id'),
@@ -116,11 +112,9 @@ define(function(require){
       this.$('.editor-menu-item').removeClass('selected');
     },
 
-    /**
-    * Generates an array with the inheritence line from a given contentobject to the current course
-    * @param {Model} contentModel
-    * @return {Array}
-    */
+    // Generates an array with the inheritence line from a given contentobject to the current course
+    // @param {Model} contentModel
+    // @return {Array}
     getItemHeirarchy: function(model, done) {
       var hierarchy = [];
       if (model.get('_type') === 'menu') {
@@ -162,9 +156,7 @@ define(function(require){
       this.$el.scrollTo($('.selected').closest('.editor-menu-layer'), { duration: 300, axis: 'x' });
     },
 
-    /**
-     * Configures the JQueryUI sortable() plugin to enable drag and drop
-     */
+    // Configures the JQueryUI sortable() plugin to enable drag and drop
     setupDragDrop: function() {
       $(".editor-menu-layer-inner").sortable({
         containment: '.editor-menu',

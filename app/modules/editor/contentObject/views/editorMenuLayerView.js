@@ -73,10 +73,8 @@ define(function(require) {
       this.addNewMenuItem(event, 'page');
     },
 
-    /**
-     * Adds a new contentObject of a given type
-     * @param {String} type Given contentObject type, i.e. 'menu' or 'page'
-     */
+    // Adds a new contentObject of a given type
+    // @param {String} type Given contentObject type, i.e. 'menu' or 'page'
     addNewMenuItem: function(event, type) {
       event && event.preventDefault();
 

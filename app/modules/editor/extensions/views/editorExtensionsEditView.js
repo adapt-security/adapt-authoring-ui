@@ -46,9 +46,7 @@ define(function(require) {
       return 0;
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     onAddExtensionClicked: function(event) {
       $.ajax(Object.assign(this.ajaxOptions, {

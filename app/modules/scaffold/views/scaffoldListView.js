@@ -53,9 +53,7 @@ define([
       this.value.forEach(this.addItem.bind(this));
     },
 
-    /**
-    * Accomodate sweetalert in item removal
-    */
+    // Accomodate sweetalert in item removal
     removeItem: function(item) {
       var remove = function(isConfirmed) {
         if(isConfirmed === false) return;
@@ -112,14 +110,10 @@ define([
     Backbone.Form.editors.List.Modal.prototype.openEditor = openEditor;
   });
 
-  /**
-  * Helper functions
-  */
+  // Helper functions
 
-  /**
-  * Builds a string from nested values
-  * OVERRIDES Backbone.Form.editors.List.Modal.prototype.itemToString
-  */
+  // Builds a string from nested values
+  // OVERRIDES Backbone.Form.editors.List.Modal.prototype.itemToString
   function modalItemToString(value) {
     if(!value) {
       return '';
@@ -131,10 +125,8 @@ define([
     }.bind(this), '');
   }
 
-  /**
-  * FIX to avoid opening the modal after stopping dragging a list item
-  * OVERRIDES Backbone.Form.editors.List.Modal.prototype.openEditor
-  */
+  // FIX to avoid opening the modal after stopping dragging a list item
+  // OVERRIDES Backbone.Form.editors.List.Modal.prototype.openEditor
   function openEditor() {
     if(Origin.scaffold.getCurrentModel().get('_isDragging')) {
       return;
@@ -142,9 +134,7 @@ define([
     Backbone.Form.editors.List.Modal.prototype.__openEditor.apply(this, arguments);
   }
 
-  /**
-  * Returns an apt string value from Modal.Item value
-  */
+  // Returns an apt string value from Modal.Item value
   function getModalItemValueString(value) {
     if (typeof value !== 'object') {
       return value;

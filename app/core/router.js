@@ -39,9 +39,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     resetLocation: function() {
       Origin.location = {};
     },
-    /**
-    * Allows modules/plugins to set a custom home route
-    */
+    // Allows modules/plugins to set a custom home route
     setHomeRoute: function(url) {
       this.homeRoute = url;
     },
@@ -68,9 +66,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       return true;
     },
 
-    /**
-    * Boots user to the login screen with an error message
-    */
+    // Boots user to the login screen with an error message
     blockUserAccess: function(message, hideUI) {
       if(hideUI) {
         $('body').addClass('no-ui');
@@ -97,9 +93,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
     },
 
-    /**
-    * Routing
-    */
+    // Routing
 
     formatRoute: function(route) {
       /**

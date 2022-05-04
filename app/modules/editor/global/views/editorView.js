@@ -226,9 +226,7 @@ define(function(require) {
       this.$('.editor-inner').html(view.$el);
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     onEditableHoverOver: function(e) {
       e && e.stopPropagation();

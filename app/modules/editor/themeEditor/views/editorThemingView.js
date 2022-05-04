@@ -139,9 +139,7 @@ define(function(require) {
       this.model.set(this.getSelectedPreset() || this.getDefaultThemeSettings());
     },
 
-    /**
-    * Data persistence
-    */
+    // Data persistence
 
     validateForm: function() {
       if (!this.getSelectedTheme()) {
@@ -252,9 +250,7 @@ define(function(require) {
       $('.editor-theming-sidebar-reset').css('visibility', shouldShow ? 'visible' : 'hidden');
     },
 
-    /**
-    * Event handling
-    */
+    // Event handling
 
     onEditPreset: function({ oldValue, newValue }) {
       this.presets.findWhere({ displayName: oldValue }).save({ displayName: newValue });

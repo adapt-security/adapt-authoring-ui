@@ -12,9 +12,7 @@ define([
 
   var Origin = _.extend({}, Backbone.Events, {
     debug: false,
-    /**
-    * Performs the necessary set-up steps
-    */
+    // Performs the necessary set-up steps
     initialize: _.once(function(callback) {
       listenToWindowEvents();
       new Router(this);
@@ -32,9 +30,7 @@ define([
         console.error(e.message);
       }
     }),
-    /**
-     * Saves session on the Origin object
-     */
+    // Saves session on the Origin object
     startSession: _.once(function(callback) {
       initLoading();
       this.loadUtilities((function() {
@@ -45,16 +41,12 @@ define([
         });
       }).bind(this));
     }),
-    /**
-    * Whether the Origin object has loaded
-    */
+    // Whether the Origin object has loaded
     hasInitialized: function() {
       return initialized;
     },
-    /**
-    * Override to allow for tapping and debug logging
-    * TODO this is probably very inefficient, look into this
-    */
+    // Override to allow for tapping and debug logging
+    // TODO this is probably very inefficient, look into this
     trigger: function(eventName, data) {
       var args = arguments;
       callTaps(eventName, function() {
@@ -64,23 +56,17 @@ define([
         Backbone.Events.trigger.apply(Origin, args);
       });
     },
-    /**
-    * Register a function to tap into a certain event before it fires
-    */
+    // Register a function to tap into a certain event before it fires
     tap: function(event, callback) {
       eventTaps.push({ event: event, callback: callback });
     },
-    /**
-    * Tells views to clean themselves up
-    */
+    // Tells views to clean themselves up
     removeViews: function() {
       Origin.trigger('remove:views');
     }
   });
 
-  /**
-  * Private functions
-  */
+  // Private functions
 
   function initLoading() {
     $loading = $('.loading');
@@ -112,9 +98,7 @@ define([
     }, this), 300);
   }
 
-  /**
-  * Calls all 'tapped' functions before continuing
-  */
+  // Calls all 'tapped' functions before continuing
   function callTaps(event, callback) {
     var taps = _.where(eventTaps, { event: event });
     // recurse
@@ -126,9 +110,7 @@ define([
     callTap();
   }
 
-  /**
-  * Event handling
-  */
+  // Event handling
 
   function onKeyDown(event) {
     if($(event.target).is('input, textarea')) return;
