@@ -50,9 +50,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       }
       this.restrictedRoutes[route] = scopes;
     },
-    /**
-    * Checks user permissions for route
-    */
+    // Checks user permissions for route
     verifyRoute: function(mod, route1) {
       // Check this user has permissions
       var requiredScopes = this.restrictedRoutes[Backbone.history.fragment];
