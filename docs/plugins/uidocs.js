@@ -38,7 +38,7 @@ export default class UIDocs {
     return fs.writeFile(this.configPath, JSON.stringify({
       "source": { 
         "include": [
-          this.resolvePath('index.md', new URL(import.meta.url)),
+          this.resolvePath('index-ui.md', new URL(import.meta.url)),
           ...glob.sync(`${this.app.dependencies['adapt-authoring-ui'].rootDir}/app/**/*.js`, { absolute: true })
         ].filter(f => !f.includes('/libraries/'))
       },
