@@ -229,12 +229,10 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       }
     },
 
-    /**
-    * Ensures list is iterated (doesn't guarantee order), even if using async iterator
-    * @param list Array or Backbone.Collection
-    * @param func Function to use as iterator. Will be passed item, index and callback function
-    * @param callback Function to be called on completion
-    */
+    // Ensures list is iterated (doesn't guarantee order), even if using async iterator
+    // @param list Array or Backbone.Collection
+    // @param func Function to use as iterator. Will be passed item, index and callback function
+    // @param callback Function to be called on completion
     forParallelAsync: function(list, func, callback) {
       if(!list.hasOwnProperty('length') || list.length === 0) {
         if(typeof callback === 'function') callback();
@@ -253,12 +251,10 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       }
     },
 
-    /**
-    * Does a fetch for model in models, and returns the latest data in the
-    * passed callback
-    * @param models {Array of Backbone.Models}
-    * @param callback {Function to call when complete}
-    */
+    // Does a fetch for model in models, and returns the latest data in the
+    // passed callback
+    // @param models {Array of Backbone.Models}
+    // @param callback {Function to call when complete}
     multiModelFetch: function(models, callback) {
       var collatedData = {};
       helpers.forParallelAsync(models, function(model, index, done) {
@@ -316,9 +312,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       this.constants = Origin.constants;
       return '';
     },
-    /**
-     * Comparison operator (ifValueEquals left for compatibility)
-     */
+    // Comparison operator (ifValueEquals left for compatibility)
     when: (a, operator, b, block) => {
       console.log(a, operator, b);
       const ops = {
