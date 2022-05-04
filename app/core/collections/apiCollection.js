@@ -1,20 +1,42 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(['backbone', 'underscore'], function(Backbone, _) {
+  /**
+   * Class for collecting API data
+   * @namespace ApiCollection
+   */
   var ApiCollection = Backbone.Collection.extend({
     options: {},
-    
     initialize : function(models, options) {
       Backbone.Collection.prototype.initialize.apply(this, arguments);
       if(!options) options = {};
       if(!this.url) this.url = options.url;
       this.customQuery = options.filter || {};
     },
+    /**
+     * Creates a query object from the set attributes
+     * @function buildQuery
+     * @memberof ApiCollection
+     * @returns {Object}
+     */
     buildQuery: function() {
       return _.assign({}, this.customQuery);
     },
+    /**
+     * Creates a query string from the set attributes
+     * @function buildQueryParams
+     * @memberof ApiCollection
+     * @returns {Object}
+     */
     buildQueryParams: function() {
       return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${JSON.stringify(v)}&`, '?');
     },
+    /**
+     * Fetches API data
+     * @function fetch
+     * @memberof ApiCollection
+     * @param {Object} options
+     * @returns {Promise}
+     */
     fetch: async function(options = {}) {
       const _fetch = (url, memo = []) => {
         return new Promise((resolve, reject) => {
@@ -36,6 +58,23 @@ define(['backbone', 'underscore'], function(Backbone, _) {
         });
       };
       this.reset(await _fetch(`${this.url}/query${this.buildQueryParams()}`));
+    },
+    /**
+     * Fetches the previous page of data
+     * @function fetchPrevPage
+     * @memberof ApiCollection
+     * @returns {Promise}
+     */
+    fetchPrevPage: function() {
+      if(!this.links.prev) return this.fetch();
+    },
+    /**
+     * Fetches the next page of data
+     * @function fetchNextPage
+     * @memberof ApiCollection
+     * @returns {Promise}
+     */
+    fetchNextPage: function() {
     }
   });
 
