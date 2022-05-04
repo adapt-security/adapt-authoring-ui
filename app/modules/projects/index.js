@@ -62,7 +62,8 @@ define(function(require) {
     }
     var meId = Origin.sessionModel.get('user')._id;
     var collection = new ContentCollection(undefined, { 
-      filter: { createdBy: isMine ? meId : { $ne: meId } }
+      filter: { createdBy: isMine ? meId : { $ne: meId } }, 
+      _type: 'course'
     });
     Origin.trigger('location:title:update', { 
       breadcrumbs: ['dashboard'], 
