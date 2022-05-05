@@ -55,8 +55,6 @@ export default class UIDocs {
     // set dest path
     config.opts.destination = this.outputDir;
     
-    console.log(config);
-
     return fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
   }
 }
