@@ -2,7 +2,7 @@
 define(['backbone', 'underscore'], function(Backbone, _) {
   /**
    * Class for collecting API data
-   * @namespace ApiCollection
+   * @class ApiCollection
    */
   var ApiCollection = Backbone.Collection.extend({
     options: {},
@@ -14,8 +14,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     /**
      * Creates a query object from the set attributes
-     * @function buildQuery
-     * @memberof ApiCollection
+     * @function ApiCollection#buildQuery
      * @returns {Object}
      */
     buildQuery: function() {
@@ -23,8 +22,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     /**
      * Creates a query string from the set attributes
-     * @function buildQueryParams
-     * @memberof ApiCollection
+     * @function ApiCollection#buildQueryParams
      * @returns {Object}
      */
     buildQueryParams: function() {
@@ -32,8 +30,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     /**
      * Fetches API data
-     * @function fetch
-     * @memberof ApiCollection
+     * @function ApiCollection#fetch
      * @param {Object} options
      * @returns {Promise}
      */
@@ -61,8 +58,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     /**
      * Fetches the previous page of data
-     * @function fetchPrevPage
-     * @memberof ApiCollection
+     * @function ApiCollection#fetchPrevPage
      * @returns {Promise}
      */
     fetchPrevPage: function() {
@@ -70,8 +66,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     },
     /**
      * Fetches the next page of data
-     * @function fetchNextPage
-     * @memberof ApiCollection
+     * @function ApiCollection#fetchNextPage
      * @returns {Promise}
      */
     fetchNextPage: function() {
