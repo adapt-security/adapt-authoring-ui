@@ -1,4 +1,3 @@
-// LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define([
   'underscore', 
   'backbone', 
@@ -9,20 +8,44 @@ define([
   var initialized = false;
   var eventTaps = [];
   var $loading;
-
+  /**
+   * Global singleton class
+   * @class Origin
+   */
   var Origin = _.extend({}, Backbone.Events, {
+    /**
+     * Flag used to determine if debug features should be enabled
+     * @member Origin#debug
+     * @type {Boolean}
+     */
     debug: false,
-    // Performs the necessary set-up steps
+    /**
+     * Performs setup of the application, will only run once
+     * @function Origin#initialize
+     */
     initialize: _.once(function(callback) {
       listenToWindowEvents();
       new Router(this);
       initialized = true;
       this.trigger('origin:dataReady');
     }),
-    
+    /**
+     * Initialises the application utilities
+     * @function Origin#loadUtilities
+     */
     loadUtilities: _.once(async function(callback) {
       try {
+        /**
+         * Reference to the constant attributes
+         * @member Origin#constants
+         * @type {Object}
+         */
         this.constants = await $.get('/api/config');
+        /**
+         * Global reference to the l10n translation utilities
+         * @member Origin#l10n
+         * @type {l10n}
+         */
         this.l10n = new l10n(this);
         await this.l10n.load();
         callback();
@@ -30,10 +53,18 @@ define([
         console.error(e.message);
       }
     }),
-    // Saves session on the Origin object
+    /**
+     * Initialises the current session and caches for use
+     * @function Origin#
+     */
     startSession: _.once(function(callback) {
       initLoading();
       this.loadUtilities((function() {
+        /**
+         * Current session instance
+         * @member Origin#sessionModel
+         * @type {SessionModel}
+         */
         Origin.sessionModel = new SessionModel(this);
         Origin.sessionModel.fetch({
           success: () => callback(),
@@ -41,12 +72,18 @@ define([
         });
       }).bind(this));
     }),
-    // Whether the Origin object has loaded
+    /**
+     * Whether the Origin object has loaded
+     * @function Origin#hasInitialized
+     * @return {Boolean}
+     */
     hasInitialized: function() {
       return initialized;
     },
-    // Override to allow for tapping and debug logging
-    // TODO this is probably very inefficient, look into this
+    /**
+     * Overrides Backbone.Events#trigger to allow for tapping and debug logging
+     * @function Origin#
+     */
     trigger: function(eventName, data) {
       var args = arguments;
       callTaps(eventName, function() {
@@ -56,11 +93,17 @@ define([
         Backbone.Events.trigger.apply(Origin, args);
       });
     },
-    // Register a function to tap into a certain event before it fires
+    /**
+     * Register a function to tap into a certain event before it fires
+     * @function Origin#tap
+     */
     tap: function(event, callback) {
       eventTaps.push({ event: event, callback: callback });
     },
-    // Tells views to clean themselves up
+    /**
+     * Tells views to clean themselves up
+     * @function Origin#removeViews
+     */
     removeViews: function() {
       Origin.trigger('remove:views');
     }
