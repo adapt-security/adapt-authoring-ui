@@ -34,55 +34,29 @@ export default class UIDocs {
     ]); 
   }
   async writeConfig() {
+    const config = await fs.readJson(path.join(this.docsRootPath, '.jsdocConfig.json'));
     const version = this.app.dependencyloader.configs['adapt-authoring-docs'].version;
-    return fs.writeFile(this.configPath, JSON.stringify({
-      "source": { 
-        "include": [
-          this.resolvePath('index-ui.md', new URL(import.meta.url)),
-          ...glob.sync(`${this.app.dependencies['adapt-authoring-ui'].rootDir}/app/**/*.js`, { absolute: true })
-        ].filter(f => !f.includes('/libraries/'))
-      },
-      "docdash": {
-        "collapse": true,
-        "typedefs": true,
-        "search": false,
-        "static": true,
-        "menu": {
-          [`<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool UI documentation<br><span class="version">v${version}</span>`]: {
-            "class":"menu-title"
-          },
-          "Home": {
-            "href":"index.html",
-            "target":"_self",
-            "class":"menu-item",
-            "id":"home_link"
-          },
-          "Project Website": {
-            "href":"https://www.adaptlearning.org/",
-            "target":"_blank",
-            "class":"menu-item",
-            "id":"website_link"
-          },
-          "Technical Discussion Forum": {
-            "href":"https://community.adaptlearning.org/mod/forum/view.php?id=4",
-            "target":"_blank",
-            "class":"menu-item",
-            "id":"forum_link"
-          }
-        },
-        "meta": {
-          "title": "Adapt authoring tool UI documentation",
-          "keyword": `v${version}`
-        },
-        "scripts": [
-          'styles/adapt.css',
-          'scripts/adapt.js'
-        ],
-      },
-      "opts": {
-        "destination": this.outputDir,
-        "template": "node_modules/docdash"
+    // update source files
+    config.source.include = [
+      this.resolvePath('index-ui.md', new URL(import.meta.url)),
+      ...glob.sync(`${this.app.dependencies['adapt-authoring-ui'].rootDir}/app/**/*.js`, { absolute: true })
+    ].filter(f => !f.includes('/libraries/'));
+    // replace first menu item
+    config.docdash.menu = Object.entries(config.docdash.menu).reduce((m, [k, v], i) => {
+      if(i === 0) {
+        k = `<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool front-end documentation<br><span class="version">v${version}</span>`;
       }
-    }, null, 2));
+      m[k] = v;
+      return m;
+    }, {});
+    // update metadata
+    config.docdash.meta.version = `v${version}`;
+    config.docdash.meta.title = config.docdash.meta.description = "Adapt authoring tool front-end documentation";
+    // set dest path
+    config.opts.destination = this.outputDir;
+    
+    console.log(config);
+
+    return fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
   }
 }
