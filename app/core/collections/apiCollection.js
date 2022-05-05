@@ -1,4 +1,3 @@
-// LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(['backbone', 'underscore'], function(Backbone, _) {
   /**
    * Class for collecting API data
