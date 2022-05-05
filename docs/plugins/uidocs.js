@@ -11,7 +11,7 @@ const execPromise = promisify(exec);
 export default class UIDocs {
   constructor(app, config) {
     this.app = app;
-    this.outputDir = path.join(config.outputDir, 'frontend');
+    this.outputDir = path.join(config.docsRootDir, 'frontend');
     this.version = config.version;
     this.docsRootPath = path.join(this.app.dependencies['adapt-authoring-docs'].rootDir, 'jsdoc3') + path.sep;
     this.configPath = '';
