@@ -54,7 +54,10 @@ define(function(require) {
       this.$el.velocity(
         this.visibleCSS,
         this.animDuration,
-        cb ? _.bind(cb, this) : undefined
+        () => {
+          Origin.trigger('contentPane:ready');
+          if(cb) cb();
+        }
       );
     },
 
