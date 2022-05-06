@@ -11,8 +11,13 @@
     }
 }
 
+.asset-management {
+    height: 100%;
+}
+
 .asset-management-inner {
     display: flex;
+    height: 100%;
 }
 
 .asset-management-sidebar-filter-image-icon {
@@ -20,6 +25,7 @@
 }
 
 .asset-management-assets-container {
+    height: 100%;
     flex:3;
     overflow-y: auto;
     .asset-management-no-assets {
@@ -27,11 +33,19 @@
         position:relative;
         top:40%;
     }
+    &-inner {
+        height: 100%;
+    }
 }
 
-.asset-management-collection-inner {
-    padding-top:30px;
-    padding-left:30px;
+.asset-management-collection {
+    height: 100%;
+    .asset-management-collection-inner {
+        padding-top:30px;
+        padding-left:30px;
+        height: 100%;
+        box-sizing: border-box;
+    }
 }
 
 .asset-management-preview-container {
