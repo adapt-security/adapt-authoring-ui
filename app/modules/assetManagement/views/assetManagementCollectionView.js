@@ -26,7 +26,7 @@ define(function(require){
     },
 
     postRender: function() {
-      this.initPaging();
+      Origin.on('contentPane:ready', () => this.initPaging());
       // init lazy scrolling
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
       $(window).on('resize', this._onResize);
