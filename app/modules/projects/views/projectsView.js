@@ -43,8 +43,6 @@ define(function(require){
         this.listenTo(Origin, `dashboard:layout:${l}`, () => this.doLayout(l));
       }, this);
 
-      this.listenTo(this.collection, 'add', this.appendProjectItem);
-
       $('.contentPane').on('scroll', this._doLazyScroll);
     },
 
@@ -78,7 +76,7 @@ define(function(require){
         clearTimeout(this.resizeTimer);
         this.resizeTimer = -1;
       }
-      this.collection.options.limit = 50; // make initial page size BIG to make sure we load enough courses for any window size
+      this.collection.options.limit = 1;
       this.resetCollection(() => {
         if(!this.collection.length) { // no results, so nothing to do
           return this.setViewToReady();
@@ -93,6 +91,7 @@ define(function(require){
         if((containerHeight % itemHeight) > 0) rows++;
         this.collection.options.limit = columns*rows;
         // need another reset to get the actual pageSize number of items
+        this.resetCollection();
         this.setViewToReady();
       });
     },
@@ -121,8 +120,9 @@ define(function(require){
 
     resetCollection: function(cb) {
       this.emptyProjectsContainer();
+      this.allCourses = [];
+      this.page = 1;
       this.collection.options.collation = { locale: navigator.language.substring(0, 2) };
-      this.collection.options.skip = 0;
       this.shouldStopFetches = false;
       this.collection.reset();
       this.fetchCollection(cb);
@@ -133,16 +133,25 @@ define(function(require){
         return;
       }
       this.isCollectionFetching = true;
+      
       this.usersCollection.fetch({
         success: (collection, response) => {
+          Object.assign(this.collection.options, {
+            skip: this.allCourses.length,
+            page: this.page++,
+          });
           this.collection.fetch({
             success: (collection, response) => {
               this.isCollectionFetching = false;
-              this.collection.options.limit += response.length;
+              this.allCourses.push(...collection.models);
+
+              this.$('.project-list-item').remove();
+              this.allCourses.forEach(a => this.appendProjectItem(a));
+
               // stop further fetching if this is the last page
               if(response.length < this.collection.options.limit) this.shouldStopFetches = true;
     
-              this.$('.no-projects').toggleClass('display-none', this.collection.options.limit > 0);
+              this.$('.no-projects').toggleClass('display-none', this.allCourses.length > 0);
               if(typeof cb === 'function') cb(collection);
             }
           });
@@ -154,10 +163,10 @@ define(function(require){
       if(this.isCollectionFetching) {
         return;
       }
-      var $el = $(e.currentTarget);
-      var pxRemaining = this.getProjectsContainer().height() - ($el.scrollTop() + $el.height());
-      // we're at the bottom, fetch more
-      if (pxRemaining <= 0) this.fetchCollection();
+      const $last = $('.project-list-item').last();
+      const triggerY = ($('.contentPane').offset().top + $('.contentPane').height()) - ($last.height()/2) ;
+      
+      if($last.offset().top < triggerY) this.fetchCollection();
     },
 
     doLayout: function(layout) {
