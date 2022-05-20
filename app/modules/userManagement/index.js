@@ -42,7 +42,7 @@ define(function(require) {
     Origin.once('userManagement:dataReady', () => onRoute(location, subLocation, action));
   });
 
-  var onRoute = function(location, subLocation, action) {
+  var onRoute = async function(location, subLocation, action) {
     var model = new Backbone.Model({ allRoles });
 
     if (location && location === 'addUser') {
@@ -50,13 +50,12 @@ define(function(require) {
       Origin.sidebar.addView(new AddUserSidebarView().$el);
       return;
     }
-    userCollection.once('sync', function() {
-      Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
-      Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
-    });
+    await refreshUsers();
 
+    Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
+    Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
+    
     Origin.on('userManagement:refresh', refreshUsers);
-    refreshUsers();
   };
   
   async function refreshUsers() {
