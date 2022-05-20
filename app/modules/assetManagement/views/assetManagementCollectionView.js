@@ -14,7 +14,9 @@ define(function(require){
     tags: [],
     fetchCount: 0,
     shouldStopFetches: false,
+    page: 1,
     pageSize: 1,
+    assets: [],
 
     preRender: function(options) {
       this.initEventListeners();
@@ -40,11 +42,11 @@ define(function(require){
         'assetManagement:assetManagementSidebarView:filterByTags': this.filterByTags,
         'assetManagement:collection:refresh': this.resetCollection
       });
-      this.listenTo(this.collection, 'add', this.appendAssetItem);
     },
 
     initPaging: function() {
       this.resetCollection(_.bind(function(collection) {
+        this.appendAssetItem(collection.at(0));
         var containerHeight = $('.asset-management-assets-container').outerHeight();
         var containerWidth = $('.asset-management-assets-container').outerWidth();
         var itemHeight = $('.asset-management-list-item').outerHeight(true);
@@ -54,7 +56,6 @@ define(function(require){
         // columns stack nicely, but need to add extra row if it's not a clean split
         if((containerHeight % itemHeight) > 0) rows++;
         this.pageSize = columns*rows;
-
         // need another reset to get the actual pageSize number of items
         this.resetCollection(this.setViewToReady);
       }, this));
@@ -98,18 +99,25 @@ define(function(require){
       Object.assign(this.collection.options, {
         skip: this.fetchCount,
         limit: this.pageSize,
+        page: this.page++,
         sort: this.sort
       });
       await this.tagsCollection.fetch();
       
       this.collection.fetch({
         success: _.bind(function(collection, response) {
+          this.allAssets.push(...collection.models);
           this.isCollectionFetching = false;
           this.fetchCount += response.length;
           // stop further fetching if this is the last page
           if(response.length < this.pageSize) this.shouldStopFetches = true;
-
+          
           $('.asset-management-no-assets').toggleClass('display-none', this.fetchCount > 0);
+          
+          this.$('.asset-management-list-item').remove();
+          this.allAssets.forEach(a => this.appendAssetItem(a));
+          
+          this.isCollectionFetching = false;
 
           Origin.trigger('assetManagement:assetManagementCollection:fetched');
           if(typeof cb === 'function') cb(collection);
@@ -125,8 +133,10 @@ define(function(require){
       // to remove old views
       Origin.trigger('assetManagement:assetViews:remove');
 
+      this.allAssets = [];
       this.shouldStopFetches = false;
       this.fetchCount = 0;
+      this.page = 0;
       this.collection.reset();
 
       if(shouldFetch) this.fetchCollection(cb);
@@ -169,12 +179,10 @@ define(function(require){
       if(this.isCollectionFetching) {
         return;
       }
-      var $el = $(e.currentTarget);
-      var scrollableHeight = this.$el.height() - this.$el.height();
-      var pxRemaining = this.$el.height() - ($el.scrollTop() + $el.height());
-      var scrollTriggerAmmount = $('.asset-management-list-item').first().outerHeight()/2;
-      // we're at the bottom, fetch more
-      if (pxRemaining <= scrollTriggerAmmount) this.fetchCollection();
+      const $last = $('.asset-management-list-item').last();
+      const triggerY = ($('.asset-management').offset().top + this.$el.height()) - ($last.height()/2) ;
+
+      if($last.offset().top < triggerY) this.fetchCollection();
     },
 
     remove: function() {
