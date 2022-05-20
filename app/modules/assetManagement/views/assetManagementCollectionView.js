@@ -97,7 +97,7 @@ define(function(require){
         delete this.collection.customQuery.type;
       }
       Object.assign(this.collection.options, {
-        skip: this.fetchCount,
+        skip: this.this.allAssets.length,
         limit: this.pageSize,
         page: this.page++,
         sort: this.sort
@@ -108,11 +108,10 @@ define(function(require){
         success: _.bind(function(collection, response) {
           this.allAssets.push(...collection.models);
           this.isCollectionFetching = false;
-          this.fetchCount += response.length;
           // stop further fetching if this is the last page
           if(response.length < this.pageSize) this.shouldStopFetches = true;
           
-          $('.asset-management-no-assets').toggleClass('display-none', this.fetchCount > 0);
+          $('.asset-management-no-assets').toggleClass('display-none', this.allAssets.length > 0);
           
           this.$('.asset-management-list-item').remove();
           this.allAssets.forEach(a => this.appendAssetItem(a));
