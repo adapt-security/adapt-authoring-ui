@@ -15,7 +15,7 @@ define(function(require){
     preRender: function(options) {
       OriginView.prototype.preRender.apply(this, arguments);
       this._isShared = options._isShared;
-      this.allTags = options.tags.models.slice();
+      this.allTags = options.tags.models.slice() ?? [];
       this.usersCollection = new UserCollection();
     },
 
