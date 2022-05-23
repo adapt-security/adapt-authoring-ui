@@ -77,7 +77,7 @@ define(function(require){
       }).done(function (data) {
         const popup = {};
 
-        if (data.courses.length === 0) {
+        if (data.length === 0) {
           Origin.Notify.confirm({
             type: 'warning',
             title: Origin.l10n.t('app.deleteplugin'),
@@ -89,8 +89,8 @@ define(function(require){
         }
 
         var courses = '';
-        for (var i = 0, len = data.courses.length; i < len; i++) {
-          courses += data.courses[i].title + ' ' + Origin.l10n.t('app.by') + ' ' + data.courses[i].createdByEmail + '<br />'
+        for (var i = 0, len = data.length; i < len; i++) {
+          courses += data[i].title + ' ' + Origin.l10n.t('app.by') + ' ' + data[i].createdBy.email + '<br />'
         }
         popup.type = 'error';
         popup.title = Origin.l10n.t('app.cannotdelete') + ' ' + this.model.get('displayName');
