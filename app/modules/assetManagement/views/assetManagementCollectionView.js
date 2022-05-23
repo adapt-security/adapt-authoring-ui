@@ -97,7 +97,7 @@ define(function(require){
         delete this.collection.customQuery.type;
       }
       Object.assign(this.collection.options, {
-        skip: this.this.allAssets.length,
+        skip: this.allAssets.length,
         limit: this.pageSize,
         page: this.page++,
         sort: this.sort
