@@ -1,29 +1,5 @@
 @import 'colours';
 
-// Modal styling
-// ==============
-
-// Modal
-// ======
-
-@modal-color:#E9F0FA;
-@modal-text-color: @white;
-
-@modal-icon-color: @white;
-@modal-icon-hover-color:darken(@modal-color, 30%);
-
-@modal-button-color: @white;
-@modal-button-hover-color:darken(@modal-color, 30%);
-@modal-button-text-color:#3eb4e4;
-@modal-button-text-hover-color: @white;
-
-@modal-popup-padding-top:10px;
-@modal-popup-padding-right:10px;
-@modal-popup-padding-bottom:10px;
-@modal-popup-padding-left:10px;
-
-@modal-popup-padding:@modal-popup-padding-top @modal-popup-padding-right @modal-popup-padding-bottom @modal-popup-padding-left;
-
 .modal {
     position: fixed;
     top:0;
@@ -36,8 +12,11 @@
     overflow-y: scroll;
     background: rgba(0,0,0,0.4);
     .modal-popup {
-        background-color: @ui-content-color;
         height: 100%;
+        background-color: @ui-content-color;
+        &-inner {
+            height: 100%;
+        }
     }
 
     i {
@@ -56,43 +35,24 @@
             display:inline-block;
             transition:background-color 0.3s;
             i {
-              color: @secondary-color;
+                color: @secondary-color;
             }
             &:hover {
-              // background-color: lighten(@adapt-tertiary-color, 10%);
-              color: @white;
+                color: @white;
             }
             &:disabled {
                 color:#666;
             }
         }
     }
-
-    .modal-popup-title {
-        text-align:left;
-        float:left;
-        &-inner {
-            padding:10px;
+    .modal-popup-inner {
+        flex: 1 1 auto;
+        .modal-popup-content {
+            height: 100%;
+            .modal-popup-content-inner {
+                height: 100%;
+                overflow-y:auto;
+            }
         }
     }
-
-    .modal-popup-body {
-        margin-top:10px;
-        color:#000;
-        &-inner {
-            padding:10px;
-        }
-    }
-
-    .modal-popup-icon-close {
-        color: @modal-icon-color;
-        .no-touch &:hover {
-            color:@modal-icon-hover-color;
-        }
-    }
-
-    .modal-popup-content-inner {
-        overflow-y:auto;
-    }
-
 }
