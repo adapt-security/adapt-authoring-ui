@@ -52,7 +52,7 @@ define(function(require){
 
     initPaging: function() {
       this.resetCollection(_.bind(function(collection) {
-        this.appendAssetItem(collection.at(0));
+        collection.forEach(this.appendAssetItem);
         var containerHeight = $('.asset-management-assets-container').outerHeight();
         var containerWidth = $('.asset-management-assets-container').outerWidth();
         var itemHeight = $('.asset-management-list-item').outerHeight(true);
@@ -68,6 +68,9 @@ define(function(require){
     },
 
     appendAssetItem: function (asset) {
+      if(!asset) {
+        return;
+      }
       const tagsMapped = [];
       const assetTags = asset.get('tags');
       if(assetTags) {
