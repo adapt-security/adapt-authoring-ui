@@ -21,6 +21,8 @@ define(function(require){
     preRender: function(options) {
       this.initEventListeners();
 
+      this.isModal = options.isModal || false;
+
       this.tagsCollection = new TagsCollection();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);
@@ -28,7 +30,11 @@ define(function(require){
     },
 
     postRender: function() {
-      Origin.on('contentPane:ready', () => this.initPaging());
+      if(this.isModal) {
+        this.initPaging();
+      } else {
+        Origin.on('contentPane:ready', () => this.initPaging());
+      }
       // init lazy scrolling
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
       $(window).on('resize', this._onResize);
