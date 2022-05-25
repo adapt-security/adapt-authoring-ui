@@ -49,9 +49,7 @@ define(function(require) {
         this.$('.input-username-email').addClass('input-error');
         this.$('.forgotError').removeClass('display-none');
       } else {
-        var email = this.$('.input-username-email').val().trim();
-        $.post('api/createtoken', { email: email });
-
+        $.post('api/auth/local/forgotpass', { email: this.$('.input-username-email').val().trim() });
         // don't wait for a response, we want to disguise success/failure
         self.$('.forgot-container').addClass('display-none');
         self.$('.forgot-password-success').removeClass('display-none');
