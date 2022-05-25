@@ -81,10 +81,10 @@ define([
       this.model.save(this.model.changedAttributes(), callbacks);
     },
 
-    onSaveSuccess: function(data) {
+    onSaveSuccess: function([data]) {
       Origin.trigger('assetManagement:collection:refresh');
-      this.model.set({_id: data._id});
-      this.model.fetch().done(() => Origin.trigger('assetItemView:preview', this.model));
+      this.model.set(data);
+      Origin.trigger('assetItemView:preview', this.model)
       Origin.router.navigateTo('assetManagement');
     },
 
