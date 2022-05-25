@@ -25,8 +25,8 @@ define(function(require){
         autocomplete_url: 'api/tags/autocomplete',
         onAddTag: this.onAddTag.bind(this),
         onRemoveTag: this.onRemoveTag.bind(this),
-        'minChars' : 3,
-        'maxChars' : 30
+        minChars : 3,
+        maxChars : 30
       });
       this.setViewToReady();
     },
@@ -230,7 +230,7 @@ define(function(require){
     onAddTag: function (tag) {
       var model = this.model;
       $.ajax({
-        url: 'api/content/tag',
+        url: 'api/tags',
         method: 'POST',
         data: { title: tag }
       }).done(function (data) {
