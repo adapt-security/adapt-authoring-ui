@@ -52,7 +52,7 @@ define(function(require){
 
     initPaging: function() {
       this.resetCollection(_.bind(function(collection) {
-        collection.forEach(this.appendAssetItem);
+        collection.forEach(this.appendAssetItem, this);
         var containerHeight = $('.asset-management-assets-container').outerHeight();
         var containerWidth = $('.asset-management-assets-container').outerWidth();
         var itemHeight = $('.asset-management-list-item').outerHeight(true);
