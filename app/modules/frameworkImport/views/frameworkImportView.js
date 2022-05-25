@@ -22,7 +22,7 @@ define(function(require){
     postRender: function() {
       // tagging
       this.$('#tags_control').tagsInput({
-        autocomplete_url: 'api/autocomplete/tag',
+        autocomplete_url: 'api/tags/autocomplete',
         onAddTag: this.onAddTag.bind(this),
         onRemoveTag: this.onRemoveTag.bind(this),
         'minChars' : 3,
