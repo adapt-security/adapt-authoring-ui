@@ -23,6 +23,9 @@ define(function(require){
 
       this.isModal = options.isModal || false;
 
+      if(options.types) {
+        this.filters = options.types;
+      }
       this.tagsCollection = new TagsCollection();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);

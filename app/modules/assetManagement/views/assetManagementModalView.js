@@ -22,18 +22,9 @@ define(function(require) {
     },
 
     setupSubViews: function() {
-    	this.search = {};
-
-      var assetType = this.options.assetType;
-
-      if (assetType) {
-        var filters = [assetType];
-    	  this.search.assetType = { $in: filters };
-      }
-      // Push collection through to collection view
       var view = new AssetManagementCollectionView({
         collection: this.collection,
-        search: this.search,
+        types: [this.options.assetType],
         isModal: true
       });
       this.$('.asset-management-assets-container-inner').append(view.$el);
