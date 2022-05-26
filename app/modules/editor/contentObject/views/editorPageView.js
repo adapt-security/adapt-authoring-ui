@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var Backbone = require('backbone');
+  var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var ArticleModel = require('core/models/articleModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
@@ -72,7 +73,10 @@ define(function(require){
       });
       this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
       // Iterate over each article and add it to the page
-      this.getChildren().forEach(c => c.get('_type') === 'article' && this.addArticleView(c));
+      this.getChildren()
+        .filter(c => c.get('_type') === 'article')
+        .sort(Helpers.sortContentObjects)
+        .forEach(c => this.addArticleView(c));
     },
 
     addArticleView: function(articleModel, scrollIntoView) {

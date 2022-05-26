@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var Origin = require('core/origin');
+  var Helpers = require('core/helpers');
   var BlockModel = require('core/models/blockModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageBlockView = require('./editorPageBlockView');
@@ -70,7 +71,7 @@ define(function(require){
       });
       this.$('.article-blocks').append(view.$el);
       // Iterate over each block and add it to the article
-      const children = this.getChildren();
+      const children = this.getChildren().sort(Helpers.sortContentObjects);
       Origin.editor.blockCount += children.length;
       children.forEach(c => this.addBlockView(c));
     },

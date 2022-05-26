@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
+  var Helpers = require('core/helpers');
 	var ArticleModel = require('core/models/articleModel');
 	var BlockModel = require('core/models/blockModel');
 	var ContentObjectModel = require('core/models/contentObjectModel');
@@ -48,7 +49,9 @@ define(function(require) {
     },
 
     renderMenuItems: function() {
-      this.models.forEach(m => this.addMenuItemView(m));
+      this.models
+        .sort(Helpers.sortContentObjects)
+        .forEach(m => this.addMenuItemView(m));
     },
 
     postRender: function() {

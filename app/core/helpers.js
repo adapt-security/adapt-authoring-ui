@@ -323,6 +323,12 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
         and: (l,r) => l && r
       };
       return ops[operator](a, b) ? block.fn(this) : block.inverse(this);
+    },
+
+    sortContentObjects: (a, b) => {
+      const soA = a._sortOrder || a.get('_sortOrder');
+      const soB = b._sortOrder || b.get('_sortOrder');
+      return soA > soB ? 1 : -1;
     }
   };
 

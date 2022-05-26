@@ -8,6 +8,7 @@ define([
   var ContentCollection = ApiCollection.extend({
     url: 'api/content',
     model: ContentModel,
+    comparator: '_sortOrder',
 
     initialize : function(models, options) {
       ApiCollection.prototype.initialize.apply(this, arguments);
