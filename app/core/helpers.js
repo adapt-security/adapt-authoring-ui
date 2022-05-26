@@ -83,6 +83,10 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     ifValueEquals: function(value, text, block) {
       return (value === text) ? block.fn(this) : block.inverse(this);
     },
+    
+    ifArrayIncludes: function(value, text, block) {
+      return value.includes(text) ? block.fn(this) : block.inverse(this);
+    },
 
     ifUserIsMe: function(userId, block) {
       var isMe = userId === Origin.sessionModel.get('id');

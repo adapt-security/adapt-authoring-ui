@@ -47,7 +47,7 @@
             <input type="text" class="width-30" id="lastName" value="{{lastName}}" autocomplete="off">
           </div>
 
-          {{#ifValueEquals auth "local"}}
+          {{#ifArrayIncludes authTypes "local"}}
             <div class="change-password-section">
               <div class="form-group">
                 <div class="inner display-none">
@@ -62,7 +62,7 @@
                 <a href="#" class="btn primary change-password">{{t 'app.changepassword'}}</a>
               </div>
             </div>
-          {{/ifValueEquals}}
+          {{/ifArrayIncludes}}
 
         </form>
       </div>

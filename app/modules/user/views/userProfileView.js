@@ -114,8 +114,7 @@ define(function(require){
         email: this.$('#email').val().trim()
       };
       if (this.model.get('_isNewPassword')) {
-        toChange._isNewPassword = true;
-        toChange.password = this.$('#password').val();
+        await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
       } else {
         this.model.unset('password');
       }
