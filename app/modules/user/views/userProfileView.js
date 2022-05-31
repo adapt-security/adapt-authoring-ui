@@ -112,17 +112,20 @@ define(function(require){
         lastName: this.$('#lastName').val().trim(),
         email: this.$('#email').val().trim()
       };
-      if (this.model.get('_isNewPassword')) {
-        await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
-      } else {
-        this.model.unset('password');
-      }
+      this.model.unset('password');
+
       _.extend(toChange, { _id: this.model.get('_id'), email_prev });
 
       this.model.save(toChange, {
         wait: true,
         patch: true,
-        success: () => Backbone.history.history.back(),
+        success: async () => {
+          if (!this.model.get('_isNewPassword')) {
+            return Backbone.history.history.back();
+          }
+          await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
+          Origin.sessionModel.logout();
+        },
         error: function(data, error) {
           Origin.trigger('sidebar:resetButtons');
           const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');

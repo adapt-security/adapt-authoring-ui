@@ -23,15 +23,6 @@ define(function(require) {
       } else if (!Helpers.isValidEmail(attributes.email)) {
         validationErrors.email = Origin.l10n.t('app.invalidusernameoremail');
       }
-      if (attributes._isNewPassword) {
-        if (!attributes.password) {
-          validationErrors.password = Origin.l10n.t('app.validationrequired');
-        } else {
-          if (attributes.password.length < 8) {
-            validationErrors.password = Origin.l10n.t('app.validationlength', {length: 8});
-          }
-        }
-      }
       return _.isEmpty(validationErrors) ? null : validationErrors;
     }
 
