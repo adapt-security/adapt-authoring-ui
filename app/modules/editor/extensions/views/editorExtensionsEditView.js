@@ -65,7 +65,7 @@ define(function(require) {
         title: Origin.l10n.t('app.deleteextension'),
         text: Origin.l10n.t('app.confirmdeleteextension'),
         callback: result => {
-          if(result.isConfirmed) {
+          if(!result.isConfirmed) {
             return;
           }
             const toRemove = $(event.currentTarget).attr('data-name');
