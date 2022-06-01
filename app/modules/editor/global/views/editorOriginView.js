@@ -89,7 +89,9 @@ define(function(require){
       $('.paste-zone').addClass('display-none');
       $('.add-control').addClass('display-none');
       if(type) $('.paste-zone-' + type).removeClass('display-none').addClass('show');
-      this.componentPasteLocation();
+      if(this.currentView === "page") {
+        this.componentPasteLocation();
+      }
     },
 
     hidePasteZones: function() {
