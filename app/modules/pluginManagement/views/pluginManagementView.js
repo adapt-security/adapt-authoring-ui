@@ -15,13 +15,13 @@ define(function(require){
       'click .refresh-all-plugins': 'refreshPluginList'
     },
 
-    initialize: function(options) {
+    initialize: async function(options) {
       this.currentPluginType = options.pluginType;
 
       this.contentPlugins = new ContentPluginCollection(); // all plugins
       this.pluginCollections = {}; // sorted plugins go here
 
-      this.refreshPluginList();
+      await this.refreshPluginList();
       
       return OriginView.prototype.initialize.apply(this, arguments);
     },
@@ -56,34 +56,31 @@ define(function(require){
       this.$('.pluginManagement-plugins').append(view.$el.addClass(cssClass));
     },
 
-    refreshPluginList: function(e) {
+    refreshPluginList: async function(e) {
       if(e) { // triggered by the UI, so handle button style
         e.preventDefault();
         var $btn = $(e.currentTarget);
         if($btn.is(':disabled')) return false;
         $btn.attr('disabled', true);
       }
-      /**
-       * @NOTE this should probably be done as 4 separate requests, 
-       * but this'll do until this page is refactored
-       */
-      this.contentPlugins.fetch({ 
-        success: plugins => {
-          // sort the plugins by name and group by type
-          this.pluginCollections = plugins
-            .sort((a,b) => a.get('name').localeCompare(b.get('name')))
-            .reduce((memo,p) => {
-              var type = p.get('type');
-              if(!memo[type]) memo[type] = [];
-              memo[type].push(p);
-              return memo;
-            }, {});
-          // reset the button
-          if(e) $(e.currentTarget).attr('disabled', false);
-          this.renderPluginTypeViews();
-        }, 
-        error: console.error 
-      });
+      try {
+        // sort the plugins by name and group by type
+        await this.contentPlugins.fetch();
+        this.pluginCollections = this.contentPlugins
+          .slice()
+          .sort((a,b) => a.get('name').localeCompare(b.get('name')))
+          .reduce((memo,p) => {
+            var type = p.get('type');
+            if(!memo[type]) memo[type] = [];
+            memo[type].push(p);
+            return memo;
+          }, {});
+        // reset the button
+        if(e) $(e.currentTarget).attr('disabled', false);
+        this.renderPluginTypeViews();
+      } catch(e) {
+        console.error(e);
+      }
     }
   }, {
     template: 'pluginManagement'
