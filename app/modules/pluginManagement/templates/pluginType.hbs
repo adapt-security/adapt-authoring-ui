@@ -29,7 +29,11 @@
         {{#if isLocalPackage}}
           <i title="{{t 'app.uploadedbyuser'}}" class="user-uploaded fa fa-user"></i>
         {{else}}
-          <button title="{{t 'app.updateplugin'}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
+          {{#if canBeUpdated}}
+            <button title="{{t 'app.updateplugin'}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
+          {{else}}
+            <button title="{{t 'app.uptodate'}}" class="plugin-update btn secondary" disabled="disabled"><i class="fa fa-check"></i></button>
+          {{/if}}
         {{/if}}
         <button title="{{t 'app.remove'}}" class="plugin-remove btn alert"><i class="fa fa-trash-o"></i></button>
       </div>
