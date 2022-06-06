@@ -23,8 +23,8 @@ define(function(require) {
 				data.input = 'text';
 				delete defaults.icon;
 				break;
-			case 'success':
-				defaults.title = Origin.l10n.t('app.successdefaulttitle');
+				case 'success':
+					defaults.title = Origin.l10n.t('app.successdefaulttitle');
         break;
 			case 'info':
 				defaults.title = Origin.l10n.t('app.infodefaulttitle');
