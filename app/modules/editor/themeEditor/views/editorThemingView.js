@@ -274,7 +274,6 @@ define(function(require) {
       Origin.Notify.alert({
         type: 'input',
         text: Origin.l10n.t('app.presetinputtext'),
-        closeOnConfirm: false,
         callback: presetName => {
           if(presetName === false) return // user cancel
           if(!presetName) return swal.showInputError(Origin.l10n.t('app.invalidempty')); // no falsies

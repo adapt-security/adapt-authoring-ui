@@ -207,7 +207,6 @@ define(function(require){
         text: Origin.l10n.t('app.resetpasswordinstruction', { email: this.model.get('email') }),
         input: 'password',
         confirmButtonText: 'Save',
-        closeOnConfirm: false,
         callback: ({ isConfirmed, value: password }) => {
           if(!isConfirmed) return;
           else if(password === "") return swal.showInputError(Origin.l10n.t('app.invalidempty'));
