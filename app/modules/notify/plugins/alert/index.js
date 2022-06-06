@@ -7,17 +7,21 @@ define(function(require) {
 	function getSettings(data) {
 		var defaults = {
 			title: '',
+			icon: data.type,
 			allowOutsideClick: false
 		};
 		switch(data.type) {
 			case 'confirm':
 				data.type = null;
+				delete defaults.icon;
 				defaults.title = Origin.l10n.t('app.confirmdefaulttitle');
 				break;
 			case 'warning':
 				defaults.title = Origin.l10n.t('app.warningdefaulttitle');
 				break;
 			case 'input':
+				data.input = 'text';
+				delete defaults.icon;
 				break;
 			case 'success':
 				defaults.title = Origin.l10n.t('app.successdefaulttitle');
@@ -35,9 +39,9 @@ define(function(require) {
 						text: '"' + data.type + '" is not a valid alert type'
 					});
 				}
-				data.type = null;
 		}
-		if(data.type) data.icon = data.type;
+		delete data.type;
+
 		if(data.text) {
 			data.html = data.text;
 			delete data.text;
@@ -47,7 +51,9 @@ define(function(require) {
 	};
 
 	function openPopup(data) {
-		return SweetAlert.fire(getSettings(data)).then(data.callback);
+		const cb = data.callback || function() {};
+		delete data.callback;
+		return SweetAlert.fire(getSettings(data)).then(cb);
 	}
 
 	var Alert = function(data) {
