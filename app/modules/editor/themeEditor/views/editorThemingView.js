@@ -274,15 +274,20 @@ define(function(require) {
       Origin.Notify.alert({
         type: 'input',
         text: Origin.l10n.t('app.presetinputtext'),
-        callback: presetName => {
-          if(presetName === false) return // user cancel
-          if(!presetName) return swal.showInputError(Origin.l10n.t('app.invalidempty')); // no falsies
-          if(this.presets.findWhere({ displayName: presetName, parentTheme: this.$('.theme select').val() })) {
-            return swal.showInputError(Origin.l10n.t('app.duplicatepreseterror'));
+        preConfirm: presetName => {
+          let msg;
+          if(!presetName) {
+            msg = Origin.l10n.t('app.invalidempty'); // no falsies
           }
-          this.savePreset(Helpers.escapeText(presetName)); // escape text to avoid injection attacks
-          swal.close();
-        }
+          if(this.presets.findWhere({ displayName: presetName, parentTheme: this.$('.theme select').val() })) {
+            msg = Origin.l10n.t('app.duplicatepreseterror'); // name already exists
+          }
+          if(msg) {
+            Origin.Notify.Swal.showValidationMessage(msg);
+            return false;
+          }
+        }, // escape text to avoid injection attacks
+        callback: ({ value, isConfirmed }) => isConfirmed && this.savePreset(Helpers.escapeText(value))
       });
     }
   }, {
