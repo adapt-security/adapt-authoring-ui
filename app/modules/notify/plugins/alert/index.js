@@ -82,12 +82,14 @@ define(function(require) {
 			cancelButtonText: Origin.l10n.t('app.no')
 		};
 		if(data.destructive === true) {
+			let timerInterval;
+			delete data.destructive;
 			data.allowEnterKey = false;
 			data.timer = 5000;
 			data.timerProgressBar = true;
 			data.didOpen = (el) => {
 				$('.swal2-confirm', el).attr('disabled', true);
-				const timerInterval = setInterval(() => {
+				timerInterval = setInterval(() => {
 					if(SweetAlert.getTimerLeft() < 100) {
 						SweetAlert.stopTimer();
 						$('.swal2-timer-progress-bar-container').hide();
@@ -96,6 +98,7 @@ define(function(require) {
 					}
 				}, 100);
 			};
+			data.didClose = () => clearInterval(timerInterval);
 		}
 		openPopup(_.extend(defaults, data));
 	};
