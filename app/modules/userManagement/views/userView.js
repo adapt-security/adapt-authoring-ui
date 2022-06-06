@@ -205,7 +205,7 @@ define(function(require){
         type: 'input',
         title: Origin.l10n.t('app.resetpasswordtitle'),
         text: Origin.l10n.t('app.resetpasswordinstruction', { email: this.model.get('email') }),
-        inputType: 'password',
+        input: 'password',
         confirmButtonText: 'Save',
         closeOnConfirm: false,
         callback: ({ isConfirmed, value: password }) => {
