@@ -14,7 +14,8 @@
       {{/if}}
     </div>
     <div class="pluginType-version col-10 col-centered">
-      <span class="pluginType-version-number tb-col-inner">{{version}}</span>
+      <span class="pluginType-version-number tb-col-inner">{{version}} {{#if canBeUpdated}}({{latestCompatibleVersion}}){{else}}{{/if}}
+      </span>
     </div>
     <div class="pluginType-active col-10 col-centered">
       <input class="pluginType-enabled" type="checkbox" {{#if isEnabled}} checked {{/if}}/>
@@ -30,7 +31,7 @@
           <i title="{{t 'app.uploadedbyuser'}}" class="user-uploaded fa fa-user"></i>
         {{else}}
           {{#if canBeUpdated}}
-            <button title="{{t 'app.updateplugin'}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
+            <button title="{{t 'app.updateplugin'}} {{latestCompatibleVersion}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
           {{else}}
             <button title="{{t 'app.uptodate'}}" class="plugin-update btn secondary" disabled="disabled"><i class="fa fa-check"></i></button>
           {{/if}}
