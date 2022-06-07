@@ -230,7 +230,7 @@ define(function(require){
     onDeleteClicked: async function() {
       const option = this.$('[name="delete-options"]').val();
       let popupHtml = Origin.l10n.t('app.deleteusermessage', { email: this.model.get('email') });
-      const courses = await $.get(`/api/content?_type=course&createdBy=${this.model.get('_id')}`);
+      const courses = await $.post(`/api/content/query`, { _type: 'course', createdBy: this.model.get('_id') });
       if(courses.length) {
         popupHtml += Origin.l10n.t('app.deleteusercourseconfirm') +
         '<select id="swal-courses" class="swal2-select">' + 
