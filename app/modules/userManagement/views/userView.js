@@ -227,21 +227,25 @@ define(function(require){
       this.updateModel('isEnabled', true);
     },
 
-    onDeleteClicked: function() {
-      var option = this.$('[name="delete-options"]').val();
+    onDeleteClicked: async function() {
+      const option = this.$('[name="delete-options"]').val();
+      let popupHtml = Origin.l10n.t('app.deleteusermessage', { email: this.model.get('email') });
+      const courses = await $.get(`/api/content?_type=course&createdBy=${this.model.get('_id')}`);
+      if(courses.length) {
+        popupHtml += Origin.l10n.t('app.deleteusercourseconfirm') +
+        '<select id="swal-courses" class="swal2-select">' + 
+          `<option value="delete">${Origin.l10n.t("app.deletecourses")}</option>` + 
+          `<option value="transfer">${Origin.l10n.t("app.transfercourses")}</option>` + 
+        '</select>' +
+        '<div class="email-container">' +
+          `<input id="swal-email" class="swal2-input" placeholder="${Origin.l10n.t("app.deleteusercoursesinstruction")}">` +
+        '</div>' +
+        Origin.l10n.t('app.onewaytrip');
+      }
       Origin.Notify.confirm({
         type: 'confirm',
         title: Origin.l10n.t('app.deleteuser'),
-        html:
-          Origin.l10n.t('app.confirmdeleteuser', { email: this.model.get('email') }) + 
-          '<select id="swal-courses" class="swal2-select">' + 
-            `<option value="delete">${Origin.l10n.t("app.deletecourses")}</option>` + 
-            `<option value="transfer">${Origin.l10n.t("app.transfercourses")}</option>` + 
-          '</select>' +
-          '<div class="email-container">' +
-            `<input id="swal-email" class="swal2-input" placeholder="${Origin.l10n.t("app.deleteusercoursesinstruction")}">` +
-          '</div>' +
-          Origin.l10n.t('app.onewaytrip'),
+        html: popupHtml,
         didOpen: () => {
           const $container = $('.email-container');
           const $select = $('select.swal2-select');
@@ -254,8 +258,8 @@ define(function(require){
 
           if(shouldTransferCourses) {
             const [newOwner] = await $.ajax({ 
-              url: '/api/users', 
-              method: 'GET', 
+              url: '/api/users/query', 
+              method: 'POST', 
               data: { email: $('#swal-email').val() } 
             });
             if(!newOwner) {
@@ -270,18 +274,19 @@ define(function(require){
           if(!result.isConfirmed) {
             return; 
           }
-          try {
-            const courses = await $.get(`/api/content?_type=course&createdBy=${this.model.get('_id')}`);
-            await Promise.all(courses.map(async c => {
-              const url = `/api/content/${c._id}`;
-              if(this.model.get('shouldTransferCourses')) {
-                await $.ajax({ url, method: 'PATCH', data: { createdBy: this.model.get('transferCoursesToUser') } });
-              } else {
-                await $.ajax({ url, method: 'DELETE' });
-              }
-            }));
-          } catch(e) {
-            return this.onError(e.responseJSON.message);
+          if(courses.length) {
+            try {
+              await Promise.all(courses.map(async c => {
+                const url = `/api/content/${c._id}`;
+                if(this.model.get('shouldTransferCourses')) {
+                  await $.ajax({ url, method: 'PATCH', data: { createdBy: this.model.get('transferCoursesToUser') } });
+                } else {
+                  await $.ajax({ url, method: 'DELETE' });
+                }
+              }));
+            } catch(e) {
+              return this.onError(e.responseJSON.message);
+            }
           }
           this.model.destroy({ 
             data: { userCourseOption: option }, 
