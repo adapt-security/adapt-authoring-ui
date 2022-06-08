@@ -64,16 +64,18 @@ define([
         return this.onSaveError(`${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`);
       }
       const callbacks = { 
-        success: () => Origin.router.navigateTo('assetManagement'),
-        error: () => this.onSaveError(Origin.l10n.t('app.errorassetupdate'))
+        success: data => this.onSaveSuccess(data),
+        error: (model, xhr) => {
+          if(!xhr) xhr = model;
+          this.onSaveError(xhr.responseJSON.message);
+        }
       };
       if($('input[name="file"]').val()) { // handle file upload
         this.form.$el.ajaxSubmit({
           method: this.model.isNew() ? 'POST' : 'PATCH',
           url: `/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
           beforeSubmit: this.sanitiseData,
-          success: (data) => this.onSaveSuccess(data),
-          error: (xhr) => this.onSaveError(xhr.responseJSON.message)
+          ...callbacks
         });
         return;
       }      
