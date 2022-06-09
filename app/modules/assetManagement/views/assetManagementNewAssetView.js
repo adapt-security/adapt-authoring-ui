@@ -71,12 +71,11 @@ define([
         }
       };
       if($('input[name="file"]').val()) { // handle file upload
-        this.form.$el.ajaxSubmit({
+        this.form.$el.ajaxSubmit(Object.assign({
           method: this.model.isNew() ? 'POST' : 'PATCH',
           url: `/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
           beforeSubmit: this.sanitiseData,
-          ...callbacks
-        });
+        }, callbacks));
         return;
       }      
       this.form.commit();
