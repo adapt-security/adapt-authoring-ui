@@ -10,22 +10,23 @@ define(function(require) {
     },
 
     initialize: function() {
-      this.on('change:globalData change:roles', this.setRoleNames);
+      this.on('change:allRoles change:roles', this.setRoleNames);
     },
     // pull the human-readable role names from the list of all roles
     setRoleNames: function(model) {
-      if(!model.get('globalData')) {
-        return;
-      }
+      if(!model.get('allRoles')) return;
       const roles = model.get('roles');
-      const allRoles = model.get('globalData').allRoles;
-      var roleNames;
+      const allRoles = model.get('allRoles');
+      let roleNames;
       if(typeof roles === 'object') { // array
-        roleNames = roles.map(role => allRoles.findWhere({ _id: role._id || role }).get('name'));
+        roleNames = roles.map(role => {
+          const roleId = (typeof role === 'string') ? role : role.get('_id');
+          return allRoles.findWhere({ _id: roleId });
+        });
       } else { // string
-        roleNames = allRoles.findWhere({ _id: roles }).get('name');
+        roleNames = allRoles.findWhere({ _id: roles });
       }
-      model.set('roleNames', roleNames);
+      model.set('roles', roleNames);
     }
   });
 
