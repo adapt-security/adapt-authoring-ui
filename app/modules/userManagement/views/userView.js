@@ -76,9 +76,13 @@ define(function(require){
       }
     },
 
-    // utilities in case the classes change
-    getColumnFromDiv: div => $(div).closest('.tb-col-inner'),
-    getInputFromDiv: div => $('.input', this.getColumnFromDiv(div)),
+    getColumnFromDiv: function(div) {
+      return $(div).closest('.tb-col-inner');
+    },
+    
+    getInputFromDiv: function(div) {
+      return $('.input', this.getColumnFromDiv(div));
+    },
 
     disableFieldEdit: function(div) {
       $('.read', div).removeClass('display-none');
@@ -145,8 +149,9 @@ define(function(require){
         return;
       }
       var _id = this.model.get('_id');
-      Helpers.ajax(`api/role/${oldRole}/unassign/${_id}`, null, 'POST', () => {
-        Helpers.ajax(`api/role/${newRole}/assign/${_id}`, null, 'POST', () => this.model.fetch());
+      var oldRoleId = oldRole.get('_id');
+      Helpers.ajax('api/users/role/unassign/', {_id: _id, role: oldRoleId}, 'POST', () => {
+        Helpers.ajax('api/users/role/assign', {_id: _id, role: newRole}, 'POST', () => this.model.fetch());
       });
     },
 
