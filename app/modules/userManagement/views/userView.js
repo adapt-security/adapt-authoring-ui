@@ -9,7 +9,7 @@ define(function(require){
     tagName: 'div',
     className: function() {
       const classes = ['user-item', 'tb-row', this.model.get('_id')];
-      if(this.model.get('_id') === Origin.sessionModel.get('id')) {
+      if(this.model.get('_id') === Origin.sessionModel.get('user')._id) {
         classes.push('me');
       }
       if(this.model.get('_isHidden')) {
