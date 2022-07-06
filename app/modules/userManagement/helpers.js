@@ -28,7 +28,7 @@ define(function(require){
       }
     },
     ifUserNotMe: function(userId, block) {
-      if (userId !== Origin.sessionModel.get('id')) {
+      if (userId !== Origin.sessionModel.get('user')._id) {
         return block.fn(this);
       } else {
         return block.inverse(this);
