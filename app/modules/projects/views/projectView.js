@@ -87,7 +87,7 @@ define(function(require) {
         type: 'warning',
         title: Origin.l10n.t('app.' + titleKey),
         html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t('app.' + textKey),
-        destructive: true,
+        destructive: isShared,
         callback: this.deleteProjectConfirm.bind(this)
       });
     },
