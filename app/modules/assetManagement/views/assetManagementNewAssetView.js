@@ -66,7 +66,7 @@ define([
       const callbacks = { 
         success: data => this.onSaveSuccess(data),
         error: (model, xhr) => {
-          if(!xhr) xhr = model;
+          if(typeof xhr === 'string') xhr = model;
           this.onSaveError(xhr.responseJSON.message);
         }
       };
