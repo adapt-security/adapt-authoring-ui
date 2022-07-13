@@ -186,13 +186,20 @@ define(function(require) {
 
     pasteFromClipboard: function(_parentId, _sortOrder, _layout) {
       Origin.trigger('editorView:pasteCancel');
-      $.post('api/content/clone', { _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }, newData => {
-        Origin.editor.clipboardId = null;
-        Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
-        Origin.trigger(`editorView:pasted:${_parentId}`, newData);
-        Origin.trigger(`editorView:refreshView`);
-      }).fail(({ message }) => {
-        Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
+      $.ajax({
+        method: 'POST',
+        url: 'api/content/clone',
+        headers: { 'Content-Type': 'application/json' },
+        data: JSON.stringify({ _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }),
+        success: newData => {
+          Origin.editor.clipboardId = null;
+          Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
+          Origin.trigger(`editorView:pasted:${_parentId}`, newData);
+          Origin.trigger(`editorView:refreshView`);
+        },
+        fail: ({ message }) => {
+          Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
+        }
       });
     },
 
