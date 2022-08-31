@@ -76,7 +76,7 @@ define(function(require){
         clearTimeout(this.resizeTimer);
         this.resizeTimer = -1;
       }
-      this.collection.options.limit = 1;
+      this.collection.queryOptions.limit = 1;
       this.resetCollection(() => {
         if(!this.collection.length) { // no results, so nothing to do
           return this.setViewToReady();
@@ -89,7 +89,7 @@ define(function(require){
         var rows = Math.floor(containerHeight/itemHeight);
         // columns stack nicely, but need to add extra row if it's not a clean split
         if((containerHeight % itemHeight) > 0) rows++;
-        this.collection.options.limit = columns*rows;
+        this.collection.queryOptions.limit = columns*rows;
         // need another reset to get the actual pageSize number of items
         this.resetCollection();
         this.setViewToReady();
@@ -122,7 +122,7 @@ define(function(require){
       this.emptyProjectsContainer();
       this.allCourses = [];
       this.page = 1;
-      this.collection.options.collation = { locale: navigator.language.substring(0, 2) };
+      this.collection.queryOptions.collation = { locale: navigator.language.substring(0, 2) };
       this.shouldStopFetches = false;
       this.collection.reset();
       this.fetchCollection(cb);
@@ -136,7 +136,7 @@ define(function(require){
       
       this.usersCollection.fetch({
         success: (collection, response) => {
-          Object.assign(this.collection.options, {
+          Object.assign(this.collection.queryOptions, {
             skip: this.allCourses.length,
             page: this.page++,
           });
@@ -149,7 +149,7 @@ define(function(require){
               this.allCourses.forEach(a => this.appendProjectItem(a));
 
               // stop further fetching if this is the last page
-              if(response.length < this.collection.options.limit) this.shouldStopFetches = true;
+              if(response.length < this.collection.queryOptions.limit) this.shouldStopFetches = true;
     
               this.$('.no-projects').toggleClass('display-none', this.allCourses.length > 0);
               if(typeof cb === 'function') cb(collection);
@@ -191,7 +191,7 @@ define(function(require){
           sort = "asc";
           data = { title: 1 };
         }
-      this.collection.options.sort = data;
+      this.collection.queryOptions.sort = data;
       this.setUserPreference('sort', sort);
 
       if(fetch !== false) this.resetCollection();
@@ -205,7 +205,7 @@ define(function(require){
       this.setUserPreference('search', text, true);
 
       this.collection.customQuery.tags = _.pluck(tags, 'id');
-      this.setUserPreference('tags', this.collection.options.tags, true);
+      this.setUserPreference('tags', this.collection.queryOptions.tags, true);
 
       if(fetch !== false) this.resetCollection();
     },

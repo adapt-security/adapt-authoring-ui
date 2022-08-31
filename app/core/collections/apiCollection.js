@@ -6,7 +6,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
   var ApiCollection = Backbone.Collection.extend({
     options: {},
     initialize : function(models, options) {
-      Backbone.Collection.prototype.initialize.apply(this, arguments);
+      Backbone.Collection.prototype.initialize.apply(this, models);
+      this.queryOptions = {};
       if(!options) options = {};
       if(!this.url) this.url = options.url;
       this.customQuery = options.filter || {};
@@ -25,7 +26,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
      * @returns {Object}
      */
     buildQueryParams: function() {
-      return _.isEmpty(this.options) ? '' : Object.entries(this.options).reduce((q,[k,v]) => `${q}${k}=${JSON.stringify(v)}&`, '?');
+      return _.isEmpty(this.queryOptions) ? '' : Object.entries(this.queryOptions).reduce((q,[k,v]) => `${q}${k}=${JSON.stringify(v)}&`, '?');
     },
     /**
      * Fetches API data
