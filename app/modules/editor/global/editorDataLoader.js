@@ -16,28 +16,31 @@ define(function(require) {
       if(!Origin.sessionModel.get('isAuthenticated')) {
         return;
       }
-      isLoaded = false;
-      if(!Origin.editor) Origin.editor = {};
-      if(!Origin.editor.data) Origin.editor.data = {};
+      if(Origin?.editor?.data?.course?.get('_id') !== Origin.location.route1 || await isOutdated()) {
+        isLoaded = false;
+        if(!Origin.editor) Origin.editor = {};
+        if(!Origin.editor.data) Origin.editor.data = {};
 
-      Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-      Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
-      try {
-        await Promise.all([
-          Origin.editor.data.content.fetch(),
-          Origin.editor.data.componentTypes.fetch()
-        ]);
-      } catch(e) {
-        return handleError();
+        Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+        Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+        try {
+          await Promise.all([
+            Origin.editor.data.content.fetch(),
+            Origin.editor.data.componentTypes.fetch()
+          ]);
+        } catch(e) {
+          return handleError();
+        }
+        isLoaded = true;
+
+        Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
+        Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
+
+        if(!Origin.editor.data.course || !Origin.editor.data.config) {
+          return handleError();
+        }
       }
-      isLoaded = true;
-
-      Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
-      Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
-
-      if(!Origin.editor.data.course || !Origin.editor.data.config) {
-        return handleError();
-      }
+      Origin.editor.data.lastFetch = new Date().toISOString();
       if(_.isFunction(callback)) {
         callback();
       }
@@ -56,6 +59,11 @@ define(function(require) {
       isLoaded ? callback.apply(this) : Origin.once('editor:dataLoaded', callback.bind(this));
     }
   };
+
+  async function isOutdated() {
+    const [latestDoc] = await $.get('/api/content?sort={%22updatedAt%22:-1}&limit=1');
+    return new Date(Origin.editor.data.lastFetch) < new Date(latestDoc.updatedAt);
+  }
 
   function handleError() {
     Origin.Notify.alert({ type: 'error', text: 'Failed to fetch course data' });
