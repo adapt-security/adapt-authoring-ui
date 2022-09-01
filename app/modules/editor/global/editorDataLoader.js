@@ -16,10 +16,11 @@ define(function(require) {
       if(!Origin.sessionModel.get('isAuthenticated')) {
         return;
       }
-      if(Origin?.editor?.data?.course?.get('_id') !== Origin.location.route1 || await isOutdated()) {
+      if(!Origin.editor) Origin.editor = {};
+      if(!Origin.editor.data) Origin.editor.data = {};
+
+      if(Origin.editor.data.course && Origin.editor.data.course.get('_id') !== Origin.location.route1 || await isOutdated()) {
         isLoaded = false;
-        if(!Origin.editor) Origin.editor = {};
-        if(!Origin.editor.data) Origin.editor.data = {};
 
         Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
         Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
