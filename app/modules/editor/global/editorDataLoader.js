@@ -63,7 +63,7 @@ define(function(require) {
 
   async function isOutdated() {
     const [latestDoc] = await $.get('/api/content?sort={%22updatedAt%22:-1}&limit=1');
-    return new Date(Origin.editor.data.lastFetch) < new Date(latestDoc.updatedAt);
+    return !latestDoc || new Date(Origin.editor.data.lastFetch) < new Date(latestDoc.updatedAt);
   }
 
   function handleError() {
