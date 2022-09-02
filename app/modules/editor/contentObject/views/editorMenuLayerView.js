@@ -144,6 +144,7 @@ define(function(require) {
           _.delay(newMenuItemView.remove, 3000);
         },
         success: _.bind(function(model, response, options) {
+          Origin.trigger('editor:refreshData');
           if (typeToAdd === 'article') {
             this.addNewPageArticleAndBlock(model, newMenuItemView);
           } else {

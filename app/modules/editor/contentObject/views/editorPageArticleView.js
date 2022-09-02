@@ -118,7 +118,10 @@ define(function(require){
         }],
         _type: 'block'
       }, {
-        success: model => this.addBlockView(model, true),
+        success: model => {
+          this.addBlockView(model, true);
+          Origin.trigger('editor:refreshData');
+        },
         error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingblock') })
       });
     },
