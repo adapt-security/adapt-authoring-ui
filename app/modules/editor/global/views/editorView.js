@@ -86,23 +86,21 @@ define(function(require) {
       // aleady processing, don't try again
       if(error || this.exporting) return;
 
-      var $btn = $('button.editor-common-sidebar-export');
-
-      this.showExportAnimation(true, $btn);
+      this.showExportAnimation();
       this.exporting = true;
 
       $.ajax({
         url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
         method: 'POST',
         success: data => {
-          this.showExportAnimation(false, $btn);
+          this.showExportAnimation(false);
           this.exporting = false;
           var $downloadForm = $('#downloadForm');
           $downloadForm.attr('action', data.export_url);
           $downloadForm.submit();
         },
         error: jqXHR => {
-          this.showExportAnimation(false, $btn);
+          this.showExportAnimation(false);
           this.exporting = false;
           Origin.Notify.alert({
             type: 'error',
@@ -113,8 +111,9 @@ define(function(require) {
       });
     },
 
-    showExportAnimation: function(show, $btn) {
-      if(show !== false) {
+    showExportAnimation: function(show = true) {
+      const $btn = $('button.editor-common-sidebar-export');
+      if(show) {
         $('.editor-common-sidebar-export-inner', $btn).addClass('display-none');
         $('.editor-common-sidebar-exporting', $btn).removeClass('display-none');
       } else {
