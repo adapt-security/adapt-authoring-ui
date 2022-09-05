@@ -59,6 +59,9 @@ define(function(require) {
       if(Origin.editor.isPreviewPending) {
         return;
       }
+      if(!this.validateCourse()) {
+        return;
+      }
       Origin.editor.isPreviewPending = true;
       $('.navigation-loading-indicator').removeClass('display-none');
       $('.editor-common-sidebar-preview-inner').addClass('display-none');
@@ -81,14 +84,37 @@ define(function(require) {
         });
     },
 
-    exportProject: function(error) {
+    validateCourse: function() {
+      const errors = [];
+      const validateChildren = item => {
+        if(item.get('_type') === 'component') {
+          return;
+        }
+        const children = Origin.editor.data.content.where({ _parentId: item.get('_id') });
+        if(!children.length) {
+          return errors.push(Origin.l10n.t('app.emptycontentobject', { type: item.get('_type'), title: item.get('title') }));
+        }
+        children.forEach(c => validateChildren(c));
+      };
+      
+      validateChildren(this.currentCourse);
+
+      if(errors.length) {
+        Origin.Notify.alert({ type: 'error', html: errors.join('<br/>') });
+        return false;
+      }
+    },
+
+    exportProject: async function(error) {
       // TODO - very similar to export in project/views/projectView.js, remove duplication
       // aleady processing, don't try again
       if(error || this.exporting) return;
 
       this.showExportAnimation();
       this.exporting = true;
-
+      if(this.validateCourse()) {
+        return;
+      }
       $.ajax({
         url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
         method: 'POST',
@@ -124,6 +150,9 @@ define(function(require) {
 
     downloadProject: function() {
       if(Origin.editor.isDownloadPending) {
+        return;
+      }
+      if(this.validateCourse()) {
         return;
       }
       $('.editor-common-sidebar-download-inner').addClass('display-none');
