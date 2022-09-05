@@ -179,7 +179,7 @@ define(function(require) {
       } else {
         Origin.Notify.alert({
           type: 'warning',
-          text: Origin.l10n.t('app.app.copyidtoclipboarderror', { id: id })
+          text: Origin.l10n.t('app.copyidtoclipboarderror', { id: id })
         });
       }
     },
