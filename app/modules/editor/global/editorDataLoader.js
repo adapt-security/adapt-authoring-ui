@@ -19,8 +19,9 @@ define(function(require) {
       if(!Origin.editor) Origin.editor = {};
       if(!Origin.editor.data) Origin.editor.data = {};
 
+      isLoaded = false;
+      
       if(await isOutdated()) {
-        isLoaded = false;
 
         Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
         Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
@@ -32,8 +33,6 @@ define(function(require) {
         } catch(e) {
           return handleError();
         }
-        isLoaded = true;
-
         Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
         Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
 
@@ -41,6 +40,8 @@ define(function(require) {
           return handleError();
         }
       }
+      isLoaded = true;
+
       Origin.editor.data.lastFetch = new Date().toISOString();
       if(_.isFunction(callback)) {
         callback();
