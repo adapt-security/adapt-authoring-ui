@@ -42,10 +42,10 @@ define(function(require) {
       }
       try {
         await this.populateNewCourse();
-        Origin.router.navigateTo(`editor/${model.get('_id')}/menu`);
       } catch(e) {
-        EditorOriginView.prototype.onSaveError.call(this, null, e.message);
+        return EditorOriginView.prototype.onSaveError.call(this, null, e.message);
       }
+      Origin.router.navigateTo(`editor/${model.get('_id')}/menu`);
     },
     // When a new course is created it gets populated with a page, article, block and text component
     // so that it can be previewed immediately.
