@@ -101,8 +101,8 @@ define(function(require) {
 
       if(errors.length) {
         Origin.Notify.alert({ type: 'error', html: errors.join('<br/>') });
-        return false;
       }
+      return errors.length === 0;
     },
 
     exportProject: async function(error) {
