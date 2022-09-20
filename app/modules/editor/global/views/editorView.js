@@ -112,7 +112,7 @@ define(function(require) {
 
       this.showExportAnimation();
       this.exporting = true;
-      if(this.validateCourse()) {
+      if(!this.validateCourse()) {
         return;
       }
       $.ajax({
@@ -152,7 +152,7 @@ define(function(require) {
       if(Origin.editor.isDownloadPending) {
         return;
       }
-      if(this.validateCourse()) {
+      if(!this.validateCourse()) {
         return;
       }
       $('.editor-common-sidebar-download-inner').addClass('display-none');
