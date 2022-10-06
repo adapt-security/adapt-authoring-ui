@@ -123,15 +123,23 @@ define(function(require){
           if (!this.model.get('_isNewPassword')) {
             return Backbone.history.history.back();
           }
-          await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
-          Origin.sessionModel.logout();
+          try {
+            await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
+            Origin.sessionModel.logout(); 
+          } catch(e) {
+            this.handleError(e);  
+          }
         },
         error: function(data, error) {
-          Origin.trigger('sidebar:resetButtons');
-          const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
-          Origin.Notify.alert({ type: 'error', text });
+          this.handleError(error);
         }
       });
+    },
+
+    handleError(error) {
+      Origin.trigger('sidebar:resetButtons');
+      const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
+      Origin.Notify.alert({ type: 'error', text });
     },
 
     onPasswordKeyup: function() {
