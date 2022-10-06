@@ -30,7 +30,7 @@ define(function(require){
 
       Origin.trigger('location:title:update', { title: Origin.l10n.t('app.usermanagementtitle') });
       
-      this.listenTo(this.users, { 'sync': this.render });
+      this.listenTo(this.users, { 'change': this.render });
       
       this.render();
     },

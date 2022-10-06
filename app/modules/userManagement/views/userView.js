@@ -135,24 +135,25 @@ define(function(require){
       this.disableFieldEdit(this.getColumnFromDiv(event.currentTarget));
     },
 
-    onSaveRoleClicked: function(event) {
+    onSaveRoleClicked: async function(event) {
       event && event.preventDefault();
 
       var $column = this.getColumnFromDiv(event.currentTarget);
       var $input = this.getInputFromDiv($column);
-      var oldRole = this.model.get('roles')[0];
+      var oldRoleId = this.model.get('roles')[0].get('_id');
       var newRole = $input.val();
 
       this.disableFieldEdit($column);
 
-      if(!newRole || this.model.get($input.attr('data-modelKey')) === newRole) {
+      if(!newRole || newRole === oldRoleId) {
         return;
       }
-      var _id = this.model.get('_id');
-      var oldRoleId = oldRole.get('_id');
-      Helpers.ajax('api/users/role/unassign/', {_id: _id, role: oldRoleId}, 'POST', () => {
-        Helpers.ajax('api/users/role/assign', {_id: _id, role: newRole}, 'POST', () => this.model.fetch());
-      });
+      try {
+        const newData = await $.ajax({ url: `api/users/${this.model.get('_id')}`, method: 'PATCH', data: { roles: [newRole] } });
+        this.model.set(newData);
+      } catch(e) {
+        this.onError(e);
+      }
     },
 
     onResetLoginsClicked: function() {
