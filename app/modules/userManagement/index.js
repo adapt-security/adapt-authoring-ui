@@ -61,12 +61,7 @@ define(function(require) {
   async function refreshUsers() {
     try {
       await userCollection.fetch();
-      userCollection.forEach(user => {
-        user.set({ 
-          allRoles, 
-          roles: user.get('roles').map(r => allRoles.findWhere({ _id: r })) 
-        });
-      });
+      userCollection.forEach(user => user.set({ allRoles }));
     } catch(e) {
       Origin.Notify.alert({ type: 'error', message: e });
     }
