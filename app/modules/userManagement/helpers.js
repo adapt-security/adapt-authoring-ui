@@ -20,6 +20,10 @@ define(function(require){
   };
   // accessible to Handlebars only!
   var hbsHelpers = {
+    lookupRoleName: function(roleId, model) {
+      const allRoles = model.allRoles;
+      if(allRoles) return allRoles.findWhere({_id: roleId }).get('displayName');
+    },
     ifIsCurrentTenant: function(tenantId, block) {
       if (tenantId === Origin.sessionModel.get('tenantId')) {
         return block.fn(this);

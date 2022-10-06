@@ -28,7 +28,7 @@
         <div class="read">
           <ul>
           {{#each roles}}
-            <li class="no-wrap">{{this.attributes.displayName}}</li>
+            <li class="no-wrap">{{lookupRoleName this ..}}</li>
           {{/each}}
           </ul>
         </div>

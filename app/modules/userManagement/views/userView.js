@@ -140,7 +140,7 @@ define(function(require){
 
       var $column = this.getColumnFromDiv(event.currentTarget);
       var $input = this.getInputFromDiv($column);
-      var oldRoleId = this.model.get('roles')[0].get('_id');
+      var oldRoleId = this.model.get('roles')[0];
       var newRole = $input.val();
 
       this.disableFieldEdit($column);
