@@ -10,6 +10,7 @@ define(function(require) {
 
     initialize : function(models, options) {
       this.type = options && options.type;
+      if(options.queryOptions) Object.assign(this.queryOptions, { includeUpdateData: false }, options.queryOptions);
       ApiCollection.prototype.initialize.call(this, arguments);
     },
     buildQuery: function() {
