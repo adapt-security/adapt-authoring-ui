@@ -9,9 +9,9 @@ define(function(require) {
     comparator: 'displayName',
 
     initialize : function(models, options) {
+      ApiCollection.prototype.initialize.call(this, arguments);
       this.type = options && options.type;
       if(options.queryOptions) Object.assign(this.queryOptions, { includeUpdateData: false }, options.queryOptions);
-      ApiCollection.prototype.initialize.call(this, arguments);
     },
     buildQuery: function() {
       var query = ApiCollection.prototype.buildQuery.call(this);
