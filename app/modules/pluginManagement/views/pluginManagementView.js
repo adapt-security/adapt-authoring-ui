@@ -18,7 +18,7 @@ define(function(require){
     initialize: async function(options) {
       this.currentPluginType = options.pluginType;
 
-      this.contentPlugins = new ContentPluginCollection(undefined, { queryOptions: { includeUpdateData: true } }); // all plugins
+      this.contentPlugins = new ContentPluginCollection(undefined, { filter: { includeUpdateInfo: true } }); // all plugins
       this.pluginCollections = {}; // sorted plugins go here
 
       await this.refreshPluginList();
