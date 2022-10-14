@@ -1,11 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var ContentObjectModel = require('core/models/contentObjectModel');
-  var ArticleModel = require('core/models/articleModel');
-  var BlockModel = require('core/models/blockModel');
-  var ConfigModel = require('core/models/configModel');
-  var ComponentModel = require('core/models/componentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorCourseEditView = EditorOriginView.extend({
@@ -35,53 +30,24 @@ define(function(require) {
       return _.pick(this.model.attributes, Object.keys(changedAttributes));
     },
 
-    onSaveSuccess: async function(model, response, options) {
+    save: async function() {
       if(!this.isNew) {
-        EditorOriginView.prototype.onSaveSuccess.apply(this, arguments);
-        return;
+        return EditorOriginView.prototype.save.apply(this);
       }
+      this.form.commit();
+      this.model.pruneAttributes();
       try {
-        await this.populateNewCourse();
-      } catch(e) {
-        return EditorOriginView.prototype.onSaveError.call(this, null, e.message);
-      }
-      Origin.router.navigateTo(`editor/${model.get('_id')}/menu`);
-    },
-    // When a new course is created it gets populated with a page, article, block and text component
-    // so that it can be previewed immediately.
-    // @param model
-    populateNewCourse: async function() {
-      const config = await this.createNewContentObject(ConfigModel);
-      const page = await this.createNewContentObject(ContentObjectModel, { _type: 'page', _parentId: this.model.get('_id') });
-      const article = await this.createNewContentObject(ArticleModel, { _parentId: page.get('_id') });
-      const block = await this.createNewContentObject(BlockModel, {
-        _parentId: article.get('_id'),
-        layoutOptions: [
-          { type: 'left', name: 'app.layoutleft', pasteZoneRenderOrder: 2 },
-          { type: 'full', name: 'app.layoutfull', pasteZoneRenderOrder: 1 },
-          { type: 'right', name: 'app.layoutright', pasteZoneRenderOrder: 3 }
-        ]
-      });
-      const component = await this.createNewContentObject(ComponentModel, {
-        _parentId: block.get('_id'),
-        body: Origin.l10n.t('app.projectcontentbody'),
-        _component: 'adapt-contrib-text',
-        _layout: 'full'
-      });
-    },
-
-    createNewContentObject: function(Model, data) {
-      return new Promise((resolve, reject) => {
-        const model = new Model(Object.assign({ _courseId: this.model.get('_id') }, data));
-        model.save(null, {
-          success: model => resolve(model),
-          error: (model, response) => {
-            const message = response.responseJson && response.responseJson.message || 'Failed to create data';
-            reject(new Error(message));
-          }
+        const course = await $.ajax({ 
+          url: '/api/content/createcourse',
+          method: 'POST',
+          data: JSON.stringify(this.model.attributes), 
+          contentType: 'application/json' 
         });
-      });
-    }
+        Origin.router.navigateTo(`editor/${course._id}/menu`);
+      } catch(jqXhr) {
+        this.onSaveError(undefined, jqXhr.responseJSON && jqXhr.responseJSON.message)
+      }
+    },
   }, {
     template: 'editorCourseEdit'
   });
