@@ -90,9 +90,12 @@ define([
       data ? this.model.save(data, { ...callbacks, patch: !this.model.isNew() }) : this.onSaveSuccess();
     },
 
-    onSaveSuccess: function([data]) {
-      Origin.trigger('assetManagement:collection:refresh');
-      this.model.set(data);
+    onSaveSuccess: function(data) {
+      if(data) {
+        if(Array.isArray(data)) data = data [0];
+        Origin.trigger('assetManagement:collection:refresh');
+        this.model.set(data);
+      }
       Origin.trigger('assetItemView:preview', this.model)
       Origin.router.navigateTo('assetManagement');
     },
