@@ -71,7 +71,8 @@ define(function(require) {
         Origin.trigger('location:title:update', { title: Origin.l10n.t('app.editasset')});
         Origin.sidebar.addView(new AssetManagementNewAssetSidebarView().$el);
         Origin.contentPane.setView(AssetManagementNewAssetView, { model: model });
-      }
+      },
+      error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
     });
   }
 });
