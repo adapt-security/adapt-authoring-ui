@@ -74,7 +74,7 @@ define([
         success: data => this.onSaveSuccess(data),
         error: (model, xhr) => {
           if(typeof xhr === 'string') xhr = model;
-          this.onSaveError(xhr?.responseJSON?.message ?? xhr.statusText);
+          this.onSaveError(xhr?.responseJSON?.message || xhr.statusText);
         }
       };
       if($('input[name="file"]').val()) { // handle file upload
