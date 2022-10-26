@@ -47,15 +47,22 @@ define([
     },
 
     sanitiseData: function(dataArr) {
+      const isArray = Array.isArray(dataArr)
+      if(!isArray) {
+        dataArr = Object.entries(dataArr).map(([k,v]) => Object.create({ name: k, value: v }));
+      }
       for (let i = 0; i < dataArr.length; i++) {
         const d = dataArr[i];
         if(d.name === "tags") {
-          if(d.value === "") dataArr.splice(i--, 1);
-          d.value = JSON.stringify(d.value.split(','));
+          if(!d.value.length) dataArr.splice(i--, 1);
+          else d.value = JSON.stringify(d.value);
         } else if(d.name === "url" && d.value === "") {
           dataArr.splice(i--, 1);
         }
       }
+      if(isArray) return dataArr;
+      const data = dataArr.reduce((m, d) => Object.assign(m, { [d.name]: d.value }), {});
+      if(Object.keys(data).length) return data;
     },
 
     save: function() {
