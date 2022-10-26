@@ -86,7 +86,8 @@ define([
         return;
       }      
       this.form.commit();
-      this.model.save(this.model.changedAttributes(), callbacks);
+      const data = this.sanitiseData(this.model.changedAttributes());
+      data ? this.model.save(data, { ...callbacks, patch: !this.model.isNew() }) : this.onSaveSuccess();
     },
 
     onSaveSuccess: function([data]) {
