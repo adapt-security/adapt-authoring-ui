@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import glob from 'glob';
 import path from 'path';
