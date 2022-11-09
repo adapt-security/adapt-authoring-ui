@@ -14,7 +14,7 @@ export default class UIDocs {
     return path.resolve(basePath, relativePath);
   }
   async run() {
-    this.outputDir = path.join(this.config.docsRootDir, 'frontend');
+    this.outputDir = path.resolve(this.config.outputDir, '../frontend');
     this.docsRootPath = path.resolve(this.app.dependencies['adapt-authoring-docs'].rootDir, 'jsdoc3');
     this.configPath = this.resolvePath('.jsdocConfig.json', this.config.srcDir);
     await this.writeConfig();
