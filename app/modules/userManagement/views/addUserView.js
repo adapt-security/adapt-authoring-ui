@@ -73,8 +73,8 @@ define(function(require){
       }
       Origin.Notify.alert({
         type: 'error',
-        title: "Couldn't add user",
-        text: jqXhr.responseText || error
+        title: Origin.l10n.t('app.adduserfail'),
+        text: jqXhr.responseJson && jqXhr.responseJson.message || error
       });
     }
   }, {
