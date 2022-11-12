@@ -36,7 +36,8 @@ define(['require', 'backbone'], function(require, Backbone) {
         url: 'api/auth/local',
         method: 'POST',
         data: JSON.stringify({ email, password, persistSession }),
-        contentType: "application/json" 
+        contentType: "application/json",
+        dataType: "json"
       })
         .done(() => {
           this.fetch({ 
