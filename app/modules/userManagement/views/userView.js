@@ -98,6 +98,10 @@ define(function(require){
       $('.write', div).removeClass('display-none').children('input').focus();
     },
 
+    enableUser: function(isEnable) {
+      Helpers.ajax(`api/auth/local/${isEnable ? 'enable' : 'disable'}`, { _id: this.model.get('_id') }, 'POST', () => this.model.fetch());
+    },
+
     onEditClicked: function(event) {
       event && event.preventDefault();
 
@@ -226,11 +230,11 @@ define(function(require){
     },
 
     onDisableClicked: function() {
-      this.updateModel('isEnabled', false);
+      this.enableUser(false);
     },
-
+    
     onRestoreClicked: function() {
-      this.updateModel('isEnabled', true);
+      this.enableUser(true);
     },
 
     onDeleteClicked: async function() {
