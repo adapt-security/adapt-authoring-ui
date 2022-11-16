@@ -24,6 +24,7 @@ define(function(require){
         'destroy': this.remove,
         'change:_isDeleted': this.render
       });
+      this.model.set({ iconName: this.getIconName() });
     },
     
     postRender: function() {
@@ -31,6 +32,23 @@ define(function(require){
       if (this.model.get('_isSelected')) {
         Origin.trigger('assetManagement:assetItemView:preview', this.model);
       }
+    },
+
+    getIconName: function() {
+      const type = this.model.get('type');
+      const subtype = this.model.get('subtype');
+
+      switch(type) {
+        case 'audio': return 'fa-file-audio-o';
+        case 'image': return 'fa-file-image-o';
+        case 'font': return 'fa-file-code-o';
+        case 'video': return 'fa-file-video-o';
+      }
+      switch(subtype) {
+        case 'pdf': return 'fa-file-pdf-o';
+        case 'zip': return 'fa-file-zipper-o';
+      }
+      return 'fa-file-o';
     },
     
     onAssetClicked: function (model) {

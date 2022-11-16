@@ -8,70 +8,24 @@
 
     <div class="asset-management-list-item-icon">
         <div class="asset-management-list-item-icon-inner">
-            {{#ifValueEquals type "image"}}
-            <i class="fa fa-file-image-o"></i>
-            {{/ifValueEquals}}
-
-            {{#ifValueEquals type "audio"}}
-            <i class="fa fa-file-audio-o"></i>
-            {{/ifValueEquals}}
-
-            {{#ifValueEquals type "video"}}
-            <i class="fa fa-file-video-o"></i>
-            {{/ifValueEquals}}
-
-            {{#ifValueEquals type "other"}}
-            <i class="fa fa-file-o"></i>
-            {{/ifValueEquals}}
+            <i class="fa {{iconName}}"></i>
         </div>
     </div>
-
-    {{#ifValueEquals type "image"}}
-        {{#if metadata}}
-        <div class="asset-management-list-item-image" style="background-image:url(api/assets/serve/{{_id}}?thumb=true&{{timestring updatedAt}})">
+    
+    <div class="asset-management-list-item-image">
+        {{#if hasThumb}}
+            <div class="asset-management-list-item-image" style="background-image:url(api/assets/serve/{{_id}}?thumb=true&{{timestring updatedAt}})"></div>
         {{else}}
-        <div class="asset-management-list-item-image">
-            <i class="fa fa-file-image-o"></i>
-        </div>
+            <i class="fa {{iconName}}"></i>
         {{/if}}
     </div>
-    {{/ifValueEquals}}
-
-    {{#ifValueEquals type "video"}}
-        {{#if metadata}}
-        <div class="asset-management-list-item-image" style="background-image:url(api/assets/serve/{{_id}}?thumb=true&{{timestring updateAt}})">
-        {{else}}
-        <div class="asset-management-list-item-image">
-            <i class="fa fa-file-video-o"></i>
-        </div>
-        {{/if}}
-    </div>
-    {{/ifValueEquals}}
-
-    {{#ifValueEquals type "audio"}}
-    <div class="asset-management-list-item-image">
-        <i class="fa fa-file-audio-o"></i>
-    </div>
-    {{/ifValueEquals}}
-
-    {{#ifValueEquals type "other"}}
-    <div class="asset-management-list-item-image">
-        <i class="fa fa-file-o"></i>
-    </div>
-    {{/ifValueEquals}}
-
+    
     <div class="asset-management-list-item-details">
-
         <div class="asset-management-list-item-details-inner">
-
-        <div class="asset-management-list-item-title">
-            <h4 class="asset-management-list-item-title-inner">{{title}}</h4>
+            <div class="asset-management-list-item-title">
+                <h4 class="asset-management-list-item-title-inner">{{title}}</h4>
+            </div>
         </div>
-
-        </div>
-
-
-
     </div>
 
 </div>
