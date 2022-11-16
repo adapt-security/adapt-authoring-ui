@@ -70,14 +70,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         $('body').addClass('no-ui');
         Origin.trigger('remove:views');
       }
-      var cb = hideUI ? this.navigateToLogin : this.navigateToHome;
-
       Origin.Notify.alert({
         type: 'error',
         title: Origin.l10n.t('app.errorpagenoaccesstitle'),
         text: message || Origin.l10n.t('app.errorpagenoaccess'),
         confirmButtonText: Origin.l10n.t('app.ok'),
-        callback: cb.bind(this)
+        callback: this.navigateToLogin.bind(this)
       });
     },
 
