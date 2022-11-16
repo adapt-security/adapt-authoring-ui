@@ -2,8 +2,8 @@
 define(function(require) {
   var Origin = require('core/origin');
   var AssetCollection = require('./collections/assetCollection');
-  var AssetManagementNewAssetView = require('./views/assetManagementNewAssetView');
-  var AssetManagementNewAssetSidebarView = require('./views/assetManagementNewAssetSidebarView');
+  var AssetManagementEditAssetView = require('./views/assetManagementEditAssetView');
+  var AssetManagementEditAssetSidebarView = require('./views/assetManagementEditAssetSidebarView');
   var AssetManagementSidebarView = require('./views/assetManagementSidebarView');
   var AssetManagementView = require('./views/assetManagementView');
   var AssetModel = require('./models/assetModel');
@@ -36,7 +36,6 @@ define(function(require) {
       filterData: {}
     };
     if(!location) return loadAssetsView();
-    if(location === 'new') return loadNewAssetView();
     if(subLocation === 'edit') loadEditAssetView(location);
   });
 
@@ -58,21 +57,19 @@ define(function(require) {
     });
   }
 
-  function loadNewAssetView() {
-    Origin.trigger('location:title:update', { title: Origin.l10n.t('app.newasset')});
-    Origin.sidebar.addView(new AssetManagementNewAssetSidebarView().$el);
-    Origin.contentPane.setView(AssetManagementNewAssetView, { model: new AssetModel });
-  }
-
-  function loadEditAssetView(location) {
-    // Fetch existing asset model
-    (new AssetModel({ _id: location })).fetch({
-      success: function(model) {
-        Origin.trigger('location:title:update', { title: Origin.l10n.t('app.editasset')});
-        Origin.sidebar.addView(new AssetManagementNewAssetSidebarView().$el);
-        Origin.contentPane.setView(AssetManagementNewAssetView, { model: model });
-      },
-      error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
-    });
+  async function loadEditAssetView(location) {
+    const isNew = location !== undefined;
+    const model = new AssetModel({ _id: location });
+    const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
+    Origin.trigger('location:title:update', { title });
+    if(!isNew) {
+      try {
+        await model.fetch();
+      } catch(e) {
+        Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
+      }
+    }
+    Origin.sidebar.addView(new AssetManagementEditAssetSidebarView().$el);
+    Origin.contentPane.setView(AssetManagementEditAssetView, { model });
   }
 });

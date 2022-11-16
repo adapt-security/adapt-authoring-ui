@@ -4,14 +4,14 @@ define([
   'core/views/originView',
   'modules/scaffold/views/scaffoldFileView'
 ], function(Origin, OriginView, ScaffoldFileView){
-  var AssetManagementNewAssetView = OriginView.extend({
-    className: 'asset-management-new-asset',
+  var AssetManagementEditAssetView = OriginView.extend({
+    className: 'asset-management-edit-asset',
     events: {
       'change .scaffold-file': 'updateTitle',
     },
 
     preRender: function() {
-      this.listenTo(Origin, 'assetManagement:newAsset', this.save);
+      this.listenTo(Origin, 'assetManagement:editAsset', this.save);
     },
 
     postRender: async function() {
@@ -106,8 +106,8 @@ define([
     }
 
   }, {
-    template: 'assetManagementNewAsset'
+    template: 'assetManagementEditAsset'
   });
 
-  return AssetManagementNewAssetView;
+  return AssetManagementEditAssetView;
 });
