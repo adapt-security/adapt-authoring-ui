@@ -21,7 +21,7 @@ define(function(require) {
     var model = Origin.sessionModel;
     var settings = {};
     var query = {};
-    
+
     if(location.indexOf('reset') === 0) { // hack fix this
       $('body').removeClass(`location-${location}`);
       try {
@@ -34,6 +34,7 @@ define(function(require) {
 
     switch(location) {
       case 'login':
+        if(model.get('isAuthenticated')) return Origin.router.navigateToHome();
         Origin.trigger('location:title:hide');
         currentView = LoginView;
         break;
