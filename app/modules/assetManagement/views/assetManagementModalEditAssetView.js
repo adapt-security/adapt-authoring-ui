@@ -2,14 +2,14 @@
 define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var AssetManagementNewAssetView = require('modules/assetManagement/views/assetManagementNewAssetView');
+  var assetManagementModalEditAssetView = require('modules/assetManagement/views/assetManagementModalEditAssetView');
 
-  var AssetManagementModalNewAssetView = OriginView.extend({
+  var assetManagementModalEditAssetView = OriginView.extend({
     className: 'asset-management-modal-new-asset',
 
     events: {
-      'click .asset-management-modal-new-asset-save': 'onSaveClicked',
-      'click .asset-management-modal-new-asset-cancel': 'onCancelClicked'
+      'click .asset-management-modal-edit-asset-save': 'onSaveClicked',
+      'click .asset-management-modal-edit-asset-cancel': 'onCancelClicked'
     },
 
     postRender: function() {
@@ -34,5 +34,5 @@ define(function(require){
     template: 'assetManagementModalNewAsset'
   });
 
-  return AssetManagementModalNewAssetView;
+  return assetManagementModalEditAssetView;
 });
