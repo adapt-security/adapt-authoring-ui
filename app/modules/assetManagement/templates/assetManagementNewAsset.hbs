@@ -1,5 +1,5 @@
 <div class="asset-management-new-asset-inner">
-    {{#if _id}}
+    {{#if hasThumb}}
         <div class="asset-thumb">
             <img src="/api/assets/serve/{{_id}}?thumb=true&{{timestring updatedAt}}"></img>
         </div>
