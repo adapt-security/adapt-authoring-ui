@@ -2,7 +2,7 @@
 define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var assetManagementModalEditAssetView = require('modules/assetManagement/views/assetManagementModalEditAssetView');
+  var assetManagementEditAssetView = require('modules/assetManagement/views/assetManagementEditAssetView');
 
   var assetManagementModalEditAssetView = OriginView.extend({
     className: 'asset-management-modal-new-asset',
@@ -13,7 +13,7 @@ define(function(require){
     },
 
     postRender: function() {
-      this.childView = new AssetManagementNewAssetView({ model: this.model });
+      this.childView = new assetManagementEditAssetView({ model: this.model });
       this.childView.onSaveSuccess = () => {
         Origin.trigger('assetManagement:collection:refresh');
         this.remove();
@@ -31,7 +31,7 @@ define(function(require){
       this.remove();
     }
   }, {
-    template: 'assetManagementModalNewAsset'
+    template: 'assetManagementModalEditAsset'
   });
 
   return assetManagementModalEditAssetView;
