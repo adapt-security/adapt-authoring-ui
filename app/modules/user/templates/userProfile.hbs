@@ -54,10 +54,9 @@
                   <p>{{t 'app.reauthrequiredonnewpass'}}</p>
                   <label for="password">{{t 'app.newpassword'}}
                     <span class="req">*</span>
-                    <span id="passwordError" class="error feedback"></span>
                   </label>
+                  <div id="passwordFeedback" class="display-none"></div>
                   <input type="password" class="width-15" id="password" value="" autocomplete="off">
-                  <input type="text" class="width-15 display-none" id="passwordText" value="" autocomplete="off">
                   <button href="#" class="toggle-password display-none"><i class="fa fa-eye"></i></button>
                 </div>
                 <a href="#" class="btn primary change-password">{{t 'app.changepassword'}}</a>

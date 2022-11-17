@@ -40,4 +40,10 @@
             }
         }
     }
+
+    #passwordFeedback {
+        .feedback;
+    }
+    #passwordFeedback.error { background-color: @alert-color; border-color: darken(@alert-color, 20%); }
+    #passwordFeedback.success { background-color: @success-color; border-color: darken(@success-color, 20%); }
 }

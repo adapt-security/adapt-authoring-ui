@@ -65,40 +65,24 @@ define(function(require){
       }
     },
 
-    togglePasswordView: function() {
+    togglePasswordView: function(event) {
       event && event.preventDefault();
-
-      this.$('#passwordText').toggleClass('display-none');
-      this.$('#password').toggleClass('display-none');
+      const isHidden = this.$('#password').attr('type') === 'password';
+      this.$('#password').attr('type', isHidden ? 'text' : 'password');
       this.$('.toggle-password i').toggleClass('fa-eye').toggleClass('fa-eye-slash');
     },
 
-    indicatePasswordStrength: function(event) {
-      var password = $('#password').val();
-      var $passwordStrength = $('#passwordError');
-
-      // Must have capital letter, numbers and lowercase letters
-      var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-      // Must have either capitals and lowercase letters or lowercase and numbers
-      var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-      // Must be at least 8 characters long
-      var okRegex = new RegExp("(?=.{8,}).*", "g");
-
-      if (okRegex.test(password) === false) {
-        var classes = 'alert alert-error';
-        var htmlText = Origin.l10n.t('app.validationlength', {length: 8});
-      } else if (strongRegex.test(password)) {
-        var classes = 'alert alert-success';
-        var htmlText = Origin.l10n.t('app.passwordindicatorstrong');
-      } else if (mediumRegex.test(password)) {
-        var classes = 'alert alert-info';
-        var htmlText = Origin.l10n.t('app.passwordindicatormedium');
-      } else {
-        var classes = 'alert alert-info';
-        var htmlText = Origin.l10n.t('app.passwordindicatorweak');
+    indicatePasswordStrength: async function(password) {
+      if(!password.length) {
+        return this.$('#passwordFeedback').addClass('display-none');
       }
-
-      $passwordStrength.removeClass().addClass(classes).html(htmlText);
+      let successMsg, errorMsg;
+      try {
+        successMsg = (await $.post('api/auth/local/validatepass', { password })).message;
+      } catch(e) {
+        errorMsg = e.responseJSON.message;
+      }
+      $('#passwordFeedback').removeClass().addClass(errorMsg ? 'error' : 'success').html(errorMsg || successMsg);
     },
 
     saveUser: function() {
@@ -143,13 +127,11 @@ define(function(require){
     },
 
     onPasswordKeyup: function() {
-      if(this.$('#password').val().length > 0) {
-        this.$('#passwordText').val(this.$('#password').val());
-        this.indicatePasswordStrength();
-        this.$('.toggle-password').removeClass('display-none');
-      } else {
-        this.$('.toggle-password').addClass('display-none');
-      }
+      const password = this.$('#password').val();
+      this.$('.toggle-password').toggleClass('display-none', !password.length);
+      // only check password at set intervals to reduce API calls
+      clearTimeout(this.updatePasswordTimeout);
+      this.updatePasswordTimeout = setTimeout(async () => await this.indicatePasswordStrength(password), 500);
     }
   }, {
     template: 'userProfile'
