@@ -79,8 +79,9 @@ define(function(require){
       let successMsg, errorMsg;
       try {
         successMsg = (await $.post('api/auth/local/validatepass', { password })).message;
-      } catch(e) {
-        errorMsg = e.responseJSON.message;
+      } catch(e) { // format the API error message to look a bit nicer in the UI
+        const [message, errors] = e.responseJSON.message.split('. ');
+        errorMsg = `${message}:<ul>${errors.split(', ').map(e => `<li>${e}</li>`).join('')}</ul>`;
       }
       $('#passwordFeedback').removeClass().addClass(errorMsg ? 'error' : 'success').html(errorMsg || successMsg);
     },
