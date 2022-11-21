@@ -7,7 +7,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node ./npm_hooks/postinstall"
+    "postinstall": "node ./npm_hooks/postinstall.js"
   },
   "repository": "github:adapt-security/adapt-authoring-ui",
   "dependencies": {
