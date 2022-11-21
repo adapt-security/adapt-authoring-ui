@@ -2,6 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "buildDir": {
+      "description": "Location of UI build files",
+    	"type": "string",
+      "default": "$TEMP/ui-build"
+    },
     "ckEditor": {
       "description": "WYSIWYG editor configuration",
     	"type": "object",
