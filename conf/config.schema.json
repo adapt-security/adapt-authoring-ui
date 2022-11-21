@@ -5,6 +5,7 @@
     "buildDir": {
       "description": "Location of UI build files",
     	"type": "string",
+      "isDirectory": true,
       "default": "$TEMP/ui-build"
     },
     "ckEditor": {
