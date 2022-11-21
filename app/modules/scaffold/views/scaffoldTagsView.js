@@ -1,4 +1,4 @@
-define([ 'core/origin', 'backbone-forms' ], function(Origin, BackboneForms) {
+define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
   var ScaffoldTagsView = Backbone.Form.editors.Base.extend({
     tagName: 'input',
     className: 'scaffold-tags',

@@ -1,6 +1,6 @@
 define([
   'core/origin',
-  'backbone-forms'
+  'backboneForms'
 ], function(Origin, BackboneForms) {
 
   var templates = Handlebars.templates;

@@ -1,6 +1,6 @@
 define([
   'core/origin',
-  'backbone-forms',
+  'backboneForms',
   'core/helpers',
   './scaffoldAssetView',
   'modules/assetManagement/views/assetManagementModalView',

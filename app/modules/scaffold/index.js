@@ -1,8 +1,8 @@
 define([
   'core/origin',
   'core/helpers',
-  'backbone-forms',
-  'backbone-forms-lists',
+  'backboneForms',
+  'backboneFormsLists',
   './backboneFormsOverrides',
   './views/scaffoldAssetItemView',
   './views/scaffoldAssetView',

@@ -1,5 +1,5 @@
 define([
-  'backbone-forms',
+  'backboneForms',
   'core/origin'
 ], function(BackboneForms, Origin) {
     var ScaffoldFileView = Backbone.Form.editors.Base.extend({

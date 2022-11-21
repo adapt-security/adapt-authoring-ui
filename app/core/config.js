@@ -2,8 +2,8 @@
 require.config({
   paths: {
     backbone: 'libraries/backbone',
-    'backbone-forms': 'libraries/backbone-forms',
-    'backbone-forms-lists': 'libraries/backbone-forms-lists',
+    backboneForms: 'libraries/backbone-forms',
+    backboneFormsLists: 'libraries/backbone-forms-lists',
     handlebars: 'libraries/handlebars',
     imageReady: 'libraries/imageReady',
     inview: 'libraries/inview',
@@ -29,11 +29,11 @@ require.config({
       deps: ['underscore','jquery'],
       exports: 'Backbone'
     },
-    'backbone-forms': {
+    backboneForms: {
       deps: ['backbone']
     },
-    'backbone-forms-lists': {
-      deps: ['backbone-forms']
+    backboneFormsLists: {
+      deps: ['backboneForms']
     },
     handlebars: {
       exports: 'Handlebars'
