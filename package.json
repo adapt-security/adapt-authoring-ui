@@ -6,6 +6,9 @@
   "license": "GPL-3.0",
   "type": "module",
   "main": "index.js",
+  "scripts": {
+    "postinstall": "node ./npm_hooks/postinstall"
+  },
   "repository": "github:adapt-security/adapt-authoring-ui",
   "dependencies": {
     "@babel/core": "^7.16.0",

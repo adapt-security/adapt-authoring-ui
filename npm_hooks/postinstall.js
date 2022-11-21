@@ -1,0 +1,1 @@
+console.log('UI postinstall', process.cwd());
