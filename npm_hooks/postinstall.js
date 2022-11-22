@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import path from 'path';
 
-fs.writeFile(path.resolve(__dirname, `../../.rebuild-ui`), ' ')
+fs.writeFile(new URL(`../../.rebuild-ui`, import.meta.url), ' ')
   .catch(console.log);
