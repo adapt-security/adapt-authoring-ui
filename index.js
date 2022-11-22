@@ -1,1 +1,1 @@
-export { default } from './lib/UIModule.js';
+export { default } from './lib/UiModule.js';
