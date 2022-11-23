@@ -1,4 +1,4 @@
-define(['core/origin', 'libraries/spectrum/spectrum'], function(Origin) {
+define(['core/origin', 'spectrum'], function(Origin) {
   var ScaffoldColourPickerView = Backbone.Form.editors.Base.extend({
     tagName: 'input',
     className: 'scaffold-colour-picker',

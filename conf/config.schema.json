@@ -8,6 +8,12 @@
       "isDirectory": true,
       "default": "$TEMP/ui-build"
     },
+    "srcDir": {
+      "description": "Location of UI source files",
+    	"type": "string",
+      "isDirectory": true,
+      "default": "$TEMP/ui-src"
+    },
     "ckEditor": {
       "description": "WYSIWYG editor configuration",
     	"type": "object",
