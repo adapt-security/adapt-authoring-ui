@@ -14,7 +14,6 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
-    "adapt-authoring-uilibs": "github:adapt-security/adapt-authoring-uilibs",
     "fs-extra": "^10.0.0",
     "glob": "^7.2.0",
     "handlebars": "^4.7.7",
