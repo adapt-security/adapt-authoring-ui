@@ -1,4 +1,4 @@
-define(['jquery', 'underscore', 'backbone', 'backbone-forms'], function($, _, Backbone) {
+define(['jquery', 'underscore', 'backbone', 'backboneForms'], function($, _, Backbone) {
 
   ;(function(Form) {
 
