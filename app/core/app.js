@@ -3,14 +3,12 @@
   function loadLibraries(callback) {
     require([
       'handlebars',
-      'aceEditor',
-      'babelPolyfill',
-      'ckEditor',
       'imageReady',
       'inview',
       'jqueryForm',
       'jqueryTagsInput',
-      'jqueryUi',
+      'jqueryUI',
+      'polyfill',
       'scrollTo',
       'selectize',
       'velocity'
