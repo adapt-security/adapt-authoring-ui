@@ -36,7 +36,7 @@ define(function(require) {
       filterData: {}
     };
     if(!location) return loadAssetsView();
-    if(subLocation === 'edit') loadEditAssetView(location);
+    loadEditAssetView(subLocation === 'edit' ? location : undefined);
   });
 
   function loadAssetsView() {
@@ -58,7 +58,7 @@ define(function(require) {
   }
 
   async function loadEditAssetView(location) {
-    const isNew = location !== undefined;
+    const isNew = location === undefined;
     const model = new AssetModel({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
     Origin.trigger('location:title:update', { title });
