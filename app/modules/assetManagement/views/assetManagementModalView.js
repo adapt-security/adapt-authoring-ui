@@ -22,9 +22,10 @@ define(function(require) {
     },
 
     setupSubViews: function() {
+      const types = this.options.assetType ? [this.options.assetType] : undefined;
       var view = new AssetManagementCollectionView({
         collection: this.collection,
-        types: [this.options.assetType],
+        types,
         isModal: true
       });
       this.$('.asset-management-assets-container-inner').append(view.$el);
