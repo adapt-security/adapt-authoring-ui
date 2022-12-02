@@ -1,5 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var CourseModel = require('core/models/courseModel');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var ProjectView = require('./projectView');
@@ -76,24 +77,15 @@ define(function(require){
         clearTimeout(this.resizeTimer);
         this.resizeTimer = -1;
       }
-      this.collection.queryOptions.limit = 1;
-      this.resetCollection(() => {
-        if(!this.collection.length) { // no results, so nothing to do
-          return this.setViewToReady();
-        }
-        var containerHeight = $(window).height()-this.$el.offset().top;
-        var containerWidth = this.$('.projects-inner').width();
-        var itemHeight = $('.project-list-item').outerHeight(true);
-        var itemWidth = $('.project-list-item').outerWidth(true);
-        var columns = Math.floor(containerWidth/itemWidth);
-        var rows = Math.floor(containerHeight/itemHeight);
-        // columns stack nicely, but need to add extra row if it's not a clean split
-        if((containerHeight % itemHeight) > 0) rows++;
-        this.collection.queryOptions.limit = columns*rows;
-        // need another reset to get the actual pageSize number of items
-        this.resetCollection();
-        this.setViewToReady();
-      });
+      var $item = new ProjectView({ model: new CourseModel() }).$el;
+      var containerHeight = $(window).height()-this.$el.offset().top;
+      var itemHeight = $item.outerHeight(true);
+      var columns = Math.floor(this.$('.projects-inner').width()/$item.outerWidth(true));
+      var rows = Math.floor(containerHeight/itemHeight);
+      // columns stack nicely, but need to add extra row if it's not a clean split
+      if((containerHeight % itemHeight) > 0) rows++;
+      this.collection.queryOptions.limit = columns*rows;
+      this.resetCollection(this.setViewToReady);
     },
 
     getProjectsContainer: function() {

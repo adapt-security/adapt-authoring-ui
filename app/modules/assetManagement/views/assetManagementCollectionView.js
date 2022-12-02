@@ -3,6 +3,7 @@ define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var AssetItemView = require('./assetManagementItemView');
+  var AssetModel = require('../models/assetModel');
   var TagsCollection = require('core/collections/tagsCollection');
 
   var AssetCollectionView = OriginView.extend({
@@ -54,20 +55,15 @@ define(function(require){
     },
 
     initPaging: function() {
-      this.resetCollection(_.bind(function(collection) {
-        collection.forEach(this.appendAssetItem, this);
-        var containerHeight = $('.asset-management-assets-container').outerHeight();
-        var containerWidth = $('.asset-management-assets-container').outerWidth();
-        var itemHeight = $('.asset-management-list-item').outerHeight(true);
-        var itemWidth = $('.asset-management-list-item').outerWidth(true);
-        var columns = Math.floor(containerWidth/itemWidth);
-        var rows = Math.floor(containerHeight/itemHeight);
-        // columns stack nicely, but need to add extra row if it's not a clean split
-        if((containerHeight % itemHeight) > 0) rows++;
-        this.pageSize = columns*rows;
-        // need another reset to get the actual pageSize number of items
-        this.resetCollection(this.setViewToReady);
-      }, this));
+      var $item = new AssetItemView({ model: new AssetModel() }).$el;
+      var containerHeight = $('.asset-management-assets-container').outerHeight();
+      var itemHeight = $item.outerHeight(true);
+      var columns = Math.floor($('.asset-management-assets-container').outerWidth()/$item.outerWidth(true));
+      var rows = Math.floor(containerHeight/itemHeight);
+      // columns stack nicely, but need to add extra row if it's not a clean split
+      if((containerHeight % itemHeight) > 0) rows++;
+      this.pageSize = columns*rows;
+      this.resetCollection(this.setViewToReady);
     },
 
     appendAssetItem: function (asset) {
