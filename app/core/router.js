@@ -15,6 +15,10 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       Origin.router = this;
       Origin.trigger('router:initialize');
       this.locationKeys = ['module', 'route1', 'route2', 'route3', 'route4'];
+
+      const homeRoute = Origin.sessionModel.hasScopes('read:content') ? 'dashboard' : 'limiteduser';
+      Origin.router.setHomeRoute(homeRoute);
+
       this.resetLocation();
       Origin.on('origin:dataReady', () => Backbone.history.start());
     },

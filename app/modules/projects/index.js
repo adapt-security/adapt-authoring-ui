@@ -82,6 +82,5 @@ define(function(require) {
       "callbackEvent": "dashboard:open",
       "sortOrder": 1
     });
-    Origin.router.setHomeRoute('dashboard');
   });
 });
