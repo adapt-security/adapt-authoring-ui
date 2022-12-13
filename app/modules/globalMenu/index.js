@@ -17,12 +17,10 @@ define(function(require) {
         constructor() {
             this.itemStore.comparator = 'sortOrder';
             
-            Origin.on('login:changed', function() {
-                if(!Origin.sessionModel.get('isAuthenticated')) this.itemStore.remove(this.itemStore.models);
-            });
-            Origin.on('origin:dataReady', this.renderButton.bind(this));
+            Origin.on('navigation:postRender', this.renderButton.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
-            $('#app, .sidebar, .navigation').click(this.close.bind(this));
+            $('#app, .sidebar, .navigation').on('click', this.close.bind(this));
+            this.itemStore.on('update', this.renderButton.bind(this));
         }
         renderButton() {
             if(!this.itemStore.length) {
@@ -30,7 +28,7 @@ define(function(require) {
             }
             var $btn = $(Handlebars.partials.part_globalMenuButton());
             $('.navigation .navigation-left').prepend($btn);
-            $btn.click(this.onButtonClick.bind(this));
+            $btn.on('click', this.onButtonClick.bind(this));
         }
         addItem(item, isSubItem) {
             const isValid = this.validateItem(item, isSubItem);
@@ -47,21 +45,17 @@ define(function(require) {
             if (!this.itemStore.findWhere({ text: item.text })) this.itemStore.add(item);
         }
         validateItem(item, isSubItem = false) {
-            const hasAttributes = (...keys) => keys.all(k => item.hasOwnProperty(k));
-            const keys = ['location', 'text', 'icon', ['callback', 'callbackEvent']];
+            const keys = ['location', 'text', 'icon', ['callback', 'callbackEvent', 'route']];
             if(isSubItem) keys.push('parent');
-            keys.forEach(attr => {
+            for (const k of keys) {
                 const errorMsg = 'Cannot add global menu item,';
-                if(Array.isArray(attr)) {
-                    if(!hasAttributes(...attr)) return console.log(errorMsg, `must define one of: ${attr.join(', ')}`);
+                if(Array.isArray(k)) {
+                    if(!k.some(k2 => item.hasOwnProperty(k2))) return console.log(errorMsg, `must define one of: ${k.join(', ')}`);
+                    return;
                 }
-                if(!hasAttributes(attr)) return console.log(errorMsg, `missing ${attr}`);
-            });
-        }
-        onButtonClick(event) {
-            event.preventDefault();
-            this.isOpen ? this.close() : this.open();
-            $(event.currentTarget).toggleClass('open', this.isOpen);
+                if(!item.hasOwnProperty(k)) return console.log(errorMsg, `missing ${k}`);
+            }
+            return true;
         }
         open() {
             this.isOpen = true;
@@ -73,8 +67,12 @@ define(function(require) {
             }
             $('#app, .sidebar').off('click');
             this.isOpen = false;
-            // Trigger event to remove the globalMenuView
             Origin.trigger('globalMenu:globalMenuView:remove');
+        }
+        onButtonClick(event) {
+            event.preventDefault();
+            this.isOpen ? this.close() : this.open();
+            $(event.currentTarget).toggleClass('open', this.isOpen);
         }
     };
 
