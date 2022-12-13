@@ -72,7 +72,7 @@ define(function(require) {
         onButtonClick(event) {
             event.preventDefault();
             this.isOpen ? this.close() : this.open();
-            $(event.currentTarget).toggleClass('open', this.isOpen);
+            $('#global-menu-icon').toggleClass('open', this.isOpen);
         }
     };
 
