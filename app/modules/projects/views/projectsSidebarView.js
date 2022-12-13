@@ -50,11 +50,11 @@ define(function(require) {
     },
 
     gotoMyCourses: function() {
-      Origin.router.navigateTo('dashboard');
+      Origin.router.navigateTo('projects');
     },
 
     gotoSharedCourses: function() {
-      Origin.router.navigateTo('dashboard/shared');
+      Origin.router.navigateTo('projects/shared');
     },
 
     filterProjectsByTitle: function(event, filter) {
