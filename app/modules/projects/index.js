@@ -72,16 +72,7 @@ define(function(require) {
     Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags });
   });
 
-  Origin.on('globalMenu:dashboard:open', () => Origin.router.navigateTo('dashboard'));
-
   Origin.on('router:initialize login:changed', function() {
-    Origin.globalMenu.addItem({
-      "location": "global",
-      "text": Origin.l10n.t('app.dashboard'),
-      "icon": "fa-home",
-      "callbackEvent": "dashboard:open",
-      "sortOrder": 1
-    });
     Origin.router.addDashboardHandler(() => {
       if(Origin.sessionModel.hasScopes(['read:content'])) return 'projects';
     });

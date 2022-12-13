@@ -8,7 +8,15 @@ define(function(require) {
     var GlobalMenu = {};
     var _isActive = false;
     // Create GlobalMenu Store
-    var GlobalMenuStore = new Backbone.Collection();
+    var GlobalMenuStore = new Backbone.Collection([
+        {
+            location: "global",
+            text: Origin.l10n.t('app.dashboard'),
+            icon: "fa-home",
+            callback: () => Origin.router.navigateTo('dashboard'),
+            sortOrder: 1
+        }
+    ]);
     GlobalMenuStore.comparator = 'sortOrder';
 
     // Method for adding and item to the global menu
