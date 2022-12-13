@@ -129,7 +129,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     handleIndex: function() {
       Origin.trigger('origin:showLoading');
-      Origin.sessionModel.get('isAuthenticated') ? this.navigateToHome() : this.navigateToLogin();
+      Origin.sessionModel.get('isAuthenticated') ? this.navigateToDashboard() : this.navigateToLogin();
     },
 
     handleRoute: function(module, route1, route2, route3, route4) {
