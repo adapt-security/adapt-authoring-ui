@@ -6,6 +6,18 @@ define(function(require) {
   var PluginManagementSidebarView = require('./views/pluginManagementSidebarView');
   var PluginManagementUploadSidebarView = require('./views/pluginManagementUploadSidebarView');
 
+  var scopes = ["write:contentplugins"];
+  Origin.router.restrictRoute('pluginManagement', scopes);
+
+  Origin.globalMenu.addItem({
+    location: 'global',
+    text: Origin.l10n.t('app.pluginmanagement'),
+    icon: 'fa-plug',
+    route: 'pluginManagement',
+    sortOrder: 3,
+    scopes
+  });
+
   Origin.on('router:pluginManagement', function(location, subLocation, action) {
     if (!location) {
       location = 'extension';
@@ -17,25 +29,5 @@ define(function(require) {
       Origin.contentPane.setView(PluginManagementView, { pluginType: location });
       Origin.sidebar.addView(new PluginManagementSidebarView().$el);
     }
-  });
-
-  Origin.on('globalMenu:pluginManagement:open', function() {
-    Origin.router.navigateTo('pluginManagement');
-  });
-
-  Origin.on('origin:dataReady login:changed', function() {
-    var permissions = ["write:contentplugins"];
-    Origin.router.restrictRoute('pluginManagement', permissions);
-
-    if (!Origin.sessionModel.hasScopes(permissions)) {
-      return;
-    }
-    Origin.globalMenu.addItem({
-      location: 'global',
-      text: Origin.l10n.t('app.pluginmanagement'),
-      icon: 'fa-plug',
-      callbackEvent: 'pluginManagement:open',
-      sortOrder: 3
-    });
   });
 });

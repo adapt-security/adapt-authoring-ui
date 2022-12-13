@@ -9,26 +9,17 @@ define(function(require) {
   var AssetModel = require('./models/assetModel');
   var TagsCollection = require('core/collections/tagsCollection');
 
-  Origin.on('origin:dataReady login:changed', function() {
-    const permissions = ['write:assets'];
+  const scopes = ['write:assets'];
 
-    Origin.router.restrictRoute('assetManagement', permissions);
-    
-  	if (!Origin.sessionModel.hasScopes(permissions)) {
-      isReady = true;
-      return;
-    }
-    Origin.globalMenu.addItem({
-      "location": "global",
-      "text": Origin.l10n.t('app.assetmanagement'),
-      "icon": "fa-file-image-o",
-      "callbackEvent": "assetManagement:open",
-      "sortOrder": 2
-    });
-  });
+  Origin.router.restrictRoute('assetManagement', scopes);
 
-  Origin.on('globalMenu:assetManagement:open', function() {
-    Origin.router.navigateTo('assetManagement');
+  Origin.globalMenu.addItem({
+    "location": "global",
+    "text": Origin.l10n.t('app.assetmanagement'),
+    "icon": "fa-file-image-o",
+    "route": "assetManagement",
+    "sortOrder": 2,
+    "scopes": scopes
   });
 
   Origin.on('router:assetManagement', function(location, subLocation, action) {

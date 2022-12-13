@@ -10,32 +10,28 @@ define(function(require) {
   var allRoles = new Backbone.Collection();
   var userCollection = new UserCollection();
 
-  Origin.on('origin:dataReady login:changed', function() {
-    var permissions = ["write:users"];
+  var scopes = ["write:users"];
 
-    Origin.router.restrictRoute('userManagement', permissions);
-    
-  	if (!Origin.sessionModel.hasScopes(permissions)) {
-      isReady = true;
-      return;
-    }
+  Origin.router.restrictRoute('userManagement', permissions);
+  
+  Origin.globalMenu.addItem({
+    location: "global",
+    text: Origin.l10n.t('app.usermanagement'),
+    icon: "fa-users",
+    sortOrder: 3,
+    route: "userManagement",
+    scopes
+  });
+
+  Origin.on('origin:dataReady login:changed', function() {
     allRoles.on('sync', function() {
       isReady = true;
       Origin.trigger('userManagement:dataReady');
     });
     allRoles.url = 'api/roles';
     allRoles.fetch();
-
-    Origin.globalMenu.addItem({
-      "location": "global",
-      "text": Origin.l10n.t('app.usermanagement'),
-      "icon": "fa-users",
-      "sortOrder": 3,
-      "callbackEvent": "userManagement:open"
-    });
   });
-
-  Origin.on('globalMenu:userManagement:open', () => Origin.router.navigateTo('userManagement'));
+  
 
   Origin.on('router:userManagement', function(location, subLocation, action) {
     if(isReady) return onRoute(location, subLocation, action);
