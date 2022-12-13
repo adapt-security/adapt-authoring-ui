@@ -13,7 +13,7 @@ define(function(require) {
             location: "global",
             text: Origin.l10n.t('app.dashboard'),
             icon: "fa-home",
-            callback: () => Origin.router.navigateTo('dashboard'),
+            callback: Origin.router.navigateToDashboard,
             sortOrder: 1
         }
     ]);
