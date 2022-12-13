@@ -7,7 +7,8 @@ define(function(require) {
   var PluginManagementUploadSidebarView = require('./views/pluginManagementUploadSidebarView');
 
   var scopes = ["write:contentplugins"];
-  Origin.router.restrictRoute('pluginManagement', scopes);
+  
+  Origin.on('router:initialize', () => Origin.router.restrictRoute('pluginManagement', scopes));
 
   Origin.globalMenu.addItem({
     location: 'global',

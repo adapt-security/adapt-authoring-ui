@@ -12,7 +12,7 @@ define(function(require) {
 
   var scopes = ["write:users"];
 
-  Origin.router.restrictRoute('userManagement', permissions);
+  Origin.on('router:initialize', () => Origin.router.restrictRoute('userManagement', scopes));
   
   Origin.globalMenu.addItem({
     location: "global",

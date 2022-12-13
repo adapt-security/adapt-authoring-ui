@@ -11,7 +11,7 @@ define(function(require) {
 
   const scopes = ['write:assets'];
 
-  Origin.router.restrictRoute('assetManagement', scopes);
+  Origin.on('router:initialize', () => Origin.router.restrictRoute('assetManagement', scopes));
 
   Origin.globalMenu.addItem({
     "location": "global",
