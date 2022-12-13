@@ -21,7 +21,6 @@ define(function(require) {
                 if(!Origin.sessionModel.get('isAuthenticated')) this.itemStore.remove(this.itemStore.models);
             });
             Origin.on('origin:dataReady', this.renderButton.bind(this));
-            Origin.on('navigation:globalMenu:toggle',this.toggle.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
             $('#app, .sidebar, .navigation').click(this.close.bind(this));
         }
@@ -31,7 +30,7 @@ define(function(require) {
             }
             var $btn = $(Handlebars.partials.part_globalMenuButton());
             $('.navigation .navigation-left').prepend($btn);
-            $btn.click(() => Origin.trigger('navigation:globalMenu:toggle'));
+            $btn.click(this.onButtonClick.bind(this));
         }
         addItem(item, isSubItem) {
             const isValid = this.validateItem(item, isSubItem);
@@ -59,6 +58,11 @@ define(function(require) {
                 if(!hasAttributes(attr)) return console.log(errorMsg, `missing ${attr}`);
             });
         }
+        onButtonClick(event) {
+            event.preventDefault();
+            this.isOpen ? this.close() : this.open();
+            $(event.currentTarget).toggleClass('open', this.isOpen);
+        }
         open() {
             this.isOpen = true;
             $('.navigation').append(new GlobalMenuView({ collection: this.itemStore }).$el);
@@ -71,10 +75,6 @@ define(function(require) {
             this.isOpen = false;
             // Trigger event to remove the globalMenuView
             Origin.trigger('globalMenu:globalMenuView:remove');
-            $('#global-menu-icon').removeClass('open');
-        }
-        toggle() {
-            this.isOpen ? this.close() : this.open();
         }
     };
 
