@@ -39,7 +39,7 @@ define(function(require){
     },
 
     postRender: function() {
-
+      this.setViewToReady();
     },
 
     onReady: function() {
