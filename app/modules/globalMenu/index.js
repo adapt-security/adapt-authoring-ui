@@ -19,7 +19,7 @@ define(function(require) {
             
             Origin.on('navigation:postRender', this.renderButton.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
-            $('#app, .sidebar, .navigation').on('click', this.close.bind(this));
+            $(document).on('click', '#app,.sidebar,.navigation', this.close.bind(this));
             this.itemStore.on('update', this.renderButton.bind(this));
         }
         renderButton() {
@@ -65,12 +65,12 @@ define(function(require) {
             if(!this.isOpen) {
                 return;
             }
-            $('#app, .sidebar').off('click');
             this.isOpen = false;
             Origin.trigger('globalMenu:globalMenuView:remove');
         }
         onButtonClick(event) {
             event.preventDefault();
+            event.stopPropagation();
             this.isOpen ? this.close() : this.open();
             $('#global-menu-icon').toggleClass('open', this.isOpen);
         }
