@@ -23,6 +23,7 @@ define(function(require) {
             Origin.on('origin:dataReady', this.renderButton.bind(this));
             Origin.on('navigation:globalMenu:toggle',this.toggle.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
+            $('#app, .sidebar, .navigation').click(this.close.bind(this));
         }
         renderButton() {
             if(!this.itemStore.length) {
@@ -61,11 +62,11 @@ define(function(require) {
         open() {
             this.isOpen = true;
             $('.navigation').append(new GlobalMenuView({ collection: this.itemStore }).$el);
-            // Setup listeners to #app to remove menu when main page is clicked
-            // Cheeky little defer here to stop it creating a closing loop
-            _.defer(() => $('#app, .sidebar, .navigation').one('click', () => Origin.trigger('globalMenu:close')));
         }
         close() {
+            if(!this.isOpen) {
+                return;
+            }
             $('#app, .sidebar').off('click');
             this.isOpen = false;
             // Trigger event to remove the globalMenuView
