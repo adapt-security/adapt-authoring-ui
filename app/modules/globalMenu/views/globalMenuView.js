@@ -24,9 +24,11 @@ define(function(require) {
         },
 
         renderItem(item) {
+            var scopes = item.get('scopes');
+            var hasPermission = !scopes || Origin.sessionModel.hasScopes(scopes);
             var location = item.get('location');
-            var isSubItem = item.get('isSubItem');
-            if((location !== 'global' && location !== Origin.location.module) || isSubItem) {
+            var atItemLocation = location === 'global' || location === Origin.location.module;
+            if(!hasPermission || !atItemLocation || item.get('isSubItem')) {
                 return;
             }
             this.$('.global-menu-inner').append(new GlobalMenuItemView({ collection: this.collection, model: item }).$el);
