@@ -14,6 +14,9 @@ define(['require', 'backbone'], function(require, Backbone) {
     },
 
     hasScopes: function(scopes) {
+      if(!scopes) {
+        return false;
+      }
       var assignedScopes = this.get('scopes');
       if(this.get('isSuper')) {
         return true;
