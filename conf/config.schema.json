@@ -29,10 +29,14 @@
             "ENTER_DIV"
           ]
         },
+        "allowedContent": {
+          "description": "Allowed content rules",
+          "type": ["string", "boolean"],
+          "default": true
+        },
         "extraAllowedContent": {
           "description": "Additional allowed content rules",
-          "type": "string",
-          "default": "span(*)"
+          "type": "string"
         },
         "textStyles": {
           "description": "Custom block and inline styles which can be applied to content in the editor",
