@@ -13,11 +13,12 @@ define(function(require) {
       return;
     }
     Origin.on('router:frameworkImport', renderMainView);
-    Origin.on('dashboard:postRender', data => data.action !== 'edit' && renderPublishButton(data));
+    Origin.on('dashboard:postRender', data => data.action !== 'edit' && renderImportButton(data));
   });
 
-  function renderPublishButton(data) {
+  function renderImportButton(data) {
     var $btn = $(Handlebars.partials.part_frameworkImportButton());
+    $('.projects-sidebar-add-course').after($btn);
     $btn.click(() => Origin.router.navigateTo('frameworkImport'));
   }
 
