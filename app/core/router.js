@@ -2,20 +2,19 @@
 define(['underscore', 'backbone'], function(_, Backbone) {
   var Origin;
   var Router = Backbone.Router.extend({
-    homeRoute: '',
     routes: {
       '': 'handleIndex',
       '_=_': 'handleIndex',
       ':module(/*route1)(/*route2)(/*route3)(/*route4)': 'handleRoute'
     },
     restrictedRoutes: {},
+    dashboardHandlers: [],
 
     initialize: function(origin) {
       Origin = origin;
       Origin.router = this;
       Origin.trigger('router:initialize');
       this.locationKeys = ['module', 'route1', 'route2', 'route3', 'route4'];
-      this.dashboardHandlers = [];
       this.resetLocation();
       Origin.on('origin:dataReady', () => Backbone.history.start());
     },
