@@ -20,7 +20,7 @@ define(function(require) {
 
     goHome: function(e) {
       e && e.preventDefault();
-      Origin.router.navigateToHome();
+      Origin.router.navigateToDashboard();
     },
 
     handleEnterKey: function(e) {
@@ -57,7 +57,7 @@ define(function(require) {
         if(error) {
           return this.loginFailed(null, error.message);
         }
-        Origin.router.navigateToHome();
+        Origin.router.navigateToDashboard();
       });
     },
 

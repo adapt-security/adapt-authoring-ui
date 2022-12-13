@@ -6,7 +6,7 @@ define(function(require) {
   var ContentCollection = require('core/collections/contentCollection');
   var TagsCollection = require('core/collections/tagsCollection');
 
-  Origin.on('router:dashboard', function(location, subLocation, action) {
+  Origin.on('router:projects', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
     Origin.options.addItems([
       {
@@ -81,6 +81,9 @@ define(function(require) {
       "icon": "fa-home",
       "callbackEvent": "dashboard:open",
       "sortOrder": 1
+    });
+    Origin.router.addDashboardHandler(() => {
+      if(Origin.sessionModel.hasScopes(['read:content'])) return 'projects';
     });
   });
 });

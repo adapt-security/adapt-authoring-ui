@@ -63,7 +63,7 @@ define(function(require){
           $(".progress-bar").css("width", percentVal);
           $('.progress-percent').html(percentVal);
         },
-        success: () => Origin.router.navigateToHome(),
+        success: () => Origin.router.navigateToDashboard(),
         error: this.onAjaxError.bind(this)
       });
       return false;
@@ -205,11 +205,11 @@ define(function(require){
     },
 
     goBack: function() {
-      Origin.router.navigateToHome();
+      Origin.router.navigateToDashboard();
     },
 
     onFormSubmitSuccess: function(data, importStatus, importXhr) {
-      Origin.router.navigateToHome();
+      Origin.router.navigateToDashboard();
     },
 
     onAjaxError: function(data, status, error) {

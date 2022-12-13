@@ -34,7 +34,7 @@ define(function(require) {
 
     switch(location) {
       case 'login':
-        if(model.get('isAuthenticated')) return Origin.router.navigateToHome();
+        if(model.get('isAuthenticated')) return Origin.router.navigateToDashboard();
         Origin.trigger('location:title:hide');
         currentView = LoginView;
         break;

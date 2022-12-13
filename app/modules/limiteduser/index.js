@@ -6,4 +6,10 @@ define(function(require) {
   Origin.on('router:limiteduser', (location, subLocation, action) => {
     Origin.contentPane.setView(LimitedUserViewView);
   });
+
+  Origin.on('router:initialize login:changed', function() {
+    Origin.router.addDashboardHandler(() => {
+      if(!Origin.sessionModel.hasScopes(['read:content'])) return 'limiteduser';
+    });
+  });
 });

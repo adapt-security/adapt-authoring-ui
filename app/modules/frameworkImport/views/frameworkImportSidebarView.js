@@ -22,7 +22,7 @@ define(function(require) {
 
     goBack: function(event) {
       event && event.preventDefault();
-      Origin.router.navigateToHome();
+      Origin.router.navigateToDashboard();
     }
   }, {
 

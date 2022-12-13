@@ -15,10 +15,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       Origin.router = this;
       Origin.trigger('router:initialize');
       this.locationKeys = ['module', 'route1', 'route2', 'route3', 'route4'];
-
-      const homeRoute = Origin.sessionModel.hasScopes('read:content') ? 'dashboard' : 'limiteduser';
-      Origin.router.setHomeRoute(homeRoute);
-
+      this.dashboardHandlers = [];
       this.resetLocation();
       Origin.on('origin:dataReady', () => Backbone.history.start());
     },
@@ -43,9 +40,9 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     resetLocation: function() {
       Origin.location = {};
     },
-    // Allows modules/plugins to set a custom home route
-    setHomeRoute: function(url) {
-      this.homeRoute = url;
+    // Allows modules/plugins to customise dashboard routing
+    addDashboardHandler: function(handler) {
+      this.dashboardHandlers.push(handler);
     },
 
     restrictRoute: function(route, scopes) {
@@ -123,13 +120,12 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       this.navigateTo('user/login');
     },
 
-    navigateToHome: function() {
-      if(!this.homeRoute) {
-        console.trace('Router.navigateToHome: cannot load homepage, homeRoute not set');
-        return;
+    navigateToDashboard: function() {
+      for (const h of this.dashboardHandlers) {
+        const route = h();
+        if(route) return this.navigateTo(route);
       }
-      // use Origin.router.navigate in case we don't have a valid 'this' reference
-      this.navigateTo(this.homeRoute);
+      Origin.Notify.alert({ type: 'error', text: 'Router.navigateToDashboard: cannot load dashboard, no valid dashboard handler' });
     },
 
     handleIndex: function() {
