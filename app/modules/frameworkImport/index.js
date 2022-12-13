@@ -4,14 +4,25 @@ define(function(require) {
   var FrameworkImportView = require('./views/frameworkImportView.js');
   var FrameworkImportSidebarView = require('./views/frameworkImportSidebarView.js');
 
-  var data = { featurePermissions: ["import:adapt"] };
+  var featureScopes = ["import:adapt"];
 
-  Origin.on('origin:dataReady login:changed', function() {
-    Origin.router.restrictRoute('frameworkImport', data.featurePermissions);
+  Origin.on('origin:dataReady login:changed', function init() {
+    Origin.router.restrictRoute('frameworkImport', featureScopes);
+    
+    if(!Origin.sessionModel.hasScopes(featureScopes)) {
+      return;
+    }
+    Origin.on('router:frameworkImport', renderMainView);
+    Origin.on('dashboard:postRender', data => data.action !== 'edit' && renderPublishButton(data));
   });
 
-  Origin.on('router:frameworkImport', function() {
+  function renderPublishButton(data) {
+    var $btn = $(Handlebars.partials.part_frameworkImportButton());
+    $btn.click(() => Origin.router.navigateTo('frameworkImport'));
+  }
+
+  function renderMainView(location, subLocation, action) {
     Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model({ globalData: data }) });
     Origin.sidebar.addView(new FrameworkImportSidebarView().$el);
-  });
+  }
 });

@@ -10,7 +10,6 @@ define(function(require) {
 
     events: {
       'click .projects-sidebar-add-course': 'addCourse',
-      'click .projects-sidebar-import-course': 'importCourse',
       'click .projects-sidebar-my-courses': 'gotoMyCourses',
       'click .projects-sidebar-shared-courses': 'gotoSharedCourses',
       'click .sidebar-filter-clear': 'clearFilterInput',
@@ -48,10 +47,6 @@ define(function(require) {
 
     addCourse: function() {
       Origin.router.navigateTo('project/new');
-    },
-
-    importCourse: function() {
-      Origin.router.navigateTo('frameworkImport');
     },
 
     gotoMyCourses: function() {
