@@ -13,7 +13,7 @@ define(function(require) {
       return;
     }
     Origin.on('router:frameworkImport', renderMainView);
-    Origin.on('dashboard:postRender', data => data.action !== 'edit' && renderImportButton(data));
+    Origin.on('projects:postRender', data => data.action !== 'edit' && renderImportButton(data));
   });
 
   function renderImportButton(data) {
@@ -23,7 +23,7 @@ define(function(require) {
   }
 
   function renderMainView(location, subLocation, action) {
-    Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model({ globalData: data }) });
+    Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model() });
     Origin.sidebar.addView(new FrameworkImportSidebarView().$el);
   }
 });
