@@ -87,11 +87,14 @@ define(function(require) {
             event.preventDefault();
             // Set all active menu items to false
             this.collection.invoke('set', {"_isActive": false});
-            // Trigger callbacks
+            // Handle callback
             const callbackEvent = this.model.get('callbackEvent');
-            if(callbackEvent) Origin.trigger('globalMenu:' + this.model.get('callbackEvent'));
             const callback = this.model.get('callback');
+            const route = this.model.get('route');
+
+            if(route) Origin.router.navigateTo(route);
             if(callback) callback(this.model);
+            if(callbackEvent) Origin.trigger('globalMenu:' + this.model.get('callbackEvent'));
             // Trigger navigation toggle to close
             Origin.trigger('globalMenu:close');
         }
