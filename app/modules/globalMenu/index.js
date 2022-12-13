@@ -51,7 +51,7 @@ define(function(require) {
                 const errorMsg = 'Cannot add global menu item,';
                 if(Array.isArray(k)) {
                     if(!k.some(k2 => item.hasOwnProperty(k2))) return console.log(errorMsg, `must define one of: ${k.join(', ')}`);
-                    return;
+                    continue;
                 }
                 if(!item.hasOwnProperty(k)) return console.log(errorMsg, `missing ${k}`);
             }
