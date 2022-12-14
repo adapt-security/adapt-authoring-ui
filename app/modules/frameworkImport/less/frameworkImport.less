@@ -4,62 +4,7 @@
 @framework-import-amber: #ffa340;
 @framework-import-green: @secondary-color;
 
-button.frameworkimport-import:disabled {
-  opacity: 0.5;
-}
-
-.frameworkImport .inner {
-  .form-container-style;
-  padding: 30px;
-
-  .progress-container {
-    position:relative;
-    visibility:hidden;
-    width:76px;
-    height:10px;
-    background-color: @white;
-    border:1px solid black;
-    overflow: hidden;
-    border-radius: 8px;
-    margin: 10px 0;
-
-    .progress-bar {
-      width:0%;
-      background-color: @primary-color;
-      height:100%;
-      .progress-percent {
-        display: none;
-      }
-    }
-  }
-
-  .col-row {
-    display: flex;
-    align-items: center;
-  }
-
-  .tb-row .tb-col-inner {
-    padding: 0;
-  }
-
-  li {
-    margin-left: 0;
-    list-style: none;
-  }
-
-  .title {
-    padding-bottom: 30px;
-    font-size: 16px;
-    font-weight: @font-weight-bold;
-  }
-
-  form .form-group {
-    border: none;
-    .field-error {
-      padding-bottom: 5px;
-    }
-  }
-
+.frameworkImport {
   .summaryText {
     margin-bottom: 30px;;
     padding: 10px;
@@ -71,50 +16,67 @@ button.frameworkimport-import:disabled {
     text-align: center;
     border-radius: 3px;
   }
+  .inner {
+    .form-container-style;
+    padding: 30px;
 
-  .statusReport > div {
-    border-radius: 3px;
-    border: 1px solid;
-    margin-bottom: 20px;
-    h3 {
-      color: white;
-      padding: 15px;
-      font-size: 16px;
-    }
-    .messages {
-      padding: 10px 0;
-      > div {
-        padding: 5px 15px;
+    form .form-group {
+      border: none;
+      .field-error {
+        padding-bottom: 5px;
       }
     }
-    &.error {
-      border-color: @alert-color;
-      h3 { background-color: @alert-color; }
-    }
-    &.warn {
-      border-color: @warning-color;
-      h3 { background-color: @warning-color; }
-    }
-    &.info {
-      border-color: @info-color;
-      h3 { background-color: @info-color; }
-    }
-  }
+    
+    .content,
+    .versions {
+      margin-bottom: 20px;
+      h2 {
+        font-size: 16px;
+      }
+      table {
+        &.full-width { width: 100%; }
+        th { 
+          padding: 15px 10px;
+          font-size: 14px;
+        }
+        td { 
+          padding: 10px;
+          text-align: center; 
+        }
+        .left { text-align: left; }
+      }
 
-  .versions {
-    margin-bottom: 20px;
-    h2 {
-      font-size: 16px;
+      tr.NO_CHANGE { opacity: 0.7; }
+      tr.NOT_UPDATED { color: @primary-color; }
+      tr.UPDATED { color: @success-color; }
     }
-    table {
-      width: 100%;
-      th { 
+
+    .statusReport > div {
+      border-radius: 3px;
+      border: 1px solid;
+      margin-bottom: 20px;
+      h3 {
+        color: white;
         padding: 15px;
-        font-size: 14px;
+        font-size: 16px;
       }
-      td { 
-        padding: 10px;
-        text-align: center; 
+      .messages {
+        padding: 10px 0;
+        > div {
+          padding: 5px 15px;
+        }
+      }
+      &.error {
+        border-color: @alert-color;
+        h3 { background-color: @alert-color; }
+      }
+      &.warn {
+        border-color: @warning-color;
+        h3 { background-color: @warning-color; }
+      }
+      &.info {
+        border-color: @info-color;
+        h3 { background-color: @info-color; }
       }
     }
   }
