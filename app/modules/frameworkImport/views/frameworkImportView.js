@@ -41,7 +41,6 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
-          Origin.trigger('sidebar:resetButtons');
           $('button.frameworkimport.check').addClass('display-none');
           if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
           this.$el.html(Handlebars.templates.frameworkImportSummary(data));
