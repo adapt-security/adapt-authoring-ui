@@ -52,14 +52,14 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     },
     // Checks user permissions for route
     verifyRoute: function(mod, route1) {
+      // Authentication error
+      if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login')) {
+        return this.blockUserAccess(Origin.sessionModel.get('error'), true);
+      }
       // Check this user has permissions
       var requiredScopes = this.restrictedRoutes[Backbone.history.fragment];
       if(requiredScopes && !Origin.sessionModel.hasScopes(requiredScopes)) {
         return this.blockUserAccess();
-      }
-      // FIXME routes shouldn't be hard-coded
-      if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login')) {
-        return this.blockUserAccess(Origin.sessionModel.get('error'), true);
       }
       return true;
     },
