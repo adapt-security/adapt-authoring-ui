@@ -91,13 +91,16 @@ define(function(require) {
         .append(Handlebars.templates['sidebarUpdateButton']({updateText: updateText}))
         .addClass('sidebar-updating')
         .attr('disabled', true)
-        .find('span').eq(0).addClass('display-none');
+        .find('span:first-child').addClass('display-none');
     },
 
     resetButtons: function() {
-      var $buttonsSpans = this.$('.sidebar-updating').removeClass('sidebar-updating').attr('disabled', false).find('span');
-      $buttonsSpans.eq(0).removeClass('display-none');
-      $buttonsSpans.eq(1).remove();
+      const $spans = this.$('.sidebar-updating').removeClass('sidebar-updating').attr('disabled', false).find('span');
+      for (let i = 0; i < $spans.length; i++) {
+        const $s = $($spans[i]);
+        if($s.hasClass('display-none')) $s.removeClass('display-none');
+        else $s.remove();
+      }
     },
 
     animateViewIn: function() {
