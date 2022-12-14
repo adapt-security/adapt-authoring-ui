@@ -1,0 +1,10 @@
+{{#if data}}
+  <div class="{{type}}">
+    <h3>{{t 'app.frameworkimportstatustitle{{type}}'}}</h3>
+    <div class"messages">
+      {{#each data}}
+        <div>{{t 'app.{{this.code}}' this.data}}</div>
+      {{/each}}
+    </div>
+  </div>
+{{/if}}

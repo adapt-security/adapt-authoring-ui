@@ -1,9 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var FrameworkImportPluginHeadingView = require('./frameworkImportPluginHeadingView');
   var FrameworkImportPluginView = require('./frameworkImportPluginView');
+  var Helpers = require('core/helpers');
 
   var FrameworkImportView = OriginView.extend({
     tagName: 'div',
@@ -31,6 +33,11 @@ define(function(require){
       this.setViewToReady();
     },
 
+    renderSummary: function(summary) {
+      this.model = new Backbone.Model(summary);
+      this.constructor.template = 'frameworkImportSummary';
+    },
+
     isValid: function() {
       var uploadFile = this.$('.asset-file');
       var validated = true;
@@ -47,7 +54,7 @@ define(function(require){
       return validated;
     },
 
-    importCourse: function(sidebarView) {
+    importCourse: async function(sidebarView) {
       if(!this.isValid()) return;
       this.sidebarView = sidebarView;
       this.sidebarView.updateButton('.framework-import-sidebar-save-button', Origin.l10n.t('app.importing'));
@@ -55,8 +62,17 @@ define(function(require){
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
-      // submit form data
+      try {
+        const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun: true } });
+        this.renderSummary(data);
+      } catch(e) {
+        console.log(e);
+      }
+      /*
       this.$('form.frameworkImport').ajaxSubmit({
+        data: function() {
+          return $(this).serialize();
+        },
         uploadProgress: function(event, position, total, percentComplete) {
           $(".progress-container").css("visibility", "visible");
           var percentVal = percentComplete + '%';
@@ -66,6 +82,7 @@ define(function(require){
         success: () => Origin.router.navigateToDashboard(),
         error: this.onAjaxError.bind(this)
       });
+      */
       return false;
     },
 
@@ -83,7 +100,6 @@ define(function(require){
 
       // submit form data
       this.$('form.frameworkImport').ajaxSubmit({
-
         uploadProgress: function(event, position, total, percentComplete) {
           $(".progress-container").css("visibility", "visible");
           var percentVal = percentComplete + '%';
