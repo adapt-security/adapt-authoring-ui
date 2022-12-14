@@ -74,6 +74,7 @@ define([
         disableNativeSpellChecker: false,
         enterMode: CKEDITOR[config.enterMode],
         entities: false,
+        allowedContent: config.allowedContent,
         extraAllowedContent: config.extraAllowedContent,
         on: {
           change: function() {
