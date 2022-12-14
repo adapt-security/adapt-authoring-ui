@@ -41,7 +41,8 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
-          if(data.canImport) $('button.frameworkimport-import').removeAttr('disabled');
+          $('button.frameworkimport-check').addClass('display-none');
+          if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
           this.$el.html(Handlebars.templates.frameworkImportSummary(data));
         });
     },
@@ -53,7 +54,7 @@ define(function(require){
     },
 
     doImport: async function(dryRun = false) {
-      Origin.trigger('sidebar:updateButton', '.framework-import-sidebar-save-button', Origin.l10n.t('app.working'));
+      Origin.trigger('sidebar:updateButton', 'button.frameworkimport', Origin.l10n.t('app.working'));
 
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));

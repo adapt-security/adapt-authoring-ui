@@ -5,8 +5,8 @@ define(function(require) {
 
   var FrameworkImportSidebarView = SidebarItemView.extend({
     events: {
-      'click button.frameworkimport-check': 'check',
-      'click button.frameworkimport-import': 'import',
+      'click button.check': 'check',
+      'click button.import': 'import',
       'click button.cancel': 'goBack'
     },
 
