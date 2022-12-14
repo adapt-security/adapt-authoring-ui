@@ -333,8 +333,24 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       const soA = a._sortOrder || a.get('_sortOrder');
       const soB = b._sortOrder || b.get('_sortOrder');
       return soA > soB ? 1 : -1;
+    },
+
+    submitForm($form, options = {}) {
+      return new Promise(async (resolve, reject) => {
+        const body = new FormData($form[0]);
+        if(options.extendedData) Object.entries(options.extendedData).forEach(([attr, val]) => body.append(attr, val));
+        const res = await fetch($form.attr('action'), { method: $form.attr('method'), body });
+        if(res.status === 204) {
+          return resolve();
+        }
+        const data = await res.json();
+        if(res.status > 299) {
+          return reject(data);
+        }
+        resolve(data);
+      });
     }
-  };
+  }
 
   for(var name in helpers) {
     if(helpers.hasOwnProperty(name)) {
