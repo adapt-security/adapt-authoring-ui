@@ -1,5 +1,4 @@
 <div class="frameworkImport">
-  <div class="inner">
     <div class="summaryText {{#unless canImport}}error{{/unless}}">
       {{#if canImport}}
         {{t 'app.coursecanbeimported'}}
@@ -7,16 +6,33 @@
         {{t 'app.coursecannotbeimported'}}
       {{/if}}
     </div>
-    <p>See below for a summary of the course to be imported.</p>
+  <div class="inner">
+    <p>Find below a summary of the course being imported.</p>
     <div class="content">
       <h2>Content summary</h2>
-    </div>`
-    <div class="versions">
-      <h2>Plugin versions</h2>
       <table>
         <thead>
           <tr>
-            <th scope="col">Name</th>
+            <th class="left" scope="col">Content type</th>
+            <th scope="col">Number of items</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each content}}
+            <tr>
+              <td class="left" scope="col">{{@key}}</td>
+              <td scope="col">{{this}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="versions">
+      <h2>Plugin versions</h2>
+      <table class="full-width">
+        <thead>
+          <tr>
+            <th class="left" scope="col">Name</th>
             <th scope="col">Installed version</th>
             <th scope="col">Import version</th>
             <th scope="col">Status</th>
@@ -24,8 +40,8 @@
         </thead>
         <tbody>
           {{#each versions}}
-            <tr>
-              <td scope="col">{{name}}</td>
+            <tr class="{{status}}">
+              <td class="left" scope="col">{{name}}</td>
               <td scope="col">{{versions.[0]}}</td>
               <td scope="col">{{versions.[1]}}</td>
               <td scope="col">{{status}}</td>
