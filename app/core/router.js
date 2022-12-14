@@ -23,8 +23,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       // save the previous location
       Origin.previousLocation = Origin.location;
 
-      this.evaluateDashboardRoute();
-
       this.resetLocation();
       this.locationKeys.forEach((k,i) => Origin.location[k] = routeArgs[i]);
 
@@ -77,16 +75,6 @@ define(['underscore', 'backbone'], function(_, Backbone) {
         confirmButtonText: Origin.l10n.t('app.ok'),
         callback: this.navigateToLogin.bind(this)
       });
-    },
-
-    // Persist any dashboard routing for 'Back to courses' link
-    // FIXME this shouldn't be here, or work like this...
-    evaluateDashboardRoute: function() {
-      var loc = Origin.location;
-      if (loc && loc.module == 'dashboard') {
-        var suffix = loc.route1 ? '/' + loc.route1 : '';
-        Origin.dashboardRoute = '#/dashboard' + suffix;
-      }
     },
 
     // Routing

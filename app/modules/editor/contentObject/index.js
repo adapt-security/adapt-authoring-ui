@@ -57,7 +57,7 @@ define(function(require) {
 
     Origin.sidebar.addView(new EditorMenuSidebarView().$el, {
       backButtonText: Origin.l10n.t('app.backtoprojects'),
-      backButtonRoute: Origin.dashboardRoute || '#/dashboard'
+      backButtonRoute: '#/projects'
     });
     Origin.contentPane.setView(EditorView, {
       currentCourseId: Origin.location.route1,
