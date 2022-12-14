@@ -28,7 +28,7 @@ define(function(require) {
     $('.body', $el).html(data.text);
     $el.attr({ class: data.type });
 
-    $('.close', $el).show(data.persist);
+    $('.close', $el).toggle(data.persist);
     if(!data.persist) setTimeout(closeSnack, data.timeout);
 
     $el.removeClass('display-none').addClass('visible');
