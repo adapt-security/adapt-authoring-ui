@@ -4,10 +4,10 @@
       {{#each breadcrumbs}}
         <div class="item">
           {{#if @last}}
-            {{title}}
+            {{{title}}}
           {{else}}
             {{#if url}}
-              <a href="{{url}}">{{title}}</a>
+              <a href="{{url}}">{{{title}}}</a>
             {{else}}
               {{title}}
             {{/if}}
@@ -22,9 +22,9 @@
   {{#if title}}
     <div class="titles">
       {{#if course}}
-        <div class="course">{{course.title}}</div>
+        <div class="course">{{{course.title}}}</div>
       {{/if}}
-      <div class="title">{{title}}</div>
+      <div class="title">{{{title}}}</div>
     </div>
   {{/if}}
 </div>
