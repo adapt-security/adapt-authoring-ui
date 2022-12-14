@@ -10,13 +10,15 @@ define(function(require) {
   
   Origin.on('router:initialize', () => Origin.router.restrictRoute('pluginManagement', scopes));
 
-  Origin.globalMenu.addItem({
-    location: 'global',
-    text: Origin.l10n.t('app.pluginmanagement'),
-    icon: 'fa-plug',
-    route: 'pluginManagement',
-    sortOrder: 3,
-    scopes
+  Origin.on('globalMenu:ready', () => {
+    Origin.globalMenu.addItem({
+      location: 'global',
+      text: Origin.l10n.t('app.pluginmanagement'),
+      icon: 'fa-plug',
+      route: 'pluginManagement',
+      sortOrder: 3,
+      scopes
+    });
   });
 
   Origin.on('router:pluginManagement', function(location, subLocation, action) {

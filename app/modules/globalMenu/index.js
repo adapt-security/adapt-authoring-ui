@@ -1,26 +1,31 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+    var Backbone = require('backbone');
     var Origin = require('core/origin');
     var GlobalMenuView = require('./views/globalMenuView');
 
     class GlobalMenu {
-        isOpen = false;
-        itemStore = new Backbone.Collection([
-            {
-                location: "global",
-                text: Origin.l10n.t('app.dashboard'),
-                icon: "fa-home",
-                callback: () => Origin.router.navigateToDashboard(),
-                sortOrder: 1
-            }
-        ]);
         constructor() {
+            this.isOpen = false;
+            this.itemStore = new Backbone.Collection([
+                {
+                    location: "global",
+                    text: Origin.l10n.t('app.dashboard'),
+                    icon: "fa-home",
+                    sortOrder: 1,
+                    callback: () => Origin.router.navigateToDashboard()
+                }
+            ]);
             this.itemStore.comparator = 'sortOrder';
             
             Origin.on('navigation:postRender', this.renderButton.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
             $(document).on('click', '#app,.sidebar,.navigation', this.close.bind(this));
             this.itemStore.on('update', this.renderButton.bind(this));
+
+            _.defer(() => Origin.trigger('globalMenu:ready'));
+
+            return this;
         }
         renderButton() {
             if(!this.itemStore.length) {

@@ -14,13 +14,15 @@ define(function(require) {
 
   Origin.on('router:initialize', () => Origin.router.restrictRoute('userManagement', scopes));
   
-  Origin.globalMenu.addItem({
-    location: "global",
-    text: Origin.l10n.t('app.usermanagement'),
-    icon: "fa-users",
-    sortOrder: 3,
-    route: "userManagement",
-    scopes
+  Origin.on('globalMenu:ready', () => {
+    Origin.globalMenu.addItem({
+      location: "global",
+      text: Origin.l10n.t('app.usermanagement'),
+      icon: "fa-users",
+      sortOrder: 3,
+      route: "userManagement",
+      scopes
+    });
   });
 
   Origin.on('origin:dataReady login:changed', function() {

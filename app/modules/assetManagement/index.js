@@ -12,15 +12,18 @@ define(function(require) {
   const scopes = ['write:assets'];
 
   Origin.on('router:initialize', () => Origin.router.restrictRoute('assetManagement', scopes));
-
-  Origin.globalMenu.addItem({
-    "location": "global",
-    "text": Origin.l10n.t('app.assetmanagement'),
-    "icon": "fa-file-image-o",
-    "route": "assetManagement",
-    "sortOrder": 2,
-    "scopes": scopes
+  
+  Origin.on('globalMenu:ready', () => {
+    Origin.globalMenu.addItem({
+      "location": "global",
+      "text": Origin.l10n.t('app.assetmanagement'),
+      "icon": "fa-file-image-o",
+      "route": "assetManagement",
+      "sortOrder": 2,
+      "scopes": scopes
+    });
   });
+  
 
   Origin.on('router:assetManagement', function(location, subLocation, action) {
     Origin.assetManagement = {
