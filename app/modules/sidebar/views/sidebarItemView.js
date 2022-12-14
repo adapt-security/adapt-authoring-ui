@@ -32,6 +32,7 @@ define(function(require) {
           this.form = options.form;
         }
         this.render();
+        this.listenTo(Origin, 'sidebar:updateButton', this.updateButton);
         this.listenTo(Origin, 'sidebar:resetButtons', this.resetButtons);
         this.listenTo(Origin, 'sidebar:views:animateIn', this.animateViewIn);
         _.defer(_.bind(function() {

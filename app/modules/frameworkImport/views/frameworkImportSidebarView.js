@@ -5,19 +5,19 @@ define(function(require) {
 
   var FrameworkImportSidebarView = SidebarItemView.extend({
     events: {
-      'click button.show-details': 'showDetails',
-      'click button.cancel': 'goBack',
-      'click button.save': 'importCourse'
+      'click button.frameworkimport-check': 'check',
+      'click button.frameworkimport-import': 'import',
+      'click button.cancel': 'goBack'
     },
 
-    showDetails: function(event) {
+    check: function(event) {
       event && event.preventDefault();
-      Origin.trigger('frameworkImport:import', this);
+      Origin.trigger('frameworkImport:check');
     },
 
-    importCourse: function(event) {
+    import: function(event) {
       event && event.preventDefault();
-      Origin.trigger('frameworkImport:completeImport', this);
+      Origin.trigger('frameworkImport:import');
     },
 
     goBack: function(event) {
@@ -25,11 +25,7 @@ define(function(require) {
       Origin.router.navigateToDashboard();
     }
   }, {
-
     template: 'frameworkImportSidebar'
-
   });
-
   return FrameworkImportSidebarView;
-
 });

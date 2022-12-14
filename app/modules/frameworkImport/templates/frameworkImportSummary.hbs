@@ -1,17 +1,16 @@
-<div class="frameworkImport-summary">
-  <div class="versions">
-    <h2>Versions</h2>
-    {{#each versions}}
-      <h2>{{@key}}</h2>
-      <ul>
-        <li>Installed version: {{this[0]}}</li>
-        <li>Import version: {{this[1]}}</li>
-      </ul>
-    {{/each}}
-  </div>
-  <div class="statusReport">
-    {{> frameworkImportStatusMessages type='error' data=statusReport.error}}
-    {{> frameworkImportStatusMessages type='warn' data=statusReport.warn}}
-    {{> frameworkImportStatusMessages type='info' data=statusReport.info}}
-  </div>
+<div class="frameworkImport">
+  <div class="inner">
+    <div class="summaryText {{#unless canImport}}error{{/unless}}">
+      {{#if canImport}}
+        {{t 'app.coursecanbeimported'}}
+      {{else}}
+        {{t 'app.coursecannotbeimported'}}
+      {{/if}}
+    </div>
+    <div class="statusReport">
+      {{> part_frameworkImportStatusMessages type='error' messages=statusReport.error heading='Errors'}}
+      {{> part_frameworkImportStatusMessages type='warn' messages=statusReport.warn heading='Warnings'}}
+      {{> part_frameworkImportStatusMessages type='info' messages=statusReport.info heading='Information'}}
+    </div>
+    </div>
 </div>

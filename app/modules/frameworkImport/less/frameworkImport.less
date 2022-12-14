@@ -4,6 +4,10 @@
 @framework-import-amber: #ffa340;
 @framework-import-green: @secondary-color;
 
+button.frameworkimport-import:disabled {
+  opacity: 0.5;
+}
+
 .frameworkImport .inner {
   .form-container-style;
   padding: 30px;
@@ -56,61 +60,44 @@
     }
   }
 
-  &.import-summary {
-    .title {
-      padding-bottom: 10px;
-      color: @primary-color;
-
-      &.red {
-        color: @framework-import-red;
-      }
-
-      &.amber {
-        color: @framework-import-amber;
-      }
-
-      &.green {
-        color: @framework-import-green;
-      }
-    }
-    .description {
-      font-weight: @font-weight-bold;
-    }
+  .summaryText {
+    margin-bottom: 30px;;
+    padding: 10px;
+    background-color: @success-color;
+    &.error { background-color: @alert-color; }
+    color: white;
+    font-size: 16px;
+    font-weight: @font-weight-bold;
+    text-align: center;
+    border-radius: 3px;
   }
 
-  &.plugin-list {
-    .red {
-      .status, .key {
-        color: @framework-import-red;
+  .statusReport > div {
+    border-radius: 3px;
+    border: 1px solid;
+    margin-bottom: 20px;
+    h3 {
+      color: white;
+      padding: 15px;
+      font-size: 16px;
+    }
+    .messages {
+      padding: 10px 0;
+      > div {
+        padding: 5px 15px;
       }
     }
-
-    .amber {
-      .status, .key {
-        color: @framework-import-amber;
-      }
-
-      .at-version {
-        font-weight: @font-weight-bold;
-      }
+    &.error {
+      border-color: @alert-color;
+      h3 { background-color: @alert-color; }
     }
-
-    .green-install, .green-update {
-      .status, .key {
-        color: @framework-import-green;
-      }
-
-      .import-version {
-        font-weight: @font-weight-bold;
-      }
+    &.warn {
+      border-color: @warning-color;
+      h3 { background-color: @warning-color; }
     }
-
-    .status, .key {
-      font-weight: @font-weight-bold;
-    }
-
-    .key-field {
-      margin-bottom: 5px;
+    &.info {
+      border-color: @info-color;
+      h3 { background-color: @info-color; }
     }
   }
 }
