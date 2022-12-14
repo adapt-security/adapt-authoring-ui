@@ -7,7 +7,7 @@
 .frameworkImport {
   .summaryText {
     margin-bottom: 30px;;
-    padding: 10px;
+    padding: 15px;
     background-color: @success-color;
     &.error { background-color: @alert-color; }
     color: white;
@@ -19,6 +19,10 @@
   .inner {
     .form-container-style;
     padding: 30px;
+
+    p {
+      margin-bottom: 30px;
+    }
 
     form .form-group {
       border: none;
@@ -46,8 +50,6 @@
         .left { text-align: left; }
       }
 
-      tr.NO_CHANGE { opacity: 0.7; }
-      tr.NOT_UPDATED { color: @primary-color; }
       tr.UPDATED { color: @success-color; }
     }
 
