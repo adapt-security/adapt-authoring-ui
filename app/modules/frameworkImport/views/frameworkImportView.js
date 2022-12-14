@@ -45,13 +45,16 @@ define(function(require){
           $('button.frameworkimport.check').addClass('display-none');
           if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
           this.$el.html(Handlebars.templates.frameworkImportSummary(data));
-        });
+        })
+        .catch(this.onError)
+        .finally(() => Origin.trigger('sidebar:resetButtons'));
     },
     
     importCourse: function() {
       if(!this.isValid()) return;
       this.doImport()
-        .then(() => Origin.router.navigateToDashboard());
+        .then(() => Origin.router.navigateToDashboard())
+        .catch(this.onError);
     },
 
     doImport: async function(dryRun = false) {
@@ -60,14 +63,8 @@ define(function(require){
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
-      return new Promise(async (resolve, reject) => {
-        try {
-          const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } });
-          resolve(Object.assign(data, { canImport: data.statusReport.error === undefined }));
-        } catch(e) {
-          reject(e);
-        }
-      });
+      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
+      return Object.assign(data, { canImport: data.statusReport.error === undefined });
     },
 
     onAddTag: function (tag) {
@@ -86,6 +83,10 @@ define(function(require){
         }
       });
       this.model.set({ tags: tags });
+    },
+
+    onError: function(e) {
+      Origin.Notify.alert({ type: 'error', text: e.message })
     }
   }, {
     template: 'frameworkImport'
