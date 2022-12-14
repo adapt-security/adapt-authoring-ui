@@ -64,6 +64,7 @@ define(function(require) {
         }
         open() {
             this.isOpen = true;
+            $('#global-menu-icon').toggleClass('open', this.isOpen);
             $('.navigation').append(new GlobalMenuView({ collection: this.itemStore }).$el);
         }
         close() {
@@ -71,13 +72,13 @@ define(function(require) {
                 return;
             }
             this.isOpen = false;
+            $('#global-menu-icon').toggleClass('open', this.isOpen);
             Origin.trigger('globalMenu:globalMenuView:remove');
         }
         onButtonClick(event) {
             event.preventDefault();
             event.stopPropagation();
             this.isOpen ? this.close() : this.open();
-            $('#global-menu-icon').toggleClass('open', this.isOpen);
         }
     };
 
