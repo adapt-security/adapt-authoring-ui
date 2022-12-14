@@ -10,7 +10,7 @@ define(function(require) {
   
   Origin.on('router:initialize', () => Origin.router.restrictRoute('pluginManagement', scopes));
 
-  Origin.on('globalMenu:ready', () => {
+  Origin.on('origin:dataReady', () => {
     Origin.globalMenu.addItem({
       location: 'global',
       text: Origin.l10n.t('app.pluginmanagement'),
