@@ -45,7 +45,7 @@ define(function(require) {
         $el.empty();
         if(type === 'options') { // legacy
           $el.append(new view({ collection: new Backbone.Collection(items) }).$el);
-          return;
+          continue;
         }
         for (let item of items) $el.append(new view(item).$el);
       }
