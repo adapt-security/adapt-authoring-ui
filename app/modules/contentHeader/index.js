@@ -34,11 +34,13 @@ define(function(require) {
       if(!this.$el) {
         return;
       }
+      const $container = $(`.buttons`, this.$el);
+      $container.empty();
       for (let type in this.data) {
         const { view, items } = this.data[type];
         let $el = '';
         if(items.length) $el = new view({ collection: new Backbone.Collection(items) }).$el;
-        $(`.${type}-container`, this.$el).html($el);
+        $container.append($el);
       }
     }
     setItems(itemType, items) {
