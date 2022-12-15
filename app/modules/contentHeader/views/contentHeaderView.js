@@ -52,7 +52,7 @@ define(function(require) {
 
     postRender: function() {
       this.$('.contentHeader-inner').removeClass('display-none');
-      Origin.trigger('contentHeader:title:postRender', this);
+      Origin.trigger('contentHeader:postRender', this);
     },
 
     onHideTitle: function() {

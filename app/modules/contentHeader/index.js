@@ -1,9 +1,13 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
-  var ContentHeaderView = require('./views/contentHeaderView');
-  var OptionsView = require('./views/optionsView');
+  const Backbone = require('backbone');
+  const Origin = require('core/origin');
+  const ContentHeaderView = require('./views/contentHeaderView');
+  const OptionsView = require('./views/optionsView');
+
+  const VIEWS = {
+    options: OptionsView
+  };
 
   class ContentHeader {
     get ITEM_TYPES() {
@@ -15,25 +19,26 @@ define(function(require) {
       };
     }
     constructor() {
-      this.data = Object.values(this.ITEM_TYPES).reduce((data, type) => {
-        return { ...data, [type]: { items: [], view: Views[`${type[0].toUpperCase()}${type.slice(1)}View`] } };
-      }, {});
+      this.data = Object.values(this.ITEM_TYPES).reduce((data, type) => Object.assign(data, { [type]: { items: [], view: VIEWS[type] } }), {});
       Origin.on('appHeader:postRender', this.render.bind(this));
     }
     render() {
-      this.$el = new ContentHeaderView().$el;
-      $('#app').prepend(this.$el);
-      this.renderItems();
+      const $el = new ContentHeaderView().$el;
+      $('#app').prepend($el);
+      Origin.on('contentHeader:postRender', () => {
+        this.$el = $el;
+        this.renderItems();
+      });
     }
     renderItems() {
       if(!this.$el) {
         return;
       }
       for (let type in this.data) {
-        const items = this.data[type];
+        const { view, items } = this.data[type];
         let $el = '';
-        if(items.length) $el = new Views[type]({ collection: new Backbone.Collection(items) }).$el;
-        $(`.${type}`, this.$el).html($el);
+        if(items.length) $el = new view({ collection: new Backbone.Collection(items) }).$el;
+        $(`.${type}-container`, this.$el).html($el);
       }
     }
     setItems(itemType, items) {
