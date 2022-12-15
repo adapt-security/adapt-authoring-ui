@@ -12,10 +12,10 @@ define(function(require) {
   class ContentHeader {
     get ITEM_TYPES() {
       return {
-        ACTIONS: 'actions',
-        FILTERS: 'filters',
+        OPTIONS: 'options',
         SORTS: 'sorts',
-        OPTIONS: 'options'
+        FILTERS: 'filters',
+        ACTIONS: 'actions'
       };
     }
     constructor() {
