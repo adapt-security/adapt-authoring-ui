@@ -2,7 +2,7 @@
 @import 'fonts';
 @import 'sharedStyles';
 
-.navigation {
+.appHeader {
   position:fixed;
   top:0px;
   left:0px;
@@ -16,7 +16,7 @@
   font-family: @font-title;
 }
 
-.navigation-bg {
+.appHeader-bg {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -28,43 +28,43 @@
   }
 }
 
-.navigation-inner {
+.appHeader-inner {
     padding-top: 10px;
 }
 
-.navigation-item {
+.appHeader-item {
   display:inline-block;
   height:40px;
   line-height:40px;
   text-decoration:none;
   margin:0px;
   padding:0px 20px;
-  color:@navigation-text-color;
-  .navigation-left & {
+  color:@appHeader-text-color;
+  .appHeader-left & {
     float:left;
   }
 }
 
-.navigation-left {
+.appHeader-left {
 	float:left;
-  .navigation-product-name {
+  .appHeader-product-name {
     .no-select;
   }
 }
 
-.navigation-right {
+.appHeader-right {
   padding-right: 20px;
 	float:right;
 	text-align:right;
 
-  .navigation-user-logout {
+  .appHeader-user-logout {
     padding: 0px 25px;
   }
 
   a {
     &:hover {
     text-decoration: underline;
-      &.navigation-user-logout {
+      &.appHeader-user-logout {
         text-decoration: none;
       }
     }

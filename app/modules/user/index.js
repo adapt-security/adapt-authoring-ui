@@ -8,11 +8,11 @@ define(function(require) {
   var UserProfileSidebarView = require('./views/userProfileSidebarView');
   var UserProfileView = require('./views/userProfileView');
 
-  Origin.on('navigation:user:logout', function() {
+  Origin.on('user:logout', function() {
     Origin.router.navigateTo('user/logout');
   });
 
-  Origin.on('navigation:user:profile', function() {
+  Origin.on('user:profile', function() {
     Origin.router.navigateTo('user/profile');
   });
 

@@ -18,9 +18,9 @@ define(function(require) {
             ]);
             this.itemStore.comparator = 'sortOrder';
             
-            Origin.on('navigation:postRender', this.renderButton.bind(this));
+            Origin.on('appHeader:postRender', this.renderButton.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
-            $(document).on('click', '#app,.sidebar,.navigation', this.close.bind(this));
+            $(document).on('click', '#app,.sidebar,.appHeader', this.close.bind(this));
             this.itemStore.on('update', this.renderButton.bind(this));
 
             _.defer(() => Origin.trigger('globalMenu:ready'));
@@ -32,7 +32,7 @@ define(function(require) {
                 return;
             }
             var $btn = $(Handlebars.partials.part_globalMenuButton());
-            $('.navigation .navigation-left').prepend($btn);
+            $('.appHeader .appHeader-left').prepend($btn);
             $btn.on('click', this.onButtonClick.bind(this));
         }
         addItem(item, isSubItem) {
@@ -65,7 +65,7 @@ define(function(require) {
         open() {
             this.isOpen = true;
             $('#global-menu-icon').toggleClass('open', this.isOpen);
-            $('.navigation').append(new GlobalMenuView({ collection: this.itemStore }).$el);
+            $('.appHeader').append(new GlobalMenuView({ collection: this.itemStore }).$el);
         }
         close() {
             if(!this.isOpen) {

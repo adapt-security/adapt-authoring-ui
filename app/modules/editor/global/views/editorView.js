@@ -63,7 +63,6 @@ define(function(require) {
         return;
       }
       Origin.editor.isPreviewPending = true;
-      $('.navigation-loading-indicator').removeClass('display-none');
       $('.editor-common-sidebar-preview-inner').addClass('display-none');
       $('.editor-common-sidebar-previewing').removeClass('display-none');
       
@@ -180,7 +179,6 @@ define(function(require) {
     resetPreviewProgress: function() {
       $('.editor-common-sidebar-preview-inner').removeClass('display-none');
       $('.editor-common-sidebar-previewing').addClass('display-none');
-      $('.navigation-loading-indicator').addClass('display-none');
       $('.editor-common-sidebar-preview-wrapper .dropdown').removeClass('active');
       Origin.editor.isPreviewPending = false;
     },
