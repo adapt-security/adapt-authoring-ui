@@ -3,7 +3,7 @@ define(function(require) {
   var Origin = require('core/origin');
   var ContentHeaderView = require('./views/contentHeaderView');
 
-  Origin.once('origin:dataReady', function() {
-    $('.location-title').html(new ContentHeaderView().$el);
+  Origin.on('appHeader:postRender', () => {
+    $('#app').prepend(new ContentHeaderView().$el);
   });
 })

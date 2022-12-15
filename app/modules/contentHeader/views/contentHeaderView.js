@@ -5,7 +5,7 @@ define(function(require) {
   var Origin = require('core/origin');
 
   var ContentHeaderView = Backbone.View.extend({
-    el: '.location-title',
+    className: 'contentHeader',
 
     initialize: function() {
       this.listenTo(Origin, {
