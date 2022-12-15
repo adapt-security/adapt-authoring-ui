@@ -8,7 +8,7 @@ define(function(require) {
 
   Origin.on('router:projects', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
-    Origin.options.addItems([
+    Origin.contentHeader.setItems([
       {
         title: Origin.l10n.t('app.grid'),
         icon: 'th',

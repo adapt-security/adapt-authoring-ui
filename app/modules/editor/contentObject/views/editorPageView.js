@@ -27,7 +27,7 @@ define(function(require){
         'pageView:itemAnimated': this.onChildRendered,
         'editorView:renderPage': this.render
       });
-      Origin.options.addItems([
+      Origin.contentHeader.setItems([
         {
           title: Origin.l10n.t('app.collapseAllArticles'),
           icon: 'minus',
