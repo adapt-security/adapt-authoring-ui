@@ -48,6 +48,13 @@ define([
          * @type {l10n}
          */
         this.l10n = new l10n(this);
+        /**
+         * Global reference to the l10n translation utilities
+         * @member Origin#l10n
+         * @type {l10n}
+         */
+        this.browserStorage = new BrowserStorage(this);
+
         await this.l10n.load();
         callback();
       } catch(e) {
