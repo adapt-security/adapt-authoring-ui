@@ -26,7 +26,7 @@ define(function(require) {
 
     onClicked: function(event) {
       event && event.preventDefault();
-      alert('action clicked')
+      Origin.trigger(`actions:${$(event.currentTarget).attr('data-event')}`);
     }
   }, {
     template: 'actionsButton'
