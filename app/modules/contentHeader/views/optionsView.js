@@ -23,29 +23,21 @@ define(function(require) {
 
     render: function() {
       var template = Handlebars.templates[this.constructor.template];
-      this.$el.html(template());
-      _.defer(_.bind(this.postRender, this));
+      this.$el.html(template(this.getRenderData()));
       return this;
     },
 
-    renderOptions: function() {
-      var template = Handlebars.templates['optionsItem'];
-      // Go through each item and check if it has a group
-      // If it does - render into that group
+    getRenderData: function() {
+      const data = {};
       this.collection.each(function(item) {
         if (_.indexOf(this.eventsToTrigger, item.get('callbackEvent')) > -1) {
           item.set('selected', true);
         }
         var itemGroup = item.get('group')
-        var parentSelector = (itemGroup) ? '.options-group-' + itemGroup : '.options-inner';
-        $(parentSelector).append(template(item.toJSON()));
+        if(!data[itemGroup]) data[itemGroup] = { items: [] };
+        data[itemGroup].items.push(item.toJSON());
       }, this);
-    },
-
-    postRender: function() {
-      this.sortAndRenderGroups();
-      // Add a defer to make sure the groups are rendered
-      _.defer(_.bind(this.renderOptions, this));
+      return data;
     },
 
     updateUI: function(userPreferences) {

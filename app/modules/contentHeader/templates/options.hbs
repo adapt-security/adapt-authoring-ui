@@ -1,2 +1,14 @@
 <div class="options-inner">
+  {{#forEach groups}}
+    <div class="options-group options-group-{{group}}" data-group="{{group}}">
+      {{#forEach items}}
+        <div class="option-value-item">
+          <button data-callback="{{callbackEvent}}" data-group="{{group}}" title="{{title}}">
+            {{#if icon}}<i class="fa fa-{{icon}}"></i>{{/if}}
+            <div class="option-value-title">{{{title}}}</div>
+          </button>
+        </div
+      {{/forEach}}
+    </div>
+  {{/forEach}}
 </div>
