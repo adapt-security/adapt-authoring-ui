@@ -3,8 +3,9 @@ define([
   'backbone', 
   'core/l10n',
   'core/router',
+  'core/browserStorage',
   'core/models/sessionModel'
-], function(_, Backbone, l10n, Router, SessionModel) {
+], function(_, Backbone, l10n, Router, BrowserStorage, SessionModel) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
