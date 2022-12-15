@@ -10,7 +10,7 @@ define(function(require){
     createdCourseId: false,
 
     preRender: function() {
-      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.frameworkimporttitle') });
+      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.frameworkimporttitle') });
       this.listenTo(Origin, {
         'frameworkImport:check': this.checkCourse,
         'frameworkImport:import': this.importcourse

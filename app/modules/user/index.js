@@ -35,7 +35,7 @@ define(function(require) {
     switch(location) {
       case 'login':
         if(model.get('isAuthenticated')) return Origin.router.navigateToDashboard();
-        Origin.trigger('location:title:hide');
+        Origin.trigger('contentHeader:hide');
         currentView = LoginView;
         break;
       case 'logout':
@@ -52,7 +52,7 @@ define(function(require) {
         break;
       case 'profile':
         settings.authenticate = true;
-        Origin.trigger('location:title:update', {title: Origin.l10n.t('app.editprofiletitle')});
+        Origin.trigger('contentHeader:updateTitle', {title: Origin.l10n.t('app.editprofiletitle')});
         model = new UserProfileModel();
         await model.fetch();
         currentView = UserProfileView;

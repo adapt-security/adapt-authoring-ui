@@ -49,7 +49,7 @@ define(function(require) {
 
       EditorOriginView.prototype.render.apply(this, arguments);
 
-      Origin.trigger('location:title:update', {
+      Origin.trigger('contentHeader:updateTitle', {
         breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
         title: Origin.l10n.t('app.themingtitle')
       });

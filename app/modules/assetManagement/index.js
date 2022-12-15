@@ -40,7 +40,7 @@ define(function(require) {
         var assetCollection = new AssetCollection();
         // No need to fetch as the collectionView takes care of this
         // Mainly due to serverside filtering
-        Origin.trigger('location:title:hide');
+        Origin.trigger('contentHeader:hide');
         Origin.sidebar.addView(new AssetManagementSidebarView({ collection: tagsCollection }).$el);
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
         Origin.trigger('assetManagement:loaded');
@@ -55,7 +55,7 @@ define(function(require) {
     const isNew = location === undefined;
     const model = new AssetModel({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
-    Origin.trigger('location:title:update', { title });
+    Origin.trigger('contentHeader:updateTitle', { title });
     if(!isNew) {
       try {
         await model.fetch();

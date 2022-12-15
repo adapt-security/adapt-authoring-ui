@@ -10,7 +10,7 @@ define(function(require){
     createdUserId: false,
 
     preRender: function() {
-      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.addusertitle') });
+      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.addusertitle') });
       this.listenTo(Origin, 'userManagement:saveUser', this.saveNewUser);
     },
 

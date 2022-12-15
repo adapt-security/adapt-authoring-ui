@@ -27,7 +27,7 @@ define(function(require){
     },
 
     preRender: function() {
-      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.' + this.currentPluginType + 'management') });
+      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.' + this.currentPluginType + 'management') });
       this.refreshPluginList();
     },
     

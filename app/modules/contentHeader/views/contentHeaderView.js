@@ -4,13 +4,13 @@ define(function(require) {
   var Backbone = require('backbone');
   var Origin = require('core/origin');
 
-  var LocationTitleView = Backbone.View.extend({
+  var ContentHeaderView = Backbone.View.extend({
     el: '.location-title',
 
     initialize: function() {
       this.listenTo(Origin, {
-        'location:title:update': this.render,
-        'location:title:hide': this.onHideTitle
+        'contentHeader:updateTitle': this.render,
+        'contentHeader:hide': this.onHideTitle
       });
     },
 
@@ -51,16 +51,16 @@ define(function(require) {
     },
 
     postRender: function() {
-      this.$('.location-title-inner').removeClass('display-none');
-      Origin.trigger('location:title:postRender', this);
+      this.$('.contentHeader-inner').removeClass('display-none');
+      Origin.trigger('contentHeader:title:postRender', this);
     },
 
     onHideTitle: function() {
-      this.$('.location-title-inner').addClass('display-none');
+      this.$('.contentHeader-inner').addClass('display-none');
     }
   }, {
-    template: 'locationTitle'
+    template: 'contentHeader'
   });
 
-  return LocationTitleView;
+  return ContentHeaderView;
 });

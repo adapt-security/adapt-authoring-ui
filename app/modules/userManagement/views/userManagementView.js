@@ -28,7 +28,7 @@ define(function(require){
         this.renderChildViews();
       });
 
-      Origin.trigger('location:title:update', { title: Origin.l10n.t('app.usermanagementtitle') });
+      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.usermanagementtitle') });
       
       this.listenTo(this.users, { 'change': this.render });
       
