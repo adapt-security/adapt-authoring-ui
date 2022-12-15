@@ -4,7 +4,7 @@ define(function(require) {
   var Backbone = require('backbone');
 
   var ActionsButtonView = Backbone.View.extend({
-    className: 'actions-button',
+    tagName: 'span',
 
     events: {
     'click button': 'onClicked'
