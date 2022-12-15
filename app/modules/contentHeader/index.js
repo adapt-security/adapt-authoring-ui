@@ -3,9 +3,11 @@ define(function(require) {
   const Backbone = require('backbone');
   const Origin = require('core/origin');
   const ContentHeaderView = require('./views/contentHeaderView');
+  const ActionsButtonView = require('./views/actionsButtonView');
   const OptionsView = require('./views/optionsView');
 
   const VIEWS = {
+    actions: ActionsButtonView,
     options: OptionsView
   };
 
@@ -34,13 +36,18 @@ define(function(require) {
       if(!this.$el) {
         return;
       }
-      const $container = $(`.buttons`, this.$el);
-      $container.empty();
       for (let type in this.data) {
         const { view, items } = this.data[type];
-        let $el = '';
-        if(items.length) $el = new view({ collection: new Backbone.Collection(items) }).$el;
-        $container.append($el);
+        if(!items.length) {
+          continue;
+        }
+        const $el = $(`.buttons > .${type}`, this.$el);
+        $el.empty();
+        if(type === 'options') { // legacy
+          $el.append(new view({ collection: new Backbone.Collection(items) }).$el);
+          return;
+        }
+        for (let item of items) $el.append(new view(item).$el);
       }
     }
     setItems(itemType, items) {
@@ -54,4 +61,4 @@ define(function(require) {
   }
 
   Origin.contentHeader = new ContentHeader();
-})
+});
