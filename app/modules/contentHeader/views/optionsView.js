@@ -28,16 +28,16 @@ define(function(require) {
     },
 
     getRenderData: function() {
-      const data = {};
+      const groups = {};
       this.collection.each(function(item) {
         if (_.indexOf(this.eventsToTrigger, item.get('callbackEvent')) > -1) {
           item.set('selected', true);
         }
-        var itemGroup = item.get('group')
-        if(!data[itemGroup]) data[itemGroup] = { items: [] };
-        data[itemGroup].items.push(item.toJSON());
+        var itemGroup = item.get('group');
+        if(!groups[itemGroup]) groups[itemGroup] = { items: [] };
+        groups[itemGroup].items.push(item.toJSON());
       }, this);
-      return data;
+      return { groups: Object.values(groups) };
     },
 
     updateUI: function(userPreferences) {
