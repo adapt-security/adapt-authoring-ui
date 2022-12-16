@@ -3,10 +3,12 @@ define(function(require) {
   const Backbone = require('backbone');
   const Origin = require('core/origin');
   const ActionsButtonView = require('./actionsButtonView');
+  const FiltersButtonView = require('./filtersButtonView');
   const OptionsView = require('./optionsView');
 
   const VIEWS = {
     actions: ActionsButtonView,
+    filters: FiltersButtonView,
     options: OptionsView
   };
 
