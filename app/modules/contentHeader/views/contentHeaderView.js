@@ -2,8 +2,8 @@
 define(function(require) {
   const Backbone = require('backbone');
   const Origin = require('core/origin');
-  const ActionsButtonView = require('./views/actionsButtonView');
-  const OptionsView = require('./views/optionsView');
+  const ActionsButtonView = require('./actionsButtonView');
+  const OptionsView = require('./optionsView');
 
   const VIEWS = {
     actions: ActionsButtonView,
