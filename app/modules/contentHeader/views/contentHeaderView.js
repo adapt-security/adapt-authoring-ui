@@ -25,9 +25,8 @@ define(function(require) {
           return { ...data, [type]: { items: [], ViewClass: VIEWS[type] } };
         }, {})
       };
-
       Origin.on('contentHeader:updateTitle', this.updateTitle.bind(this));
-      Origin.on('contentHeader:hide', this.hide.bind(this));
+      Origin.on('contentHeader:hide', this.remove.bind(this));
       Origin.on('remove:views', this.remove.bind(this));
     }
     render() {
@@ -74,14 +73,10 @@ define(function(require) {
     }
     setButtons(type, items) {
       if(!this.data.buttons[type]) {
-        console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
-      } else {
-        this.data.buttons[type].items = items;
+        return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
       }
-      this.renderItems();
-    }
-    hide() {
-      this.$el.addClass('display-none');
+      this.data.buttons[type].items = items;
+      this.render();
     }
     remove(resetData = true) {
       if(this.$el) this.$el.remove();
