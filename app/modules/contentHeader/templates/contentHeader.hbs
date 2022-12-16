@@ -1,36 +1,38 @@
-<div class="contentHeader-inner">
-  {{#if breadcrumbs}}
-    <div class="breadcrumbs">
-      {{#each breadcrumbs}}
-        <div class="item">
-          {{#if @last}}
-            {{{title}}}
-          {{else}}
-            {{#if url}}
-              <a href="{{url}}">{{{title}}}</a>
+<div class="contentHeader">
+  <div class="contentHeader-inner">
+    {{#if breadcrumbs}}
+      <div class="breadcrumbs">
+        {{#each breadcrumbs}}
+          <div class="item">
+            {{#if @last}}
+              {{{title}}}
             {{else}}
-              {{title}}
+              {{#if url}}
+                <a href="{{url}}">{{{title}}}</a>
+              {{else}}
+                {{title}}
+              {{/if}}
             {{/if}}
-          {{/if}}
-        </div>
-        {{#unless @last}}
-          <div class="separator unselectable">&gt;</div>
-        {{/unless}}
-      {{/each}}
+          </div>
+          {{#unless @last}}
+            <div class="separator unselectable">&gt;</div>
+          {{/unless}}
+        {{/each}}
+      </div>
+    {{/if}}
+    {{#if title}}
+      <div class="titles">
+        {{#if course}}
+          <div class="course">{{{course.title}}}</div>
+        {{/if}}
+        <div class="title">{{{title}}}</div>
+      </div>
+    {{/if}}
+    <div class="buttons">
+      <div class="options"></div>
+      <div class="sorts"></div>
+      <div class="filters"></div>
+      <div class="actions"></div>
     </div>
-  {{/if}}
-  {{#if title}}
-    <div class="titles">
-      {{#if course}}
-        <div class="course">{{{course.title}}}</div>
-      {{/if}}
-      <div class="title">{{{title}}}</div>
-    </div>
-  {{/if}}
-  <div class="buttons">
-    <div class="options"></div>
-    <div class="sorts"></div>
-    <div class="filters"></div>
-    <div class="actions"></div>
   </div>
 </div>

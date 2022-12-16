@@ -1,66 +1,97 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var _ = require('underscore');
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
+  const Backbone = require('backbone');
+  const Origin = require('core/origin');
+  const ActionsButtonView = require('./views/actionsButtonView');
+  const OptionsView = require('./views/optionsView');
 
-  var ContentHeaderView = Backbone.View.extend({
-    className: 'contentHeader',
+  const VIEWS = {
+    actions: ActionsButtonView,
+    options: OptionsView
+  };
 
-    initialize: function() {
-      this.listenTo(Origin, {
-        'contentHeader:updateTitle': this.render,
-        'contentHeader:hide': this.onHideTitle
-      });
-    },
-
-    render: function(data) {
-      var template = Handlebars.templates[this.constructor.template];
-      this.$el.html(template(this.processData(data)));
-      _.defer(_.bind(this.postRender, this));
-      return this;
-    },
-
-    processData: function(data) {
-      if(!data || !data.breadcrumbs) {
-        return data;
-      }
-      // add some shortcuts to common locations
-      // Dashboard
-      var dashboardI = data.breadcrumbs.indexOf('dashboard');
-      if(dashboardI > -1) {
-        data.breadcrumbs.splice(dashboardI, 1, { title: Origin.l10n.t('app.dashboard'), url: '#' });
-      }
-      // Course
-      var course = Origin.editor && Origin.editor.data && Origin.editor.data.course;
-      if(!course) {
-        return data;
-      }
-      var courseI = data.breadcrumbs.indexOf('course');
-      if(courseI > -1) {
-        data.breadcrumbs.splice(courseI, 1, {
-          title: Origin.l10n.t('app.editormenu'),
-          url: '#/editor/' + course.get('_id') + '/menu'
-        });
-      }
-      // so we can show the course name if the current title isn't already that...
-      if(course && course.get('title') !== data.title) {
-        data.course = course.toJSON();
-      }
-      return data;
-    },
-
-    postRender: function() {
-      this.$('.contentHeader-inner').removeClass('display-none');
-      Origin.trigger('contentHeader:postRender', this);
-    },
-
-    onHideTitle: function() {
-      this.$('.contentHeader-inner').addClass('display-none');
+  class ContentHeaderView {
+    get BUTTON_TYPES() {
+      return {
+        OPTIONS: 'options',
+        SORTS: 'sorts',
+        FILTERS: 'filters',
+        ACTIONS: 'actions'
+      };
     }
-  }, {
-    template: 'contentHeader'
-  });
+    constructor() {
+      this.data = {
+        buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
+          return { ...data, [type]: { items: [], ViewClass: VIEWS[type] } };
+        }, {})
+      };
+
+      Origin.on('contentHeader:updateTitle', this.updateTitle.bind(this));
+      Origin.on('contentHeader:hide', this.hide.bind(this));
+      Origin.on('remove:views', this.remove.bind(this));
+    }
+    render() {
+      this.remove(false);
+      const template = Handlebars.templates.contentHeader;
+      this.$el = $(template(this.getTemplateData()));
+      $('#app').prepend(this.$el);
+      // items
+      for (let type in this.data.buttons) {
+        const { ViewClass, items } = this.data.buttons[type];
+        if(!items.length) {
+          continue;
+        }
+        const $el = $(`.buttons > .${type}`, this.$el);
+        if(type === 'options') { // legacy
+          $el.append(new ViewClass({ collection: new Backbone.Collection(items) }).$el);
+          continue;
+        }
+        for (let item of items) $el.append(new ViewClass(item).$el);
+      }
+    }
+    getTemplateData() {
+      if(!this.data.breadcrumbs) {
+        return this.data;
+      }
+      const course = Origin.editor && Origin.editor.data && Origin.editor.data.course;
+
+      return Object.assign(this.data, {
+        course: course && course.get('title') !== this.data.title ? { title: course.get('title') } : undefined,
+        breadcrumbs: this.data.breadcrumbs.map(b => {
+          if(b === 'dashboard') {
+            return { title: Origin.l10n.t('app.dashboard'), url: '#' };
+          }
+          if(b === 'course') {
+            return { title: Origin.l10n.t('app.editormenu'), url: `#/editor/${course.get('_id')}/menu` };
+          }
+          return b;
+        })
+      });
+    }
+    updateTitle(data) {
+      Object.assign(this.data, data);
+      this.render();
+    }
+    setButtons(type, items) {
+      if(!this.data.buttons[type]) {
+        console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
+      } else {
+        this.data.buttons[type].items = items;
+      }
+      this.renderItems();
+    }
+    hide() {
+      this.$el.addClass('display-none');
+    }
+    remove(resetData = true) {
+      if(this.$el) this.$el.remove();
+      if(resetData) {
+        delete this.data.course;
+        delete this.data.breadcrumbs;
+        for (let type in this.data.buttons) this.data.buttons[type].items = [];
+      }
+    }
+  }
 
   return ContentHeaderView;
 });
