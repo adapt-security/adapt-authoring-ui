@@ -8,6 +8,10 @@ define(function(require) {
         'click .item': 'onItemClicked'
       });
     },
+    constructor() {
+      ContentHeaderButtonView.prototype.constructor.apply(this, arguments);
+      $('.appHeader, .contentHeader, .contentPane').on('click', () => $('.buttons-container').removeClass('show'));
+    },
     preRender() {
 
     },
@@ -22,6 +26,8 @@ define(function(require) {
       ContentHeaderButtonView.prototype.render.apply(this);
     },
     onClicked() {
+      event.preventDefault();
+      event.stopPropagation();
       var $btns = $('.buttons-container', this.$el);
       if(!$btns.hasClass('show')) $('.buttons-container').removeClass('show');
       $btns.toggleClass('show');
