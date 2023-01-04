@@ -21,7 +21,11 @@ define(function(require) {
       if(!this.data.buttonText) this.data.buttonText = this.constructor.defaultButtonText;
 
       var itemTemplate = Handlebars.templates[this.constructor.itemTemplate];
-      this.data.items = this.data.items.map((item, i) => itemTemplate(Object.assign(item, { index: i })));
+      this.data.items = this.data.items.map((item, i) => {
+        var data = Object.assign(item, { index: i });
+        data.itemHtml = itemTemplate(data);
+        return item;
+      });
 
       ContentHeaderButtonView.prototype.render.apply(this);
     },
