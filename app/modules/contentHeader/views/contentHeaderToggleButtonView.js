@@ -22,7 +22,9 @@ define(function(require) {
       ContentHeaderButtonView.prototype.render.apply(this);
     },
     onClicked() {
-      $('.buttons-container', this.$el).toggleClass('show');
+      var $btns = $('.buttons-container', this.$el);
+      if(!$btns.hasClass('show')) $('.buttons-container').removeClass('show');
+      $btns.toggleClass('show');
     },
     onItemClicked(event) {
     }
