@@ -6,18 +6,18 @@ define(function(require) {
   var FiltersButtonView = ContentHeaderButtonView.extend({
     events() {
       return Object.assign(ContentHeaderButtonView.prototype.events, {
-        'click .filter-item': 'onItemClicked'
+        'click .item': 'onItemClicked'
       });
     },
     async preRender() {
       if(!this.data.buttonText) this.data.buttonText = Origin.l10n.t('app.filter');
 
-      if(this.data.filters.some(f => f.type === 'tags')) {
+      if(this.data.items.some(f => f.type === 'tags')) {
         this.data.tags = (await $.post('api/tags/query'));
       }
     },
     onClicked() {
-      $('.filter-buttons', this.$el).toggleClass('show');
+      $('.buttons-container', this.$el).toggleClass('show');
     },
     onItemClicked(event) {
       const $target = $(event.target);
@@ -31,8 +31,7 @@ define(function(require) {
         eventData = $('.tag.selected', this.$el).toArray().map(t => $(t).attr('data-value'));
       }
       const eventName = `${this.data.type}:${$(event.currentTarget).attr('data-event')}`;
-      console.log(eventName, eventData);
-      Origin.trigger(eventName, $target.val());
+      Origin.trigger(eventName, eventData);
     }
   }, {
     template: 'filtersButton'
