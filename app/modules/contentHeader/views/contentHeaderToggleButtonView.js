@@ -28,6 +28,14 @@ define(function(require) {
       });
 
       ContentHeaderButtonView.prototype.render.apply(this);
+
+      setTimeout(this.repositionButtons.bind(this), 500);
+    },
+    repositionButtons() {
+      var $btns = $('.buttons-container', this.$el);
+      var width = $btns.outerWidth(true);
+      var maxX = $(window).width() - width - 5;
+      if($btns.offset().left > maxX) $btns.css('left', maxX - $('.contentHeader .buttons').offset().left);
     },
     onClicked() {
       event.preventDefault();
