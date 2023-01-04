@@ -4,9 +4,6 @@ define(function(require) {
   var ContentHeaderToggleButtonView = require('./contentHeaderToggleButtonView');
   
   var SortsButtonView = ContentHeaderToggleButtonView.extend({
-    async preRender() {
-      if(!this.data.buttonText) this.data.buttonText = Origin.l10n.t('app.sort');
-    },
     toggleSortDirection() {
       this.direction = this.direction === -1 ? 1 : -1;
       this.$('.item').removeClass('selected');
@@ -23,7 +20,9 @@ define(function(require) {
       Origin.trigger(eventName, this.direction);
     }
   }, {
-    template: 'sortsButton'
+    defaultButtonIcon: 'fa-sort',
+    defaultButtonText: Origin.l10n.t('app.sort'),
+    itemTemplate: 'sortItem'
   });
 
   return SortsButtonView;

@@ -5,7 +5,7 @@
 <div class="buttons-container">
   <div class="items">
     {{#each items}}
-      <div class="item" data-key="{{@index}}" data-event="{{eventName}}">{{itemContent}}</div>
+      <div class="item" data-key="{{@index}}" data-event="{{eventName}}">{{{this}}}</div>
     {{/each}}
   </div>
 </div>

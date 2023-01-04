@@ -8,6 +8,19 @@ define(function(require) {
         'click .item': 'onItemClicked'
       });
     },
+    preRender() {
+
+    },
+    render() {
+      if(!this.constructor.template) this.constructor.template = 'contentHeaderToggleButton';
+      if(!this.data.buttonIcon) this.data.buttonIcon = this.constructor.defaultButtonIcon;
+      if(!this.data.buttonText) this.data.buttonText = this.constructor.defaultButtonText;
+
+      var itemTemplate = Handlebars.templates[this.constructor.itemTemplate];
+      this.data.items = this.data.items.map((item, i) => itemTemplate(Object.assign(item, { index: i })));
+
+      ContentHeaderButtonView.prototype.render.apply(this);
+    },
     onClicked() {
       $('.buttons-container', this.$el).toggleClass('show');
     },
@@ -16,6 +29,4 @@ define(function(require) {
   });
 
   return ContentHeaderToggleButtonView;
-}, {
-  template: 'contentHeaderToggleButton'
 });

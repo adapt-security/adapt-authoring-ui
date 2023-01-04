@@ -5,8 +5,6 @@ define(function(require) {
   
   var FiltersButtonView = ContentHeaderToggleButtonView.extend({
     async preRender() {
-      if(!this.data.buttonText) this.data.buttonText = Origin.l10n.t('app.filter');
-
       if(this.data.items.some(f => f.type === 'tags')) {
         this.data.tags = (await $.post('api/tags/query'));
       }
@@ -26,7 +24,9 @@ define(function(require) {
       Origin.trigger(eventName, eventData);
     }
   }, {
-    template: 'filtersButton'
+    defaultButtonIcon: 'fa-filter',
+    defaultButtonText: Origin.l10n.t('app.filter'),
+    itemTemplate: 'filterItem'
   });
 
   return FiltersButtonView;
