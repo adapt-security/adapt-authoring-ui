@@ -19,7 +19,7 @@ define(function(require) {
       try {
         await this.preRender();
       } catch(e) {
-        return Origin.Notift.alert({ type: 'error', text: e.toString() });
+        return Origin.Notify.alert({ type: 'error', text: e.toString() });
       }
       this.render();
       setTimeout(this.postRender.bind(this), 0);
