@@ -5,11 +5,13 @@ define(function(require) {
   const ActionsButtonView = require('./actionsButtonView');
   const FiltersButtonView = require('./filtersButtonView');
   const OptionsView = require('./optionsView');
+  const SortsButtonView = require('./sortsButtonView');
 
   const VIEWS = {
     actions: ActionsButtonView,
     filters: FiltersButtonView,
-    options: OptionsView
+    options: OptionsView,
+    sorts: SortsButtonView,
   };
 
   class ContentHeaderView {
