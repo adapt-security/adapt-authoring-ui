@@ -22,10 +22,7 @@ define(function(require) {
         return Origin.Notify.alert({ type: 'error', text: e.toString() });
       }
       this.render();
-      setTimeout(this.postRender.bind(this), 0);
     },
-    
-    async preRender() {},
     
     render() {
       this.$el.html(Handlebars.templates[this.constructor.template](this.data));
