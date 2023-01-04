@@ -1,0 +1,9 @@
+<input type="radio" id="{{@index}}" name="sort" value="{{@index}}">
+<label for="{{@index}}">
+  <span class="direction">
+    <i class="fa fa-sort-asc"></i>
+    <i class="fa fa-sort-desc"></i>
+  </span>
+  {{#if icon}}<i class="icon fa {{icon}}"></i>{{/if}}
+  {{buttonText}}
+</label>

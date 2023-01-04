@@ -1,14 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var ContentHeaderButtonView = require('./contentHeaderButtonView');
+  var ContentHeaderToggleButtonView = require('./contentHeaderToggleButtonView');
   
-  var SortsButtonView = ContentHeaderButtonView.extend({
-    events() {
-      return Object.assign(ContentHeaderButtonView.prototype.events, {
-        'click .item': 'onItemClicked'
-      });
-    },
+  var SortsButtonView = ContentHeaderToggleButtonView.extend({
     async preRender() {
       if(!this.data.buttonText) this.data.buttonText = Origin.l10n.t('app.sort');
     },
@@ -18,9 +13,6 @@ define(function(require) {
       this.$('item input[type="radio"]:selected').parent('.item').$('i.asc').toggle(this.direction === 1);
       this.$('item input[type="radio"]:selected').parent('.item').$('i.desc').toggle(this.direction === -1);
     },
-    onClicked() {
-      $('.buttons-container', this.$el).toggleClass('show');
-    },
     onItemClicked(event) {
       const $selected = $(event.currentTarget);
       this.$('.item').removeClass('selected');
@@ -29,7 +21,6 @@ define(function(require) {
 
       const eventName = `${this.data.type}:${$selected.attr('data-event')}`;
       Origin.trigger(eventName, this.direction);
-
     }
   }, {
     template: 'sortsButton'

@@ -1,23 +1,15 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var ContentHeaderButtonView = require('./contentHeaderButtonView');
+  var ContentHeaderToggleButtonView = require('./contentHeaderToggleButtonView');
   
-  var FiltersButtonView = ContentHeaderButtonView.extend({
-    events() {
-      return Object.assign(ContentHeaderButtonView.prototype.events, {
-        'click .item': 'onItemClicked'
-      });
-    },
+  var FiltersButtonView = ContentHeaderToggleButtonView.extend({
     async preRender() {
       if(!this.data.buttonText) this.data.buttonText = Origin.l10n.t('app.filter');
 
       if(this.data.items.some(f => f.type === 'tags')) {
         this.data.tags = (await $.post('api/tags/query'));
       }
-    },
-    onClicked() {
-      $('.buttons-container', this.$el).toggleClass('show');
     },
     onItemClicked(event) {
       const $target = $(event.target);
