@@ -57,7 +57,7 @@ define(function(require) {
         eventName: 'createcourse'
       },
       {
-        buttonText: Origin.l10n.t('app.'),
+        buttonText: Origin.l10n.t('app.importcourse'),
         buttonClass: 'action-secondary',
         eventName: 'importcourse'
       }
