@@ -2,6 +2,7 @@
 define([
   'core/origin',
   './global/editorDataLoader',
+  './form/views/editorFormView',
   './article/index',
   './block/index',
   './component/index',
@@ -11,7 +12,7 @@ define([
   './extensions/index',
   './menuSettings/index',
   './themeEditor/index'
-], function(Origin, EditorData) {
+], function(Origin, EditorData, EditorFormView) {
   // loads editor data
   Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('router', mod => {
@@ -69,6 +70,16 @@ define([
       actionButtons = Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM;
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, actionButtons);
+
+    console.log(route2, Origin.location.route3, Origin.location.route4);
+
+    if(Origin.location.route4 === 'edit') {
+      new ContentModel({ _id: Origin.location.route3 }).fetch({
+        success: model => Origin.contentPane.setView(EditorFormView, { model }), 
+        error: e => Origin.Notify.alert()
+      });
+      return;
+    }
 
     Origin.trigger(`editor:${type}`, {
       type: route2,
