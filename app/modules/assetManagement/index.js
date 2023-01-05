@@ -91,7 +91,7 @@ define(function(require) {
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
         Origin.trigger('assetManagement:loaded');
 
-        Origin.on('actions:upload', Origin.router.navigateTo('assetManagement/upload'));
+        Origin.on('actions:upload', () => Origin.router.navigateTo('assetManagement/upload'));
       },
       error: function() {
         console.log('Error occured getting the tags collection - try refreshing your page');
