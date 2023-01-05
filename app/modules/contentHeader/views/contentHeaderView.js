@@ -23,6 +23,21 @@ define(function(require) {
         ACTIONS: 'actions'
       };
     }
+    get ACTION_BUTTON_TEMPLATES() {
+      return {
+        EDIT_FORM: [
+          {
+            buttonText: Origin.l10n.t('app.save'),
+            eventName: 'save'
+          },
+          {
+            buttonText: Origin.l10n.t('app.cancel'),
+            eventName: 'cancel',
+            buttonClass: 'action-secondary'
+          }
+        ]
+      };
+    }
     constructor() {
       this.data = {
         buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
