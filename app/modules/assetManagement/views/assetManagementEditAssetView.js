@@ -11,7 +11,10 @@ define([
     },
 
     preRender: function() {
-      this.listenTo(Origin, 'assetManagement:editAsset', this.save);
+      this.listenTo(Origin, {
+        'actions:save': this.save,
+        'actions:cancel': Origin.router.navigateBack
+      });
     },
 
     postRender: async function() {
