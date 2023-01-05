@@ -50,8 +50,59 @@ define(function(require) {
     }
     await refreshUsers();
 
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+      {
+        items: [
+          {
+            type: 'toggle',
+            buttonText: 'Content creators',
+            checked: true,
+            eventName: 'role:contentcreator'
+          },
+          {
+            type: 'toggle',
+            buttonText: 'Authenticated users',
+            checked: true,
+            eventName: 'role:authuser'
+          },
+          {
+            type: 'toggle',
+            buttonText: 'Super users',
+            checked: true,
+            eventName: 'role:superuser'
+          },
+          {
+            type: 'toggle',
+            buttonText: 'Content Editors',
+            checked: true,
+            eventName: 'role:contenteditor'
+          },
+          {
+            type: 'toggle',
+            buttonText: 'Content Reviewers',
+            checked: true,
+            eventName: 'role:contentreviewer'
+          },
+          {
+            type: 'search',
+            buttonText: Origin.l10n.t('app.search'),
+            placeholder: Origin.l10n.t('app.searchbyemail'),
+            eventName: 'search'
+          }
+        ]
+      }
+    ]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
+      {
+        buttonText: Origin.l10n.t('app.addnewuser'),
+        eventName: 'adduser'
+      }
+    ]);
+    Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });
+    Origin.trigger('sidebar:sidebarContainer:hide');
+
     Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
-    Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
+    // Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
     
     Origin.on('userManagement:refresh', refreshUsers);
   };

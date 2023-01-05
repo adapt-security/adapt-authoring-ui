@@ -2,56 +2,78 @@
 define(function(require) {
   var Origin = require('core/origin');
   var ProjectsView = require('./views/projectsView');
-  var ProjectsSidebarView = require('./views/projectsSidebarView');
   var ContentCollection = require('core/collections/contentCollection');
   var TagsCollection = require('core/collections/tagsCollection');
 
   Origin.on('router:projects', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
+
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.SORTS, [
       {
-        title: Origin.l10n.t('app.grid'),
-        icon: 'th',
-        callbackEvent: 'dashboard:layout:grid',
-        value: 'grid',
-        group: 'layout',
+        items: [
+          {
+            buttonText: 'Title',
+            eventName: 'title'
+          },
+          {
+            buttonText: 'Last updated',
+            eventName: 'update'
+          }
+        ]
+      }
+    ]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+      {
+        items: [
+          {
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.myprojects'),
+            checked: true,
+            eventName: 'mine'
+          },
+          {
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.sharedprojects'),
+            checked: true,
+            eventName: 'shared'
+          },
+          {
+            type: 'search',
+            buttonText: Origin.l10n.t('app.search'),
+            placeholder: Origin.l10n.t('app.searchbyname'),
+            eventName: 'search'
+          },
+          {
+            type: 'tags',
+            buttonText: Origin.l10n.t('app.tags'),
+            eventName: 'tags'
+          }
+        ]
+      }
+    ]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
+      {
+        buttonText: Origin.l10n.t('app.addnewproject'),
+        eventName: 'createcourse'
       },
       {
-        title: Origin.l10n.t('app.list'),
-        icon: 'list',
-        callbackEvent: 'dashboard:layout:list',
-        value: 'list',
-        group: 'layout'
-      },
-      {
-        title: Origin.l10n.t('app.ascending'),
-        icon: 'sort-alpha-asc',
-        callbackEvent: 'dashboard:sort:asc',
-        value: 'asc',
-        group: 'sort'
-      },
-      {
-        title: Origin.l10n.t('app.descending'),
-        icon: 'sort-alpha-desc',
-        callbackEvent: 'dashboard:sort:desc',
-        value: 'desc',
-        group: 'sort'
-      },
-      {
-        title: Origin.l10n.t('app.recent'),
-        icon: 'edit',
-        callbackEvent: 'dashboard:sort:updated',
-        value: 'updated',
-        group: 'sort'
+        buttonText: Origin.l10n.t('app.'),
+        buttonClass: 'action-secondary',
+        eventName: 'importcourse'
       }
     ]);
     (new TagsCollection()).fetch({
       success: function(collection) {
-        Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
+        Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
       },
       error: () => console.log('Error occured getting the tags collection - try refreshing your page')
     });
+  });
+
+  
+  Origin.on('actions:createCourse', function () {
+    Origin.router.navigateTo('project/new');
   });
 
   Origin.on('dashboard:loaded', function ({ type, tags }) {
@@ -67,7 +89,7 @@ define(function(require) {
     });
     Origin.trigger('contentHeader:updateTitle', { 
       breadcrumbs: ['dashboard'], 
-      title: Origin.l10n.t(`app.${isMine ? 'myprojects' : 'sharedprojects'}`) 
+      title: Origin.l10n.t(`app.projects`) 
     });
     Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags });
   });

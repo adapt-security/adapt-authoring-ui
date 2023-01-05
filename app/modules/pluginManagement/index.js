@@ -29,8 +29,52 @@ define(function(require) {
       Origin.contentPane.setView(PluginManagementUploadView);
       Origin.sidebar.addView(new PluginManagementUploadSidebarView().$el, {});
     } else {
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+        {
+          items: [
+            {
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.components'),
+              checked: true,
+              eventName: 'type:components'
+            },
+            {
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.extensions'),
+              checked: true,
+              eventName: 'type:extensions'
+            },
+            {
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.menus'),
+              checked: true,
+              eventName: 'type:menus'
+            },
+            {
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.themes'),
+              checked: true,
+              eventName: 'type:themes'
+            }
+          ]
+        }
+      ]);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
+        {
+          buttonText: Origin.l10n.t('app.uploadplugin'),
+          eventName: 'upload'
+        },
+        {
+          buttonText: Origin.l10n.t('app.getnewplugins'),
+          eventName: 'getnewplugins',
+          buttonClass: 'action-secondary'
+        }
+      ]);
+      Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.pluginmanagement'), url: '#' }], title: Origin.l10n.t('app.managepluginstitle') });
+      Origin.trigger('sidebar:sidebarContainer:hide');
+
       Origin.contentPane.setView(PluginManagementView, { pluginType: location });
-      Origin.sidebar.addView(new PluginManagementSidebarView().$el);
+      // Origin.sidebar.addView(new PluginManagementSidebarView().$el);
     }
   });
 });

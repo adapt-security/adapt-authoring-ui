@@ -40,8 +40,56 @@ define(function(require) {
         var assetCollection = new AssetCollection();
         // No need to fetch as the collectionView takes care of this
         // Mainly due to serverside filtering
-        Origin.trigger('contentHeader:hide');
-        Origin.sidebar.addView(new AssetManagementSidebarView({ collection: tagsCollection }).$el);
+        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+          {
+            items: [
+              {
+                type: 'toggle',
+                buttonText: Origin.l10n.t('app.filetypeimage'),
+                checked: true,
+                eventName: 'image'
+              },
+              {
+                type: 'toggle',
+                buttonText: Origin.l10n.t('app.filetypevideo'),
+                checked: true,
+                eventName: 'video'
+              },
+              {
+                type: 'toggle',
+                buttonText: Origin.l10n.t('app.filetypeaudio'),
+                checked: true,
+                eventName: 'audio'
+              },
+              {
+                type: 'toggle',
+                buttonText: Origin.l10n.t('app.filetypeother'),
+                checked: true,
+                eventName: 'other'
+              },
+              {
+                type: 'search',
+                buttonText: Origin.l10n.t('app.search'),
+                placeholder: Origin.l10n.t('app.searchbyname'),
+                eventName: 'search'
+              },
+              {
+                type: 'tags',
+                buttonText: Origin.l10n.t('app.tags'),
+                eventName: 'tags'
+              }
+            ]
+          }
+        ]);
+        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
+          {
+            buttonText: Origin.l10n.t('app.uploadnewasset'),
+            eventName: 'upload'
+          }
+        ]);
+        Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: 'Asset management', url: '#' }], title: Origin.l10n.t('app.assetmanagement') });
+        Origin.trigger('sidebar:sidebarContainer:hide');
+        // Origin.sidebar.addView(new AssetManagementSidebarView({ collection: tagsCollection }).$el);
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
         Origin.trigger('assetManagement:loaded');
       },
@@ -56,6 +104,7 @@ define(function(require) {
     const model = new AssetModel({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
     Origin.trigger('contentHeader:updateTitle', { title });
+
     if(!isNew) {
       try {
         await model.fetch();

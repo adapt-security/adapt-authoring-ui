@@ -35,6 +35,14 @@ define(function(require){
         'window:resize dashboard:refresh': this._onResize,
         'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
         'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(undefined, tags),
+        'filters:mine': () => {
+          this.collection.customQuery.createdBy = Origin.sessionModel.get('user')._id;
+          this.doFilter();
+        },
+        'filters:shared': () => {
+          this.collection.customQuery.createdBy = { $ne: Origin.sessionModel.get('user')._id };
+          this.doFilter();
+        },
         'dashboard:sort:asc': () => this.doSort('asc'),
         'dashboard:sort:desc': () => this.doSort('desc'),
         'dashboard:sort:updated': () => this.doSort('updated')
