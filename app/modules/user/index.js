@@ -5,7 +5,6 @@ define(function(require) {
   var Origin = require('core/origin');
   var ResetPasswordView = require('./views/resetPasswordView');
   var UserProfileModel = require('./models/userProfileModel');
-  var UserProfileSidebarView = require('./views/userProfileSidebarView');
   var UserProfileView = require('./views/userProfileView');
 
   Origin.on('user:logout', function() {
@@ -53,10 +52,11 @@ define(function(require) {
       case 'profile':
         settings.authenticate = true;
         Origin.trigger('contentHeader:updateTitle', {title: Origin.l10n.t('app.editprofiletitle')});
+        Origin.trigger('sidebar:sidebarContainer:hide');
+        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
         model = new UserProfileModel();
         await model.fetch();
         currentView = UserProfileView;
-        Origin.sidebar.addView(new UserProfileSidebarView().$el);
         break;
     }
     if(currentView) Origin.contentPane.setView(currentView, { model });

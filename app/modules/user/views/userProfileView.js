@@ -15,7 +15,10 @@ define(function(require){
     },
 
     preRender: function() {
-      this.listenTo(Origin, 'userProfileSidebar:views:save', this.saveUser);
+      this.listenTo(Origin, {
+        'actions:save': this.saveUser,
+        'actions:cancel': Origin.router.navigateBack
+      });
       this.listenTo(this.model, 'invalid', this.handleValidationError);
       this.listenTo(this.model, 'change:_isNewPassword', this.togglePasswordUI);
 
