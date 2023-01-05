@@ -43,6 +43,33 @@ define([
         type = 'course';
         break;
     }
+
+    let actionButtons = [];
+
+    if(type === 'contentObject') {
+      actionButtons = [
+        {
+          buttonText: Origin.l10n.t('app.preview'),
+          eventName: 'preview'
+        },
+        {
+          buttonText: Origin.l10n.t('app.publish'),
+          buttonClass: 'action-secondary',
+          eventName: 'publish'
+        }
+      ];
+      if(Origin.sessionModel.hasScopes(["export:adapt"])) {
+        actionButtons.push({
+          buttonText: Origin.l10n.t('app.export'),
+          buttonClass: 'action-secondary',
+          eventName: 'export'
+        });
+      }
+    } else {
+      actionButtons = Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM;
+    }
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, actionButtons);
+
     Origin.trigger(`editor:${type}`, {
       type: route2,
       id: Origin.location.route3,
