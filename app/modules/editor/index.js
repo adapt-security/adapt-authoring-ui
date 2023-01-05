@@ -53,7 +53,7 @@ define([
           eventName: 'preview'
         },
         {
-          buttonText: Origin.l10n.t('app.publish'),
+          buttonText: Origin.l10n.t('app.download'),
           buttonClass: 'action-secondary',
           eventName: 'publish'
         }
