@@ -10,10 +10,8 @@ define(function(require) {
       }
     },
     onItemClicked(event) {
+      event.stopPropagation();
       const $target = $(event.target);
-      if($target.prop("tagName") === 'LABEL') {
-        return;
-      }
       let eventData = $target.val() || $target.attr('data-value');
       
       if($target.hasClass('tag')) {
