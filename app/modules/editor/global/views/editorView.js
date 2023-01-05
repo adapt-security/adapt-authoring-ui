@@ -39,9 +39,9 @@ define(function(require) {
         'editorView:copy': this.addToClipboard,
         'editorView:copyID': this.copyIdToClipboard,
         'editorView:paste': this.pasteFromClipboard,
-        'editorCommon:download': this.downloadProject,
-        'editorCommon:preview': this.previewProject,
-        'editorCommon:export': this.exportProject
+        'actions:publish': this.downloadProject,
+        'actions:preview': this.previewProject,
+        'actions:export': this.exportProject
       });
       this.render();
       this.setupEditor();
