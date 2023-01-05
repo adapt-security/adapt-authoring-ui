@@ -19,6 +19,8 @@ define(function(require) {
   async function createNewCourse() {
     var model = new CourseModel();
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, ACTION_BUTTON_TEMPLATES.EDIT_FORM);
+    Origin.trigger('sidebar:sidebarContainer:hide');
     var form = await Origin.scaffold.buildForm({ model });
     Origin.contentPane.setView(EditorCourseEditView, { model, form });
     Origin.sidebar.addView(new EditorCourseEditSidebarView({ form }).$el);

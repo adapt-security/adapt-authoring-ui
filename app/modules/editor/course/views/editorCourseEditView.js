@@ -8,7 +8,10 @@ define(function(require) {
     tagName: "div",
 
     preRender: function() {
-      this.listenTo(Origin, 'projectEditSidebar:views:save', this.save);
+      this.listenTo(Origin, {
+        'actions:save projectEditSidebar:views:save': this.save,
+        'actions:save projectEditSidebar:views:save': Origin.router.navigateBack
+      });
 
       if (this.model.isNew()) {
         this.isNew = true;
