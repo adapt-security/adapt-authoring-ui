@@ -3,13 +3,12 @@ define(function(require) {
   var Origin = require('core/origin');
   var AssetCollection = require('./collections/assetCollection');
   var AssetManagementEditAssetView = require('./views/assetManagementEditAssetView');
-  var AssetManagementEditAssetSidebarView = require('./views/assetManagementEditAssetSidebarView');
-  var AssetManagementSidebarView = require('./views/assetManagementSidebarView');
   var AssetManagementView = require('./views/assetManagementView');
   var AssetModel = require('./models/assetModel');
   var TagsCollection = require('core/collections/tagsCollection');
 
   const scopes = ['write:assets'];
+  const breadcrumbs = [{ title: Origin.l10n.t('app.assetmanagement'), url: 'assetManagement' }];
 
   Origin.on('router:initialize', () => Origin.router.restrictRoute('assetManagement', scopes));
   
@@ -87,9 +86,8 @@ define(function(require) {
             eventName: 'upload'
           }
         ]);
-        Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: 'Asset management', url: '#' }], title: Origin.l10n.t('app.assetmanagement') });
+        Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
         Origin.trigger('sidebar:sidebarContainer:hide');
-        // Origin.sidebar.addView(new AssetManagementSidebarView({ collection: tagsCollection }).$el);
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
         Origin.trigger('assetManagement:loaded');
       },
@@ -103,8 +101,9 @@ define(function(require) {
     const isNew = location === undefined;
     const model = new AssetModel({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
-    Origin.trigger('contentHeader:updateTitle', { title });
-
+    Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title });
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
+    Origin.trigger('sidebar:sidebarContainer:hide');
     if(!isNew) {
       try {
         await model.fetch();
@@ -112,7 +111,6 @@ define(function(require) {
         Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
       }
     }
-    Origin.sidebar.addView(new AssetManagementEditAssetSidebarView().$el);
     Origin.contentPane.setView(AssetManagementEditAssetView, { model });
   }
 });
