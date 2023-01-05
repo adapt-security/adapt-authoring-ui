@@ -90,6 +90,8 @@ define(function(require) {
         Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
         Origin.trigger('assetManagement:loaded');
+
+        Origin.on('actions:upload', Origin.router.navigateTo('assetManagement/upload'));
       },
       error: function() {
         console.log('Error occured getting the tags collection - try refreshing your page');
