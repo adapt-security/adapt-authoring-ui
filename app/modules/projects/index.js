@@ -51,17 +51,20 @@ define(function(require) {
         ]
       }
     ]);
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
-      {
-        buttonText: Origin.l10n.t('app.addnewproject'),
-        eventName: 'createcourse'
-      },
-      {
+
+    const actionButtons = [{
+      buttonText: Origin.l10n.t('app.addnewproject'),
+      eventName: 'createcourse'
+    }];
+    if(Origin.sessionModel.hasScopes(["import:adapt"])) {
+      actionButtons.push({
         buttonText: Origin.l10n.t('app.importcourse'),
         buttonClass: 'action-secondary',
         eventName: 'importcourse'
-      }
-    ]);
+      });
+    }
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, actionButtons);
+    
     (new TagsCollection()).fetch({
       success: function(collection) {
         Origin.trigger('sidebar:sidebarContainer:hide');
