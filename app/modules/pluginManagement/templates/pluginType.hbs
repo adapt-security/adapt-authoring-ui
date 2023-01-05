@@ -3,7 +3,12 @@
     <div class="pluginType-title col-20">
       <h4 class="pluginType-title-inner tb-col-inner">{{displayName}}</h4>
     </div>
-    <div class="pluginType-description col-40">
+    <div class="pluginType-type col-10">
+      <div class="pluginType-type-inner tb-col-inner">
+        {{type}}
+      </div>
+    </div>
+    <div class="pluginType-description col-30">
       <div class="pluginType-description-inner tb-col-inner">
         {{description}}
       </div>
@@ -20,11 +25,9 @@
     <div class="pluginType-active col-10 col-centered">
       <input class="pluginType-enabled" type="checkbox" {{#if isEnabled}} checked {{/if}}/>
     </div>
-    {{#ifValueEquals type 'extension'}}
-      <div class="pluginType-addedDefault col-10 col-centered">
-        <input class="pluginType-addedDefault" type="checkbox" {{#if isAddedByDefault}}checked{{/if}}/>
-      </div>
-    {{/ifValueEquals}}
+    <div class="pluginType-addedDefault col-10 col-centered">
+      <input class="pluginType-addedDefault" type="checkbox" {{#if isAddedByDefault}}checked{{/if}} {{#ifValueEquals type 'extension'}}{{else}}disabled{{/ifValueEquals}}/>
+    </div>
     <div class="pluginType-update col-10 col-centered">
       <div class="pluginType-update-inner tb-col-inner">
         {{#if isLocalPackage}}

@@ -16,13 +16,8 @@ define(function(require){
     },
 
     initialize: async function(options) {
-      this.currentPluginType = options.pluginType;
-
-      this.contentPlugins = new ContentPluginCollection(undefined, { filter: { includeUpdateInfo: true } }); // all plugins
-      this.pluginCollections = {}; // sorted plugins go here
-
+      this.contentPlugins = new ContentPluginCollection(undefined, { filter: { includeUpdateInfo: true } });
       await this.refreshPluginList();
-      
       return OriginView.prototype.initialize.apply(this, arguments);
     },
 
@@ -40,11 +35,10 @@ define(function(require){
     renderPluginTypeViews: function() {
       this.$('.pluginManagement-plugins').empty();
 
-      var coll = this.pluginCollections[this.currentPluginType];
-      if(!coll.length) {
+      if(!this.contentPlugins.length) {
         this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
       } else {
-        coll.forEach(this.renderPluginTypeView);
+        this.contentPlugins.forEach(this.renderPluginTypeView);
       }
       this.setViewToReady();
     },

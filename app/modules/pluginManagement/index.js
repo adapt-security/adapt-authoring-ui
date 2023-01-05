@@ -21,10 +21,8 @@ define(function(require) {
   });
 
   Origin.on('router:pluginManagement', function(location, subLocation, action) {
-    if (!location) {
-      location = 'extension';
-    }
     if ('upload' === location) {
+      Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.uploadplugin') });
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       Origin.contentPane.setView(PluginManagementUploadView);
     } else {
@@ -73,6 +71,13 @@ define(function(require) {
       Origin.trigger('sidebar:sidebarContainer:hide');
 
       Origin.contentPane.setView(PluginManagementView, { pluginType: location });
+
+      Origin.on('actions:upload', function () {
+        Origin.router.navigateTo('pluginManagement/upload');
+      });
+      Origin.on('actions:getnewplugins', function () {
+        window.open('https://www.adaptlearning.org/index.php/plugin-browser/');
+      });
     }
   });
 });
