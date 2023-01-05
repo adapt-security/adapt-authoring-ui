@@ -1,9 +1,7 @@
 define(function(require) {
   var Origin = require('core/origin');
   var UserManagementView = require('./views/userManagementView');
-  var UserManagementSidebarView = require('./views/userManagementSidebarView');
   var AddUserView = require('./views/addUserView');
-  var AddUserSidebarView = require('./views/addUserSidebarView');
   var UserCollection = require('./collections/userCollection');
 
   var isReady = false;
@@ -44,8 +42,8 @@ define(function(require) {
     var model = new Backbone.Model({ allRoles });
 
     if (location && location === 'addUser') {
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       Origin.contentPane.setView(AddUserView, { model: model });
-      Origin.sidebar.addView(new AddUserSidebarView().$el);
       return;
     }
     await refreshUsers();
@@ -102,7 +100,6 @@ define(function(require) {
     Origin.trigger('sidebar:sidebarContainer:hide');
 
     Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
-    // Origin.sidebar.addView(new UserManagementSidebarView({ model, collection: userCollection }).$el);
     
     Origin.on('userManagement:refresh', refreshUsers);
   };
