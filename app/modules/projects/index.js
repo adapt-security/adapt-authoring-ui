@@ -75,8 +75,12 @@ define(function(require) {
   });
 
   
-  Origin.on('actions:createCourse', function () {
+  Origin.on('actions:createcourse', function () {
     Origin.router.navigateTo('project/new');
+  });
+  
+  Origin.on('actions:importcourse', function () {
+    Origin.router.navigateTo('frameworkImport');
   });
 
   Origin.on('dashboard:loaded', function ({ type, tags }) {
