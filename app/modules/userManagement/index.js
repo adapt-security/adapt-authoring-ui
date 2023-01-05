@@ -42,6 +42,7 @@ define(function(require) {
     var model = new Backbone.Model({ allRoles });
 
     if (location && location === 'addUser') {
+      Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.addnewuser') });
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       Origin.contentPane.setView(AddUserView, { model: model });
       return;
@@ -100,6 +101,8 @@ define(function(require) {
     Origin.trigger('sidebar:sidebarContainer:hide');
 
     Origin.contentPane.setView(UserManagementView, { model, collection: userCollection });
+
+    Origin.on('actions:adduser', () => Origin.router.navigateTo('userManagement/addUser'));
     
     Origin.on('userManagement:refresh', refreshUsers);
   };

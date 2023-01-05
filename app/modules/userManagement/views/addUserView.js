@@ -11,7 +11,10 @@ define(function(require){
 
     preRender: function() {
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.addusertitle') });
-      this.listenTo(Origin, 'userManagement:saveUser', this.saveNewUser);
+      this.listenTo(Origin, {
+        'actions:save': this.saveNewUser,
+        'actions:cancel': Origin.router.navigateBack
+      });
     },
 
     postRender: function() {
