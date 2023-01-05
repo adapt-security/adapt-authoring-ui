@@ -1,14 +1,7 @@
-{{!-- default (no type) --}}
-{{#unless type}} 
-  <button data-event="{{eventName}}">
-    <i class="fa {{#if icon}}{{icon}}{{else}}fa-chevron-right{{/if}}"></i>
-    {{buttonText}}
-  </button>
-{{/unless}}
 {{!-- toggle --}}
 {{#ifValueEquals type 'toggle'}}
   <input type="checkbox" id="{{eventName}}" {{#if checked}}checked{{/if}} />
-  <label for="{{eventName}}">{{buttonText}}</label>
+  <label for="{{eventName}}">{{> part_headerButtonContent}}</label>
 {{/ifValueEquals}}
 {{!-- search --}}
 {{#ifValueEquals type 'search'}}
