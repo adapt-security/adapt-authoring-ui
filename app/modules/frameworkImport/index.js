@@ -2,7 +2,6 @@
 define(function(require) {
   var Origin = require('core/origin');
   var FrameworkImportView = require('./views/frameworkImportView.js');
-  var FrameworkImportSidebarView = require('./views/frameworkImportSidebarView.js');
 
   var featureScopes = ["import:adapt"];
 
@@ -16,7 +15,24 @@ define(function(require) {
   });
 
   function renderMainView(location, subLocation, action) {
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
+      {
+        buttonText: Origin.l10n.t('app.importcourse'),
+        buttonClass: 'action-primary import display-none',
+        eventName: 'import'
+      },
+      {
+        buttonText: Origin.l10n.t('app.checkimport'),
+        buttonClass: 'action-tertiary check',
+        eventName: 'check'
+      },
+      {
+        buttonText: Origin.l10n.t('app.cancel'),
+        buttonClass: 'action-secondary',
+        eventName: 'cancel'
+      }
+    ]);
+    Origin.trigger('sidebar:sidebarContainer:hide');
     Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model() });
-    Origin.sidebar.addView(new FrameworkImportSidebarView().$el);
   }
 });

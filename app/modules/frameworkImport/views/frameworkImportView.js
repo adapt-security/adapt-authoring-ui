@@ -12,8 +12,8 @@ define(function(require){
     preRender: function() {
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.frameworkimporttitle') });
       this.listenTo(Origin, {
-        'frameworkImport:check': this.checkCourse,
-        'frameworkImport:import': this.importcourse
+        'actions:check': this.checkCourse,
+        'actions:import': this.importcourse
       });
     },
 
@@ -41,8 +41,8 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
-          $('button.frameworkimport.check').addClass('display-none');
-          if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
+          $('.actions button.check').addClass('display-none');
+          if(data.canImport) $('.actions button.import').removeClass('display-none');
           this.$el.html(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
