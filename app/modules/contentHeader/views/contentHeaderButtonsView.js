@@ -15,7 +15,6 @@ define(function(require) {
       this.listenTo(Origin, 'remove:views', this.remove);
 
       this.data = options;
-
       try {
         if(this.preRender) await this.preRender();
       } catch(e) {
@@ -32,7 +31,6 @@ define(function(require) {
           item.itemHtml = itemTemplate(item);
         });
       });
-      console.log(this.data);
       if(!this.constructor.template) this.constructor.template = 'contentHeaderButtons';
       this.$el.html(Handlebars.templates[this.constructor.template](this.data));
       return this;
