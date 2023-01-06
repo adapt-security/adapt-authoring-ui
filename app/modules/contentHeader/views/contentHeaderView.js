@@ -43,8 +43,7 @@ define(function(require) {
         }, {})
       };
       Origin.on('contentHeader:updateTitle', this.updateTitle.bind(this));
-      Origin.on('contentHeader:hide', this.remove.bind(this));
-      Origin.on('remove:views', this.remove.bind(this));
+      Origin.on('router, contentHeader:hide, remove:views', this.remove.bind(this));
     }
     render() {
       this.remove(false);
