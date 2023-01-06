@@ -4,8 +4,12 @@ define(function(require) {
 
   var LinksView = ContentHeaderButtonsView.extend({
     preRender() {
-      if(!this.data.buttonClass) this.data.buttonClass = '';
-      this.data.buttonClass += ' link';
+      this.data.groups.forEach(group => {
+        group.items.forEach(item => {
+          if(!item.buttonClass) item.buttonClass = '';
+          item.buttonClass += ' link';
+        });
+      });
     }
   }, {
     itemTemplate: 'buttonItem'

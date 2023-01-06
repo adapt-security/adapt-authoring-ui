@@ -4,8 +4,12 @@ define(function(require) {
 
   var ActionsView = ContentHeaderButtonsView.extend({
     preRender() {
-      if(!this.data.buttonClass) this.data.buttonClass = 'action-primary';
-      this.data.buttonClass += ' action';
+      this.data.groups.forEach(group => {
+        group.items.forEach(item => {
+          if(!item.buttonClass) item.buttonClass = 'action-primary';
+          item.buttonClass += ' action';
+        });
+      });
     }
   }, {
     itemTemplate: 'buttonItem'
