@@ -5,9 +5,10 @@ define(function(require) {
   var ActionsView = ContentHeaderButtonsView.extend({
     preRender() {
       if(!this.data.buttonClass) this.data.buttonClass = 'action-primary';
+      this.data.buttonClass += ' action';
     }
   }, {
-    itemTemplate: 'actionsItem'
+    itemTemplate: 'buttonItem'
   });
 
   return ActionsView;
