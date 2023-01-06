@@ -2,10 +2,4 @@
   <i class="fa {{buttonIcon}}"></i>
   <div class="label">{{buttonText}}</div>
 </button>
-<div class="buttons-container">
-  <div class="items">
-    {{#each items}}
-      <div class="item" data-key="{{@index}}" data-event="{{eventName}}">{{{itemHtml}}}</div>
-    {{/each}}
-  </div>
-</div>
+{{> part_contentHeaderButtonContainer}}

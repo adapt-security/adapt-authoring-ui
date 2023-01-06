@@ -63,7 +63,7 @@
           font-size: 18px;
         }
       }
-      .buttons-container {
+      .groups {
         &.show { 
           animation-name: slidein;
           animation-duration: 0.3s;
@@ -74,14 +74,6 @@
           1% { height: inherit;  }
           to { height: inherit; margin-top: 20px; opacity: 1; }
         }
-        height: 0;
-        position: absolute;
-        overflow: hidden;
-        margin-left: -6px;
-        min-width: 200px;
-        background: @tertiary-color;
-        border-radius: @button-radius;
-        
         .title {
           padding: 20px;
           font-weight: bold;
@@ -134,11 +126,33 @@
         }
       }
 
+      .sorts,
+      .filters {
+        .groups {
+          height: 0;
+          position: absolute;
+          overflow: hidden;
+          margin-left: -6px;
+          min-width: 200px;
+          background: @tertiary-color;
+          border-radius: @button-radius;
+
+          .name {
+            padding-left: 15px;
+            color: white;
+          }
+        }
+      }
+
       .actions {
         margin: 10px 20px;
         margin-right: 0;
+
+        .items .item {
+          display: inline-block;
+          padding: 0;
+        }
       }
-      
       .sorts .items > .item {
         .direction i { 
           color: rgba(255, 255, 255, 0.2); 
