@@ -3,20 +3,23 @@ define(function(require) {
   const Origin = require('core/origin');
   const ActionsView = require('./actionsView');
   const FiltersView = require('./filtersView');
+  const LinksView = require('./linksView');
   const SortsView = require('./sortsView');
 
   const VIEWS = {
     actions: ActionsView,
     filters: FiltersView,
+    links: LinksView,
     sorts: SortsView,
   };
 
   class ContentHeaderView {
     get BUTTON_TYPES() {
       return {
-        SORTS: 'sorts',
+        ACTIONS: 'actions',
         FILTERS: 'filters',
-        ACTIONS: 'actions'
+        LINKS: 'links',
+        SORTS: 'sorts'
       };
     }
     get ACTION_BUTTON_TEMPLATES() {
@@ -54,7 +57,7 @@ define(function(require) {
       for (let type in this.data.buttons) {
         const { ViewClass, groups } = this.data.buttons[type];
         if(!groups.length) continue;
-        $(`.buttons > .${type}`, this.$el).append(new ViewClass({ type, groups }).$el);
+        $(`.${type}`, this.$el).append(new ViewClass({ type, groups }).$el);
       }
     }
     getTemplateData() {
