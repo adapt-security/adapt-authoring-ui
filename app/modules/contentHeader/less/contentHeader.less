@@ -71,54 +71,50 @@
         }
         @keyframes slidein {
           from { height: 0; opacity: 0; margin-top: 0; }
-          1% { height: inherit;  }
-          to { height: inherit; margin-top: 20px; opacity: 1; }
+          1% { height: inherit; padding: 25px }
+          to { height: inherit; padding: 25px; margin-top: 20px; opacity: 1; }
         }
-        .title {
-          padding: 20px;
-          font-weight: bold;
-          color: white;
-        }
-        .items {
-          padding: 10px;
-          .item {
-            display: block;
-            padding: 15px;
-            color: white;
-            text-align: left;
+        .group {
+          padding-bottom: 20px;
+          &:last-child {
+            padding-bottom: 0;
+          }
+          .name {
+            padding-bottom: 10px;
+            font-weight: bold;
+          }
+          .items {
+            padding-bottom: 10px;
             &:last-child {
-              margin-bottom: 0;
+              padding-bottom: 0;
             }
-            .label {
-              margin-bottom: 8px;
-            }
-            i,
-            input[type='checkbox'] {
-              margin-right: 8px;
-              color: @secondary-color;
-              accent-color: @secondary-color;
-            }
-            input[type='radio'] {
-              display: none;
-            }
-            input[type='text'] {
-              color: white;
-              width: auto;
-              border-color: lighten(@tertiary-color, 15%);
-              background-color: lighten(@tertiary-color, 5%);
-              &::placeholder {
-                border-color: lighten(@tertiary-color, 15%);
-              }
-            }
-            .tags {
+            .item {
+              display: block;
               padding: 10px 0;
-              .tag {
-                padding: 5px;
-                background: lighten(@tertiary-color, 15%);
-                font-weight: bold;
-                cursor: pointer;
-                &.selected {
-                  color: @secondary-color;
+              color: white;
+              text-align: left;
+              &:last-child {
+                margin-bottom: 0;
+              }
+              .label {
+                margin-bottom: 8px;
+              }
+              i,
+              input[type='checkbox'] {
+                margin-right: 8px;
+                color: @secondary-color;
+                accent-color: @secondary-color;
+              }
+              input[type='radio'] {
+                display: none;
+              }
+              input[type='text'] {
+                color: white;
+                width: auto;
+                border-color: lighten(@tertiary-color, 15%);
+                background-color: lighten(@tertiary-color, 5%);
+                &::placeholder {
+                  border-color: lighten(@tertiary-color, 15%);
                 }
               }
             }
@@ -132,25 +128,27 @@
           height: 0;
           position: absolute;
           overflow: hidden;
+          padding: 0 25px;
           margin-left: -6px;
           min-width: 200px;
           background: @tertiary-color;
           border-radius: @button-radius;
-
           .name {
-            padding-left: 15px;
             color: white;
           }
         }
       }
 
-      .actions {
-        margin: 10px 20px;
-        margin-right: 0;
-
-        .items .item {
-          display: inline-block;
-          padding: 0;
+      .actions .groups .group .items .item {
+        display: inline-block;
+      }
+      .filters .items .item .tags .tag {
+        padding: 5px;
+        background: lighten(@tertiary-color, 15%);
+        font-weight: bold;
+        cursor: pointer;
+        &.selected {
+          color: @secondary-color;
         }
       }
       .sorts .items > .item {
