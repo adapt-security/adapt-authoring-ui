@@ -41,6 +41,7 @@ define(function(require) {
         // Mainly due to serverside filtering
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
           {
+            name: "Type",
             items: [
               {
                 type: 'toggle',
@@ -65,27 +66,35 @@ define(function(require) {
                 buttonText: Origin.l10n.t('app.filetypeother'),
                 checked: true,
                 eventName: 'other'
-              },
+              }
+            ]
+          },
+          {
+            name: Origin.l10n.t('app.search'),
+            items: [
               {
                 type: 'search',
-                buttonText: Origin.l10n.t('app.search'),
                 placeholder: Origin.l10n.t('app.searchbyname'),
                 eventName: 'search'
-              },
+              }
+            ]
+          },
+          {
+            name: Origin.l10n.t('app.tags'),
+            items: [
               {
                 type: 'tags',
-                buttonText: Origin.l10n.t('app.tags'),
                 eventName: 'tags'
               }
             ]
           }
         ]);
-        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
-          {
+        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+          items: [{
             buttonText: Origin.l10n.t('app.uploadnewasset'),
             eventName: 'upload'
-          }
-        ]);
+          }]
+        }]);
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
         Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
