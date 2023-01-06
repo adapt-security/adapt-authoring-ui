@@ -12,14 +12,15 @@ define(function(require) {
     onItemClicked(event) {
       event.stopPropagation();
       const $target = $(event.target);
-      let eventData = $target.val() || $target.attr('data-value');
+      let value = $target.val() || $target.attr('data-value');
       
       if($target.hasClass('tag')) {
         $target.toggleClass('selected');
-        eventData = $('.tag.selected', this.$el).toArray().map(t => $(t).attr('data-value'));
+        value = $('.tag.selected', this.$el).toArray().map(t => $(t).attr('data-value'));
       }
+      const allFilterData = {};
       const eventName = `${this.data.type}:${$(event.currentTarget).attr('data-event')}`;
-      Origin.trigger(eventName, eventData);
+      Origin.trigger(eventName, value, allFilterData);
     }
   }, {
     defaultButtonIcon: 'fa-filter',
