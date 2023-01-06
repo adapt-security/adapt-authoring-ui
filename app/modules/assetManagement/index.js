@@ -35,10 +35,6 @@ define(function(require) {
   function loadAssetsView() {
     (new TagsCollection()).fetch({
       success: function(tagsCollection) {
-        // Load asset collection before so sidebarView has access to it
-        var assetCollection = new AssetCollection();
-        // No need to fetch as the collectionView takes care of this
-        // Mainly due to serverside filtering
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
           {
             name: "Type",
@@ -97,7 +93,7 @@ define(function(require) {
         }]);
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
         Origin.trigger('sidebar:sidebarContainer:hide');
-        Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
+        Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() });
         Origin.trigger('assetManagement:loaded');
 
         Origin.on('actions:upload', () => Origin.router.navigateTo('assetManagement/upload'));
