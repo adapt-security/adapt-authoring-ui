@@ -13,7 +13,7 @@ define(function(require) {
     },
     animDuration: 500,
 
-    initialize: function() {
+    initialize: function(options) {
       this.listenToEvents();
       this.render();
     },
@@ -31,13 +31,14 @@ define(function(require) {
     },
 
     // expects a backbone view
-    setView: function(view) {
+    setView: function(view, options) {
       if(!view.$el || !view.$el[0] || !_.isElement(view.$el[0])) {
         console.log('ContentPaneView.setView: expects a Backbone.View instance, received', view);
       }
       if(this.$('.contentPane-inner').html() !== '') {
         this.removeView();
       }
+      this.$el.toggleClass('full-width', options.fullWidth);
       this.$('.contentPane-inner').html(view.$el);
       Origin.trigger('contentPane:changed');
       this.animateIn(_.bind(this.resize, this));

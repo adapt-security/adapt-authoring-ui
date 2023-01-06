@@ -98,7 +98,7 @@ define(function(require) {
       breadcrumbs: ['dashboard'], 
       title: Origin.l10n.t(`app.projects`) 
     });
-    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags });
+    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags }, { fullWidth: true });
   });
 
   Origin.on('router:initialize login:changed', function() {

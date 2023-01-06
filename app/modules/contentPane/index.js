@@ -7,8 +7,8 @@ define(function(require) {
   $('.app-inner').append(cpv.$el);
 
   Origin.contentPane = {
-    setView: function(ViewClass, options) {
-      cpv.setView(new ViewClass(options));
+    setView: function(ViewClass, viewOptions = {}, options = {}) {
+      cpv.setView(new ViewClass(viewOptions), options);
     },
     enableScroll: function() {
       cpv.$el.removeClass('no-scroll');

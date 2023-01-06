@@ -93,7 +93,7 @@ define(function(require) {
         }]);
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
         Origin.trigger('sidebar:sidebarContainer:hide');
-        Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() });
+        Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() }, { fullWidth: true });
         Origin.trigger('assetManagement:loaded');
 
         Origin.on('actions:upload', () => Origin.router.navigateTo('assetManagement/upload'));
