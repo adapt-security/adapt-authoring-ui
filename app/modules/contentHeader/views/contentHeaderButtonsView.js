@@ -41,7 +41,9 @@ define(function(require) {
     onClicked(event) {
       event.preventDefault();
       event.stopPropagation();
-      Origin.trigger(`${this.data.type}:${this.data.eventName}`);
+      $item = $(event.currentTarget).parent('.item');
+      const data = this.data.groups[$item.attr('data-group')].items[$item.attr('data-item')];
+      Origin.trigger(`${this.data.type}:${data.eventName}`);
     }
   });
 
