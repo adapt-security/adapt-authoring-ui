@@ -4,8 +4,6 @@
  */
 define(function(require) {
   var EditorMenuSidebarView = require('./views/editorMenuSidebarView');
-  var EditorPageEditSidebarView = require('./views/editorPageEditSidebarView');
-  var EditorPageEditView = require('./views/editorPageEditView');
   var EditorPageSidebarView = require('./views/editorPageSidebarView');
   var EditorView = require('../global/views/editorView');
   var Helpers = require('../global/helpers');
@@ -28,13 +26,6 @@ define(function(require) {
     Helpers.setPageTitle(data.model);
     route();
   });
-
-  async function renderContentObjectEdit(data) {
-    Helpers.setPageTitle(data.model);
-    var form = await Origin.scaffold.buildForm({ model: data.model });
-    Origin.sidebar.addView(new EditorPageEditSidebarView({ form: form }).$el);
-    Origin.contentPane.setView(EditorPageEditView, { model: data.model, form: form });
-  }
 
   function renderPageStructure(data) {
     Helpers.setPageTitle(data.model);
