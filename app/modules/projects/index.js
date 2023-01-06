@@ -63,7 +63,7 @@ define(function(require) {
         eventName: 'importcourse'
       });
     }
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, actionButtons);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
     
     (new TagsCollection()).fetch({
       success: function(collection) {

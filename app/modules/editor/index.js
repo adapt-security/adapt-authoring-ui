@@ -3,16 +3,13 @@ define([
   'core/origin',
   './global/editorDataLoader',
   './form/views/editorFormView',
-  './article/index',
-  './block/index',
-  './component/index',
-  './config/index',
+  'core/models/contentModel',
   './contentObject/index',
   './course/index',
   './extensions/index',
   './menuSettings/index',
   './themeEditor/index'
-], function(Origin, EditorData, EditorFormView) {
+], function(Origin, EditorData, EditorFormView, ContentModel) {
   // loads editor data
   Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('router', mod => {
@@ -69,9 +66,7 @@ define([
     } else {
       actionButtons = Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM;
     }
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, actionButtons);
-
-    console.log(route2, Origin.location.route3, Origin.location.route4);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
 
     if(Origin.location.route4 === 'edit') {
       new ContentModel({ _id: Origin.location.route3 }).fetch({

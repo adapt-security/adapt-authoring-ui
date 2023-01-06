@@ -91,12 +91,12 @@ define(function(require) {
         ]
       }
     ]);
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
-      {
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+      items: [{
         buttonText: Origin.l10n.t('app.addnewuser'),
         eventName: 'adduser'
-      }
-    ]);
+      }]
+    }]);
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });
     Origin.trigger('sidebar:sidebarContainer:hide');
 

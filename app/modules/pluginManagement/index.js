@@ -28,6 +28,7 @@ define(function(require) {
     } else {
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
         {
+          name: 'Types',
           items: [
             {
               type: 'toggle',
@@ -56,17 +57,19 @@ define(function(require) {
           ]
         }
       ]);
-      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
-        {
-          buttonText: Origin.l10n.t('app.uploadplugin'),
-          eventName: 'upload'
-        },
-        {
-          buttonText: Origin.l10n.t('app.getnewplugins'),
-          eventName: 'getnewplugins',
-          buttonClass: 'action-secondary'
-        }
-      ]);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+        items: [
+          {
+            buttonText: Origin.l10n.t('app.uploadplugin'),
+            eventName: 'upload'
+          },
+          {
+            buttonText: Origin.l10n.t('app.getnewplugins'),
+            eventName: 'getnewplugins',
+            buttonClass: 'action-secondary'
+          }
+        ]
+      }]);
       Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
       Origin.trigger('sidebar:sidebarContainer:hide');
 

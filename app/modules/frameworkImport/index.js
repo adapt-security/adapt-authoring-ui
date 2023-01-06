@@ -15,23 +15,25 @@ define(function(require) {
   });
 
   function renderMainView(location, subLocation, action) {
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [
-      {
-        buttonText: Origin.l10n.t('app.importcourse'),
-        buttonClass: 'action-primary import display-none',
-        eventName: 'import'
-      },
-      {
-        buttonText: Origin.l10n.t('app.checkimport'),
-        buttonClass: 'action-tertiary check',
-        eventName: 'check'
-      },
-      {
-        buttonText: Origin.l10n.t('app.cancel'),
-        buttonClass: 'action-secondary',
-        eventName: 'cancel'
-      }
-    ]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+      items: [
+        {
+          buttonText: Origin.l10n.t('app.importcourse'),
+          buttonClass: 'action-primary import display-none',
+          eventName: 'import'
+        },
+        {
+          buttonText: Origin.l10n.t('app.checkimport'),
+          buttonClass: 'action-tertiary check',
+          eventName: 'check'
+        },
+        {
+          buttonText: Origin.l10n.t('app.cancel'),
+          buttonClass: 'action-secondary',
+          eventName: 'cancel'
+        }
+      ]
+    }]);
     Origin.trigger('sidebar:sidebarContainer:hide');
     Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model() });
   }
