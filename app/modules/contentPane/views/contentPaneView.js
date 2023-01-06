@@ -38,7 +38,7 @@ define(function(require) {
       if(this.$('.contentPane-inner').html() !== '') {
         this.removeView();
       }
-      this.$el.toggleClass('full-width', options.fullWidth);
+      this.$el.toggleClass('full-width', !!options.fullWidth);
       this.$('.contentPane-inner').html(view.$el);
       Origin.trigger('contentPane:changed');
       this.animateIn(_.bind(this.resize, this));
