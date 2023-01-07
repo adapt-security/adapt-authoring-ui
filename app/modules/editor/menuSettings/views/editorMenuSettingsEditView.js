@@ -32,11 +32,6 @@ define(function(require) {
       this.setViewToReady();
     },
 
-    cancel: function(event) {
-      event && event.preventDefault();
-      Origin.trigger('editorSidebarView:removeEditView', this.model);
-    },
-
     saveData: function(event) {
       event && event.preventDefault();
 

@@ -98,7 +98,6 @@ define(function(require) {
       }]
     }]);
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });
-    Origin.trigger('sidebar:sidebarContainer:hide');
 
     Origin.contentPane.setView(UserManagementView, { model, collection: userCollection }, { fullView: true });
 

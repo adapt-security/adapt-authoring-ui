@@ -16,10 +16,8 @@ define(function(require) {
           this.listenTo(Origin, {
             'actions:save': this.save,
             'actions:cancel': Origin.router.navigateBack,
-            'editorSidebarView:removeEditView': this.remove
           });
           Helpers.setPageTitle(options.model);
-          Origin.trigger('sidebar:sidebarContainer:hide');
           Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
 
           OriginView.prototype.initialize.apply(this, arguments);

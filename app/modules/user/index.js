@@ -41,18 +41,15 @@ define(function(require) {
         Origin.sessionModel.logout();
         break;
       case 'forgot':
-        Origin.trigger('sidebar:sidebarContainer:hide');
         currentView = ForgotPasswordView;
         break;
       case 'reset':
-        Origin.trigger('sidebar:sidebarContainer:hide');
         currentView = ResetPasswordView;
         model = new Backbone.Model(query);
         break;
       case 'profile':
         settings.authenticate = true;
         Origin.trigger('contentHeader:updateTitle', {title: Origin.l10n.t('app.editprofiletitle')});
-        Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
         model = new UserProfileModel();
         await model.fetch();

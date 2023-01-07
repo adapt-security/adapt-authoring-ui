@@ -104,7 +104,6 @@ define([
     },
 
     onSaveError: function(errorMessage) {
-      Origin.trigger('sidebar:resetButtons');
       Origin.Notify.alert({ type: 'error', text: errorMessage });
     }
 

@@ -46,7 +46,6 @@ define(function(require){
           this.$el.html(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
-        .finally(() => Origin.trigger('sidebar:resetButtons'));
     },
     
     importCourse: function() {
@@ -57,7 +56,6 @@ define(function(require){
     },
 
     doImport: async function(dryRun = false) {
-      Origin.trigger('sidebar:updateButton', 'button.frameworkimport', Origin.l10n.t('app.working'));
 
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));

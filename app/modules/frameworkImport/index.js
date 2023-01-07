@@ -34,7 +34,6 @@ define(function(require) {
         }
       ]
     }]);
-    Origin.trigger('sidebar:sidebarContainer:hide');
     Origin.contentPane.setView(FrameworkImportView, { model: new Backbone.Model() });
   }
 });

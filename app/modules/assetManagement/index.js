@@ -92,7 +92,6 @@ define(function(require) {
           }]
         }]);
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
-        Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() }, { fullWidth: true });
         Origin.trigger('assetManagement:loaded');
 
@@ -110,7 +109,6 @@ define(function(require) {
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
-    Origin.trigger('sidebar:sidebarContainer:hide');
     if(!isNew) {
       try {
         await model.fetch();

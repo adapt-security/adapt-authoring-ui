@@ -67,7 +67,6 @@ define(function(require) {
     
     (new TagsCollection()).fetch({
       success: function(collection) {
-        Origin.trigger('sidebar:sidebarContainer:hide');
         Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
       },
       error: () => console.log('Error occured getting the tags collection - try refreshing your page')

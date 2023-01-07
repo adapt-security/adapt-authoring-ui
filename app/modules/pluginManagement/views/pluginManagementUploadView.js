@@ -32,7 +32,6 @@ define(function(require){
     validate: function() {
       if(_.isEmpty(this.$('form input').val())) {
         this.$('.field-error').removeClass('display-none');
-        Origin.trigger('sidebar:resetButtons');
         return false;
       }
       this.$('.field-error').addClass('display-none');
@@ -42,14 +41,12 @@ define(function(require){
     onUploadSuccess: function(data) {
       Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
 
-      Origin.trigger('sidebar:resetButtons');
       $('.loading').hide();
 
       Origin.router.navigateTo(`pluginManagement/${data.pluginType || ''}`);
     },
 
     onUploadError: function(data) {
-      Origin.trigger('sidebar:resetButtons');
       $('.loading').hide();
 
       var resError = data && data.responseJSON && data.responseJSON.message;

@@ -63,18 +63,14 @@ define(function(require) {
         return;
       }
       Origin.editor.isPreviewPending = true;
-      $('.editor-common-sidebar-preview-inner').addClass('display-none');
-      $('.editor-common-sidebar-previewing').removeClass('display-none');
       
       const previewWindow = window.open('loading', 'preview');
       
       $.post(`api/adapt/preview/${this.currentCourseId}`)
         .done(data => {
-          this.resetPreviewProgress();
           previewWindow.location.href = data.preview_url;
         })
         .fail((jqXHR, textStatus, errorThrown) => {
-          this.resetPreviewProgress();
           Origin.Notify.alert({
             type: 'error',
             text: Origin.l10n.t('app.errorgeneratingpreview') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
@@ -109,7 +105,6 @@ define(function(require) {
       // aleady processing, don't try again
       if(error || this.exporting) return;
 
-      this.showExportAnimation();
       this.exporting = true;
       if(!this.validateCourse()) {
         return;
@@ -118,14 +113,12 @@ define(function(require) {
         url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
         method: 'POST',
         success: data => {
-          this.showExportAnimation(false);
           this.exporting = false;
           var $downloadForm = $('#downloadForm');
           $downloadForm.attr('action', data.export_url);
           $downloadForm.submit();
         },
         error: jqXHR => {
-          this.showExportAnimation(false);
           this.exporting = false;
           Origin.Notify.alert({
             type: 'error',
@@ -134,17 +127,6 @@ define(function(require) {
           });
         }
       });
-    },
-
-    showExportAnimation: function(show = true) {
-      const $btn = $('button.editor-common-sidebar-export');
-      if(show) {
-        $('.editor-common-sidebar-export-inner', $btn).addClass('display-none');
-        $('.editor-common-sidebar-exporting', $btn).removeClass('display-none');
-      } else {
-        $('.editor-common-sidebar-export-inner', $btn).removeClass('display-none');
-        $('.editor-common-sidebar-exporting', $btn).addClass('display-none');
-      }
     },
 
     downloadProject: function() {
@@ -161,32 +143,17 @@ define(function(require) {
         url: `api/adapt/publish/${this.currentCourseId}`,
         method: 'POST',
         success: (data, textStatus, jqXHR) => {
-          this.resetDownloadProgress();
           var $downloadForm = $('#downloadForm');
           $downloadForm.attr('action', data.publish_url);
           $downloadForm.submit();
         },
         error: jqXHR => {
-          this.resetDownloadProgress();
           Origin.Notify.alert({
             type: 'error',
             text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
           });
         }
       });
-    },
-  
-    resetPreviewProgress: function() {
-      $('.editor-common-sidebar-preview-inner').removeClass('display-none');
-      $('.editor-common-sidebar-previewing').addClass('display-none');
-      $('.editor-common-sidebar-preview-wrapper .dropdown').removeClass('active');
-      Origin.editor.isPreviewPending = false;
-    },
-
-    resetDownloadProgress: function() {
-      $('.editor-common-sidebar-download-inner').removeClass('display-none');
-      $('.editor-common-sidebar-downloading').addClass('display-none');
-      Origin.editor.isDownloadPending = false;
     },
 
     addToClipboard: function(model) {

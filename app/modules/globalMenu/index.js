@@ -20,7 +20,7 @@ define(function(require) {
             
             Origin.on('appHeader:postRender', this.renderButton.bind(this));
             Origin.on('remove:views globalMenu:close', this.close.bind(this));
-            $(document).on('click', '#app,.sidebar,.appHeader', this.close.bind(this));
+            $(document).on('click', '#app, .appHeader', this.close.bind(this));
             this.itemStore.on('update', this.renderButton.bind(this));
 
             _.defer(() => Origin.trigger('globalMenu:ready'));

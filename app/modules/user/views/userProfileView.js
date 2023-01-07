@@ -30,7 +30,6 @@ define(function(require){
     },
 
     handleValidationError: function(model, error) {
-      Origin.trigger('sidebar:resetButtons');
 
       if (error && _.keys(error).length !== 0) {
         _.each(error, function(value, key) {
@@ -125,7 +124,6 @@ define(function(require){
     },
 
     handleError(error) {
-      Origin.trigger('sidebar:resetButtons');
       const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
       Origin.Notify.alert({ type: 'error', text });
     },

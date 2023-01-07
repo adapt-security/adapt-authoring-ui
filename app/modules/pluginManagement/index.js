@@ -71,7 +71,6 @@ define(function(require) {
         ]
       }]);
       Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
-      Origin.trigger('sidebar:sidebarContainer:hide');
 
       Origin.contentPane.setView(PluginManagementView, { pluginType: location }, { fullWidth: true });
 

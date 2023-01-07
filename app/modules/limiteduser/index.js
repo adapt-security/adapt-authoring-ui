@@ -5,7 +5,6 @@ define(function(require) {
 
   Origin.on('router:limiteduser', (location, subLocation, action) => {
     Origin.contentPane.setView(LimitedUserViewView);
-    Origin.trigger('sidebar:sidebarContainer:hide');
     Origin.trigger('contentHeader:hide');
   });
 
