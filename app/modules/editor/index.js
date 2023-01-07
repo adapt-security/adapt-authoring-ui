@@ -23,26 +23,7 @@ define([
     var eventData = parseLocationData();
     let actionButtons = [];
 
-    if(eventData.type === 'contentObject') {
-      actionButtons = [
-        {
-          buttonText: Origin.l10n.t('app.preview'),
-          eventName: 'preview'
-        },
-        {
-          buttonText: Origin.l10n.t('app.download'),
-          buttonClass: 'action-secondary',
-          eventName: 'publish'
-        }
-      ];
-      if(Origin.sessionModel.hasScopes(["export:adapt"])) {
-        actionButtons.push({
-          buttonText: Origin.l10n.t('app.export'),
-          buttonClass: 'action-secondary',
-          eventName: 'export'
-        });
-      }
-    } else {
+    if(eventData.action === 'edit') {
       actionButtons = Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM;
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
@@ -78,7 +59,7 @@ define([
     if(data.type === 'settings') {
       data.contentType = 'course';
     }
-    if(data.type === 'config' || data.type === 'course') {
+    if(data.contentType === 'config' || data.contentType === 'course') {
       data.action = 'edit';
     }
     return data;
