@@ -42,7 +42,7 @@ define(function(require) {
       $item = $(event.currentTarget).parent('.item');
       const data = this.data.groups[$item.attr('data-group')].items[$item.attr('data-item')];
       let eventName = this.data.type;
-      if(data.eventName) eventName += data.eventName;
+      if(data.eventName) eventName += `:${data.eventName}`;
       Origin.trigger(eventName, data.eventData);
     }
   });
