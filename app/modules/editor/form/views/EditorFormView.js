@@ -39,13 +39,22 @@ define(function(require) {
     },
 
     setUpFilters() {
-      const filters = [{
-        items: [{
-          type: 'toggle',
-          buttonText: 'Hide non-text settings',
-          eventName: 'hidenontext'
-        }]
-      }];
+      const filters = [
+        {
+          name: Origin.l10n.t('app.search'),
+          items: [{
+            type: 'search',
+            eventName: 'search'
+          }]
+        },
+        {
+          items: [{
+            type: 'toggle',
+            buttonText: 'Hide non-text settings',
+            eventName: 'hidenontext'
+          }]
+        }
+      ];
       const fieldsetFilters = [];
       $('fieldset', this.form.el).each((i, fieldset) => {
         const $f = $(fieldset);
@@ -60,7 +69,7 @@ define(function(require) {
           eventName: 'fieldset'
         });
       });
-      Origin.on('filters:hidenontext', this.filterNonText);
+      
       if(fieldsetFilters.length) {
         filters.push({
           id: 'fieldsets',
@@ -69,6 +78,8 @@ define(function(require) {
         });
         Origin.on('filters:fieldset', this.filterFieldsets);
       }
+      Origin.on('filters:hidenontext', this.filterNonText);
+
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, filters);
     },
 
