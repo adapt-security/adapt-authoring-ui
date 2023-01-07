@@ -5,7 +5,6 @@ define([
   './form/views/editorFormView',
   'core/models/contentModel',
   './contentObject/index',
-  './course/index',
   './extensions/index',
   './menuSettings/index',
   './themeEditor/index'
