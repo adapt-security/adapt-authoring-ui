@@ -2,7 +2,7 @@
 define([
   'core/origin',
   './global/editorDataLoader',
-  './form/views/editorFormView',
+  './global/views/editorFormView',
   'core/models/contentModel',
   './contentObject/index',
   './extensions/index',
