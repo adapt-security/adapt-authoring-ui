@@ -62,23 +62,26 @@ define(function(require) {
           {
             buttonText: Origin.l10n.t('app.uploadplugin'),
             eventName: 'upload'
-          },
-          {
-            buttonText: Origin.l10n.t('app.getnewplugins'),
-            eventName: 'getnewplugins',
-            buttonClass: 'action-secondary'
           }
         ]
       }]);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
+        items: [
+          {
+            buttonText: Origin.l10n.t('app.getnewplugins'),
+            buttonIcon: 'fa-external-link',
+            eventData: 'https://www.adaptlearning.org/index.php/plugin-browser/'
+          }
+        ] 
+      }]);
+      Origin.on('links', data => window.open(data));
+
       Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
 
       Origin.contentPane.setView(PluginManagementView, { pluginType: location }, { fullWidth: true });
 
       Origin.on('actions:upload', function () {
         Origin.router.navigateTo('pluginManagement/upload');
-      });
-      Origin.on('actions:getnewplugins', function () {
-        window.open('https://www.adaptlearning.org/index.php/plugin-browser/');
       });
     }
   });
