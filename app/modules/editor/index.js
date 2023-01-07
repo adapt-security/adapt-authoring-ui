@@ -21,30 +21,10 @@ define([
   * Acts as a sub-router to send out more useful events
   */
   function triggerEvent() {
-    var route2 = Origin.location.route2;
-    var type;
-    switch(route2) {
-      case 'article':
-      case 'block':
-      case 'component':
-      case 'config':
-      case 'extensions':
-      case 'menusettings':
-      case 'selecttheme':
-        type = route2;
-        break;
-      case 'page':
-      case 'menu':
-        type = 'contentObject';
-        break;
-      case 'settings':
-        type = 'course';
-        break;
-    }
-
+    var eventData = parseLocationData();
     let actionButtons = [];
 
-    if(type === 'contentObject') {
+    if(eventData.type === 'contentObject') {
       actionButtons = [
         {
           buttonText: Origin.l10n.t('app.preview'),
@@ -68,18 +48,40 @@ define([
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
 
-    if(Origin.location.route4 === 'edit') {
-      new ContentModel({ _id: Origin.location.route3 }).fetch({
+    if(eventData.action === 'edit') {
+      let model;
+      if(eventData.contentType === 'config') {
+        model = Origin.editor.data.config;
+      } else if(eventData.contentType === 'course') {
+        model = Origin.editor.data.course;
+      } else {
+        model = new ContentModel({ _id: eventData.id });
+      }
+      model.fetch({
         success: model => Origin.contentPane.setView(EditorFormView, { model }), 
-        error: e => Origin.Notify.alert()
+        error: e => Origin.Notify.alert({ type: 'error', text: e.message })
       });
       return;
     }
+    Origin.trigger(`editor:${eventData.contentType}`, eventData);
+  }
 
-    Origin.trigger(`editor:${type}`, {
-      type: route2,
+  function parseLocationData() {
+    var data = {
+      contentType: Origin.location.route2,
+      type: Origin.location.route2,
       id: Origin.location.route3,
       action: Origin.location.route4
-    });
+    };
+    if(data.type === 'page' || data.type === 'menu') {
+      data.contentType = 'contentObject';
+    }
+    if(data.type === 'settings') {
+      data.contentType = 'course';
+    }
+    if(data.type === 'config' || data.type === 'course') {
+      data.action = 'edit';
+    }
+    return data;
   }
 });
