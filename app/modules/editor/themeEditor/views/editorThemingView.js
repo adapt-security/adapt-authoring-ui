@@ -2,14 +2,14 @@
 define(function(require) {
   var Backbone = require('backbone');
   var ContentPluginCollection = require('core/collections/contentPluginCollection');
-  var EditorOriginView = require('../../global/views/editorOriginView');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
+  var OriginView = require('core/views/originView');
   var PresetCollection = require('../collections/editorPresetCollection.js');
   var PresetModel = require('../models/editorPresetModel.js');
   var PresetEditView = require('./editorPresetEditView.js');
 
-  var ThemingView = EditorOriginView.extend({
+  var ThemingView = OriginView.extend({
     tagName: 'div',
     className: 'theming',
     events: {
