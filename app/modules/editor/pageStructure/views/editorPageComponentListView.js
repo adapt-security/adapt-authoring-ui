@@ -69,6 +69,10 @@ define(function(require) {
 
       Origin.editor.data.componentTypes.forEach(function(componentType) {
         var properties = componentType.get('properties');
+
+        if(!properties._isEnabled) {
+          return;
+        }
         var availablePositions = _.clone(this.availablePositions);
         
         if (properties && properties.hasOwnProperty('_supportedLayout')) {
@@ -82,7 +86,6 @@ define(function(require) {
             availablePositions.full = false;
           }
         }
-
         this.$('.editor-component-list-sidebar-list').append(new EditorPageComponentListItemView({
           model: componentType,
           availablePositions: availablePositions,
@@ -91,9 +94,8 @@ define(function(require) {
           parentView: this.parentView,
           searchTerms: componentType.get('displayName').toLowerCase()
         }).$el);
-        this.$el.addClass('show');
-
       }, this);
+      this.$el.addClass('show');
     },
 
     onOverlayClicked: function(event) {

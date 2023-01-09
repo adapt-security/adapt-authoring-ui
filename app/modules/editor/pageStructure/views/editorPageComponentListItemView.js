@@ -3,7 +3,6 @@ define(function(require) {
   var Origin = require('core/origin');
   var ComponentModel = require('core/models/componentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
-  var EditorPageComponentView = require('./editorPageComponentView');
 
   var EditorPageComponentListItemView = EditorOriginView.extend({
     className: 'editor-component-list-item',
@@ -17,7 +16,6 @@ define(function(require) {
     preRender: function(options) {
       this.listenTo(Origin, {
         'editorComponentListView:removeSubviews': this.remove,
-        'editorComponentListItemView:deselect': this.deselectItem,
         'editorComponentListView:searchKeyup': this.onSearchValueChanged
       });
 
@@ -38,15 +36,15 @@ define(function(require) {
     onItemClicked: function(event) {
       event && event.preventDefault();
 
-      Origin.trigger('editorComponentListItemView:deselect')
+      const isSelected = this.$el.hasClass('selected');
 
-      this.$el.addClass('selected');
-      this.$('.editor-component-list-item-overlay').removeClass('display-none');
-    },
-
-    deselectItem: function() {
       $('.editor-component-list-item').removeClass('selected');
-      this.$('.editor-component-list-item-overlay').addClass('display-none');
+      $('.editor-component-list-item-overlay').removeClass('show');
+
+      if(!isSelected) {
+        this.$el.addClass('selected');
+        this.$('.editor-component-list-item-overlay').addClass('show');
+      }
     },
 
     onSearchValueChanged: function(searchValue) {

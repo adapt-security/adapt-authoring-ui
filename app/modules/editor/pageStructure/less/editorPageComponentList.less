@@ -115,7 +115,9 @@
   position: relative;
   padding: 0;
   text-align: left;
-  border-bottom: 1px solid #ccc;
+  border: 1px solid #efefef;
+  border-top: none;
+  border-left: none;
   transition: background-color 0.3s;
   cursor: pointer;
 
@@ -124,21 +126,21 @@
   }
 
   &.selected {
-    background-color: darken(#e9f0fa, 10%);
-    &:hover {
-      background-color: darken(#e9f0fa, 10%);
-    }
     &.restricted {
       color: black;
     }
   }
 
-  &-details {
-    padding-left: 75px;
+  &:hover {
+    background-color: lighten(@primary-color, 40%);
+  }
+  &.selected,
+  &.selected:hover {
+    background-color: lighten(@primary-color, 35%);
   }
 
-  &:hover {
-    background-color: @ui-content-color;
+  &-details {
+    padding-left: 75px;
   }
 
   &-inner {
@@ -157,26 +159,25 @@
   }
 
   &-overlay {
-    top: 0;
     width: 100%;
-    height: 100%;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s;
+    &.show { height: 40px; }
   }
 
   &-overlay-inner {
     text-align: center;
-    padding-bottom: 10px;
-  }
-
-  &-overlay-left {
-    float: left;
-  }
-
-  &-overlay-right {
-    float: right;
+    display: flex;
   }
 
   &-overlay-button {
-    width: 20%;
+    flex-grow: 1;
+    border-radius: 0 !important;
+    margin-right: 1px;
+    &:last-child { 
+      margin-right: 0; 
+    }
   }
 
   &-overlay-button-inner {
