@@ -8,6 +8,6 @@ define(function(require) {
     var model = Origin.editor.data.config;
     Helpers.setPageTitle(model);
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
-    Origin.contentPane.setView(EditorMenuSettingsEditView, { model });
+    Origin.contentPane.setView(EditorMenuSettingsEditView, { model }, { fullWidth: true });
   });
 });
