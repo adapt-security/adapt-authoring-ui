@@ -5,12 +5,16 @@
 {{/ifValueEquals}}
 {{!-- search --}}
 {{#ifValueEquals type 'search'}}
-  <div class="label">{{buttonText}}</div>
+  {{#if buttonText}}
+    <div class="label">{{buttonText}}</div>
+  {{/if}}
   <input type="text" placeholder="{{placeholder}}">
 {{/ifValueEquals}}
 {{!-- tags --}}
 {{#ifValueEquals type 'tags'}}
-  <div class="label">{{buttonText}}</div>
+  {{#if buttonText}}
+    <div class="label">{{buttonText}}</div>
+  {{/if}}
   <div class="tags">
     {{#if ../tags.length}}
       {{#each ../tags}}
