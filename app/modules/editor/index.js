@@ -24,9 +24,6 @@ define([
     var eventData = parseLocationData();
     let actionButtons = [];
 
-    if(eventData.action === 'edit') {
-      actionButtons = Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM;
-    }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
 
     if(eventData.action === 'edit') {

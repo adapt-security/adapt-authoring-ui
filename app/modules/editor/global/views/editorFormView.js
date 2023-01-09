@@ -32,6 +32,7 @@ define(function(require) {
     },
 
     postRender: function() {
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       this.setUpFilters();
       this.$('.form-container').append(this.form.el);
     },
