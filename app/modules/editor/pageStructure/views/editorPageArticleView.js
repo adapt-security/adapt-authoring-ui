@@ -5,7 +5,7 @@ define(function(require){
   var BlockModel = require('core/models/blockModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageBlockView = require('./editorPageBlockView');
-  var EditorPasteZoneView = require('../../global/views/editorPasteZoneView');
+  var EditorPasteZoneView = require('./editorPasteZoneView');
 
   var EditorPageArticleView = EditorOriginView.extend({
     className: 'article editable article-draggable',

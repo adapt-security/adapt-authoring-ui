@@ -6,7 +6,7 @@ define(function(require){
   var ArticleModel = require('core/models/articleModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageArticleView = require('./editorPageArticleView');
-  var EditorPasteZoneView = require('../../global/views/editorPasteZoneView');
+  var EditorPasteZoneView = require('./editorPasteZoneView');
 
   var EditorPageView = EditorOriginView.extend({
     className: 'page',

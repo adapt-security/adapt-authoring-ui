@@ -1,7 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var Origin = require('core/origin');
-  var EditorPasteZoneView = require('../../global/views/editorPasteZoneView');
+  var EditorPasteZoneView = require('./editorPasteZoneView');
 
   var EditorPageComponentPasteZone = EditorPasteZoneView.extend({
     className : 'paste-zone paste-zone-component display-none',
