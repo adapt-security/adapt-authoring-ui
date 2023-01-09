@@ -59,7 +59,7 @@ define(function(require) {
       });
     }
   }, {
-    template: "editorMenuSettingsEdit"
+    template: "editorMenuSettings"
   });
 
   return EditorMenuSettingsEditView;
