@@ -7,9 +7,9 @@ define(function(require) {
   var BlockModel = require('core/models/blockModel');
   var ComponentModel = require('core/models/componentModel');
   var ContentObjectModel = require('core/models/contentObjectModel');
-  var EditorMenuView = require('../../contentObject/views/editorMenuView');
+  var EditorMenuView = require('../../courseStructure/views/editorMenuView');
   var EditorOriginView = require('./editorOriginView');
-  var EditorPageView = require('../../contentObject/views/editorPageView');
+  var EditorPageView = require('../../pageStructure/views/editorPageView');
   var helpers = require('core/helpers');
   var Origin = require('core/origin');
 
