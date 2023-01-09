@@ -1,13 +1,15 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define([
   'core/origin',
+  './global/helpers',
   './global/editorDataLoader',
+  './global/views/editorView',
   './global/views/editorFormView',
   'core/models/contentModel',
   './manageExtensions/index',
   './menuPicker/index',
   './themeEditor/index'
-], function(Origin, EditorData, EditorFormView, ContentModel) {
+], function(Origin, Helpers, EditorData, EditorView, EditorFormView, ContentModel) {
   // loads editor data
   Origin.on('router:editor editor:refreshData', EditorData.load);
   Origin.on('router', mod => {
