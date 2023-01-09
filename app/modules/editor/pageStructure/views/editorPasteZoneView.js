@@ -2,7 +2,7 @@
 define(function(require){
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
-  var EditorOriginView = require('./editorOriginView');
+  var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorPasteZoneView = EditorOriginView.extend({
     className: 'display-none paste-zone',
