@@ -7,6 +7,7 @@ define(function(require) {
   Origin.on('editor:menusettings', function(data) {
     var model = Origin.editor.data.config;
     Helpers.setPageTitle(model);
-    Origin.contentPane.setView(EditorMenuSettingsEditView, { model }, { fullWidth: true });
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
+    Origin.contentPane.setView(EditorMenuSettingsEditView, { model });
   });
 });

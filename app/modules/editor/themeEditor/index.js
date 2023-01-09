@@ -3,5 +3,30 @@ define(function(require) {
   var Origin = require('core/origin');
   var EditorThemingView = require('./views/editorThemingView.js');
 
-  Origin.on('editor:selecttheme', () => Origin.contentPane.setView(EditorThemingView));
+  Origin.on('editor:selecttheme', () => {
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ 
+      items: [
+        {
+          buttonText: Origin.l10n.t('app.save'),
+          eventName: 'save'
+        },
+        {
+          buttonText: Origin.l10n.t('app.savepreset'),
+          buttonClass: 'short secondary-hollow action-btn',
+          eventName: 'savepreset'
+        },
+        {
+          buttonText: Origin.l10n.t('app.restorepreset'),
+          buttonClass: 'short action-secondary',
+          eventName: 'restorepreset'
+        },
+        {
+          buttonText: Origin.l10n.t('app.cancel'),
+          eventName: 'cancel',
+          buttonClass: 'action-secondary'
+        }
+      ]
+    }]);
+    Origin.contentPane.setView(EditorThemingView);
+  });
 });
