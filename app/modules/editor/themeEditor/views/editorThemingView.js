@@ -28,7 +28,7 @@ define(function(require) {
         'managePresets:delete': this.onDeletePreset
       });
       await this.initData();
-      EditorOriginView.prototype.initialize.apply(this, arguments);
+      OriginView.prototype.initialize.apply(this, arguments);
       this.render();
     },
 
@@ -47,7 +47,7 @@ define(function(require) {
     render: async function() {
       this.$el.hide();
 
-      EditorOriginView.prototype.render.apply(this, arguments);
+      OriginView.prototype.render.apply(this, arguments);
 
       Origin.trigger('contentHeader:updateTitle', {
         breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
