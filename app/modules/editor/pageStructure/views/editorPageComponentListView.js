@@ -56,25 +56,12 @@ define(function(require) {
     postRender: function() {
       this.renderComponentList();
       this.headerHeight = this.$('.editor-component-list-sidebar-header').height();
-      $(window).resize();
-      // move bar into place and animate in
-      this.$el.css({ right:this.$('.editor-component-list-sidebar')
-        .width()*-1})
-        .velocity({ right: 0 }, {duration: 400, easing: 'easeOutQuart'});
-      
       this.$('.editor-component-list-sidebar-search-field input').focus();
     },
 
     closeView: function() {
-      var self = this;
-      this.$el.velocity({ right:this.$('.editor-component-list-sidebar').width() *- 1 }, {
-        duration: 400, 
-        easing: 'easeOutQuart',
-        complete: function onAnimOut() {
-          $('html').css('overflow-y', '');
-          self.remove();
-        }
-      });
+      this.$el.removeClass('show');
+      setTimeout(this.remove.bind(this), 500);
     },
 
     renderComponentList: function() {
@@ -104,6 +91,8 @@ define(function(require) {
           parentView: this.parentView,
           searchTerms: componentType.get('displayName').toLowerCase()
         }).$el);
+        this.$el.addClass('show');
+
       }, this);
     },
 
