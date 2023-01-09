@@ -4,9 +4,8 @@ define([
   './global/editorDataLoader',
   './global/views/editorFormView',
   'core/models/contentModel',
-  './contentObject/index',
-  './extensions/index',
-  './menuSettings/index',
+  './manageExtensions/index',
+  './menuPicker/index',
   './themeEditor/index'
 ], function(Origin, EditorData, EditorFormView, ContentModel) {
   // loads editor data
