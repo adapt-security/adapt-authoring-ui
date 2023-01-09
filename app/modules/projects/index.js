@@ -1,8 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
+  var EditorFormView = require('modules/editor/global/views/editorFormView');
   var ProjectsView = require('./views/projectsView');
   var ContentCollection = require('core/collections/contentCollection');
+  var CourseModel = require('core/models/courseModel');
   var TagsCollection = require('core/collections/tagsCollection');
 
   Origin.on('router:projects', function(location, subLocation, action) {
@@ -75,7 +77,8 @@ define(function(require) {
 
   
   Origin.on('actions:createcourse', function () {
-    Origin.router.navigateTo('project/new');
+    Origin.trigger('contentHeader:updateTitle', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
+    Origin.contentPane.setView(EditorFormView, { model: new CourseModel() });
   });
   
   Origin.on('actions:importcourse', function () {
