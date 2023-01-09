@@ -116,7 +116,6 @@ define([
         }
       ] 
     }]);
-    Origin.on('links', data => Origin.router.navigateTo(data));
     Origin.contentPane.setView(EditorView, {
       currentCourseId: Origin.location.route1,
       currentView: data.type,

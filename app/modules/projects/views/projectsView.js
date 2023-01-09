@@ -31,21 +31,18 @@ define(function(require){
       this._doLazyScroll = _.throttle(this.doLazyScroll, 250).bind(this);
       this._onResize = _.debounce(this.onResize, 250).bind(this);
 
+
       this.listenTo(Origin, {
-        'window:resize dashboard:refresh': this._onResize,
-        'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
-        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(undefined, tags),
-        'filters:mine': () => {
-          this.collection.customQuery.createdBy = Origin.sessionModel.get('user')._id;
-          this.doFilter();
+        'actions:createcourse': () => {
+          Origin.trigger('contentHeader:updateTitle', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
+          Origin.contentPane.setView(EditorFormView, { model: new CourseModel() });
         },
-        'filters:shared': () => {
-          this.collection.customQuery.createdBy = { $ne: Origin.sessionModel.get('user')._id };
-          this.doFilter();
+        'actions:importcourse': () => {
+          Origin.router.navigateTo('frameworkImport');
         },
-        'dashboard:sort:asc': () => this.doSort('asc'),
-        'dashboard:sort:desc': () => this.doSort('desc'),
-        'dashboard:sort:updated': () => this.doSort('updated')
+        'filters': this.doFilter,
+        'sorts': this.doSort,
+        'window:resize dashboard:refresh': this._onResize
       });
 
       this.supportedLayouts.forEach(l => {
@@ -60,22 +57,20 @@ define(function(require){
 
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
-      this.doFilter(prefs.search, prefs.tags, false);
+      this.doFilter(prefs.filter, false);
       // set relevant filters as selected
       $(`a[data-callback='dashboard:layout:${prefs.layout}']`).addClass('selected');
       $(`a[data-callback='dashboard:sort:${prefs.sort}']`).addClass('selected');
       // need to refresh this to get latest filters
       prefs = this.getUserPreferences();
-      Origin.trigger('options:update:ui', prefs);
-      Origin.trigger('sidebar:update:ui', prefs);
     },
 
     // Set some default preferences
     getUserPreferences: function() {
       var prefs = OriginView.prototype.getUserPreferences.apply(this, arguments);
 
-      if(!prefs.layout) prefs.layout = 'grid';
-      if(!prefs.sort) prefs.sort = 'asc';
+      if(!prefs.layout) prefs.layout = {};
+      if(!prefs.sort) prefs.sort = {};
 
       return prefs;
     },
@@ -177,7 +172,7 @@ define(function(require){
       this.setUserPreference('layout', layout);
     },
 
-    doSort: function(sort, fetch) {
+    doSort: function(data, fetch) {
       let data;
       switch(sort) {
         case "desc":
@@ -197,15 +192,15 @@ define(function(require){
       if(fetch !== false) this.resetCollection();
     },
 
-    doFilter: function(text = "", tags = [], fetch) {
-      this.collection.customQuery.title = { 
-        $regex: `.*${text.toLowerCase()}.*`,
-        $options: 'i'
-      };
-      this.setUserPreference('search', text, true);
+    doFilter: function(data, fetch) {
+      // this.collection.customQuery.title = { 
+      //   $regex: `.*${text.toLowerCase()}.*`,
+      //   $options: 'i'
+      // };
+      // this.setUserPreference('search', text, true);
 
-      this.collection.customQuery.tags = _.pluck(tags, 'id');
-      this.setUserPreference('tags', this.collection.queryOptions.tags, true);
+      // this.collection.customQuery.tags = _.pluck(tags, 'id');
+      // this.setUserPreference('tags', this.collection.queryOptions.tags, true);
 
       if(fetch !== false) this.resetCollection();
     },

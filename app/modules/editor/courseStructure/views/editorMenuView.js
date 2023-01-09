@@ -15,6 +15,7 @@ define(function(require){
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
         'editorView:menuView:addItem': this.onItemAdded,
         'editorView:itemDeleted': this.onItemDeleted,
+        'links': Origin.router.navigateTo,
         'window:resize': this.setupHorizontalScroll
       });
     },

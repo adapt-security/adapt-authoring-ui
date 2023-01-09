@@ -94,8 +94,6 @@ define(function(require) {
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
         Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() }, { fullWidth: true });
         Origin.trigger('assetManagement:loaded');
-
-        Origin.on('actions:upload', () => Origin.router.navigateTo('assetManagement/upload'));
       },
       error: function() {
         console.log('Error occured getting the tags collection - try refreshing your page');

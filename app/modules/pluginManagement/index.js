@@ -74,15 +74,8 @@ define(function(require) {
           }
         ] 
       }]);
-      Origin.on('links', data => window.open(data));
-
       Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
-
       Origin.contentPane.setView(PluginManagementView, { pluginType: location }, { fullWidth: true });
-
-      Origin.on('actions:upload', function () {
-        Origin.router.navigateTo('pluginManagement/upload');
-      });
     }
   });
 });

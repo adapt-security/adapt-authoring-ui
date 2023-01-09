@@ -74,16 +74,7 @@ define(function(require) {
       error: () => console.log('Error occured getting the tags collection - try refreshing your page')
     });
   });
-
   
-  Origin.on('actions:createcourse', function () {
-    Origin.trigger('contentHeader:updateTitle', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
-    Origin.contentPane.setView(EditorFormView, { model: new CourseModel() });
-  });
-  
-  Origin.on('actions:importcourse', function () {
-    Origin.router.navigateTo('frameworkImport');
-  });
 
   Origin.on('dashboard:loaded', function ({ type, tags }) {
     var isMine = type === 'all';

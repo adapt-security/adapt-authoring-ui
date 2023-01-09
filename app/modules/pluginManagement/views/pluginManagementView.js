@@ -18,6 +18,11 @@ define(function(require){
     initialize: async function(options) {
       this.contentPlugins = new ContentPluginCollection(undefined, { filter: { includeUpdateInfo: true } });
       await this.refreshPluginList();
+
+      Origin.on({
+        'actions:upload': () => Origin.router.navigateTo('pluginManagement/upload'),
+        'links': window.open
+      });
       return OriginView.prototype.initialize.apply(this, arguments);
     },
 
