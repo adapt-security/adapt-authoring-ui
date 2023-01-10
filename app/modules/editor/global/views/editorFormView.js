@@ -16,6 +16,7 @@ define(function(require) {
           this.listenTo(Origin, {
             'actions:save': this.save,
             'actions:cancel': Origin.router.navigateBack,
+            'filters': this.filter
           });
           Helpers.setPageTitle(options.model);
           Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
@@ -44,14 +45,14 @@ define(function(require) {
           items: [{
             type: 'search',
             itemClass: 'no-padding',
-            eventName: 'search'
+            id: '_title'
           }]
         },
         {
           items: [{
             type: 'toggle',
-            buttonText: 'Hide non-text settings',
-            eventName: 'hidenontext'
+            id: 'translatable',
+            buttonText: 'Hide non-text settings'
           }]
         }
       ];
@@ -64,9 +65,9 @@ define(function(require) {
         }
         fieldsetFilters.push({
           type: 'toggle',
+          id: key,
           buttonText: $('legend', $f).text(),
-          checked: true,
-          eventName: 'fieldset'
+          checked: true
         });
       });
       
@@ -76,26 +77,15 @@ define(function(require) {
           name: 'Fieldsets',
           items: fieldsetFilters
         });
-        Origin.on('filters:fieldset', this.filterFieldsets);
       }
-      Origin.on('filters:hidenontext', this.filterNonText);
-
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, filters);
     },
 
     
-    filterByTitle: function(filter) {
-      console.log('filterByTitle:', filter);
+    filter: function(filters) {
+      console.log('filter:', filters);
     },
     
-    filterNonText: function(filter) {
-      console.log('filterNonText:', filter);
-    },
-    
-    filterFieldsets: function(filter) {
-      console.log('filterFieldsets:', filter);
-    },
-
     save: function() {
       var errors = this.form.validate();
       if(errors) {
