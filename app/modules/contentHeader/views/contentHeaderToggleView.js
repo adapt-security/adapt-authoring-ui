@@ -10,7 +10,6 @@ define(function(require) {
     },
     constructor() {
       ContentHeaderButtonsView.prototype.constructor.apply(this, arguments);
-      $('.appHeader, .contentHeader, .contentPane').on('click', () => $('.groups').removeClass('show'));
     },
     render() {
       if(!this.constructor.template) this.constructor.template = 'contentHeaderToggleButton';
