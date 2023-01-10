@@ -24,7 +24,7 @@ define(function(require) {
         case 'search':
           return $('input', $item).val();
         case 'toggle':
-          return !!$('input', $item).attr('checked');
+          return $('input', $item).is(':checked');
         case 'search':
           return $('.tag.selected', $item).toArray().map(t => $(t).attr('data-value'));
       }
