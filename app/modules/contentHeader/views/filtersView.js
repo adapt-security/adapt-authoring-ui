@@ -5,9 +5,13 @@ define(function(require) {
   
   var FiltersView = ContentHeaderToggleView.extend({
     async preRender() {
-      if(this.data.groups.some(({ items }) => items.some(f => f.type === 'tags'))) {
-        this.data.tags = (await $.post('api/tags/query'));
-      }
+      let hasTags = false;
+      this.data.groups.forEach(({ items }) => {
+        items.forEach(i => {
+          if(i.type === 'tags') hasTags = true;
+        });
+      });
+      if(hasTags) this.data.tags = (await $.post('api/tags/query'));
     },
     onItemClicked(event) {
       event.stopPropagation();
