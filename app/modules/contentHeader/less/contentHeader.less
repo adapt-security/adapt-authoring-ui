@@ -96,6 +96,9 @@
               &:last-child {
                 margin-bottom: 0;
               }
+              &.no-padding {
+                padding: 0;
+              }
               .label {
                 margin-bottom: 8px;
               }
@@ -110,7 +113,6 @@
               }
               input[type='text'] {
                 color: white;
-                width: auto;
                 border-color: lighten(@tertiary-color, 15%);
                 background-color: lighten(@tertiary-color, 5%);
                 &::placeholder {
@@ -177,6 +179,11 @@
           }
           i {
             margin-right: 8px;
+            font-size: 120%;
+          }
+          .text {
+            font-weight: normal;
+            font-size: 110%;
           }
         }
       }
