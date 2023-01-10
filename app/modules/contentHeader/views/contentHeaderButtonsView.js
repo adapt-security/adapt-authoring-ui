@@ -25,10 +25,11 @@ define(function(require) {
     
     render() {
       var itemTemplate = Handlebars.templates[this.constructor.itemTemplate];
-      this.data.groups.forEach(group => {
-        group.items.forEach((item, i) => {
-          item.index = i;
-          item.itemHtml = itemTemplate(item);
+      this.data.groups.forEach((group, groupIndex) => {
+        group.index = groupIndex;
+        group.items.forEach((item, itemIndex) => {
+          item.index = itemIndex;
+          item.itemHtml = itemTemplate(Object.assign(item, { group }));
         });
       });
       if(!this.constructor.template) this.constructor.template = 'contentHeaderButtons';

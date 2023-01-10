@@ -1,7 +1,7 @@
 {{!-- toggle --}}
 {{#ifValueEquals type 'toggle'}}
-  <input type="checkbox" id="{{eventName}}" {{#if checked}}checked{{/if}} />
-  <label for="{{eventName}}">{{> part_contentHeaderButtonContent}}</label>
+  <input type="checkbox" id="{{group.index}}-{{index}}" {{#if checked}}checked{{/if}} />
+  <label for="{{group.index}}-{{index}}">{{> part_contentHeaderButtonContent}}</label>
 {{/ifValueEquals}}
 {{!-- search --}}
 {{#ifValueEquals type 'search'}}

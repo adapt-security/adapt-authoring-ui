@@ -1,6 +1,6 @@
   <div class="groups">
   {{#each groups}}
-    <div class="group" data-id="{{id}}">
+    <div class="group" data-id="{{id}}" data-index="{{index}}">
       {{#if name}}
         <div class="name">
           <h3>{{name}}</h3>
@@ -8,7 +8,7 @@
       {{/if}}
       <div class="items">
         {{#each items}}
-          <div class="item {{itemClass}}" data-group="{{@../index}}" data-item="{{@index}}" data-event="{{eventName}}">{{{itemHtml}}}</div>
+          <div class="item {{itemClass}}" data-id="{{id}}" data-index="{{index}}" data-type="{{type}}" data-event="{{eventName}}">{{{itemHtml}}}</div>
         {{/each}}
       </div>
     </div>
