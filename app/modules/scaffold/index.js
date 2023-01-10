@@ -61,6 +61,16 @@ define([
       }
     };
 
+    var generateFieldClasses = function() {
+      const adapt = field._adapt;
+      const classes = [formsConfig.fieldClass || ''];
+
+      if(adapt) {
+        if(adapt.translatable) classes.push('is-translatable');
+      }
+      return classes.join(' ');
+    };
+
     var getValidators = function() {
       var validators = formsConfig.validators || [];
 
@@ -97,7 +107,7 @@ define([
       editorAttrs: formsConfig.editorAttrs,
       editorClass: formsConfig.editorClass,
       fieldAttrs: formsConfig.fieldAttrs,
-      fieldClass: formsConfig.fieldClass,
+      fieldClass: generateFieldClasses(),
       help: field.description,
       itemType: itemsProperties ? 'Object' : items && getType(items),
       inputType: formsConfig.type ? formsConfig : getType(),
