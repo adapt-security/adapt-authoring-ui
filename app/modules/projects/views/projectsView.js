@@ -173,22 +173,21 @@ define(function(require){
     },
 
     doSort: function(data, fetch) {
-      let data;
-      switch(sort) {
-        case "desc":
-          data = { title: -1 };
-          break;
-        case "updated":
-          data = { updatedAt: -1 };
-          break;
-        case "asc":
-        default:
-          sort = "asc";
-          data = { title: 1 };
-        }
-      this.collection.queryOptions.sort = data;
-      this.setUserPreference('sort', sort);
-
+      // let data;
+      // switch(sort) {
+      //   case "desc":
+      //     data = { title: -1 };
+      //     break;
+      //   case "updated":
+      //     data = { updatedAt: -1 };
+      //     break;
+      //   case "asc":
+      //   default:
+      //     sort = "asc";
+      //     data = { title: 1 };
+      // }
+      // this.collection.queryOptions.sort = data;
+      // this.setUserPreference('sort', sort);
       if(fetch !== false) this.resetCollection();
     },
 
