@@ -43,6 +43,7 @@ define(function(require) {
           name: Origin.l10n.t('app.search'),
           items: [{
             type: 'search',
+            itemClass: 'no-padding',
             eventName: 'search'
           }]
         },
