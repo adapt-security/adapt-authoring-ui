@@ -43,25 +43,25 @@ define(function(require) {
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeimage'),
                 checked: true,
-                eventName: 'image'
+                id: 'image'
               },
               {
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypevideo'),
                 checked: true,
-                eventName: 'video'
+                id: 'video'
               },
               {
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeaudio'),
                 checked: true,
-                eventName: 'audio'
+                id: 'audio'
               },
               {
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeother'),
                 checked: true,
-                eventName: 'other'
+                id: 'other'
               }
             ]
           },
@@ -71,7 +71,7 @@ define(function(require) {
               {
                 type: 'search',
                 placeholder: Origin.l10n.t('app.searchbyname'),
-                eventName: 'search'
+                id: 'search'
               }
             ]
           },
@@ -80,7 +80,7 @@ define(function(require) {
             items: [
               {
                 type: 'tags',
-                eventName: 'tags'
+                id: 'tags'
               }
             ]
           }
@@ -88,7 +88,7 @@ define(function(require) {
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
           items: [{
             buttonText: Origin.l10n.t('app.uploadnewasset'),
-            eventName: 'upload'
+            id: 'upload'
           }]
         }]);
         Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });

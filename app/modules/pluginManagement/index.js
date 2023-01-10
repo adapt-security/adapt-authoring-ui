@@ -34,25 +34,25 @@ define(function(require) {
               type: 'toggle',
               buttonText: Origin.l10n.t('app.components'),
               checked: true,
-              eventName: 'type:components'
+              id: 'type:components'
             },
             {
               type: 'toggle',
               buttonText: Origin.l10n.t('app.extensions'),
               checked: true,
-              eventName: 'type:extensions'
+              id: 'type:extensions'
             },
             {
               type: 'toggle',
               buttonText: Origin.l10n.t('app.menus'),
               checked: true,
-              eventName: 'type:menus'
+              id: 'type:menus'
             },
             {
               type: 'toggle',
               buttonText: Origin.l10n.t('app.themes'),
               checked: true,
-              eventName: 'type:themes'
+              id: 'type:themes'
             }
           ]
         }
@@ -61,7 +61,7 @@ define(function(require) {
         items: [
           {
             buttonText: Origin.l10n.t('app.uploadplugin'),
-            eventName: 'upload'
+            id: 'upload'
           }
         ]
       }]);

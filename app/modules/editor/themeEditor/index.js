@@ -8,21 +8,21 @@ define(function(require) {
       items: [
         {
           buttonText: Origin.l10n.t('app.save'),
-          eventName: 'save'
+          id: 'save'
         },
         {
           buttonText: Origin.l10n.t('app.savepreset'),
           buttonClass: 'short secondary-hollow action-btn',
-          eventName: 'savepreset'
+          id: 'savepreset'
         },
         {
           buttonText: Origin.l10n.t('app.restorepreset'),
           buttonClass: 'short action-secondary',
-          eventName: 'restorepreset'
+          id: 'restorepreset'
         },
         {
           buttonText: Origin.l10n.t('app.cancel'),
-          eventName: 'cancel',
+          id: 'cancel',
           buttonClass: 'action-secondary'
         }
       ]

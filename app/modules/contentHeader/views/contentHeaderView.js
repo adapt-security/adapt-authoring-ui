@@ -28,11 +28,11 @@ define(function(require) {
           items: [
             {
               buttonText: Origin.l10n.t('app.save'),
-              eventName: 'save'
+              id: 'save'
             },
             {
               buttonText: Origin.l10n.t('app.cancel'),
-              eventName: 'cancel',
+              id: 'cancel',
               buttonClass: 'action-secondary'
             }
           ]

@@ -15,11 +15,11 @@ define(function(require) {
         items: [
           {
             buttonText: 'Title',
-            eventName: 'title'
+            id: 'title'
           },
           {
             buttonText: 'Last updated',
-            eventName: 'update'
+            id: 'update'
           }
         ]
       }
@@ -31,24 +31,24 @@ define(function(require) {
             type: 'toggle',
             buttonText: Origin.l10n.t('app.myprojects'),
             checked: true,
-            eventName: 'mine'
+            id: 'mine'
           },
           {
             type: 'toggle',
             buttonText: Origin.l10n.t('app.sharedprojects'),
             checked: true,
-            eventName: 'shared'
+            id: 'shared'
           },
           {
             type: 'search',
             buttonText: Origin.l10n.t('app.search'),
             placeholder: Origin.l10n.t('app.searchbyname'),
-            eventName: 'search'
+            id: 'search'
           },
           {
             type: 'tags',
             buttonText: Origin.l10n.t('app.tags'),
-            eventName: 'tags'
+            id: 'tags'
           }
         ]
       }
@@ -56,13 +56,13 @@ define(function(require) {
 
     const actionButtons = [{
       buttonText: Origin.l10n.t('app.addnewproject'),
-      eventName: 'createcourse'
+      id: 'createcourse'
     }];
     if(Origin.sessionModel.hasScopes(["import:adapt"])) {
       actionButtons.push({
         buttonText: Origin.l10n.t('app.importcourse'),
         buttonClass: 'action-secondary',
-        eventName: 'importcourse'
+        id: 'importcourse'
       });
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);

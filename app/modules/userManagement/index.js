@@ -56,37 +56,37 @@ define(function(require) {
             type: 'toggle',
             buttonText: 'Content creators',
             checked: true,
-            eventName: 'role:contentcreator'
+            id: 'role:contentcreator'
           },
           {
             type: 'toggle',
             buttonText: 'Authenticated users',
             checked: true,
-            eventName: 'role:authuser'
+            id: 'role:authuser'
           },
           {
             type: 'toggle',
             buttonText: 'Super users',
             checked: true,
-            eventName: 'role:superuser'
+            id: 'role:superuser'
           },
           {
             type: 'toggle',
             buttonText: 'Content Editors',
             checked: true,
-            eventName: 'role:contenteditor'
+            id: 'role:contenteditor'
           },
           {
             type: 'toggle',
             buttonText: 'Content Reviewers',
             checked: true,
-            eventName: 'role:contentreviewer'
+            id: 'role:contentreviewer'
           },
           {
             type: 'search',
             buttonText: Origin.l10n.t('app.search'),
             placeholder: Origin.l10n.t('app.searchbyemail'),
-            eventName: 'search'
+            id: 'search'
           }
         ]
       }
@@ -94,7 +94,7 @@ define(function(require) {
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
       items: [{
         buttonText: Origin.l10n.t('app.addnewuser'),
-        eventName: 'adduser'
+        id: 'adduser'
       }]
     }]);
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });

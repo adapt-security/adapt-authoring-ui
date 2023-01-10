@@ -70,19 +70,19 @@ define([
     const actionButtons = [
       {
         buttonText: Origin.l10n.t('app.preview'),
-        eventName: 'preview'
+        id: 'preview'
       },
       {
         buttonText: Origin.l10n.t('app.download'),
         buttonClass: 'action-secondary',
-        eventName: 'publish'
+        id: 'publish'
       }
     ];
     if(Origin.sessionModel.hasScopes(["export:adapt"])) {
       actionButtons.push({
         buttonText: Origin.l10n.t('app.export'),
         buttonClass: 'action-secondary',
-        eventName: 'export'
+        id: 'export'
       });
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);

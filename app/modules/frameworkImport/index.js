@@ -20,17 +20,17 @@ define(function(require) {
         {
           buttonText: Origin.l10n.t('app.importcourse'),
           buttonClass: 'action-primary import display-none',
-          eventName: 'import'
+          id: 'import'
         },
         {
           buttonText: Origin.l10n.t('app.checkimport'),
           buttonClass: 'action-tertiary check',
-          eventName: 'check'
+          id: 'check'
         },
         {
           buttonText: Origin.l10n.t('app.cancel'),
           buttonClass: 'action-secondary',
-          eventName: 'cancel'
+          id: 'cancel'
         }
       ]
     }]);
