@@ -154,6 +154,7 @@ define([
     '_layout',
     '_menu',
     '_parentId',
+    '_sortOrder',
     '_supportedLayout',
     '_theme',
     '_themePreset',
