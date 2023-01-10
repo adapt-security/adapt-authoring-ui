@@ -32,7 +32,7 @@ define(function(require) {
       }
       this.updateIcon();
 
-      const eventName = `${this.data.type}:${$selected.attr('data-event')}`;
+      const eventName = `${this.data.type}:${$selected.attr('data-id')}`;
       Origin.trigger(eventName, this.direction);
     }
   }, {
