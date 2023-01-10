@@ -8,7 +8,7 @@
       {{/if}}
       <div class="items">
         {{#each items}}
-          <div class="item" data-group="{{@../index}}" data-item="{{@index}}" data-event="{{eventName}}">{{{itemHtml}}}</div>
+          <div class="item {{itemClass}}" data-group="{{@../index}}" data-item="{{@index}}" data-event="{{eventName}}">{{{itemHtml}}}</div>
         {{/each}}
       </div>
     </div>
