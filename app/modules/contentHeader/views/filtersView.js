@@ -46,7 +46,7 @@ define(function(require) {
       const $target = $(event.currentTarget);
       const type = $target.attr('data-type');
 
-      if(type === 'toggle' && $(event.target).prop('tagName') === 'input') {
+      if(type === 'search' || type === 'toggle' && $(event.target).prop('tagName') !== 'INPUT') {
         return;
       }
       if(type === 'tag') {
