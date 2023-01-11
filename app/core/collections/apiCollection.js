@@ -34,7 +34,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
      * @param {Object} options
      * @returns {Promise}
      */
-    fetch: async function(options = {}) {
+    fetch: async function(options = { recursive: true}) {
       const _fetch = (url, memo = []) => {
         return new Promise((resolve, reject) => {
           Backbone.Collection.prototype.fetch.call(this, _.assign({
@@ -43,8 +43,10 @@ define(['backbone', 'underscore'], function(Backbone, _) {
             data: this.buildQuery(),
             success: async (d, status, res) => {
               memo.push(...d.models);
+              const headers = ['Page', 'PageSize', 'PageTotal'];
+              this.headerData = headers.reduce((m, h) => Object.assign(m, { [h]: Number(res.xhr.getResponseHeader(`X-Adapt-${h}`)) }), {});
               const link = res.xhr.getResponseHeader('Link');
-              if(link) {
+              if(link && options.recursive) {
                 const nextUrl = link.match(/<(.+)>; rel="next",/)[1];
                 if(nextUrl) return resolve(_fetch(nextUrl, memo));
               }
