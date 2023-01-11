@@ -40,8 +40,8 @@ define(function(require) {
     onClicked(event) {
       event.preventDefault();
       event.stopPropagation();
-      $item = $(event.currentTarget).parent('.item');
-      const data = this.data.groups[$item.attr('data-group')].items[$item.attr('data-item')];
+      $item = $(event.currentTarget).parents('.item');
+      const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
       let eventName = this.data.type;
       if(data.id) eventName += `:${data.id}`;
       Origin.trigger(eventName, data.eventData);
