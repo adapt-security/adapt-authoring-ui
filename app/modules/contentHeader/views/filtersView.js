@@ -9,6 +9,11 @@ define(function(require) {
         this.data.tags = (await $.post('api/tags/query'));
       }
     },
+    render() {
+      ContentHeaderToggleView.prototype.render.call(this, arguments);
+      $('input[type=text]', this.$el).on('keyup', this.onItemClicked.bind(this));
+      return this;
+    },
     getFilterData() {
       const data = {};
       this.data.groups.forEach((group) => {
