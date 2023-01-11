@@ -32,8 +32,7 @@ define(function(require) {
       }
       this.updateIcon();
 
-      const eventName = `${this.data.type}:${$selected.attr('data-id')}`;
-      Origin.trigger(eventName, this.direction);
+      Origin.trigger(this.data.type, { [$selected.attr('data-id')]: this.direction });
     }
   }, {
     defaultButtonIcon: 'fa-sort',
