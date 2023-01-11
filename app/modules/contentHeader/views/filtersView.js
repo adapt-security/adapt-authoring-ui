@@ -34,6 +34,14 @@ define(function(require) {
           return $('.tag.selected', $item).toArray().map(t => $(t).attr('data-value'));
       }
     },
+    onClicked() {
+      ContentHeaderToggleView.prototype.onClicked.call(this, arguments);
+      if($('.groups').hasClass('show')) {
+        $('.groups input[type=text]').first().trigger('focus');
+      } else {
+        $(document).trigger('focus');
+      }
+    },
     onItemClicked(event) {
       const $target = $(event.currentTarget);
       const type = $target.attr('data-type');
