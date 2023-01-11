@@ -55,8 +55,8 @@ define(function(require) {
       Origin.trigger(this.data.type, this.getFilterData());
     }
   }, {
-    defaultButtonIcon: 'fa-filter',
-    defaultButtonText: Origin.l10n.t('app.filter'),
+    defaultButtonIcon: 'fa-eye',
+    defaultButtonText: Origin.l10n.t('app.view'),
     itemTemplate: 'filterItem'
   });
 
