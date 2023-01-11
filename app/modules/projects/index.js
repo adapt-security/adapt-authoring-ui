@@ -1,11 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var EditorFormView = require('modules/editor/global/views/editorFormView');
   var ProjectsView = require('./views/projectsView');
-  var ContentCollection = require('core/collections/contentCollection');
-  var CourseModel = require('core/models/courseModel');
-  var TagsCollection = require('core/collections/tagsCollection');
 
   Origin.on('router:projects', function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
@@ -19,13 +15,15 @@ define(function(require) {
           },
           {
             buttonText: 'Last updated',
-            id: 'update'
+            id: 'updatedAt'
           }
         ]
       }
     ]);
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
       {
+        name: 'Author',
+        id: 'author',
         items: [
           {
             type: 'toggle',
@@ -38,7 +36,11 @@ define(function(require) {
             buttonText: Origin.l10n.t('app.sharedprojects'),
             checked: true,
             id: 'shared'
-          },
+          }
+        ]
+      },
+      {
+        items: [
           {
             type: 'search',
             buttonText: Origin.l10n.t('app.search'),
@@ -67,31 +69,11 @@ define(function(require) {
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
     
-    (new TagsCollection()).fetch({
-      success: function(collection) {
-        Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
-      },
-      error: () => console.log('Error occured getting the tags collection - try refreshing your page')
-    });
-  });
-  
-
-  Origin.on('dashboard:loaded', function ({ type, tags }) {
-    var isMine = type === 'all';
-    var isShared = type === 'shared';
-    if(!isMine && !isShared) {
-      return;
-    }
-    var meId = Origin.sessionModel.get('user')._id;
-    var collection = new ContentCollection(undefined, { 
-      filter: { createdBy: isMine ? meId : { $ne: meId } }, 
-      _type: 'course'
-    });
     Origin.trigger('contentHeader:updateTitle', { 
       breadcrumbs: ['dashboard'], 
       title: Origin.l10n.t(`app.projects`) 
     });
-    Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags }, { fullWidth: true });
+    Origin.contentPane.setView(ProjectsView, {}, { fullWidth: true });
   });
 
   Origin.on('router:initialize login:changed', function() {
