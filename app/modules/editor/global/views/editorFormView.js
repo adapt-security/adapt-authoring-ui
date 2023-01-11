@@ -5,7 +5,7 @@ define(function(require) {
   var Helpers = require('../../global/helpers');
 
   var EditorFormView = OriginView.extend({
-    className: "ceditor-form",
+    className: "editor-form",
     tagName: "div",
 
     initialize: function(options) {
@@ -45,7 +45,7 @@ define(function(require) {
           items: [{
             type: 'search',
             itemClass: 'no-padding',
-            id: '_title'
+            id: 'search'
           }]
         },
         {
@@ -83,7 +83,29 @@ define(function(require) {
 
     
     filter: function(filters) {
-      console.log('filter:', filters);
+      const hiddenClass = 'display-none';
+      // hide individual fields
+      $('.field').each((i, field) => {
+        $f = $(field);
+        let hidden = filters.translatable && !$f.hasClass('is-translatable');
+        if(filters.search) {
+          $('legend, label', $f).each((i, item) => {
+            if(!hidden && !$(item).text().toLowerCase().includes(filters.search.toLowerCase())) {
+              hidden = true;
+            }
+          });
+        }
+        $f.toggleClass(hiddenClass, hidden);
+        if(!hidden) $f.parents('.field').removeClass(hiddenClass);
+      });
+      // hide hidden/empty fieldsets
+      $(`fieldset`).each((i, fieldset) => {
+        const $f = $(fieldset);
+        const hidden = filters.fieldsets[$f.attr('data-key')] === false || $('.field', $f).not(`.${hiddenClass}`).length === 0;
+        $f.toggleClass(hiddenClass, hidden);
+      });
+      // show message when no results
+      $('.editor-form .no-matches').toggleClass(hiddenClass, $('fieldset').not('.fieldset-object').not(`.${hiddenClass}`).length > 0);
     },
     
     save: function() {

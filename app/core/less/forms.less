@@ -1,3 +1,5 @@
+@import 'colours';
+
 form label {
     display:block;
     font-size:15px;
@@ -74,4 +76,16 @@ input:disabled, textarea:disabled {
 .max-fileupload-size {
   margin-top: 1rem;
   display: block;
+}
+
+.no-matches {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 130%;
+  font-weight: bold;
+  color: @primary-color;
+  .icon {
+    font-size: 250%;
+    opacity: 0.3;
+  }
 }
