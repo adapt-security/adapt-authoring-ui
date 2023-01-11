@@ -1,3 +1,4 @@
+@import 'buttons';
 @import 'colours';
 
 @default-project-bg: url(assets/origami-project.jpg);
@@ -129,4 +130,30 @@ ul.projects-options {
     font-size: 16px;
     margin-top: 10%;
     color: @tertiary-color;
+}
+
+
+.projects .nav {
+  padding: 10px;
+  padding-top: 0;
+  text-align: center;
+  .inner {
+    display: inline-block;
+    margin: 0 auto;
+    .summary {
+      display: inline-block;
+      padding: 10px 20px;
+      background: @tertiary-color;
+      border-radius: 3px;
+      text-transform: uppercase;
+      color: white;
+    }
+    button {
+      min-width: 40px;
+      &.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+    }
+  }
 }
