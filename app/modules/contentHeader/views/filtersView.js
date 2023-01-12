@@ -12,6 +12,7 @@ define(function(require) {
     render() {
       ContentHeaderToggleView.prototype.render.call(this, arguments);
       $('input[type=text]', this.$el).on('keyup', this.onItemClicked.bind(this));
+      $('select', this.$el).on('change', this.onItemClicked.bind(this));
       return this;
     },
     getFilterData() {
@@ -28,10 +29,12 @@ define(function(require) {
       switch(item.type) {
         case 'search':
           return $('input', $item).val();
+        case 'select':
+          return $('select', $item).val();
+        case 'tags':
+          return $('.tag.selected', $item).toArray().map(t => $(t).attr('data-value'));
         case 'toggle':
           return $('input', $item).is(':checked');
-        case 'search':
-          return $('.tag.selected', $item).toArray().map(t => $(t).attr('data-value'));
       }
     },
     onClicked() {
@@ -46,7 +49,7 @@ define(function(require) {
       const $target = $(event.currentTarget);
       const type = $target.attr('data-type');
 
-      if(type === 'search' || type === 'toggle' && $(event.target).prop('tagName') !== 'INPUT') {
+      if(type === 'search' || type === 'select' || type === 'toggle' && $(event.target).prop('tagName') !== 'INPUT') {
         return;
       }
       if(type === 'tag') {
