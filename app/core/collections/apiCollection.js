@@ -40,7 +40,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
           Backbone.Collection.prototype.fetch.call(this, _.assign({
             url,
             method: 'POST',
-            data: this.buildQuery(),
+            data: JSON.stringify(this.buildQuery()),
+            contentType : 'application/json',
             success: async (d, status, res) => {
               memo.push(...d.models);
               const headers = ['Page', 'PageSize', 'PageTotal'];
