@@ -46,10 +46,7 @@ define(function(require){
 
     initEventListeners: function() {
       this.listenTo(Origin, {
-        'assetManagement:sidebarFilter:add': this.addFilter,
-        'assetManagement:sidebarFilter:remove': this.removeFilter,
-        'assetManagement:sidebarView:filter': this.filterBySearchInput,
-        'assetManagement:assetManagementSidebarView:filterByTags': this.filterByTags,
+        'filters': this.filter,
         'assetManagement:collection:refresh': this.resetCollection
       });
     },
@@ -89,21 +86,6 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
-      this.collection.customQuery.tags = { $all: this.tags };
-      
-      if(this.search) {
-        this.collection.customQuery.$or = [
-          { title: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } },
-          { description: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } } 
-        ]
-      } else {
-        delete this.collection.customQuery.$or;
-      }
-      if(this.filters.length) {
-        this.collection.customQuery.type = { $in: this.filters };
-      } else {
-        delete this.collection.customQuery.type;
-      }
       Object.assign(this.collection.options, {
         skip: this.allAssets.length,
         limit: this.pageSize,
@@ -149,30 +131,25 @@ define(function(require){
       if(shouldFetch) this.fetchCollection(cb);
     },
 
-    // Filtering
+    filter: function(filters) {
+      const filterQuery = {};
 
-    addFilter: function(filterType) {
-      this.filters.push(filterType);
-      this.resetCollection();
-    },
+      if(filters.pageSize) {
+        this.model.set('pageSize', filters.pageSize);
+      }
+      if(filters.search) {
+        const q = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
+        filterQuery.$or = [{ title: q }, { description: q }];
+      }
+      if(filters.type) {
+        filterQuery.type = { $in: Object.entries(filters.type).filter(([k,v]) => v).map(([k]) => k) };
+      }
+      if(filters.tags.length) {
+        filterQuery.tags = { $all: filters.tags };
+      }
+      this.collection.customQuery = filterQuery;
 
-    removeFilter: function(filterType) {
-      // remove filter from this.filters
-      this.filters = this.filters.filter(item => item !== filterType);
-      this.resetCollection();
-    },
-
-    filterBySearchInput: function (filterText) {
       this.resetCollection(null, false);
-      this.search = filterText;
-      this.fetchCollection();
-
-      $(".asset-management-modal-filter-search" ).focus();
-    },
-
-    filterByTags: function(tags) {
-      this.resetCollection(null, false);
-      this.tags = _.pluck(tags, 'id');
       this.fetchCollection();
     },
 

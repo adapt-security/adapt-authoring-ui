@@ -37,6 +37,16 @@ define(function(require) {
       success: function(tagsCollection) {
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
           {
+            name: Origin.l10n.t('app.search'),
+            items: [
+              {
+                id: 'search',
+                type: 'search',
+                placeholder: Origin.l10n.t('app.searchbyname')
+              }
+            ]
+          },
+          {
             id: 'type',
             name: Origin.l10n.t('app.type'),
             items: [
@@ -63,16 +73,6 @@ define(function(require) {
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeother'),
                 checked: true
-              }
-            ]
-          },
-          {
-            name: Origin.l10n.t('app.search'),
-            items: [
-              {
-                id: 'search',
-                type: 'search',
-                placeholder: Origin.l10n.t('app.searchbyname')
               }
             ]
           },
