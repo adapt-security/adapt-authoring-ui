@@ -22,6 +22,7 @@ define(function(require) {
   };
 
   function appendToast(data) {
+    this.$el.removeClass('display-none');
     data.icon = "i";
     var $el = $(`<div class="${data.type} toast">`)
       .append($(`<div class="icon">${getIconHTML(data.type)}</div>`))
@@ -52,6 +53,7 @@ define(function(require) {
     $el.removeClass('visible');
     setTimeout(() => {
       $el.remove();
+      this.$el.addClass('display-none');
       if(data.callback) data.callback.apply();
     }, 500);
   };
@@ -60,7 +62,7 @@ define(function(require) {
     Origin.Notify.register('toast', Toast);
 
     Origin.on('origin:dataReady', function() {
-      $container = $('<div class="toast-container">');
+      $container = $('<div class="toast-container display-none">');
       $('.app-inner').append($container);
     });
   };
