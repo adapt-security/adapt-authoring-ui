@@ -5,9 +5,8 @@ define(function(require) {
   
   var FiltersView = ContentHeaderToggleView.extend({
     async preRender() {
-      if(this.data.groups.some(({ items }) => items.some(i => i.type === 'tags'))) {
-        this.data.tags = (await $.post('api/tags/query'));
-      }
+      const tags = await $.post('api/tags/query');
+      this.data.groups.forEach(({ items }) => items.forEach(i => i.tags = i.type === 'tags' ? tags : undefined));
     },
     render() {
       ContentHeaderToggleView.prototype.render.call(this, arguments);
@@ -52,8 +51,8 @@ define(function(require) {
       if(type === 'search' || type === 'select' || type === 'toggle' && $(event.target).prop('tagName') !== 'INPUT') {
         return;
       }
-      if(type === 'tag') {
-        $target.toggleClass('selected');
+      if(type === 'tags') {
+        $(event.target).toggleClass('action-primary selected');
       }
       Origin.trigger(this.data.type, this.getFilterData());
     }
