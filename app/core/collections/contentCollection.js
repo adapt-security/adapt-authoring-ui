@@ -3,7 +3,12 @@ define([
   '../collections/apiCollection',
   '../models/contentModel',
   '../origin',
-  '../helpers'
+  '../helpers',
+  '../models/courseModel',
+  '../models/contentObjectModel',
+  '../models/articleModel',
+  '../models/blockModel',
+  '../models/componentModel'
 ], function(ApiCollection, ContentModel, Origin, Helpers) {
   var ContentCollection = ApiCollection.extend({
     url: 'api/content',
