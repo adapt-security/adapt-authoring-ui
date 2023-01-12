@@ -95,7 +95,7 @@ define(function(require){
         if(filters.author.mine) filterQuery.$or.push({ createdBy: meId });
         if(filters.author.shared) filterQuery.$or.push({ createdBy: { $ne: meId } });
       }
-      if(filters.tags) {
+      if(filters.tags.length) {
         filterQuery.tags = { $all: filters.tags };
       }
       this.courseCollection.customQuery = filterQuery;
