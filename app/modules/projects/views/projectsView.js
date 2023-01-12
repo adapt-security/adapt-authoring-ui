@@ -25,6 +25,7 @@ define(function(require){
 
       this.model.on('change', this.fetch, this);
       this.courseCollection.on('sync', this.renderList, this);
+      this.tagsCollection.on('sync', () => this.model.set('tags', this.tagsCollection), this);
 
       this.listenTo(Origin, {
         'actions:createcourse': () => {
@@ -73,7 +74,7 @@ define(function(require){
         await Promise.all([
           this.tagsCollection.fetch(),
           this.usersCollection.fetch(),
-          this.courseCollection.fetch({ recursive: false })
+          this.courseCollection.fetch({ recursive: false, reset: true })
         ]);
       } catch(e) {
         Origin.Notify.alert({ type: 'error', text: e.responseJson.message });
@@ -88,6 +89,9 @@ define(function(require){
     doFilter: function(filters) {
       const filterQuery = {};
 
+      if(filters.pageSize) {
+        this.model.set('pageSize', filters.pageSize);
+      }
       if(filters.search) {
         filterQuery.title = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
       }
@@ -98,9 +102,9 @@ define(function(require){
         if(filters.author.shared) filterQuery.$or.push({ createdBy: { $ne: meId } });
       }
       if(filters.tags) {
-        filterQuery.tags = _.pluck(filters.tags, 'id');
+        filterQuery.tags = { $all: filters.tags };
       }
-      Object.assign(this.courseCollection.customQuery, filterQuery);
+      this.courseCollection.customQuery = filterQuery;
       
       this.fetch();
     },

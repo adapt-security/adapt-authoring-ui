@@ -10,12 +10,12 @@ define(function(require) {
       {
         items: [
           {
-            buttonText: 'Title',
-            id: 'title'
+            id: 'title',
+            buttonText: 'Title'
           },
           {
-            buttonText: 'Last updated',
-            id: 'updatedAt'
+            id: 'updatedAt',
+            buttonText: 'Last updated'
           }
         ]
       }
@@ -26,45 +26,50 @@ define(function(require) {
         id: 'author',
         items: [
           {
+            id: 'mine',
             type: 'toggle',
             buttonText: Origin.l10n.t('app.myprojects'),
-            checked: true,
-            id: 'mine'
+            checked: true
           },
           {
+            id: 'shared',
             type: 'toggle',
             buttonText: Origin.l10n.t('app.sharedprojects'),
-            checked: true,
-            id: 'shared'
+            checked: true
           }
         ]
       },
       {
         items: [
           {
+            id: 'search',
             type: 'search',
             buttonText: Origin.l10n.t('app.search'),
-            placeholder: Origin.l10n.t('app.searchbyname'),
-            id: 'search'
+            placeholder: Origin.l10n.t('app.searchbyname')
           },
           {
+            id: 'tags',
             type: 'tags',
             buttonText: Origin.l10n.t('app.tags'),
-            id: 'tags'
+          },
+          {
+            id: 'pageSize',
+            type: 'select',
+            buttonText: Origin.l10n.t('app.pagesize'),
+            values: [25,50,75,100]
           }
         ]
       }
     ]);
-
     const actionButtons = [{
-      buttonText: Origin.l10n.t('app.addnewproject'),
-      id: 'createcourse'
+      id: 'createcourse',
+      buttonText: Origin.l10n.t('app.addnewproject')
     }];
     if(Origin.sessionModel.hasScopes(["import:adapt"])) {
       actionButtons.push({
+        id: 'importcourse',
         buttonText: Origin.l10n.t('app.importcourse'),
-        buttonClass: 'action-secondary',
-        id: 'importcourse'
+        buttonClass: 'action-secondary'
       });
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
