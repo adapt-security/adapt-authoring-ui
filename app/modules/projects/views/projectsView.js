@@ -1,8 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var Backbone = require('backbone');
   var ContentCollection = require('core/collections/contentCollection');
-  var CourseModel = require('core/models/courseModel');
-  var EditorFormView = require('modules/editor/global/views/editorFormView');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var ProjectView = require('./projectView');
@@ -28,13 +27,8 @@ define(function(require){
       this.tagsCollection.on('sync', () => this.model.set('tags', this.tagsCollection), this);
 
       this.listenTo(Origin, {
-        'actions:createcourse': () => {
-          Origin.trigger('contentHeader:updateTitle', { breadcrumbs: ['dashboard'], title: Origin.l10n.t('app.editornew') });
-          Origin.contentPane.setView(EditorFormView, { model: new CourseModel() });
-        },
-        'actions:importcourse': () => {
-          Origin.router.navigateTo('frameworkImport');
-        },
+        'actions:createcourse': this.onCreateCourse,
+        'actions:importcourse': this.onImportCourse,
         'filters': this.doFilter,
         'sorts': this.doSort
       });
@@ -107,6 +101,29 @@ define(function(require){
       this.courseCollection.customQuery = filterQuery;
       
       this.fetch();
+    },
+
+    onCreateCourse: function() {
+      const { SweetAlert } = Origin.Notify.alert({
+        title: Origin.l10n.t('app.newcoursetitle'),
+        input: 'text',
+        inputLabel: Origin.l10n.t('app.newcourseinstruction'),
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
+        preConfirm: async title => {
+          try {
+            const { _id } = await $.ajax({ url: 'api/content/createcourse', method: 'post', data: { title } });
+            Origin.router.navigateTo(`editor/${_id}/menu`);
+          } catch(e) {
+            SweetAlert.showValidationMessage(e);
+          }
+        }
+      });
+    },
+
+    onImportCourse: function() {
+      Origin.router.navigateTo('frameworkImport');
     },
 
     onNavigation: function(event) {
