@@ -32,25 +32,25 @@ define(function(require) {
           name: 'Types',
           items: [
             {
-              id: 'components',
+              id: 'component',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.components'),
               checked: true
             },
             {
-              id: 'extensions',
+              id: 'extension',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.extensions'),
               checked: true
             },
             {
-              id: 'menus',
+              id: 'menu',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.menus'),
               checked: true
             },
             {
-              id: 'themes',
+              id: 'theme',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.themes'),
               checked: true
