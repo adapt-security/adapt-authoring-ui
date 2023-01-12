@@ -144,13 +144,26 @@
       .actions .groups .group .items .item {
         display: inline-block;
       }
-      .filters .items .item .tags .tag {
-        padding: 5px;
-        background: lighten(@tertiary-color, 15%);
-        font-weight: bold;
-        cursor: pointer;
-        &.selected {
-          color: @secondary-color;
+      .filters .items .item {
+        &[data-type="select"] {
+          select {
+            width: 100%;
+          }
+        }
+        &[data-type="tags"] {
+          .tags {
+            max-height: 150px;
+            padding: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 3px;
+            .tag {
+              padding: 5px;
+              cursor: pointer;
+            }
+            .no-tags {
+              opacity: 0.4;
+            }
+          }
         }
       }
       .sorts .items > .item {
