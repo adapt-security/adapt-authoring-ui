@@ -37,31 +37,32 @@ define(function(require) {
       success: function(tagsCollection) {
         Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
           {
-            name: "Type",
+            id: 'type',
+            name: Origin.l10n.t('app.type'),
             items: [
               {
+                id: 'image',
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeimage'),
-                checked: true,
-                id: 'image'
+                checked: true
               },
               {
+                id: 'video',
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypevideo'),
-                checked: true,
-                id: 'video'
+                checked: true
               },
               {
+                id: 'audio',
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeaudio'),
-                checked: true,
-                id: 'audio'
+                checked: true
               },
               {
+                id: 'other',
                 type: 'toggle',
                 buttonText: Origin.l10n.t('app.filetypeother'),
-                checked: true,
-                id: 'other'
+                checked: true
               }
             ]
           },
@@ -69,9 +70,9 @@ define(function(require) {
             name: Origin.l10n.t('app.search'),
             items: [
               {
+                id: 'search',
                 type: 'search',
-                placeholder: Origin.l10n.t('app.searchbyname'),
-                id: 'search'
+                placeholder: Origin.l10n.t('app.searchbyname')
               }
             ]
           },
@@ -79,8 +80,8 @@ define(function(require) {
             name: Origin.l10n.t('app.tags'),
             items: [
               {
-                type: 'tags',
-                id: 'tags'
+                id: 'tags',
+                type: 'tags'
               }
             ]
           }

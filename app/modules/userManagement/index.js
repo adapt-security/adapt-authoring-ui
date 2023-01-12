@@ -51,50 +51,55 @@ define(function(require) {
 
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
       {
+        id: 'role',
         items: [
           {
+            id: 'contentcreator',
             type: 'toggle',
             buttonText: 'Content creators',
-            checked: true,
-            id: 'role:contentcreator'
+            checked: true
           },
           {
+            id: 'authuser',
             type: 'toggle',
             buttonText: 'Authenticated users',
-            checked: true,
-            id: 'role:authuser'
+            checked: true
           },
           {
+            id: 'superuser',
             type: 'toggle',
             buttonText: 'Super users',
-            checked: true,
-            id: 'role:superuser'
+            checked: true
           },
           {
+            id: 'contenteditor',
             type: 'toggle',
             buttonText: 'Content Editors',
-            checked: true,
-            id: 'role:contenteditor'
+            checked: true
           },
           {
+            id: 'contentreviewer',
             type: 'toggle',
             buttonText: 'Content Reviewers',
-            checked: true,
-            id: 'role:contentreviewer'
-          },
+            checked: true
+          }
+        ]
+      },
+      {
+        name: Origin.l10n.t('app.search'),
+        items: [
           {
+            id: 'search',
             type: 'search',
-            buttonText: Origin.l10n.t('app.search'),
-            placeholder: Origin.l10n.t('app.searchbyemail'),
-            id: 'search'
+            placeholder: Origin.l10n.t('app.searchbyemail')
           }
         ]
       }
     ]);
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
       items: [{
-        buttonText: Origin.l10n.t('app.addnewuser'),
-        id: 'adduser'
+        id: 'adduser',
+        buttonText: Origin.l10n.t('app.addnewuser')
       }]
     }]);
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });

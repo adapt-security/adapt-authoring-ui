@@ -11,11 +11,11 @@ define(function(require) {
         items: [
           {
             id: 'title',
-            buttonText: 'Title'
+            buttonText: Origin.l10n.t('app.title')
           },
           {
             id: 'updatedAt',
-            buttonText: 'Last updated'
+            buttonText: Origin.l10n.t('app.lastupdated')
           }
         ]
       }

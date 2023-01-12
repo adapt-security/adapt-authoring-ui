@@ -28,31 +28,32 @@ define(function(require) {
     } else {
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
         {
+          id: 'type',
           name: 'Types',
           items: [
             {
+              id: 'components',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.components'),
-              checked: true,
-              id: 'type:components'
+              checked: true
             },
             {
+              id: 'extensions',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.extensions'),
-              checked: true,
-              id: 'type:extensions'
+              checked: true
             },
             {
+              id: 'menus',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.menus'),
-              checked: true,
-              id: 'type:menus'
+              checked: true
             },
             {
+              id: 'themes',
               type: 'toggle',
               buttonText: Origin.l10n.t('app.themes'),
-              checked: true,
-              id: 'type:themes'
+              checked: true
             }
           ]
         }
@@ -60,8 +61,8 @@ define(function(require) {
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
         items: [
           {
-            buttonText: Origin.l10n.t('app.uploadplugin'),
-            id: 'upload'
+            id: 'upload',
+            buttonText: Origin.l10n.t('app.uploadplugin')
           }
         ]
       }]);

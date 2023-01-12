@@ -18,19 +18,19 @@ define(function(require) {
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
       items: [
         {
+          id: 'import',
           buttonText: Origin.l10n.t('app.importcourse'),
-          buttonClass: 'action-primary import display-none',
-          id: 'import'
+          buttonClass: 'action-primary import display-none'
         },
         {
+          id: 'check',
           buttonText: Origin.l10n.t('app.checkimport'),
-          buttonClass: 'action-tertiary check',
-          id: 'check'
+          buttonClass: 'action-tertiary check'
         },
         {
+          id: 'cancel',
           buttonText: Origin.l10n.t('app.cancel'),
-          buttonClass: 'action-secondary',
-          id: 'cancel'
+          buttonClass: 'action-secondary'
         }
       ]
     }]);

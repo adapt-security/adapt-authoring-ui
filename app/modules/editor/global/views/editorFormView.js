@@ -43,16 +43,16 @@ define(function(require) {
         {
           name: Origin.l10n.t('app.search'),
           items: [{
+            id: 'search',
             type: 'search',
-            itemClass: 'no-padding',
-            id: 'search'
+            itemClass: 'no-padding'
           }]
         },
         {
           items: [{
-            type: 'toggle',
             id: 'translatable',
-            buttonText: 'Hide non-text settings'
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.hidenontext')
           }]
         }
       ];
@@ -64,8 +64,8 @@ define(function(require) {
           return;
         }
         fieldsetFilters.push({
-          type: 'toggle',
           id: key,
+          type: 'toggle',
           buttonText: $('legend', $f).text(),
           checked: true
         });

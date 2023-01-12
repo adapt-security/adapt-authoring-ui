@@ -69,20 +69,20 @@ define([
 
     const actionButtons = [
       {
+        id: 'preview',
         buttonText: Origin.l10n.t('app.preview'),
-        id: 'preview'
       },
       {
+        id: 'publish',
         buttonText: Origin.l10n.t('app.download'),
-        buttonClass: 'action-secondary',
-        id: 'publish'
+        buttonClass: 'action-secondary'
       }
     ];
     if(Origin.sessionModel.hasScopes(["export:adapt"])) {
       actionButtons.push({
+        id: 'export',
         buttonText: Origin.l10n.t('app.export'),
-        buttonClass: 'action-secondary',
-        id: 'export'
+        buttonClass: 'action-secondary'
       });
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
@@ -90,27 +90,27 @@ define([
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
       items: [
         {
-          buttonText: 'Project settings',
+          buttonText: Origin.l10n.t('app.projectsettings'),
           buttonIcon: 'fa-folder-open',
           eventData: `${baseURl}/settings`
         },
         {
-          buttonText: 'Configuration settings',
+          buttonText: Origin.l10n.t('app.configurationsettings'),
           buttonIcon: 'fa-cog',
           eventData: `${baseURl}/config`
         },
         {
-          buttonText: 'Theme settings',
+          buttonText: Origin.l10n.t('app.thememanagement'),
           buttonIcon: 'fa-paint-brush',
           eventData: `${baseURl}/selecttheme`
         },
         {
-          buttonText: 'Menu picker',
+          buttonText: Origin.l10n.t('app.menupicker'),
           buttonIcon: 'fa-th-large',
           eventData: `${baseURl}/menusettings`
         },
         {
-          buttonText: 'Manage extensions',
+          buttonText: Origin.l10n.t('app.manageextensions'),
           buttonIcon: 'fa-cubes',
           eventData: `${baseURl}/extensions`
         }
