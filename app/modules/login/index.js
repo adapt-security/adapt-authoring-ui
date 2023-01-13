@@ -4,8 +4,6 @@ define(function(require) {
   var LoginView = require('./views/loginView');
   var Origin = require('core/origin');
   var ResetPasswordView = require('./views/resetPasswordView');
-  var UserProfileModel = require('./models/userProfileModel');
-  var UserProfileView = require('./views/userProfileView');
 
   Origin.on('user:logout', function() {
     Origin.router.navigateTo('user/logout');
@@ -46,14 +44,6 @@ define(function(require) {
       case 'reset':
         currentView = ResetPasswordView;
         model = new Backbone.Model(query);
-        break;
-      case 'profile':
-        settings.authenticate = true;
-        Origin.trigger('contentHeader:updateTitle', {title: Origin.l10n.t('app.editprofiletitle')});
-        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
-        model = new UserProfileModel();
-        await model.fetch();
-        currentView = UserProfileView;
         break;
     }
     if(currentView) Origin.contentPane.setView(currentView, { model });
