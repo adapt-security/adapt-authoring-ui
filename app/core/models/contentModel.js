@@ -3,20 +3,13 @@ define(function(require) {
   var ApiModel = require('./apiModel');
 
   var ContentModel = ApiModel.extend({
-    constructor: function(attributes = {}, options = {}) {
+    initialize: function(attributes, options = {}) {
       options.endpoint = 'content';
+
+      ApiModel.prototype.initialize.call(this, attributes, options);
       
       const typeAttributes = ContentAttributes[attributes._type];
       if(typeAttributes) Object.assign(this, typeAttributes);
-
-      ApiModel.prototype.constructor.call(this, attributes, options);
-    },
-
-    initialize: function() {
-      if(!this.get('_type')) this.set('_type', this._type);
-      if(this.get('_type') === 'article') {
-        this.set('_isCollapsible', true);
-      }
     }
   });
 

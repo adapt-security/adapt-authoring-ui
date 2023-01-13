@@ -5,9 +5,10 @@ define(function(require) {
   var ApiModel = Backbone.Model.extend({
     idAttribute: '_id',
     attributeBlacklist: null,
-    
-    constructor: function(attributes, options) {
-      Backbone.Model.prototype.constructor.call(this, attributes, options);
+    urlRoot: 'api/',
+ 
+    initialize: function(attributes, options) {
+      Backbone.Model.prototype.initialize.call(this, attributes, options);
       this.urlRoot = `api/${options.endpoint}`;
     },
 

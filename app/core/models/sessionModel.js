@@ -1,18 +1,18 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(['require', 'core/models/apiModel'], function(require, ApiModel) {
   var SessionModel = ApiModel.extend({
-    constructor: function(attributes, options = {}) {
+    initialize: function(Origin, options = {}) {
       options.endpoint = 'auth/check';
-      ApiModel.prototype.constructor.call(this, attributes, options);
-    },
+      ApiModel.prototype.initialize.call(this, {}, options);
 
-    initialize: function(Origin) {
       this.Origin = Origin;
 
       this.on('sync', () => this.set('isAuthenticated', true));
       this.on('error', (model, jqXhr) => {
-        const error = jqXhr.responseJSON && jqXhr.responseJSON.message;
-        this.set({ isAuthenticated: false, error });
+        this.set({ 
+          isAuthenticated: false, 
+          error: jqXhr.responseJSON && jqXhr.responseJSON.message
+        });
       });
     },
 
