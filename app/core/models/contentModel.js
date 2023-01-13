@@ -3,8 +3,12 @@ define(function(require) {
   var ApiModel = require('./apiModel');
 
   var ContentModel = ApiModel.extend({
-    constructor: function(attributes, options) {
+    constructor: function(attributes = {}, options = {}) {
       options.endpoint = 'content';
+      
+      const typeAttributes = ContentAttributes[attributes._type];
+      if(typeAttributes) Object.assign(this, typeAttributes);
+
       ApiModel.prototype.constructor.call(this, attributes, options);
     },
 
