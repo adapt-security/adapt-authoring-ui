@@ -1,12 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ApiCollection = require('core/collections/apiCollection');
   var Backbone = require('backbone');
   var ContentCollection = require('core/collections/contentCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var ProjectView = require('./projectView');
-  var TagsCollection = require('core/collections/tagsCollection');
-  var UserCollection = require('modules/userManagement/collections/userCollection');
 
   var ProjectsView = OriginView.extend({
     className: 'projects',
@@ -18,13 +17,13 @@ define(function(require){
     preRender: function(options) {
       OriginView.prototype.preRender.apply(this, arguments);
       this.model = new Backbone.Model({ page: 1, limit: 25 });
-      this.courseCollection = new ContentCollection(undefined, { _type: 'course' });
-      this.usersCollection = new UserCollection();
-      this.tagsCollection = new TagsCollection();
+      this.courses = new ContentCollection(undefined, { _type: 'course' });
+      this.users = ApiCollection.Users();
+      this.tags = ApiCollection.Tags();
 
       this.model.on('change', this.fetch, this);
-      this.courseCollection.on('sync', this.renderList, this);
-      this.tagsCollection.on('sync', () => this.model.set('tags', this.tagsCollection), this);
+      this.courses.on('sync', this.renderList, this);
+      this.tags.on('sync', () => this.model.set('tags', this.tags), this);
 
       this.listenTo(Origin, {
         'actions:createcourse': this.onCreateCourse,
@@ -38,10 +37,10 @@ define(function(require){
 
     renderList: function() {
       this.$('.project-list-item').remove();
-      this.$('.no-projects').toggleClass('display-none', this.courseCollection.length > 0);
-      this.courseCollection.forEach(this.renderProjectItem, this);
+      this.$('.no-projects').toggleClass('display-none', this.courses.length > 0);
+      this.courses.forEach(this.renderProjectItem, this);
       
-      const { Page, PageTotal } = this.courseCollection.headerData;
+      const { Page, PageTotal } = this.courses.headerData;
       this.$('.nav .summary .currentCount').text(Page);
       this.$('.nav .summary .totalCount').text(PageTotal);
       this.$('.nav button.prev').toggleClass('disabled', Page === 1);
@@ -53,22 +52,22 @@ define(function(require){
       if(model.get('createdBy') !== Origin.sessionModel.get('user')._id) {
         let creatorName = Origin.l10n.t('app.unknownuser');
         try {
-          const { firstName, lastName } = this.usersCollection.findWhere({ _id: model.get('createdBy') }).attributes;
+          const { firstName, lastName } = this.users.findWhere({ _id: model.get('createdBy') }).attributes;
           creatorName = `${firstName} ${lastName}`;
         } catch(e) {}
         model.set('creatorName', creatorName);
       }
-      model.set('tagTitles', model.get('tags').map(tId => this.tagsCollection.find(t => t.get('_id') === tId).get('title')));
+      model.set('tagTitles', model.get('tags').map(tId => this.tags.find(t => t.get('_id') === tId).get('title')));
       this.$('.projects-list').append(new ProjectView({ model }).$el);
     },
 
     fetch: async function(cb) {
       try {
-        Object.assign(this.courseCollection.queryOptions, { page: this.model.get('page'), limit: this.model.get('limit') });
+        Object.assign(this.courses.queryOptions, { page: this.model.get('page'), limit: this.model.get('limit') });
         await Promise.all([
-          this.tagsCollection.fetch(),
-          this.usersCollection.fetch(),
-          this.courseCollection.fetch({ recursive: false, reset: true })
+          this.tags.fetch(),
+          this.users.fetch(),
+          this.courses.fetch({ recursive: false, reset: true })
         ]);
       } catch(e) {
         Origin.Notify.alert({ type: 'error', text: e.responseJson.message });
@@ -76,7 +75,7 @@ define(function(require){
     },
 
     doSort: function(sort) {
-      this.courseCollection.queryOptions.sort = sort;
+      this.courses.queryOptions.sort = sort;
       this.fetch();
     },
     
@@ -98,7 +97,7 @@ define(function(require){
       if(filters.tags.length) {
         filterQuery.tags = { $all: filters.tags };
       }
-      this.courseCollection.customQuery = filterQuery;
+      this.courses.customQuery = filterQuery;
       
       this.fetch();
     },
@@ -129,7 +128,7 @@ define(function(require){
     onNavigation: function(event) {
       const currentPage = this.model.get('page');
       const nextPage = $(event.currentTarget).hasClass('prev') ? currentPage-1 : currentPage+1;
-      if(nextPage !== 0 && nextPage <= this.courseCollection.headerData.PageTotal) {
+      if(nextPage !== 0 && nextPage <= this.courses.headerData.PageTotal) {
         this.model.set('page', nextPage);
       }
     }

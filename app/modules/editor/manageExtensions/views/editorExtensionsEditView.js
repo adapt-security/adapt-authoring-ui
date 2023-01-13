@@ -1,8 +1,8 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+  var ApiCollection = require('core/collections/apiCollection');
   var Origin = require('core/origin');
   var EditorOriginView = require('../../global/views/editorOriginView');
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
 
   var EditorExtensionsEditView = EditorOriginView.extend({
     className: "extension-management",
@@ -24,7 +24,7 @@ define(function(require) {
     },
 
     setupExtensions: function(callback) {
-      var plugins = new ContentPluginCollection(undefined, { type: 'extension' });
+      var plugins = new ApiCollection.ContentPlugins({ customQuery: { type: 'extension' } });
       plugins.fetch({
         success: () => {
           const enabledPlugins = Origin.editor.data.config.get('_enabledPlugins');

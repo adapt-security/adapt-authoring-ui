@@ -1,11 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var AssetCollection = require('./collections/assetCollection');
   var AssetManagementEditAssetView = require('./views/assetManagementEditAssetView');
   var AssetManagementView = require('./views/assetManagementView');
   var AssetModel = require('./models/assetModel');
-  var TagsCollection = require('core/collections/tagsCollection');
 
   const scopes = ['write:assets'];
   const breadcrumbs = [{ title: Origin.l10n.t('app.assetmanagement'), url: 'assetManagement' }];
@@ -33,73 +31,66 @@ define(function(require) {
   });
 
   function loadAssetsView() {
-    (new TagsCollection()).fetch({
-      success: function(tagsCollection) {
-        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+      {
+        name: Origin.l10n.t('app.search'),
+        items: [
           {
-            name: Origin.l10n.t('app.search'),
-            items: [
-              {
-                id: 'search',
-                type: 'search',
-                placeholder: Origin.l10n.t('app.searchbyname')
-              }
-            ]
-          },
-          {
-            id: 'type',
-            name: Origin.l10n.t('app.type'),
-            items: [
-              {
-                id: 'image',
-                type: 'toggle',
-                buttonText: Origin.l10n.t('app.filetypeimage'),
-                checked: true
-              },
-              {
-                id: 'video',
-                type: 'toggle',
-                buttonText: Origin.l10n.t('app.filetypevideo'),
-                checked: true
-              },
-              {
-                id: 'audio',
-                type: 'toggle',
-                buttonText: Origin.l10n.t('app.filetypeaudio'),
-                checked: true
-              },
-              {
-                id: 'other',
-                type: 'toggle',
-                buttonText: Origin.l10n.t('app.filetypeother'),
-                checked: true
-              }
-            ]
-          },
-          {
-            name: Origin.l10n.t('app.tags'),
-            items: [
-              {
-                id: 'tags',
-                type: 'tags'
-              }
-            ]
+            id: 'search',
+            type: 'search',
+            placeholder: Origin.l10n.t('app.searchbyname')
           }
-        ]);
-        Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
-          items: [{
-            buttonText: Origin.l10n.t('app.uploadnewasset'),
-            id: 'upload'
-          }]
-        }]);
-        Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
-        Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() }, { fullWidth: true });
-        Origin.trigger('assetManagement:loaded');
+        ]
       },
-      error: function() {
-        console.log('Error occured getting the tags collection - try refreshing your page');
+      {
+        id: 'type',
+        name: Origin.l10n.t('app.type'),
+        items: [
+          {
+            id: 'image',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeimage'),
+            checked: true
+          },
+          {
+            id: 'video',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypevideo'),
+            checked: true
+          },
+          {
+            id: 'audio',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeaudio'),
+            checked: true
+          },
+          {
+            id: 'other',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeother'),
+            checked: true
+          }
+        ]
+      },
+      {
+        name: Origin.l10n.t('app.tags'),
+        items: [
+          {
+            id: 'tags',
+            type: 'tags'
+          }
+        ]
       }
-    });
+    ]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+      items: [{
+        buttonText: Origin.l10n.t('app.uploadnewasset'),
+        id: 'upload'
+      }]
+    }]);
+    Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
+    Origin.contentPane.setView(AssetManagementView, {}, { fullWidth: true });
+    Origin.trigger('assetManagement:loaded');
   }
 
   async function loadEditAssetView(location) {

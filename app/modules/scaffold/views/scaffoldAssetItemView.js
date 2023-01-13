@@ -1,11 +1,10 @@
 define([
   'core/origin',
-  'backboneForms',
+  'core/collections/apiCollection',
   'core/helpers',
   './scaffoldAssetView',
-  'modules/assetManagement/views/assetManagementModalView',
-  'modules/assetManagement/collections/assetCollection'
-], function(Origin, BackboneForms, Helpers, ScaffoldAssetView, AssetManagementModalView, AssetCollection) {
+  'modules/assetManagement/views/assetManagementModalView'
+], function(Origin, ApiCollection, Helpers, ScaffoldAssetView, AssetManagementModalView) {
 
   var ScaffoldAssetItemView = ScaffoldAssetView.extend({
 
@@ -166,7 +165,7 @@ define([
       event.preventDefault();
 
       Origin.trigger('modal:open', AssetManagementModalView, {
-        collection: new AssetCollection,
+        collection: ApiCollection.Assets(),
         assetType: 'image',
         _shouldShowScrollbar: false,
         onUpdate: data => data && this.setValue(data.assetId)

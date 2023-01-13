@@ -1,8 +1,8 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+  var ApiCollection = require('core/collections/apiCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var MenuItemView = require('./editorMenuSettingsItemView');
 
   var EditorMenuSettingsEditView = OriginView.extend({
@@ -10,7 +10,7 @@ define(function(require) {
     tagName: "ul",
 
     preRender: function() {
-      this.collection = new ContentPluginCollection(undefined, { type: 'menu' });
+      this.collection = ApiCollection.ContentPlugins({ customQuery: { type: 'menu' } });
       this.listenTo(this.collection, 'sync', this.addMenuItemView);
       this.collection.fetch();
 

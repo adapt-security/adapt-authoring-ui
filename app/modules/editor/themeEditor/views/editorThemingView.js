@@ -1,11 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+  var ApiCollection = require('core/collections/apiCollection');
   var Backbone = require('backbone');
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var PresetCollection = require('../collections/editorPresetCollection.js');
   var PresetModel = require('../models/editorPresetModel.js');
   var PresetEditView = require('./editorPresetEditView.js');
 
@@ -34,8 +33,8 @@ define(function(require) {
 
     initData: async function() {
       this.model = new Backbone.Model(Origin.editor.data.course.get('themeVariables'));
-      this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
-      this.presets = new PresetCollection();
+      this.themes = ApiCollection.ContentPlugins({ customQuery: { type: 'theme' } });
+      this.presets = new ApiCollection.CourseThemePresets();
       
       await Promise.all([this.themes.fetch(), this.presets.fetch()]);
 

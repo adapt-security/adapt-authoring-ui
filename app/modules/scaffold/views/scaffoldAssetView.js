@@ -1,9 +1,9 @@
 define([
-  'modules/assetManagement/collections/assetCollection',
+  'core/collections/apiCollection',
   'modules/assetManagement/views/assetManagementModalView',
   'core/helpers',
   'core/origin'
-], function(AssetCollection, AssetManagementModalView, Helpers, Origin) {
+], function(ApiCollection, AssetManagementModalView, Helpers, Origin) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -94,7 +94,7 @@ define([
       event.preventDefault();
 
       Origin.trigger('modal:open', AssetManagementModalView, {
-        collection: new AssetCollection,
+        collection: ApiCollection.Assets(),
         assetType: this.assetType,
         _shouldShowScrollbar: false,
         onUpdate: function(data) {

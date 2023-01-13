@@ -1,8 +1,8 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var _ = require('underscore');
+  var ApiCollection = require('core/collections/apiCollection');
   var ContentCollection = require('core/collections/contentCollection');
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Origin = require('core/origin');
   
   var isLoaded;
@@ -24,7 +24,7 @@ define(function(require) {
       if(await isOutdated()) {
 
         Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-        Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+        Origin.editor.data.componentTypes = ApiCollection.ContentPlugins({ customQuery: { type: 'component' } });
         try {
           await Promise.all([
             Origin.editor.data.content.fetch(),

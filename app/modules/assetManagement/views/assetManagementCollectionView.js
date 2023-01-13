@@ -1,10 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ApiCollection = require('core/collections/apiCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var AssetItemView = require('./assetManagementItemView');
   var AssetModel = require('../models/assetModel');
-  var TagsCollection = require('core/collections/tagsCollection');
 
   var AssetCollectionView = OriginView.extend({
     className: "asset-management-collection",
@@ -27,7 +27,8 @@ define(function(require){
       if(options.types) {
         this.filters = options.types;
       }
-      this.tagsCollection = new TagsCollection();
+      this.assets = ApiCollection.Assets();
+      this.tags = ApiCollection.Tags();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);
       this._onResize = _.bind(_.debounce(this.onResize, 400), this);
@@ -71,7 +72,7 @@ define(function(require){
       const assetTags = asset.get('tags');
       if(assetTags) {
         assetTags.forEach(tId => {
-          tagsMapped.push(this.tagsCollection.find(t => t.get('_id') === tId).attributes);
+          tagsMapped.push(this.tags.find(t => t.get('_id') === tId).attributes);
         });
         asset.set('tagsMapped', tagsMapped);
       }
@@ -86,15 +87,15 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
-      Object.assign(this.collection.options, {
+      Object.assign(this.assets.options, {
         skip: this.allAssets.length,
         limit: this.pageSize,
         page: this.page++,
         sort: this.sort
       });
-      await this.tagsCollection.fetch();
+      await this.tags.fetch();
       
-      this.collection.fetch({
+      this.assets.fetch({
         success: _.bind(function(collection, response) {
           this.allAssets.push(...collection.models);
           this.isCollectionFetching = false;
@@ -126,7 +127,7 @@ define(function(require){
       this.shouldStopFetches = false;
       this.fetchCount = 0;
       this.page = 0;
-      this.collection.reset();
+      this.assets.reset();
 
       if(shouldFetch) this.fetchCollection(cb);
     },
@@ -147,7 +148,7 @@ define(function(require){
       if(filters.tags.length) {
         filterQuery.tags = { $all: filters.tags };
       }
-      this.collection.customQuery = filterQuery;
+      this.assets.customQuery = filterQuery;
 
       this.resetCollection(null, false);
       this.fetchCollection();

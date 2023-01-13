@@ -1,11 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+    var ApiCollection = require('core/collections/apiCollection');
     var Origin = require('core/origin');
     var Backbone = require('backbone');
     var AssetManagementModalTagsView = require('./assetManagementModalTagsView');
     var assetManagementModalEditAssetView = require('./assetManagementModalEditAssetView');
     var AssetModel = require('../models/assetModel');
-    var TagsCollection = require('core/collections/tagsCollection');
 
     var AssetManagementModalFiltersView = Backbone.View.extend({
 
@@ -24,7 +24,7 @@ define(function(require) {
             this.usedTags = [];
             this.tags = [];
             this.availableTags = [];
-            this.tagsCollection = new TagsCollection();
+            this.tagsCollection = ApiCollection.Tags();
             this.listenTo(this.tagsCollection, 'sync', this.setupTags);
             this.tagsCollection.fetch({reset: true});
             this.listenTo(Origin, 'modal:closed', this.remove);

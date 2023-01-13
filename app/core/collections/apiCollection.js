@@ -76,5 +76,13 @@ define(['backbone', 'underscore'], function(Backbone, _) {
     }
   });
 
+  const createCollection = (type, data) => new ApiCollection(data.models || [], { url: `api/${type}` customQuery: data.customQuery || {} });
+
+  ApiCollection.Assets = data => createCollection('assets', data);
+  ApiCollection.ContentPlugins = data => createCollection('contentplugins', data);
+  ApiCollection.CourseThemePresets = data => createCollection('coursethemepresets', data);
+  ApiCollection.Tags = data => createCollection('tags', data);
+  ApiCollection.Users = data => createCollection('users', data);
+
   return ApiCollection;
 });
