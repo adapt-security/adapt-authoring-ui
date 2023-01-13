@@ -162,6 +162,7 @@ define([
     '_type',
     'createdAt',
     'createdBy',
+    'layoutOptions',
     'menuSettings',
     'themeSettings',
     'themeVariables',

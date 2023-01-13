@@ -32,29 +32,13 @@ const ContentAttributes = {
     _parentType: 'article',
     _siblingTypes: 'block',
     _childTypes: 'component',
-    // Block specific properties
     layoutOptions:  null,
-    dragLayoutOptions: null,
-    attributeBlacklist: [
-      '_isDeleted',
-      '_tenantId',
-      '_trackingId',
-      'createdBy',
-      'createdAt',
-      'layoutOptions',
-      'updatedAt'
-    ]
+    dragLayoutOptions: null
   },
   component: {
     _type: 'component',
     _parentType: 'block',
-    _siblingTypes: 'component',
-    attributeBlacklist: [
-      '_isDeleted',
-      'createdBy',
-      'createdAt',
-      'updatedAt'
-    ]
+    _siblingTypes: 'component'
   },
   config: {
     _type: 'config',
@@ -65,7 +49,6 @@ const ContentAttributes = {
     _parentType: 'contentobject',
     _siblingTypes: 'contentobject',
     _childTypes: ['contentobject', 'article'],
-
     defaults: {
       _isSelected: false,
       _isExpanded: false
