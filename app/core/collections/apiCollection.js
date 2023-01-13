@@ -9,6 +9,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       Backbone.Collection.prototype.initialize.apply(this, models);
       this.queryOptions = {};
       if(!options) options = {};
+      if(!this.comparator) this.comparator = options.comparator;
       if(!this.url) this.url = options.url;
       this.customQuery = options.filter || {};
     },
@@ -79,7 +80,11 @@ define(['backbone', 'underscore'], function(Backbone, _) {
    * Shorthand for creating new ApiCollections
    */
   const createCollection = (type, data = {}) => {
-    return new ApiCollection(data.models || [], { url: `api/${type}`, customQuery: data.customQuery || {} });
+    return new ApiCollection(data.models || [], { 
+      url: `api/${type}`, 
+      customQuery: data.customQuery || {}, 
+      comparator: data.comparator || 'createdBy'
+    });
   };
   ApiCollection.Assets = data => createCollection('assets', data);
   ApiCollection.ContentPlugins = data => createCollection('contentplugins', data);
