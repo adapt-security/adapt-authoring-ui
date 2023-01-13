@@ -15,11 +15,55 @@ define([
   Origin.on('router', mod => {
     if(mod !== 'editor') EditorData.resetCourseData();
   });
-  // handle routing
-  Origin.on('router:editor', () => EditorData.waitForLoad(triggerEvent));
-  /**
-  * Acts as a sub-router to send out more useful events
-  */
+  
+  Origin.on('router:editor', onRoute);
+  
+  function onRoute() {
+    EditorData.waitForLoad(() => {
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
+        items: [
+          {
+            buttonText: Origin.l10n.t('app.coursestructure'),
+            buttonIcon: 'fa-birthday-cake',
+            eventData: 'menu'
+          },
+          {
+            buttonText: Origin.l10n.t('app.projectsettings'),
+            buttonIcon: 'fa-folder-open',
+            eventData: 'settings'
+          },
+          {
+            buttonText: Origin.l10n.t('app.configurationsettings'),
+            buttonIcon: 'fa-cog',
+            eventData: 'config'
+          },
+          {
+            buttonText: Origin.l10n.t('app.thememanagement'),
+            buttonIcon: 'fa-paint-brush',
+            eventData: 'selecttheme'
+          },
+          {
+            buttonText: Origin.l10n.t('app.menupicker'),
+            buttonIcon: 'fa-th-large',
+            eventData: 'menusettings'
+          },
+          {
+            buttonText: Origin.l10n.t('app.manageextensions'),
+            buttonIcon: 'fa-cubes',
+            eventData: 'extensions'
+          }
+        ].map(i => Object.assign(i, { buttonClass: i.id === Origin.location.route2 ? 'selected' : '' }))
+      }]);
+
+      Origin.on('links', data => {
+        if(Origin.location.module !== 'editor') return;
+        Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_id')}/${data}`);
+      });
+
+      triggerEvent();
+    });
+  }
+
   function triggerEvent() {
     var eventData = parseLocationData();
     let actionButtons = [];
@@ -90,36 +134,6 @@ define([
       });
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
-    const baseURl = `editor/${Origin.editor.data.course.get('_id')}`;
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
-      items: [
-        {
-          buttonText: Origin.l10n.t('app.projectsettings'),
-          buttonIcon: 'fa-folder-open',
-          eventData: `${baseURl}/settings`
-        },
-        {
-          buttonText: Origin.l10n.t('app.configurationsettings'),
-          buttonIcon: 'fa-cog',
-          eventData: `${baseURl}/config`
-        },
-        {
-          buttonText: Origin.l10n.t('app.thememanagement'),
-          buttonIcon: 'fa-paint-brush',
-          eventData: `${baseURl}/selecttheme`
-        },
-        {
-          buttonText: Origin.l10n.t('app.menupicker'),
-          buttonIcon: 'fa-th-large',
-          eventData: `${baseURl}/menusettings`
-        },
-        {
-          buttonText: Origin.l10n.t('app.manageextensions'),
-          buttonIcon: 'fa-cubes',
-          eventData: `${baseURl}/extensions`
-        }
-      ] 
-    }]);
     Origin.contentPane.setView(EditorView, {
       currentCourseId: Origin.location.route1,
       currentView: data.type,
