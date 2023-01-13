@@ -1,8 +1,8 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(['require', 'core/models/apiModel'], function(require, ApiModel) {
   var SessionModel = ApiModel.extend({
-    constructor: function(attributes, options) {
-      options.endpoint = 'auth/checks';
+    constructor: function(attributes, options = {}) {
+      options.endpoint = 'auth/check';
       ApiModel.prototype.constructor.call(this, attributes, options);
     },
 
