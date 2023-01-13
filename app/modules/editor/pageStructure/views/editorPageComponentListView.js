@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var _ = require('underscore');
-  var Backbone = require('backbone');
   var Origin = require('core/origin');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageComponentListItemView = require('./editorPageComponentListItemView');
@@ -16,46 +15,20 @@ define(function(require) {
     },
 
     preRender: function(options) {
-      $('html').css('overflow-y', 'hidden');
-
-      this.listenTo(Origin, {
-        'editorComponentListView:remove': this.remove,
-        'window:resize': this.onScreenResize
-      });
+      this.listenTo(Origin, 'editorComponentListView:remove', this.remove);
       
       this.$parentElement = options.$parentElement;
       this.parentView = options.parentView;
 
-      this.setupFilters();
-    },
-
-    setupFilters: function() {
-      this.availablePositions = {
-        left: false,
-        right: false,
-        full: false
-      };
-
-      _.each(this.model.get('layoutOptions'), function(layoutOption) {
-        switch(layoutOption.type) {
-          case 'left':
-            this.availablePositions.left = true;
-            break;
-          case 'right':
-            this.availablePositions.right = true;
-            break;
-          case 'full':
-            this.availablePositions.full = true;
-            break;
-        }
-      }, this);
-
+      const layoutOptions = this.model.get('layoutOptions').map(l => l.type);
+      this.availablePositions = ['left', 'right', 'full'].reduce((m, layout) => {
+        return Object.assign(m, { [layout]: layoutOptions.includes(layout) });
+      }, {});
       this.model.set('_availablePosition', this.availablePositions);
     },
 
     postRender: function() {
       this.renderComponentList();
-      this.headerHeight = this.$('.editor-component-list-sidebar-header').height();
       this.$('.editor-component-list-sidebar-search-field input').focus();
     },
 
@@ -68,23 +41,14 @@ define(function(require) {
       Origin.trigger('editorComponentListView:removeSubviews');
 
       Origin.editor.data.componentTypes.forEach(function(componentType) {
-        var properties = componentType.get('properties');
-
-        if(!properties._isEnabled) {
+        if(!componentType.get('isEnabled')) {
           return;
         }
         var availablePositions = _.clone(this.availablePositions);
-        
-        if (properties && properties.hasOwnProperty('_supportedLayout')) {
-          var supportedLayout = properties._supportedLayout.enum;
-          // Prune the available positions
-          if (_.indexOf(supportedLayout, 'half-width') == -1) {
-            availablePositions.left = false;
-            availablePositions.right = false;
-          }
-          if (_.indexOf(supportedLayout, 'full-width') == -1) {
-            availablePositions.full = false;
-          }
+        var supportedLayouts = componentType.get('_supportedLayout')?.enum;
+        if (supportedLayouts) {
+          availablePositions.left = availablePositions.right = supportedLayouts.includes('half-width');
+          availablePositions.full = supportedLayouts.includes('full-width');
         }
         this.$('.editor-component-list-sidebar-list').append(new EditorPageComponentListItemView({
           model: componentType,
@@ -99,7 +63,7 @@ define(function(require) {
     },
 
     onOverlayClicked: function(event) {
-      if ($(event.target).hasClass('editor-component-list')) {
+      if($(event.target).hasClass('editor-component-list')) {
         Origin.trigger('editorComponentListView:removeSubviews');
         $('html').css('overflow-y', '');
         this.remove();
@@ -107,12 +71,7 @@ define(function(require) {
     },
 
     onSearchKeyup: function(event) {
-      var searchValue = $(event.currentTarget).val();
-      Origin.trigger('editorComponentListView:searchKeyup', searchValue);
-    },
-
-    onScreenResize: function(windowWidth, windowHeight) {
-      this.$('.editor-component-list-sidebar-list').height(windowHeight - this.headerHeight);
+      Origin.trigger('editorComponentListView:searchKeyup', $(event.currentTarget).val());
     }
   }, {
     template: 'editorPageComponentList'
