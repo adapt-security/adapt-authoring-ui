@@ -52,7 +52,7 @@ define([
             buttonIcon: 'fa-cubes',
             eventData: 'extensions'
           }
-        ].map(i => Object.assign(i, { buttonClass: i.id === Origin.location.route2 ? 'selected' : '' }))
+        ].map(i => Object.assign(i, { buttonClass: i.eventData === Origin.location.route2 ? 'selected' : '' }))
       }]);
 
       Origin.on('links', data => {
