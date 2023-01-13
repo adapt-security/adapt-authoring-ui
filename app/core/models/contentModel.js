@@ -1,24 +1,18 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Backbone = require('backbone');
+  var ApiModel = require('./apiModel');
 
-  var ContentModel = Backbone.Model.extend({
-    idAttribute: '_id',
-    attributeBlacklist: null,
-    urlRoot: 'api/content',
+  var ContentModel = ApiModel.extend({
+    constructor: function(attributes, options) {
+      options.type = 'content';
+      super(attributes, options);
+    },
 
     initialize: function() {
       if(!this.get('_type')) this.set('_type', this._type);
       if(this.get('_type') === 'article') {
         this.set('_isCollapsible', true);
       }
-    },
-
-    serialize: function() {
-      return JSON.stringify(this);
-    },
-    pruneAttributes: function() {
-      if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
     }
   });
 
