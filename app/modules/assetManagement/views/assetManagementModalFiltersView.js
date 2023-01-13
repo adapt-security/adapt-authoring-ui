@@ -1,11 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
     var ApiCollection = require('core/collections/apiCollection');
+    var ApiModel = require('core/models/apiModel');
     var Origin = require('core/origin');
     var Backbone = require('backbone');
     var AssetManagementModalTagsView = require('./assetManagementModalTagsView');
     var assetManagementModalEditAssetView = require('./assetManagementModalEditAssetView');
-    var AssetModel = require('../models/assetModel');
 
     var AssetManagementModalFiltersView = Backbone.View.extend({
 
@@ -123,7 +123,7 @@ define(function(require) {
         onAddAssetClicked: function(event) {
             event && event.preventDefault();
             Origin.trigger('assetManagement:modal:newAssetOpened');
-            $('.modal-popup-content').append(new assetManagementModalEditAssetView({model: new AssetModel()}).$el);
+            $('.modal-popup-content').append(new assetManagementModalEditAssetView({ model: ApiModel.asset() }).$el);
         }
 
     });

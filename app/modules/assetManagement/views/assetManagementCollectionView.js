@@ -1,10 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var ApiCollection = require('core/collections/apiCollection');
+  var ApiModel = require('core/models/apiModel');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var AssetItemView = require('./assetManagementItemView');
-  var AssetModel = require('../models/assetModel');
 
   var AssetCollectionView = OriginView.extend({
     className: "asset-management-collection",
@@ -53,7 +53,7 @@ define(function(require){
     },
 
     initPaging: function() {
-      var $item = new AssetItemView({ model: new AssetModel() }).$el;
+      var $item = new AssetItemView({ model: ApiModel.Asset() }).$el;
       var containerHeight = $('.asset-management-assets-container').outerHeight();
       var itemHeight = $item.outerHeight(true);
       var columns = Math.floor($('.asset-management-assets-container').outerWidth()/$item.outerWidth(true));

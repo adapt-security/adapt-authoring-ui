@@ -1,9 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var Origin = require('core/origin');
+  var ApiModel = require('core/models/apiModel');
   var AssetManagementEditAssetView = require('./views/assetManagementEditAssetView');
   var AssetManagementView = require('./views/assetManagementView');
-  var AssetModel = require('./models/assetModel');
+  var Origin = require('core/origin');
 
   const scopes = ['write:assets'];
   const breadcrumbs = [{ title: Origin.l10n.t('app.assetmanagement'), url: 'assetManagement' }];
@@ -95,7 +95,7 @@ define(function(require) {
 
   async function loadEditAssetView(location) {
     const isNew = location === undefined;
-    const model = new AssetModel({ _id: location });
+    const model = ApiModel.Asset({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
     Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
