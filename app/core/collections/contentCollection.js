@@ -1,6 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define([
-  '../collections/apiCollection',
+  './apiCollection',
   '../models/contentModel',
   '../origin',
   '../helpers',
