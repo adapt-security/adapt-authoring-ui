@@ -5,7 +5,7 @@ define(function(require) {
   var ContentModel = ApiModel.extend({
     constructor: function(attributes, options) {
       options.endpoint = 'content';
-      super(attributes, options);
+      ApiModel.prototype.constructor.call(this, attributes, options);
     },
 
     initialize: function() {

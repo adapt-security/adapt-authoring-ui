@@ -7,7 +7,7 @@ define(function(require) {
     attributeBlacklist: null,
     
     constructor: function(attributes, options) {
-      super(attributes, options);
+      Backbone.Model.prototype.constructor.call(this, attributes, options);
       this.urlRoot = `api/${options.endpoint}`;
     },
 
