@@ -86,11 +86,11 @@ define(['backbone', 'underscore'], function(Backbone, _) {
       comparator: data.comparator || 'createdBy'
     });
   };
-  ApiCollection.Assets = data => createCollection('assets', Object.assign(data, { comparator: 'title' }));
-  ApiCollection.ContentPlugins = data => createCollection('contentplugins', Object.assign(data, { comparator: 'displayName' }));
-  ApiCollection.CourseThemePresets = data => createCollection('coursethemepresets', Object.assign(data, { comparator: '' }));
-  ApiCollection.Tags = data => createCollection('tags', Object.assign(data, { comparator: 'title' }));
-  ApiCollection.Users = data => createCollection('users', Object.assign(data, { comparator: 'email' }));
+  ApiCollection.Assets = (data = {}) => createCollection('assets', Object.assign(data, { comparator: 'title' }));
+  ApiCollection.ContentPlugins = (data = {}) => createCollection('contentplugins', Object.assign(data, { comparator: 'displayName' }));
+  ApiCollection.CourseThemePresets = (data = {}) => createCollection('coursethemepresets', Object.assign(data, { comparator: '' }));
+  ApiCollection.Tags = (data = {}) => createCollection('tags', Object.assign(data, { comparator: 'title' }));
+  ApiCollection.Users = (data = {}) => createCollection('users', Object.assign(data, { comparator: 'email' }));
 
   return ApiCollection;
 });
