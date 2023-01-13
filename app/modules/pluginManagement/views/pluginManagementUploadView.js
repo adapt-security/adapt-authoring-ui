@@ -9,7 +9,7 @@ define(function(require){
 
     preRender: function() {
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.uploadplugin') });
-      this.listenTo(Origin, 'actions:upload', this.uploadFile);
+      this.listenTo(Origin, 'actions:save', this.uploadFile);
       Origin.on('actions:cancel', () => Origin.router.navigateBack());
     },
 
