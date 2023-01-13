@@ -4,7 +4,7 @@ define(function(require) {
 
   var ContentModel = ApiModel.extend({
     constructor: function(attributes, options) {
-      options.type = 'content';
+      options.endpoint = 'content';
       super(attributes, options);
     },
 

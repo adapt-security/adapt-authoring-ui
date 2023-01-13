@@ -8,7 +8,7 @@ define(function(require) {
     
     constructor: function(attributes, options) {
       super(attributes, options);
-      this.urlRoot = `api/${options.type}`;
+      this.urlRoot = `api/${options.endpoint}`;
     },
 
     serialize: function() {
