@@ -26,6 +26,10 @@ define([
 
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
 
+    if(eventData.action === 'new' && eventData.type === 'component') {
+      Origin.contentPane.setView(EditorFormView, { model: Origin.editor.data.newcomponent });
+      return;
+    } 
     if(eventData.action === 'edit') {
       let model;
       if(eventData.contentType === 'config') {

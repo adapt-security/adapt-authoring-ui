@@ -68,7 +68,7 @@ define(function(require) {
         _component: componentType.get('name'),
         _layout: layout
       });
-      Origin.router.navigateTo(`editor/${_courseId}/component/new/`);
+      Origin.router.navigateTo(`editor/${_courseId}/component/${componentType.get('name')}/new`);
     }
   }, {
     template: 'editorPageComponentListItem'
