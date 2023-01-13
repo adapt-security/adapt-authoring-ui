@@ -1,100 +1,73 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ApiCollection = require('core/collections/apiCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var UserView = require('../views/userView');
 
   var UserManagementView = OriginView.extend({
     className: 'userManagement',
-    settings: {
-      autoRender: false
-    },
-    users: null,
-    views: [],
-    selectedView: null,
-    showFilterScreen: false,
-
     events: {
-      'click button.refresh-all': 'refreshUserViews',
-      'click button[data-sort]': 'onSortClick'
+      'click button[data-sort]': 'onSort'
     },
 
     initialize: function() {
       OriginView.prototype.initialize.apply(this, arguments);
-      this.users = this.collection;
-
-      this.listenTo(this.users, 'sort', function(a,b,c) {
-        this.removeChildViews();
-        this.renderChildViews();
-      });
-
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.usermanagementtitle') });
+      this.users = new ApiCollection([], { url: 'api/users' });
+      this.roles = new ApiCollection([], { url: 'api/roles' });
+
+      this.listenTo(this.users, 'sync', this.renderUsers);
+      this.listenTo(Origin, 'filters', this.onFilter);
       
-      this.listenTo(this.users, { 'change': this.render });
-      
-      this.render();
+      this.fetch();
     },
 
-    render: function() {
-      this.removeChildViews();
-      OriginView.prototype.render.apply(this, arguments);
-      this.renderChildViews();
+    fetch: async function() {
+      this.users.fetch();
+      this.roles.fetch();
     },
 
-    renderChildViews: function() {
-      var fragment = document.createDocumentFragment();
-      this.users.each(function(user) {
-        var userView = new UserView({ model: user });
-        fragment.appendChild(userView.el);
-        this.views.push(userView);
-
-        if(this.selectedView && user.get('_id') === this.selectedView) {
-          userView.$el.addClass('selected').click();
-        }
-      }, this);
-      this.$('.users').append(fragment);
+    renderUsers: function() {
+      this.$('.users').empty();
+      this.users.each(user => this.$('.users').append(new UserView({ model: user.set('allRoles', this.roles) }).$el), this);
     },
 
-    removeChildViews: function() {
-      if(this.views.length) {
-        for(var i = 0, count = this.views.length; i < count; i++) {
-          var view = this.views[i];
-          if (view.isSelected) this.selectedView = view.model.get('_id');
-          view.remove();
-        }
-        this.views = [];
+    onFilter: function(filters) {
+      const filterQuery = {};
+
+      if(filters.isLocked) {
+        filterQuery.$or = [{ isTempLocked: true }, { isPermLocked: true }];
       }
+      if(filters.search) {
+        filterQuery.email = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
+      }
+      if(filters.role) {
+        filterQuery.role = {
+          $in: Object.entries(filters.role)
+            .filter(([role, show]) => show)
+            .map(([role]) => this.roles.findWhere({ shortName: role }).get('_id'))
+        };
+      }
+      this.users.customQuery = filterQuery;
+      this.fetch();
     },
 
-    postRender: function() {
-      this.setViewToReady();
-      this.$('.users').fadeIn(300);
-    },
+    onSort: function(event) {
+      var $target = $(event.currentTarget);
+      var sortAscending = $target.hasClass('sort-down');
 
-    onSortClick: function(event) {
-      var $elm = $(event.currentTarget);
-      var sortBy = $elm.data('sort');
-      var sortAscending = $elm.hasClass('sort-down');
-
-      if ($elm.hasClass('active')) {
+      if ($target.hasClass('active')) {
         sortAscending = !sortAscending;
       }
-
       this.$('.sort').removeClass('active sort-up').addClass('sort-down');
-      $elm.addClass('active');
 
-      $elm.toggleClass('sort-down', sortAscending);
-      $elm.toggleClass('sort-up', !sortAscending);
+      $target.addClass('active');
+      $target.toggleClass('sort-down', sortAscending);
+      $target.toggleClass('sort-up', !sortAscending);
 
-      this.users.sortBy = sortBy;
-      this.users.direction = (sortAscending) ? 1 : -1;
-      this.users.updateFilter();
-    },
-
-    refreshUserViews: async function(event) {
-      event && event.preventDefault();
-      await this.collection.fetch();
-      this.render();
+      this.users.queryOptions.sort = { [$target.data('sort')]: sortAscending ? 1 : -1 };
+      this.fetch();
     }
   }, {
     template: 'userManagement'
