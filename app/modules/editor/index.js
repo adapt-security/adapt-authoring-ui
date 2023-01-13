@@ -23,7 +23,7 @@ define([
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
         items: [
           {
-            buttonText: Origin.l10n.t('app.coursestructure'),
+            buttonText: Origin.l10n.t('app.editormenu'),
             buttonIcon: 'fa-birthday-cake',
             eventData: 'menu'
           },
