@@ -1,7 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
-  var ComponentModel = require('core/models/componentModel');
+  var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorPageComponentListItemView = EditorOriginView.extend({
@@ -61,7 +61,7 @@ define(function(require) {
       Origin.trigger('editorComponentListView:remove');
       const componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
       const _courseId = Origin.editor.data.course.get('_id');
-      Origin.editor.data.newcomponent = new ComponentModel({
+      Origin.editor.data.newcomponent = new ContentModel({
         _parentId: this._parentId,
         _courseId,
         _type: 'component',

@@ -2,7 +2,7 @@
 define(function(require){
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
-  var BlockModel = require('core/models/blockModel');
+  var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageBlockView = require('./editorPageBlockView');
   var EditorPasteZoneView = require('./editorPasteZoneView');
@@ -63,7 +63,7 @@ define(function(require){
       this.$('.article-blocks').empty();
       // Insert the 'pre' paste zone for blocks
       var view = new EditorPasteZoneView({
-        model: new BlockModel({
+        model: new ContentModel({
           _parentId: this.model.get('_id'),
           _type: 'block',
           _pasteZoneSortOrder: 1

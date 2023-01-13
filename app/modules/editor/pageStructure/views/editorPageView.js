@@ -3,7 +3,7 @@ define(function(require){
   var Backbone = require('backbone');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
-  var ArticleModel = require('core/models/articleModel');
+  var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageArticleView = require('./editorPageArticleView');
   var EditorPasteZoneView = require('./editorPasteZoneView');
@@ -67,7 +67,7 @@ define(function(require){
       this.$('.page-articles').empty();
       Origin.trigger('editorPageView:removePageSubViews');
       // Insert the 'pre' paste zone for articles
-      var prePasteArticle = new ArticleModel({
+      var prePasteArticle = new ContentModel({
         _parentId: this.model.get('_id'),
         _type: 'article',
         _pasteZoneSortOrder: 1
@@ -106,11 +106,11 @@ define(function(require){
 
     addNewArticle: function(event) {
       event && event.preventDefault();
-      (new ArticleModel()).save({
+      (new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'article'
-      }, {
+      })).save({
         success: model => {
           var articleView = this.addArticleView(model);
           articleView._skipRender = true; // prevent render of blocks in postRender

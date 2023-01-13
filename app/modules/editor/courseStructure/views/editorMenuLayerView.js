@@ -2,9 +2,7 @@
 define(function(require) {
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
-	var ArticleModel = require('core/models/articleModel');
-	var BlockModel = require('core/models/blockModel');
-	var ContentObjectModel = require('core/models/contentObjectModel');
+	var ContenModel = require('core/models/contentModel');
 	var EditorMenuItemView = require('./editorMenuItemView');
   var EditorOriginView = require('../../global/views/editorOriginView');
 
@@ -81,7 +79,7 @@ define(function(require) {
     addNewMenuItem: function(event, type) {
       event && event.preventDefault();
 
-      var newMenuItemModel = new ContentObjectModel({
+      var newMenuItemModel = new ContenModel({
         _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id'),
         linkText: Origin.l10n.t('app.view'),
@@ -118,7 +116,6 @@ define(function(require) {
 
     addNewPageArticleAndBlock: function(model, newMenuItemView) {
       var typeToAdd;
-      var newChildModel;
       this.pageModel;
       this.pageView;
 
@@ -126,12 +123,10 @@ define(function(require) {
         this.pageModel = model;
         this.pageView = newMenuItemView;
         typeToAdd = 'article';
-        var newChildModel = new ArticleModel();
       } else {
         typeToAdd = 'block';
-        var newChildModel = new BlockModel();
       }
-      newChildModel.save({
+      new ContentModel({ _type: typeToAdd }).save({
         _parentId: model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id')
       }, {
@@ -174,7 +169,8 @@ define(function(require) {
     cancelPasteMenuItem: function(event) {
       event && event.preventDefault();
       this.hidePasteZones();
-      var target = new ContentObjectModel({
+      var target = new ContenModel({
+        _type: 'contentobject',
         _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id')
       });
@@ -197,7 +193,7 @@ define(function(require) {
     },
 
     onPaste: function(data) {
-      this.addMenuItemView(new ContentObjectModel(data));
+      this.addMenuItemView(new ContenModel(Object.assign(data, { _type: 'contentobject' })));
     },
 
     remove: function() {

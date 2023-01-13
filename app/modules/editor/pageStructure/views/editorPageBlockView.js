@@ -2,7 +2,7 @@
 define(function(require){
   var Backbone = require('backbone');
   var Origin = require('core/origin');
-  var ComponentModel = require('core/models/componentModel');
+  var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageComponentView = require('./editorPageComponentView');
   var EditorPageComponentPasteZoneView = require('./editorPageComponentPasteZoneView');
@@ -243,7 +243,7 @@ define(function(require){
       var dragLayouts = this.model.get('dragLayoutOptions').slice();
 
       _.each(this.sortArrayByKey(dragLayouts, 'pasteZoneRenderOrder'), function(layout) {
-        var pasteComponent = new ComponentModel();
+        var pasteComponent = new ContentModel({ _type: 'component' });
         pasteComponent.set('_parentId', this.model.get('_id'));
         pasteComponent.set('_type', 'component');
         pasteComponent.set('_pasteZoneLayout', layout.type);
@@ -253,7 +253,7 @@ define(function(require){
       }, this);
 
       _.each(this.sortArrayByKey(layouts, 'pasteZoneRenderOrder'), function(layout) {
-        var pasteComponent = new ComponentModel();
+        var pasteComponent = new ContentModel({ _type: 'component' });
         pasteComponent.set('_parentId', this.model.get('_id'));
         pasteComponent.set('_type', 'component');
         pasteComponent.set('_pasteZoneLayout', layout.type);
@@ -262,7 +262,7 @@ define(function(require){
     },
 
     onPaste: function(data) {
-      (new ComponentModel({ _id: data._id })).fetch({
+      (new ContentModel({ _id: data._id, _type: 'component' })).fetch({
         success: _.bind(function(model) {
           this.children.push(model);
           this.render();

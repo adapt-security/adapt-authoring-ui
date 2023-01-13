@@ -3,10 +3,7 @@
  * TODO I think this exists to add extra functionality to the menu/page structure pages
  */
 define(function(require) {
-  var ArticleModel = require('core/models/articleModel');
-  var BlockModel = require('core/models/blockModel');
-  var ComponentModel = require('core/models/componentModel');
-  var ContentObjectModel = require('core/models/contentObjectModel');
+  var ContenModel = require('core/models/contentModel');
   var EditorMenuView = require('../../courseStructure/views/editorMenuView');
   var EditorOriginView = require('./editorOriginView');
   var EditorPageView = require('../../pageStructure/views/editorPageView');
@@ -186,7 +183,7 @@ define(function(require) {
         data: JSON.stringify({ _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }),
         success: newData => {
           Origin.editor.clipboardId = null;
-          Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
+          Origin.trigger('editorView:menuView:addItem', new ContentModel(newData))
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
           Origin.trigger(`editorView:refreshView`);
         },
@@ -198,10 +195,10 @@ define(function(require) {
 
     createModel: function (type) {
       switch (type) {
-        case 'contentObjects': return new ContentObjectModel();
-        case 'articles': return new ArticleModel();
-        case 'blocks': return new BlockModel();
-        case 'components': return new ComponentModel();
+        case 'contentObjects': return new ContentModel({ _type: 'contentobject' });
+        case 'articles': return new ContentModel({ _type: 'article' });
+        case 'blocks': return new ContentModel({ _type: 'block' });
+        case 'components': return new ContentModel({ _type: 'component' });
       }
     },
 
