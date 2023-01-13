@@ -116,7 +116,7 @@ define(function(require){
             pasteZoneRenderOrder: 3
         }],
         _type: 'block'
-      }).save({
+      }).save({}, {
         success: model => {
           this.addBlockView(model, true);
           Origin.trigger('editor:refreshData');

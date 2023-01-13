@@ -110,7 +110,7 @@ define(function(require){
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'article'
-      })).save({
+      })).save({}, {
         success: model => {
           var articleView = this.addArticleView(model);
           articleView._skipRender = true; // prevent render of blocks in postRender
