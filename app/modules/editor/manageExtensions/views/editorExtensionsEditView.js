@@ -68,12 +68,12 @@ define(function(require) {
           if(!result.isConfirmed) {
             return;
           }
-            const toRemove = $(event.currentTarget).attr('data-name');
-            $.ajax(Object.assign(this.ajaxOptions, {
-              data: { 
-                _enabledPlugins: Origin.editor.data.config.get('_enabledPlugins').filter(e => e !== toRemove) 
-              }
-            }));
+          const toRemove = $(event.currentTarget).attr('data-name');
+          $.ajax(Object.assign(this.ajaxOptions, {
+            data: { 
+              _enabledPlugins: Origin.editor.data.config.get('_enabledPlugins').filter(e => e !== toRemove) 
+            }
+          }));
         }
       });
     }
