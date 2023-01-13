@@ -33,7 +33,7 @@ define(function(require) {
     initData: async function() {
       this.model = new Backbone.Model(Origin.editor.data.course.get('themeVariables'));
       this.themes = ApiCollection.ContentPlugins({ customQuery: { type: 'theme' } });
-      this.presets = new ApiCollection.CourseThemePresets();
+      this.presets = ApiCollection.CourseThemePresets();
       
       await Promise.all([this.themes.fetch(), this.presets.fetch()]);
 
