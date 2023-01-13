@@ -5,7 +5,6 @@ define(function(require) {
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var PresetModel = require('../models/editorPresetModel.js');
   var PresetEditView = require('./editorPresetEditView.js');
 
   var ThemingView = OriginView.extend({
@@ -150,7 +149,7 @@ define(function(require) {
 
     savePreset: function(presetName) {
       this.form.commit();
-      new PresetModel().save({
+      ApiModel.CourseThemePreset().save({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('name'),
         properties: this.model.attributes

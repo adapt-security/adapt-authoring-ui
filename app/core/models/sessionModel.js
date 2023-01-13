@@ -1,7 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(['require', 'backbone'], function(require, Backbone) {
-  var SessionModel = Backbone.Model.extend({
-    url: "api/auth/check",
+define(['require', 'core/models/apiModel'], function(require, ApiModel) {
+  var SessionModel = ApiModel.extend({
+    constructor: function(attributes, options) {
+      options.endpoint = 'auth/checks';
+      ApiModel.prototype.constructor.call(this, attributes, options);
+    },
 
     initialize: function(Origin) {
       this.Origin = Origin;
