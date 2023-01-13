@@ -99,8 +99,7 @@ define(function(require){
 
     addBlock: function(event) {
       event && event.preventDefault();
-      var model = new BlockModel();
-      model.save({
+      new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         layoutOptions: [{
@@ -117,7 +116,7 @@ define(function(require){
             pasteZoneRenderOrder: 3
         }],
         _type: 'block'
-      }, {
+      }).save({
         success: model => {
           this.addBlockView(model, true);
           Origin.trigger('editor:refreshData');
