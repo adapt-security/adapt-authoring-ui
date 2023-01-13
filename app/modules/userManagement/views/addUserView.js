@@ -1,5 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var Backbone = require('backbone');
+  var ApiCollection = require('core/collections/apiCollection');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
@@ -8,17 +10,19 @@ define(function(require){
     tagName: 'div',
     className: 'addUser',
     createdUserId: false,
-
+    settings: {
+      autoRender: false,
+    },
+    
     preRender: function() {
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.addusertitle') });
       this.listenTo(Origin, {
         'actions:save': this.saveNewUser,
-        'actions:cancel': Origin.router.navigateBack
+        'actions:cancel': this.navigateBack
       });
-    },
-
-    postRender: function() {
-      this.setViewToReady();
+      this.model = new Backbone.Model({ allRoles: new ApiCollection([], { url: 'api/roles' })});
+      this.model.get('allRoles').fetch();
+      this.model.get('allRoles').on('sync', this.render, this);
     },
 
     isValid: function() {
@@ -27,7 +31,6 @@ define(function(require){
       this.$('.field-error').each(function(index, element) {
         var $error = $(element);
         var $input = $error.siblings('input');
-
         var isValid = $input.attr('name') === 'email' ?
           Helpers.isValidEmail($input.val().trim()) :
           $input.val().trim().length > 0;
@@ -46,27 +49,20 @@ define(function(require){
       }
       const $form = this.$('form.addUser');
       const data = $form.serializeArray().reduce((memo,{ name, value }) => {
-        if(name === 'role') {
-          memo.roles = [value];
-          return memo;
-        }
+        if(name === 'roles') value = [value];
         return Object.assign(memo, { [name]: value });
       }, {});
       $.ajax($form.attr('action'), {
         type: $form.attr('method'),
         data: JSON.stringify(data),
         contentType: 'application/json',
-        success: () => this.onFormSuccess(),
+        success: () => this.navigateBack(),
         error: jqXhr => this.onFormError(jqXhr)
       })
     },
 
-    goBack: function() {
+    navigateBack: function() {
       Origin.router.navigateTo('userManagement');
-    },
-
-    onFormSuccess: function(userData, userStatus, userXhr) {
-      this.goBack();
     },
 
     onFormError: function(jqXhr) {

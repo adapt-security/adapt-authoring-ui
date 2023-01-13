@@ -25,7 +25,7 @@
       </div>
       <div class="form-group">
         <label>{{t 'app.role'}}</label>
-        <select name="role">
+        <select name="roles">
           {{#each allRoles.models}}
             <option value="{{{attributes._id}}}">{{attributes.displayName}}</option>
           {{/each}}
