@@ -1,6 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var ApiModel = require('./models/apiModel');
+  var ApiModel = require('core/models/apiModel');
   var Origin = require('core/origin');
   var UserProfileView = require('./views/userProfileView');
 
@@ -10,7 +10,7 @@ define(function(require) {
     if(location !== 'profile') {
       return;
     }
-    const model = ApiModel.User({ endpoint: 'users/me' });
+    const model = ApiModel.User({ _id: 'me' });
     await model.fetch();
     Origin.trigger('contentHeader:updateTitle', {title: Origin.l10n.t('app.editprofiletitle')});
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
