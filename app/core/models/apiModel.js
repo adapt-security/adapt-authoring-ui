@@ -2,7 +2,7 @@
 define(function(require) {
   var Backbone = require('backbone');
 
-  var ContentModel = Backbone.Model.extend({
+  var ApiModel = Backbone.Model.extend({
     idAttribute: '_id',
     attributeBlacklist: null,
     
@@ -19,5 +19,5 @@ define(function(require) {
     }
   });
 
-  return ContentModel;
+  return ApiModel;
 });
