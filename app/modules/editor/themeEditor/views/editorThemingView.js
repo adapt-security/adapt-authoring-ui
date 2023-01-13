@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var ApiCollection = require('core/collections/apiCollection');
+  var ApiModel = require('core/models/apiModel');
   var Backbone = require('backbone');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
@@ -19,9 +20,10 @@ define(function(require) {
 
     initialize: async function() {
       this.listenTo(Origin, {
-        'editorThemingSidebar:views:save': this.saveData,
-        'editorThemingSidebar:views:savePreset': this.onSavePresetClicked,
-        'editorThemingSidebar:views:resetToPreset': this.resetFormSettings,
+        'actions:cancel': this.navigateBack,
+        'actions:restorepreset': this.resetFormSettings,
+        'actions:save': this.saveData,
+        'actions:savepreset': this.onSavePresetClicked,
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
