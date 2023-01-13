@@ -24,7 +24,7 @@ define(function(require) {
     },
 
     setupExtensions: function(callback) {
-      var plugins = new ApiCollection.ContentPlugins({ customQuery: { type: 'extension' } });
+      var plugins = ApiCollection.ContentPlugins({ customQuery: { type: 'extension' } });
       plugins.fetch({
         success: () => {
           const enabledPlugins = Origin.editor.data.config.get('_enabledPlugins');
