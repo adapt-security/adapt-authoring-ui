@@ -45,7 +45,7 @@ define(function(require) {
           return;
         }
         var availablePositions = _.clone(this.availablePositions);
-        var supportedLayouts = componentType.get('_supportedLayout')?.enum;
+        var supportedLayouts = componentType.get('_supportedLayout') && componentType.get('_supportedLayout').enum;
         if (supportedLayouts) {
           availablePositions.left = availablePositions.right = supportedLayouts.includes('half-width');
           availablePositions.full = supportedLayouts.includes('full-width');
