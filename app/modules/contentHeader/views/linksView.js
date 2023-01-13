@@ -7,7 +7,7 @@ define(function(require) {
       this.data.groups.forEach(group => {
         group.items.forEach(item => {
           if(!item.buttonClass) item.buttonClass = '';
-          item.buttonClass += ' link';
+          if(!item.buttonClass.includes('link')) item.buttonClass += ' link';
         });
       });
     }
