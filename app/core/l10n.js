@@ -8,6 +8,7 @@ define(['polyglot'], function(Polyglot) {
           const locale = localStorage.getItem('lang') || 'en';
           polyglot = new Polyglot({
             locale: locale,
+            interpolation: {prefix: '${', suffix: '}'},
             phrases: await $.get(`/api/lang/${locale}`),
             warn: message => Origin.debug && console.warn('l10n:', message)
           });
