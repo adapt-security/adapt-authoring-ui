@@ -1,9 +1,10 @@
-define(['backbone', 'underscore'], function(Backbone, _) {
+define(['backbone', 'underscore', 'core/models/apiModel'], function(Backbone, _, ApiModel) {
   /**
    * Class for collecting API data
    * @class ApiCollection
    */
   var ApiCollection = Backbone.Collection.extend({
+    model: ApiModel,
     options: {},
     initialize : function(models, options) {
       Backbone.Collection.prototype.initialize.apply(this, models);

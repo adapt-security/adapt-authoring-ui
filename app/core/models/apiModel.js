@@ -9,6 +9,9 @@ define(function(require) {
  
     initialize: function(attributes, options) {
       Backbone.Model.prototype.initialize.call(this, attributes, options);
+      if(!options.endpoint && options.url) { // get endpoint from URL when adding from ApiCollection
+        options.endpoint = options.url.match(/api\/(.+)\/query/)[1];
+      }
       this.urlRoot = `api/${options.endpoint}`;
     },
 
