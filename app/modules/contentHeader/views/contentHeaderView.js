@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   const Origin = require('core/origin');
+  const ApiCollection = require('core/collections/apiCollection');
   const ActionsView = require('./actionsView');
   const FiltersView = require('./filtersView');
   const LinksView = require('./linksView');
@@ -45,8 +46,11 @@ define(function(require) {
           return Object.assign(data, { [type]: { groups: [], ViewClass: VIEWS[type] } });
         }, {})
       };
-      Origin.on('contentHeader:updateTitle', this.updateTitle.bind(this));
-      Origin.on('router, contentHeader:hide, remove:views', this.remove.bind(this));
+      Origin.on({
+        'contentPane:changed': this.render,
+        'contentHeader:updateTitle': this.updateTitle,
+        'router, contentHeader:hide, remove:views': this.remove
+      }, this);
     }
     render() {
       this.remove(false);
@@ -81,16 +85,12 @@ define(function(require) {
     }
     updateTitle(data) {
       Object.assign(this.data, data);
-      this.render();
     }
-    setButtons(data) {
-      data.forEach(({ type, groups }) => {
-        if(!this.data.buttons[type]) {
-          return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
-        }
-        this.data.buttons[type].groups = groups;
-      });
-      this.render();
+    setButtons(type, groups) {
+      if(!this.data.buttons[type]) {
+        return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
+      }
+      this.data.buttons[type].groups = groups;
     }
     remove(resetData = true) {
       if(this.$el) this.$el.remove();
