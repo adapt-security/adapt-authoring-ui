@@ -6,7 +6,7 @@ define(function(require) {
   var FiltersView = ContentHeaderToggleView.extend({
     async preRender() {
       const tags = await $.post('api/tags/query');
-      this.data.groups.forEach(({ items }) => items.forEach(i => i.tags = i.type === 'tags' ? tags : undefined));
+      this.data.groups.forEach(({ items }) => items.forEach(i => i.type === 'tags' ? i.tags = tags : undefined));
     },
     render() {
       ContentHeaderToggleView.prototype.render.call(this, arguments);
