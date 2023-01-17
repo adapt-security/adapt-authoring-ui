@@ -83,11 +83,13 @@ define(function(require) {
       Object.assign(this.data, data);
       this.render();
     }
-    setButtons(type, groups) {
-      if(!this.data.buttons[type]) {
-        return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
-      }
-      this.data.buttons[type].groups = groups;
+    setButtons(data) {
+      data.forEach(({ type, groups }) => {
+        if(!this.data.buttons[type]) {
+          return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
+        }
+        this.data.buttons[type].groups = groups;
+      });
       this.render();
     }
     remove(resetData = true) {
