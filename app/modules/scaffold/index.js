@@ -1,6 +1,6 @@
 define([
   'core/origin',
-  'core/helpers',
+  'core/models/apiModel',
   'backboneForms',
   'backboneFormsLists',
   './backboneFormsOverrides',
@@ -14,7 +14,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, Helpers, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, ApiModel, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
@@ -272,7 +272,7 @@ define([
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
       try {
-        const plugin = Origin.editor.data.componentTypes.findWhere({ name: model.get('_component') });
+        const plugin = await ApiModel.ContentPlugin({ name: model.get('_component') }).fetch();
         schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
       } catch(e) {} // nothing to do
     }
