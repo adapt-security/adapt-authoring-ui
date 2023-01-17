@@ -1,4 +1,4 @@
-define(['backbone', 'underscore', 'core/models/apiModel'], function(Backbone, _, ApiModel) {
+define(['backbone', 'underscore', 'core/origin', 'core/models/apiModel'], function(Backbone, _, Origin, ApiModel) {
   /**
    * Class for collecting API data
    * @class ApiCollection
@@ -36,7 +36,7 @@ define(['backbone', 'underscore', 'core/models/apiModel'], function(Backbone, _,
      * @param {Object} options
      * @returns {Promise}
      */
-    fetch: async function(options = { recursive: true}) {
+    fetch: async function(options = { recursive: true, silent: true }) {
       const _fetch = (url, memo = []) => {
         return new Promise((resolve, reject) => {
           Backbone.Collection.prototype.fetch.call(this, _.assign({
@@ -55,7 +55,11 @@ define(['backbone', 'underscore', 'core/models/apiModel'], function(Backbone, _,
               }
               resolve(memo);
             }, 
-            error: console.log
+            error: () => {
+              const text = Origin.l10n.t('app.errorfetchingdata', { url: this.url });
+              Origin.Notify.alert({ type: 'error', text });
+              if(!options.silent === false) reject(text);
+            }
           }, options));
         });
       };
