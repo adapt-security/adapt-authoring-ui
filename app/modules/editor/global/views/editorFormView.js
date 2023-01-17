@@ -8,22 +8,24 @@ define(function(require) {
     className: "editor-form",
     tagName: "div",
 
-    initialize: function(options) {
-      Origin.scaffold.buildForm({ model: options.model })
-        .then(form => {
-          this.form = form;
-          this.filters = [];
-          this.listenTo(Origin, {
-            'actions:save': this.save,
-            'actions:cancel': Origin.router.navigateBack,
-            'filters': this.filter
-          });
-          Helpers.setPageTitle(options.model);
-          Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
-
-          OriginView.prototype.initialize.apply(this, arguments);
-        })
-        .catch(e => Origin.Notify.alert({ type: 'error', text: e.message }));
+    initialize: async function(options) {
+      let form;
+      try {
+        form = await Origin.scaffold.buildForm({ model: options.model });
+      } catch(e) {
+        Origin.Notify.alert({ type: 'error', text: e.message });
+      }
+      this.form = form;
+      this.filters = [];
+      this.listenTo(Origin, {
+        'actions:save': this.save,
+        'actions:cancel': Origin.router.navigateBack,
+        'filters': this.filter
+      });
+      Helpers.setPageTitle(options.model);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
+      
+      OriginView.prototype.initialize.apply(this, arguments);
     },
 
     render: function() {

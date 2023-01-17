@@ -29,20 +29,6 @@ define(function(require){
       });
     },
 
-    getChildren: function() {
-      return Origin.editor.data.content.where({ _parentId: this.model.get('_id') }).sort((a,b) => {
-        return a._sortOrder < b._sortOrder ? -1 : 1;
-      });
-    },
-    
-    getSiblings: function() {
-      return Origin.editor.data.content.models.filter(m => {
-        const sameParent = m.get('_parentId') === this.model.get('_parentId')
-        const isMe = m.get('_id') === this.model.get('_id');
-        return sameParent & !isMe;
-      });
-    },
-
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
       

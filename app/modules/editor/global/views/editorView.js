@@ -3,7 +3,6 @@
  * TODO I think this exists to add extra functionality to the menu/page structure pages
  */
 define(function(require) {
-  var ContenModel = require('core/models/contentModel');
   var EditorMenuView = require('../../courseStructure/views/editorMenuView');
   var EditorOriginView = require('./editorOriginView');
   var EditorPageView = require('../../pageStructure/views/editorPageView');
@@ -27,9 +26,6 @@ define(function(require) {
     preRender: function(options) {
       this.currentView = options.currentView;
       Origin.editor.isPreviewPending = false;
-      this.currentCourseId = Origin.editor.data.course.get('_id');
-      this.currentCourse = Origin.editor.data.course;
-      this.currentPageId = options.currentPageId;
 
       this.listenTo(Origin, {
         'editorView:refreshView': this.setupEditor,
@@ -41,15 +37,11 @@ define(function(require) {
         'actions:export': this.exportProject
       });
       this.render();
-      this.setupEditor();
+      this.renderCurrentEditorView();
     },
 
     postRender: function() {
 
-    },
-
-    setupEditor: function() {
-      this.renderCurrentEditorView();
     },
 
     previewProject: function() {
@@ -63,7 +55,7 @@ define(function(require) {
       
       const previewWindow = window.open('loading', 'preview');
       
-      $.post(`api/adapt/preview/${this.currentCourseId}`)
+      $.post(`api/adapt/preview/${Origin.editor.data.course.get('_id')}`)
         .done(data => {
           previewWindow.location.href = data.preview_url;
         })
@@ -89,7 +81,7 @@ define(function(require) {
         children.forEach(c => validateChildren(c));
       };
       
-      validateChildren(this.currentCourse);
+      validateChildren(Origin.editor.data.course);
 
       if(errors.length) {
         Origin.Notify.alert({ type: 'error', html: errors.join('<br/>') });
@@ -137,7 +129,7 @@ define(function(require) {
       $('.editor-common-sidebar-downloading').removeClass('display-none');
 
       $.ajax({
-        url: `api/adapt/publish/${this.currentCourseId}`,
+        url: `api/adapt/publish/${Origin.editor.data.course.get('_id')}`,
         method: 'POST',
         success: (data, textStatus, jqXHR) => {
           var $downloadForm = $('#downloadForm');
@@ -205,23 +197,10 @@ define(function(require) {
     renderCurrentEditorView: function() {
       Origin.trigger('editorView:removeSubViews');
 
-      if(this.currentView === 'menu') {
-        this.renderEditorMenu();
-      } else if(this.currentView === 'page') {
-        this.renderEditorPage();
-      }
+      const ViewClass = this.currentView === 'menu' ? EditorMenuView : EditorPageView;
+      this.$('.editor-inner').html(new ViewClass({ model: this.model }).$el);
+      
       Origin.trigger('editorSidebarView:addOverviewView');
-    },
-
-    renderEditorMenu: function() {
-      var view = new EditorMenuView({ model: Origin.editor.data.course });
-      this.$('.editor-inner').html(view.$el);
-    },
-
-    renderEditorPage: function() {
-      var model = Origin.editor.data.content.findWhere({ _id: this.currentPageId });
-      var view = new EditorPageView({ model });
-      this.$('.editor-inner').html(view.$el);
     },
 
     // Event handling

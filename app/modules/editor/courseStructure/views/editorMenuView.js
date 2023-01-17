@@ -1,9 +1,9 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
-  var Backbone = require('backbone');
-  var Origin = require('core/origin');
+  var ContentCollection = require('core/collections/contentCollection');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorMenuLayerView = require('./editorMenuLayerView');
+  var Origin = require('core/origin');
 
   var EditorMenuView = EditorOriginView.extend({
     className: "editor-menu",
@@ -27,7 +27,7 @@ define(function(require){
     // Renders all menu layers from the current course to the Origin.editor.currentContentObject
     renderLayers: function() {
       var selectedModel = Origin.editor.currentContentObject || Origin.editor.data.course;
-      this.getItemHeirarchy(selectedModel, function(hierarchy) {
+      this.getItemHeirarchy(selectedModel, hierarchy => {
         var ids = [];
 
         for (var i = 0; i < hierarchy.length; i++) {
@@ -46,11 +46,6 @@ define(function(require){
           this.layerViews[id].remove();
           delete this.layerViews[id];
         }
-        _.defer(_.bind(function() {
-          this.removeSelectedItemStyling();
-          this.addSelectedItemStyling(selectedModel.get('_id'));
-          this.setUpInteraction();
-        }, this));
       });
     },
 
@@ -58,22 +53,24 @@ define(function(require){
     renderLayer: function(model) {
       var menuLayerView = new EditorMenuLayerView({
         _parentId: model.get('_id'),
-        models: this.contentobjects.where({ _parentId: model.get('_id') })
+        models: this.content.where({ _parentId: model.get('_id') })
       });
       this.layerViews[model.get('_id')] = menuLayerView;
       $('.editor-menu-inner').append(menuLayerView.$el);
     },
 
     updateContentObjects: async function(fetch = false) {
-      const models = Origin.editor.data.content;
-      if(fetch) {
-        try {
-          await models.fetch();
-        } catch(e) {
-          Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' });
+      return new Promise((resolve, reject) => {
+        if(!this.content) {
+          this.content = new ContentCollection(undefined, {
+            customQuery: { 
+              _courseId: Origin.location.route1,
+              $or: [{ _type: 'menu' }, { _type: 'page' }] 
+            } 
+          });
         }
-      }
-      this.contentobjects = new Backbone.Collection(models.filter(c => c.get('_type') === 'menu' || c.get('_type') === 'page'));
+        this.content.fetch({ success: () => resolve(), error: (model, jxXhr) => reject(jqXhr.responseJSON) });
+      });
     },
     
     updateItemViews: function(previousParent, model) {
@@ -100,7 +97,7 @@ define(function(require){
 
     addSelectedItemStyling: function(id) {
       this.$('.editor-menu-item[data-id="' + id + '"]').addClass('selected');
-      var model = this.contentobjects.findWhere({ _id: id });
+      var model = this.content.findWhere({ _id: id });
       var parentId = model && model.get('_parentId');
       if (parentId) {
         // recurse
@@ -120,9 +117,8 @@ define(function(require){
       if (model.get('_type') === 'menu') {
         hierarchy.push(model);
       }
-      var __this = this;
-      var _getParent = function(model, callback) {
-        var parent = __this.contentobjects.findWhere({ _id: model.get('_parentId') });
+      var _getParent = (model, callback) => {
+        var parent = this.content.findWhere({ _id: model.get('_parentId') });
         if (parent) {
           hierarchy.push(parent);
           return _getParent(parent, callback);
@@ -130,9 +126,7 @@ define(function(require){
         hierarchy.push(Origin.editor.data.course);
         callback();
       };
-      _getParent(model, function() {
-        if (typeof done === 'function') done.call(__this, hierarchy.reverse());
-      });
+      _getParent(model, () => typeof done === 'function' && done(hierarchy.reverse()));
     },
 
     onSelectedItemChanged: function(model) {
@@ -175,7 +169,7 @@ define(function(require){
           var id = $('.editor-menu-item-inner', $draggedElement).attr('data-id');
           var _sortOrder = $draggedElement.index() + 1;
           var _parentId = $draggedElement.closest('.editor-menu-layer').attr('data-parentId');
-          var currentModel = this.contentobjects.findWhere({ _id: id });
+          var currentModel = this.content.findWhere({ _id: id });
           currentModel.save({ _sortOrder, _parentId }, {
             patch: true,
             success: model => this.updateItemViews(currentModel.get('_parentId'), model)
@@ -196,12 +190,12 @@ define(function(require){
     },
 
     onItemAdded: function(newModel) {
-      this.contentobjects.add(newModel);
+      this.content.add(newModel);
     },
 
     onItemDeleted: async function(oldModel) {
       await this.updateContentObjects(true);
-      Origin.trigger('editorView:menuView:updateSelectedItem', this.contentobjects.findWhere({ _id: oldModel.get('_parentId') }));
+      Origin.trigger('editorView:menuView:updateSelectedItem', this.content.findWhere({ _id: oldModel.get('_parentId') }));
     }
   }, {
     template: 'editorMenu'

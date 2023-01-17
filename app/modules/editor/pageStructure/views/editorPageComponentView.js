@@ -13,6 +13,10 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       'dblclick': 'loadComponentEdit'
     }),
 
+    getSiblings: function() {
+      return this.model.get('parent').get('children');
+    },
+
     preRender: function() {
       this.$el.addClass('component-' + this.model.get('_layout'));
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
@@ -22,7 +26,6 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         'contextMenu:component:copyID': this.onCopyID,
         'contextMenu:component:delete': this.deleteComponentPrompt
       });
-      this.componentType = Origin.editor.data.componentTypes.findWhere({ component: this.model.get('_component') });
       this.evaluateLayout(layouts => {
         this.model.set('_movePositions', layouts);
         this.render();
@@ -135,14 +138,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     },
 
     getSupportedLayout: function() {
-      var supportedLayout /*= this.componentType.get('properties')._supportedLayout*/;
-      // allow all layouts by default
-      if(!supportedLayout) return { full: true, half: true };
-
-      return {
-        full: _.indexOf(supportedLayout.enum, 'full-width') > -1,
-        half: _.indexOf(supportedLayout.enum, 'half-width') > -1
-      }
+      return { full: true, half: true };
     },
 
     evaluateLayout: function(cb) {

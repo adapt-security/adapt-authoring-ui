@@ -3,6 +3,7 @@ define(function(require){
   var Backbone = require('backbone');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
+  var ContentCollection = require('core/collections/contentCollection');
   var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageArticleView = require('./editorPageArticleView');
@@ -47,18 +48,8 @@ define(function(require){
       this._onScroll = _.bind(_.throttle(this.onScroll, 400), this);
     },
 
-    render: function() {
-      Origin.editor.data.content.fetch({
-        success: () => {
-          var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
-          this.addArticleViews();
-          return returnVal;
-        },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorfetchingdata') })
-      });
-    },
-
     postRender: function() {
+      this.addArticleViews();
       this.setupScrollListener();
     },
 
@@ -73,7 +64,7 @@ define(function(require){
       });
       this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
       // Iterate over each article and add it to the page
-      this.getChildren()
+      this.model.get('children')
         .filter(c => c.get('_type') === 'article')
         .sort(Helpers.sortContentObjects)
         .forEach(c => this.addArticleView(c));
@@ -103,20 +94,16 @@ define(function(require){
       return newArticleView;
     },
 
-    addNewArticle: function(event) {
+    addNewArticle: async function(event) {
       event && event.preventDefault();
-      (new ContentModel({
+      const model = await new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'article'
-      })).save({}, {
-        success: model => {
-          var articleView = this.addArticleView(model);
-          articleView._skipRender = true; // prevent render of blocks in postRender
-          articleView.addBlock();
-        },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingarticle') })
-      });
+      }).save();
+      var articleView = this.addArticleView(model);
+      articleView._skipRender = true; // prevent render of blocks in postRender
+      articleView.addBlock();
     },
 
     loadPageEdit: function(event) {

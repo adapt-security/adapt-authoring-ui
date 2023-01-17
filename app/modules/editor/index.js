@@ -2,66 +2,93 @@
 define([
   'core/origin',
   './global/helpers',
-  './global/editorDataLoader',
   './global/views/editorView',
   './global/views/editorFormView',
+  'core/collections/apiCollection',
+  'core/collections/contentCollection',
   'core/models/contentModel',
   './manageExtensions/index',
   './menuPicker/index',
   './themeEditor/index'
-], function(Origin, Helpers, EditorData, EditorView, EditorFormView, ContentModel) {
-  // loads editor data
-  Origin.on('router:editor editor:refreshData', EditorData.load);
-  Origin.on('router', mod => {
-    if(mod !== 'editor') EditorData.resetCourseData();
+], function(Origin, Helpers, EditorView, EditorFormView, ApiCollection, ContentCollection, ContentModel) {
+  /**
+   * Global editor object
+   */
+  Origin.editor = {
+    data: {
+      content: new ContentCollection(),
+      get course() { return this.content.findWhere({ _type: 'course' }); },
+      get config() { return this.content.findWhere({ _type: 'config' }); },
+      get(attributes) { return this.content.findWhere(attributes) },
+
+      async load() {
+        this.content.customQuery._courseId = Origin.location.route1;
+        await this.content.fetch();
+
+        let components = ApiCollection.ContentPlugins({ customQuery: { type: 'component' } });
+        if(Origin.location.route2 === 'page') {
+          await components.fetch();
+        }
+        /**
+         * Set each model's parent and children models for easy reference
+         */
+        this.content.forEach(c => {
+          const customQuery = { _parentId: c.get('_id') };
+          c.set('parent', this.content.findWhere({ _id: c.get('_parentId') }));
+          c.set('children', new ContentCollection(this.content.where(customQuery), { customQuery }));
+          if(c.get('_type') === 'component') c.set('component', components.findWhere({ name: c.get('_component') } ));
+        });
+      }
+    }
+  };
+  // load editor data before routing
+  Origin.on('router:editor', async () => {
+    await Origin.editor.data.load();
+    onRoute();
   });
-  
-  Origin.on('router:editor', onRoute);
-  
+
   function onRoute() {
-    EditorData.waitForLoad(() => {
-      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
-        items: [
-          {
-            buttonText: Origin.l10n.t('app.editormenu'),
-            buttonIcon: 'fa-birthday-cake',
-            eventData: 'menu'
-          },
-          {
-            buttonText: Origin.l10n.t('app.projectsettings'),
-            buttonIcon: 'fa-folder-open',
-            eventData: 'settings'
-          },
-          {
-            buttonText: Origin.l10n.t('app.configurationsettings'),
-            buttonIcon: 'fa-cog',
-            eventData: 'config'
-          },
-          {
-            buttonText: Origin.l10n.t('app.thememanagement'),
-            buttonIcon: 'fa-paint-brush',
-            eventData: 'selecttheme'
-          },
-          {
-            buttonText: Origin.l10n.t('app.menupicker'),
-            buttonIcon: 'fa-th-large',
-            eventData: 'menusettings'
-          },
-          {
-            buttonText: Origin.l10n.t('app.manageextensions'),
-            buttonIcon: 'fa-cubes',
-            eventData: 'extensions'
-          }
-        ].map(i => Object.assign(i, { buttonClass: i.eventData === Origin.location.route2 ? 'selected' : '' }))
-      }]);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
+      items: [
+        {
+          buttonText: Origin.l10n.t('app.editormenu'),
+          buttonIcon: 'fa-birthday-cake',
+          eventData: 'menu'
+        },
+        {
+          buttonText: Origin.l10n.t('app.projectsettings'),
+          buttonIcon: 'fa-folder-open',
+          eventData: 'settings'
+        },
+        {
+          buttonText: Origin.l10n.t('app.configurationsettings'),
+          buttonIcon: 'fa-cog',
+          eventData: 'config'
+        },
+        {
+          buttonText: Origin.l10n.t('app.thememanagement'),
+          buttonIcon: 'fa-paint-brush',
+          eventData: 'selecttheme'
+        },
+        {
+          buttonText: Origin.l10n.t('app.menupicker'),
+          buttonIcon: 'fa-th-large',
+          eventData: 'menusettings'
+        },
+        {
+          buttonText: Origin.l10n.t('app.manageextensions'),
+          buttonIcon: 'fa-cubes',
+          eventData: 'extensions'
+        }
+      ].map(i => Object.assign(i, { buttonClass: i.eventData === Origin.location.route2 ? 'selected' : '' }))
+    }]);
 
-      Origin.on('links', data => {
-        if(Origin.location.module !== 'editor') return;
-        Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_id')}/${data}`);
-      });
-
-      triggerEvent();
+    Origin.on('links', data => {
+      if(Origin.location.module !== 'editor') return;
+      Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_id')}/${data}`);
     });
+
+    triggerEvent();
   }
 
   function triggerEvent() {
@@ -75,18 +102,8 @@ define([
       return;
     } 
     if(eventData.action === 'edit') {
-      let model;
-      if(eventData.contentType === 'config') {
-        model = Origin.editor.data.config;
-      } else if(eventData.contentType === 'course') {
-        model = Origin.editor.data.course;
-      } else {
-        model = new ContentModel({ _id: eventData.id });
-      }
-      model.fetch({
-        success: model => Origin.contentPane.setView(EditorFormView, { model }), 
-        error: e => Origin.Notify.alert({ type: 'error', text: e.message })
-      });
+      const model = eventData.contentType === 'config' ? Origin.editor.data.config : Origin.editor.data.get({ _id: eventData.id });
+      Origin.contentPane.setView(EditorFormView, { model })
       return;
     }
     Origin.trigger(`editor:${eventData.contentType}`, eventData);
@@ -111,8 +128,9 @@ define([
     return data;
   }
 
-  Origin.on('editor:contentObject', data => {
-    const model = data.id ? Origin.editor.data.content.findWhere({ _id: data.id }) : Origin.editor.data.course;
+  Origin.on('editor:contentObject', async data => {
+    const model = data.id ? Origin.editor.data.get({ _id: data.id }) : Origin.editor.data.course;
+    
     Helpers.setPageTitle(model);
 
     const actionButtons = [
@@ -137,7 +155,8 @@ define([
     Origin.contentPane.setView(EditorView, {
       currentCourseId: Origin.location.route1,
       currentView: data.type,
-      currentPageId: data.id
+      currentPageId: data.id,
+      model
     }, { fullWidth: data.type === 'menu' });
   });
 });

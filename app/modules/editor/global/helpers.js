@@ -82,18 +82,11 @@ define(function(require) {
       if (type === 'page' || type === 'menu') {
         return cb(model); // we're at the top of the hierarchy
       }
-      _recurse(Origin.editor.data.content.findWhere({ _id: model.get('_parentId') }));
+      _recurse(model.get('parent'));
     };
     // start recursion
     _recurse(model);
   }
-
-  function getComponentDisplayName(name) {
-    const plugin = Origin.editor.data.componentTypes.findWhere({ name });
-    return plugin ? plugin.get('displayName') : '';
-  }
-
-  Handlebars.registerHelper('getComponentDisplayName', getComponentDisplayName);
 
   return Helpers;
 });
