@@ -14,12 +14,45 @@ define(function(require) {
       }
       this.urlRoot = `api/${options.endpoint}`;
     },
+    /**
+     * Fetches model data
+     * @function ApiModel#fetch
+     * @param {Object} options
+     * @returns {Promise}
+     */
+    fetch: async function(options = { silent: true }) {
+      return new Promise((resolve, reject) => {
+        Backbone.Model.prototype.fetch.call(this, _.assign({
+          success: () => resolve(this), 
+          error: () => this.onFetchError(options.silent === false ? reject : undefined)
+        }, options));
+      });
+    },
+    /**
+     * Saves model data
+     * @function ApiModel#save
+     * @param {Object} options
+     * @returns {Promise}
+     */
+    save: async function(attributes, options = { silent: true }) {
+      return new Promise((resolve, reject) => {
+        Backbone.Model.prototype.save.call(this, attributes, _.assign({
+          success: () => resolve(this), 
+          error: () => this.onFetchError(options.silent === false ? reject : undefined)
+        }, options));
+      });
+    },
 
     serialize: function() {
       return JSON.stringify(this);
     },
     pruneAttributes: function() {
       if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
+    },
+    onFetchError: function(reject) {
+      const text = Origin.l10n.t('app.errorfetchingdata', { url: this.url });
+      Origin.Notify.alert({ type: 'error', text });
+      if(reject) reject(new Error(text));
     }
   });
   /**
