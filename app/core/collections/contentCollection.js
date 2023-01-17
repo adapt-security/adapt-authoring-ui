@@ -10,7 +10,7 @@ define([
     model: ContentModel,
     comparator: '_sortOrder',
 
-    initialize : function(models, options) {
+    initialize : function(models, options = {}) {
       ApiCollection.prototype.initialize.apply(this, arguments);
     
       this._type = options._type;
