@@ -35,12 +35,7 @@ define(function(require){
     },
 
     postRender: function() {
-      if(this.isModal) {
-        this.initPaging();
-      } else {
-        Origin.on('contentPane:ready', () => this.initPaging());
-      }
-      // init lazy scrolling
+      this.initPaging();
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
       $(window).on('resize', this._onResize);
     },
