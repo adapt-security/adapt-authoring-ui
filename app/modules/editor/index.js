@@ -102,10 +102,10 @@ define([
       return;
     } 
     if(eventData.action === 'edit') {
-      const model = eventData.contentType === 'config' ? Origin.editor.data.config : Origin.editor.data.get({ _id: eventData.id });
-      Origin.contentPane.setView(EditorFormView, { model })
+      Origin.contentPane.setView(EditorFormView, { model: Origin.editor.data.get({ _id: eventData.id }) })
       return;
     }
+
     Origin.trigger(`editor:${eventData.contentType}`, eventData);
   }
 
@@ -123,6 +123,7 @@ define([
       data.contentType = 'course';
     }
     if(data.contentType === 'config' || data.contentType === 'course') {
+      data.id = data.contentType === 'course' ? Origin.location.route1 : Origin.editor.data.config.get('_id');
       data.action = 'edit';
     }
     return data;
