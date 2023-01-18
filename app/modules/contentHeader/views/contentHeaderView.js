@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   const Origin = require('core/origin');
-  const ApiCollection = require('core/collections/apiCollection');
   const ActionsView = require('./actionsView');
   const FiltersView = require('./filtersView');
   const LinksView = require('./linksView');
@@ -47,7 +46,6 @@ define(function(require) {
         }, {})
       };
       Origin.on({
-        'contentPane:changed': this.render,
         'contentHeader:updateTitle': this.updateTitle,
         'router, contentHeader:hide, remove:views': this.remove
       }, this);
@@ -91,6 +89,7 @@ define(function(require) {
         return console.error(`Unknown ContentHeader type '${type}', must be one of ${Object.keys(this.data.buttons)}`);
       }
       this.data.buttons[type].groups = groups;
+      this.render();
     }
     remove(resetData = true) {
       if(this.$el) this.$el.remove();
