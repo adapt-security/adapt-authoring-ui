@@ -22,12 +22,14 @@ define(function(require) {
   };
 
   function appendToast(data) {
-    this.$el.removeClass('display-none');
+    $container.removeClass('display-none');
+
     data.icon = "i";
+    
     var $el = $(`<div class="${data.type} toast">`)
       .append($(`<div class="icon">${getIconHTML(data.type)}</div>`))
       .append($(`<div class="body">${data.text}</div>`));
-
+    
     if(data.persist) {
       $el.append($('<button>', { 'class': 'close', text: data.buttonText }));
     } else {
