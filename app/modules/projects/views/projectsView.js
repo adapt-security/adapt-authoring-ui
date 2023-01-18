@@ -16,21 +16,20 @@ define(function(require){
 
     preRender: function(options) {
       OriginView.prototype.preRender.apply(this, arguments);
-      this.model = new Backbone.Model({ page: 1, limit: 25 });
+      this.page = 1;
+      this.pageSize = 25;
+
       this.courses = new ContentCollection(undefined, { _type: 'course' });
       this.users = ApiCollection.Users();
       this.tags = ApiCollection.Tags();
-
-      this.model.on('change', this.fetch, this);
-      this.courses.on('sync', this.renderList, this);
-      this.tags.on('sync', () => this.model.set('tags', this.tags), this);
-
+      
       this.listenTo(Origin, {
         'actions:createcourse': this.onCreateCourse,
         'actions:importcourse': this.onImportCourse,
         'filters': this.doFilter,
         'sorts': this.doSort
       });
+      this.courses.on('sync', this.renderList, this);
 
       this.fetch();
     },
@@ -63,7 +62,7 @@ define(function(require){
 
     fetch: async function(cb) {
       try {
-        Object.assign(this.courses.queryOptions, { page: this.model.get('page'), limit: this.model.get('limit') });
+        Object.assign(this.courses.queryOptions, { page: this.page, limit: this.pageSize });
         await Promise.all([
           this.tags.fetch(),
           this.users.fetch(),
@@ -83,7 +82,7 @@ define(function(require){
       const filterQuery = {};
 
       if(filters.pageSize) {
-        this.model.set('pageSize', filters.pageSize);
+        this.pageSize = filters.pageSize;
       }
       if(filters.search) {
         filterQuery.title = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
@@ -126,10 +125,10 @@ define(function(require){
     },
 
     onNavigation: function(event) {
-      const currentPage = this.model.get('page');
+      const currentPage = this.page;
       const nextPage = $(event.currentTarget).hasClass('prev') ? currentPage-1 : currentPage+1;
       if(nextPage !== 0 && nextPage <= this.courses.headerData.PageTotal) {
-        this.model.set('page', nextPage);
+        this.page = nextPage;
       }
     }
   }, {
