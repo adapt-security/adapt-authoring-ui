@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require) {
-  var Backbone = require('backbone');
+define(['backbone', 'core/origin'], function(Backbone, Origin) {
 
   var ApiModel = Backbone.Model.extend({
     idAttribute: '_id',
