@@ -88,17 +88,16 @@ define([
       Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_id')}/${data}`);
     });
 
-    triggerEvent();
-  }
-
-  function triggerEvent() {
     var eventData = parseLocationData();
-    let actionButtons = [];
-
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
-
+    
     if(eventData.action === 'new' && eventData.type === 'component') {
+      if(!Origin.editor.data.newcomponent) {
+        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.componentdatamissing') });
+        Origin.router.navigateBack();
+        return;
+      }
       Origin.contentPane.setView(EditorFormView, { model: Origin.editor.data.newcomponent });
+      delete Origin.editor.data.newcomponent;
       return;
     } 
     if(eventData.action === 'edit') {
