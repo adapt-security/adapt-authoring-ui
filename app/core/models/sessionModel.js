@@ -14,6 +14,15 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
           error: jqXhr.responseJSON && jqXhr.responseJSON.message
         });
       });
+      Origin.on('window:active', async () => {
+        try {
+          await this.fetch();
+        } catch(e) {
+          console.log(e);
+          Origin.Notify.alert({ type: 'info', text: Origin.l10n.t('app.loggedout') });
+          this.navigateToLogin();
+        }
+      });
     },
 
     hasScopes: function(scopes) {
