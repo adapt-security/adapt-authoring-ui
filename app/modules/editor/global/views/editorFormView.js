@@ -110,7 +110,7 @@ define(function(require) {
       $('.editor-form .no-matches').toggleClass(hiddenClass, $('fieldset').not('.fieldset-object').not(`.${hiddenClass}`).length > 0);
     },
     
-    save: function() {
+    save: async function() {
       var errors = this.form.validate();
       if(errors) {
         this.onSaveError(Origin.l10n.t('app.validationfailed'), this.buildErrorMessage(errors));
@@ -122,11 +122,8 @@ define(function(require) {
       var attrs = this.getAttributesToSave();
       if(attrs) attrs._type = this.model.get('_type');
 
-      this.model.save(attrs, {
-        patch: !!attrs,
-        success: this.onSaveSuccess.bind(this),
-        error: (model, jqXhr) => this.onSaveError(undefined, jqXhr.responseJSON && jqXhr.responseJSON.message)
-      });
+      await this.model.save(attrs, { patch: !!attrs });
+      Origin.router.navigateBack();
     },
 
     buildErrorMessage: function(errorObjs, message = `${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>`) {
@@ -143,13 +140,6 @@ define(function(require) {
     getAttributesToSave: function() {
       var changed = this.model.changedAttributes();
       if(changed) return Object.assign(changed, { _id: this.model.get('_id'), _courseId: this.model.get('_courseId') });
-    },
-
-    onSaveSuccess: function() {
-      Origin.trigger('editor:refreshData', () => {
-        Origin.router.navigateBack();
-        this.remove();
-      });
     },
 
     onSaveError: function(pTitle, pText) {
