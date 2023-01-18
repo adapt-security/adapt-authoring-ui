@@ -154,14 +154,11 @@ define(function(require) {
       var id = model.get('_id');
 
       if (helpers.copyStringToClipboard(id)) {
-        Origin.Notify.alert({
-          type: 'info',
-          text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id })
-        });
+        Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id }) });
       } else {
         Origin.Notify.alert({
           type: 'warning',
-          text: Origin.l10n.t('app.copyidtoclipboarderror', { id: id })
+          text: Origin.l10n.t('app.copyidtoclipboarderror', { id })
         });
       }
     },
