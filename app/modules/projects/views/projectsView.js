@@ -111,7 +111,7 @@ define(function(require){
         inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
         preConfirm: async title => {
           try {
-            const { _id } = await $.ajax({ url: 'api/content/createcourse', method: 'post', data: { title } });
+            const { _id } = await $.ajax({ url: 'api/content/insertrecusive', method: 'post', data: { title } });
             Origin.router.navigateTo(`editor/${_id}/menu`);
           } catch(e) {
             SweetAlert.showValidationMessage(e);
