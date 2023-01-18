@@ -1,6 +1,6 @@
 define([
   'core/origin',
-  'core/models/apiModel',
+  'core/collections/apiCollection',
   'backboneForms',
   'backboneFormsLists',
   './backboneFormsOverrides',
@@ -14,7 +14,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, ApiModel, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
@@ -272,8 +272,9 @@ define([
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
       try {
-        const plugin = await ApiModel.ContentPlugin({ name: model.get('_component') }).fetch();
-        schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
+        const plugins = ApiCollection.ContentPlugins({ customQuery: { name: model.get('_component') } });
+        await plugins.fetch();
+        schemaType = `${plugins.first().get('targetAttribute').slice(1)}-${schemaType}`;
       } catch(e) {} // nothing to do
     }
     let schema;
