@@ -16,7 +16,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
       });
       Origin.on('window:active', async () => {
         try {
-          await this.fetch();
+          await this.fetch({ silent: false });
         } catch(e) {
           console.log(e);
           Origin.Notify.alert({ type: 'info', text: Origin.l10n.t('app.loggedout') });
