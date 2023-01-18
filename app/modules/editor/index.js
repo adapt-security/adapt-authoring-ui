@@ -97,7 +97,9 @@ define([
         Origin.router.navigateBack();
         return;
       }
-      Origin.contentPane.setView(EditorFormView, { model: Origin.editor.data.newcomponent });
+      const model = Origin.editor.data.newcomponent;
+      model.parent = Origin.editor.data.get({ _id: model.get('_parentId') });
+      Origin.contentPane.setView(EditorFormView, { model });
       delete Origin.editor.data.newcomponent;
       return;
     } 
