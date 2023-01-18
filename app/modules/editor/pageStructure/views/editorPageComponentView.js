@@ -27,7 +27,10 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         'contextMenu:component:delete': this.deleteComponentPrompt
       });
       this.evaluateLayout(layouts => {
-        this.model.set('_movePositions', layouts);
+        this.model.set({
+          _movePositions: layouts,
+          componentName: this.model.component.get('displayName')
+        });
         this.render();
       });
     },
