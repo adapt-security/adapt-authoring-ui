@@ -14,7 +14,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     }),
 
     getSiblings: function() {
-      return this.model.get('parent').get('children');
+      return this.model.parent.children;
     },
 
     preRender: function() {

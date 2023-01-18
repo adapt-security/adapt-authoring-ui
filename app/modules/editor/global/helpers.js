@@ -82,7 +82,7 @@ define(function(require) {
       if (type === 'page' || type === 'menu') {
         return cb(model); // we're at the top of the hierarchy
       }
-      _recurse(model.get('parent'));
+      _recurse(model.parent);
     };
     // start recursion
     _recurse(model);

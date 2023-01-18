@@ -57,15 +57,15 @@ define(function(require){
 
     handleAsyncPostRender: function() {
       var renderedChildren = [];
-      if(this.model.get('children').length === 0) {
+      if(this.model.children.length === 0) {
         return this.animateIn();
       }
       this.listenTo(Origin, 'editorPageComponent:postRender', function(view) {
         var id = view.model.get('_id');
-        if(this.model.get('children').indexOf(view.model) !== -1 && renderedChildren.indexOf(id) === -1) {
+        if(this.model.children.indexOf(view.model) !== -1 && renderedChildren.indexOf(id) === -1) {
           renderedChildren.push(id);
         }
-        if(renderedChildren.length === this.model.get('children').length) {
+        if(renderedChildren.length === this.model.children.length) {
           this.stopListening(Origin, 'editorPageComponent:postRender');
           this.animateIn();
         }
@@ -93,11 +93,11 @@ define(function(require){
         left: { type: 'left', name: 'app.layoutleft', pasteZoneRenderOrder: 2 },
         right: { type: 'right', name: 'app.layoutright', pasteZoneRenderOrder: 3 }
       };
-      if (this.model.get('children').length === 0) {
+      if (this.model.children.length === 0) {
         return [layoutOptions.full,layoutOptions.left,layoutOptions.right];
       }
-      if (this.model.get('children').length === 1) {
-        var layout = this.model.get('children').first().get('_layout');
+      if (this.model.children.length === 1) {
+        var layout = this.model.children.first().get('_layout');
         if(layout === layoutOptions.left.type) return [layoutOptions.right];
         if(layout === layoutOptions.right.type) return [layoutOptions.left];
       }
@@ -187,13 +187,13 @@ define(function(require){
     addComponentViews: function() {
       this.$('.page-components').empty();
 
-      var addPasteZonesFirst = this.model.get('children').length && this.model.get('children').first().get('_layout') !== 'full';
-      this.addComponentButtonLayout(this.model.get('children'));
+      var addPasteZonesFirst = this.model.children.length && this.model.children.first().get('_layout') !== 'full';
+      this.addComponentButtonLayout(this.model.children);
 
       if (addPasteZonesFirst) this.setupPasteZones();
       // Add component elements
-      for(var i = 0, count = this.model.get('children').length; i < count; i++) {
-        var view = new EditorPageComponentView({ model: this.model.get('children').at(i) });
+      for(var i = 0, count = this.model.children.length; i < count; i++) {
+        var view = new EditorPageComponentView({ model: this.model.children.at(i) });
         this.$('.page-components').append(view.$el);
       }
       if (!addPasteZonesFirst) this.setupPasteZones();
@@ -229,7 +229,9 @@ define(function(require){
           title: Origin.l10n.t('app.addcomponent'),
           body: Origin.l10n.t('app.pleaseselectcomponent'),
           _parentId: this.model.get('_id'),
-          layoutOptions: this.model.get('layoutOptions')
+          layoutOptions: this.model.get('layoutOptions'),
+          components: this.model.components,
+          parent: this.model.parent
         }),
         $parentElement: this.$el,
         parentView: this
@@ -263,7 +265,7 @@ define(function(require){
     onPaste: function(data) {
       (new ContentModel({ _id: data._id, _type: 'component' })).fetch({
         success: _.bind(function(model) {
-          this.model.get('children').push(model);
+          this.model.children.push(model);
           this.render();
         }, this),
         error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })

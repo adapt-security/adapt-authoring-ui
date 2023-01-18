@@ -71,7 +71,7 @@ define(function(require){
       });
       this.$('.article-blocks').append(view.$el);
       // Iterate over each block and add it to the article
-      const children = this.model.get('children').sort(Helpers.sortContentObjects);
+      const children = this.model.children.sort(Helpers.sortContentObjects);
       Origin.editor.blockCount += children.length;
       children.forEach(c => this.addBlockView(c));
     },
@@ -97,9 +97,9 @@ define(function(require){
       this.$('.article-blocks').append(new EditorPasteZoneView({ model: blockModel }).$el);
     },
 
-    addBlock: function(event) {
+    addBlock: async function(event) {
       event && event.preventDefault();
-      new ContentModel({
+      const model = new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         layoutOptions: [{
@@ -115,14 +115,12 @@ define(function(require){
             name: 'app.layoutright',
             pasteZoneRenderOrder: 3
         }],
-        _type: 'block'
-      }).save({}, {
-        success: model => {
-          this.addBlockView(model, true);
-          Origin.trigger('editor:refreshData');
-        },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingblock') })
+        _type: 'block',
+        parent: this.model
       });
+      await model.save();
+      this.addBlockView(model, true);
+      Origin.trigger('editor:refreshData');
     },
 
     deleteArticlePrompt: function(event) {

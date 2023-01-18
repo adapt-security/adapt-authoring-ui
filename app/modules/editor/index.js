@@ -34,9 +34,10 @@ define([
          */
         this.content.forEach(c => {
           const customQuery = { _parentId: c.get('_id') };
-          c.set('parent', this.content.findWhere({ _id: c.get('_parentId') }));
-          c.set('children', new ContentCollection(this.content.where(customQuery), { customQuery }));
-          if(c.get('_type') === 'component') c.set('component', components.findWhere({ name: c.get('_component') } ));
+          c.parent = this.content.findWhere({ _id: c.get('_parentId') });
+          c.children = new ContentCollection(this.content.where(customQuery), { customQuery });
+          if(c.get('_type') === 'block') c.components = components;
+          if(c.get('_type') === 'component') c.component = components.findWhere({ name: c.get('_component') } );
         });
       }
     }
