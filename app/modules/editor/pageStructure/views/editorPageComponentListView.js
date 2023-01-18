@@ -2,6 +2,7 @@
 define(function(require) {
   var _ = require('underscore');
   var Origin = require('core/origin');
+  var ApiCollection = require('core/collections/apiCollection');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageComponentListItemView = require('./editorPageComponentListItemView');
 
@@ -27,7 +28,7 @@ define(function(require) {
       this.model.set('_availablePosition', this.availablePositions);
     },
 
-    postRender: function() {
+    postRender: async function() {
       this.renderComponentList();
       this.$('.editor-component-list-sidebar-search-field input').focus();
     },
@@ -40,7 +41,7 @@ define(function(require) {
     renderComponentList: function() {
       Origin.trigger('editorComponentListView:removeSubviews');
 
-      Origin.editor.data.componentTypes.forEach(function(componentType) {
+      this.model.components.forEach(function(componentType) {
         if(!componentType.get('isEnabled')) {
           return;
         }
@@ -53,8 +54,8 @@ define(function(require) {
         this.$('.editor-component-list-sidebar-list').append(new EditorPageComponentListItemView({
           model: componentType,
           availablePositions: availablePositions,
-          _parentId: this.model.get('_parentId'),
           $parentElement: this.$parentElement,
+          parentModel: this.model.parent,
           parentView: this.parentView,
           searchTerms: componentType.get('displayName').toLowerCase()
         }).$el);

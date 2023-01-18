@@ -21,8 +21,8 @@ define(function(require) {
 
       this.model.set('availablePositions', options.availablePositions);
 
-      this._parentId = options._parentId;
       this.$parentElement = options.$parentElement;
+      this.parentModel = options.parentModel;
       this.parentView = options.parentView;
       this.searchTerms = options.searchTerms;
     },
@@ -57,18 +57,18 @@ define(function(require) {
       this.addComponent(event.currentTarget.getAttribute('data-position'));
     },
 
-    addComponent: function(layout) {
+    addComponent: function(_layout) {
       Origin.trigger('editorComponentListView:remove');
-      const componentType = Origin.editor.data.componentTypes.findWhere({ name: this.model.get('name') });
       const _courseId = Origin.editor.data.course.get('_id');
       Origin.editor.data.newcomponent = new ContentModel({
-        _parentId: this._parentId,
+        _parentId: this.parentModel.get('_id'),
         _courseId,
         _type: 'component',
-        _component: componentType.get('name'),
-        _layout: layout
+        _component: this.model.get('name'),
+        _layout,
+        parent: this.parentModel
       });
-      Origin.router.navigateTo(`editor/${_courseId}/component/${componentType.get('name')}/new`);
+      Origin.router.navigateTo(`editor/${_courseId}/component/${this.model.get('name')}/new`);
     }
   }, {
     template: 'editorPageComponentListItem'
