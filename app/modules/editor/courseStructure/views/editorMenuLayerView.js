@@ -2,7 +2,7 @@
 define(function(require) {
   var Origin = require('core/origin');
   var Helpers = require('core/helpers');
-	var ContenModel = require('core/models/contentModel');
+	var ContentModel = require('core/models/contentModel');
 	var EditorMenuItemView = require('./editorMenuItemView');
   var EditorOriginView = require('../../global/views/editorOriginView');
 
@@ -11,8 +11,7 @@ define(function(require) {
     models: undefined,
 
     events: {
-      'click button.editor-menu-layer-add-page': 'addNewPage',
-      'click button.editor-menu-layer-add-menu': 'addNewMenu',
+      'click button.editor-menu-layer-add': 'addNewMenuItem',
       'click .editor-menu-layer-paste': 'pasteMenuItem',
       'click .editor-menu-layer-paste-cancel': 'cancelPasteMenuItem'
     },
@@ -66,87 +65,22 @@ define(function(require) {
       this.$('.editor-menu-layer-inner').height(windowHeight - (offsetTop + controlsHeight));
     },
 
-    addNewMenu: function(event) {
-      this.addNewMenuItem(event, 'menu');
-    },
-
-    addNewPage: function(event) {
-      this.addNewMenuItem(event, 'page');
-    },
-
-    // Adds a new contentObject of a given type
-    // @param {String} type Given contentObject type, i.e. 'menu' or 'page'
-    addNewMenuItem: function(event, type) {
+    addNewMenuItem: async function(event) {
       event && event.preventDefault();
+      const _type = $(event.currentTarget).attr('data-type');
+      const model = new ContentModel(await $.ajax({ url: `api/content/insertrecusive?rootId=${this._parentId}`, method: 'post', data: { _type } }));
 
-      var newMenuItemModel = new ContenModel({
-        _parentId: this._parentId,
-        _courseId: Origin.editor.data.course.get('_id'),
-        linkText: Origin.l10n.t('app.view'),
-        graphic: { alt: '', src: '' },
-        _type: type
-      });
-      // Instantly add the view for UI purposes
-      var newMenuItemView = this.addMenuItemView(newMenuItemModel);
+      var newMenuItemView = this.addMenuItemView(model);
       newMenuItemView.$el.addClass('syncing');
-
-      newMenuItemModel.save(null, {
-        success: _.bind(function(model) {
-          Origin.trigger('editorView:menuView:addItem', model);
-          // Force setting the data-id attribute as this is required for drag-drop sorting
-          newMenuItemView.$el.attr('data-id', model.get('_id'));
-          newMenuItemView.$el.children('.editor-menu-item-inner').attr('data-id', model.get('_id'));
-          newMenuItemView.render();
-          if (type === 'page') {
-            // HACK -- This should be removed and placed on the server-side
-            this.addNewPageArticleAndBlock(model, newMenuItemView);
-            return;
-          }
-          newMenuItemView.$el.removeClass('syncing');
-          this.setHeight();
-        }, this),
-        error: function(error) {
-          // fade out menu item and alert
-          newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errormenueditorbody') });
-          _.delay(newMenuItemView.remove, 3000);
-        }
-      });
-    },
-
-    addNewPageArticleAndBlock: function(model, newMenuItemView) {
-      var typeToAdd;
-      this.pageModel;
-      this.pageView;
-
-      if (model.get('_type') === 'page') {
-        this.pageModel = model;
-        this.pageView = newMenuItemView;
-        typeToAdd = 'article';
-      } else {
-        typeToAdd = 'block';
-      }
-      new ContentModel({ _type: typeToAdd }).save({
-        _parentId: model.get('_id'),
-        _courseId: Origin.editor.data.course.get('_id')
-      }, {
-        error: function() {
-          newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errormenueditorbody'),
-          });
-          _.delay(newMenuItemView.remove, 3000);
-        },
-        success: _.bind(function(model, response, options) {
-          Origin.trigger('editor:refreshData');
-          if (typeToAdd === 'article') {
-            this.addNewPageArticleAndBlock(model, newMenuItemView);
-          } else {
-            newMenuItemView.$el.removeClass('syncing');
-          }
-        }, this)
-      });
+      newMenuItemView.$el.attr('data-id', model.get('_id'));
+      newMenuItemView.$el.children('.editor-menu-item-inner').attr('data-id', model.get('_id'));
+      newMenuItemView.render();
+      
+      newMenuItemView.$el.removeClass('syncing');
+      
+      this.setHeight();
+      
+      Origin.trigger('editorView:menuView:addItem', model);
     },
 
     addMenuItemView: function(model) {
