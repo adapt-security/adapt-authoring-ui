@@ -280,7 +280,7 @@ define([
     let schema;
     try {
       const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
-      schema = await $.ajax({ url: `api/content/schema?type=${schemaType}${query}`, dataType: 'json', cache: false });
+      schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
     } catch(e) {
       console.error(e);
     }
