@@ -231,7 +231,7 @@ define(function(require){
           _parentId: this.model.get('_id'),
           layoutOptions: this.model.get('layoutOptions'),
           components: this.model.components,
-          parent: this.model.parent
+          parent: this.model
         }),
         $parentElement: this.$el,
         parentView: this

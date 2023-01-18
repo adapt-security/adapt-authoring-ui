@@ -41,7 +41,7 @@ define(function(require) {
     renderComponentList: function() {
       Origin.trigger('editorComponentListView:removeSubviews');
 
-      this.model.components.forEach(function(componentType) {
+      this.model.get('components').forEach(function(componentType) {
         if(!componentType.get('isEnabled')) {
           return;
         }
@@ -55,7 +55,7 @@ define(function(require) {
           model: componentType,
           availablePositions: availablePositions,
           $parentElement: this.$parentElement,
-          parentModel: this.model.parent,
+          parentModel: this.model.get('parent'),
           parentView: this.parentView,
           searchTerms: componentType.get('displayName').toLowerCase()
         }).$el);

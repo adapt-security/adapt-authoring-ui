@@ -65,9 +65,9 @@ define(function(require) {
         _courseId,
         _type: 'component',
         _component: this.model.get('name'),
-        _layout,
-        parent: this.parentModel
+        _layout
       });
+      Origin.editor.data.newcomponent.parent = this.parentModel;
       Origin.router.navigateTo(`editor/${_courseId}/component/${this.model.get('name')}/new`);
     }
   }, {
