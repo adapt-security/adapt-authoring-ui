@@ -24,7 +24,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
         scopes = [scopes];
       }
       var assignedScopes = this.get('scopes');
-      if(!assignedScopes?.length) {
+      if(!assignedScopes || !assignedScopes.length) {
         return false;
       }
       return scopes.every(s => assignedScopes.includes(s));
@@ -45,8 +45,8 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
     updateAuthStatus: function(jqXhr) {
       const isInit = !this.has('isAuthenticated');
       this.set({ 
-        isAuthenticated: jqXhr === undefined, 
-        error: jqXhr?.responseJSON?.message
+        isAuthenticated: jqXhr === undefined,
+        error: jqXhr && jqXhr.responseJSON && jqXhr.responseJSON.message
       });
       if(isInit) this.trigger('ready');
     },
@@ -68,7 +68,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
         cb(responseJSON);
       }
     },
-    
+
     logout: async function() {
       try {
         await $.post('api/auth/disavow');
