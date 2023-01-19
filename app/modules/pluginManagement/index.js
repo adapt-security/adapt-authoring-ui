@@ -22,7 +22,7 @@ define(function(require) {
 
   Origin.on('router:pluginManagement', function(location, subLocation, action) {
     if ('upload' === location) {
-      Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.uploadplugin') });
+      Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.uploadplugin') });
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       Origin.contentPane.setView(PluginManagementUploadView);
     } else {
@@ -75,7 +75,7 @@ define(function(require) {
           }
         ] 
       }]);
-      Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
+      Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
       Origin.contentPane.setView(PluginManagementView, { pluginType: location }, { fullWidth: true });
     }
   });

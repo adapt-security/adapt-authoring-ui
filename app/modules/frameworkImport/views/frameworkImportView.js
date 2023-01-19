@@ -10,7 +10,10 @@ define(function(require){
     createdCourseId: false,
 
     preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.projects'), url: 'projects' }], title: Origin.l10n.t('app.frameworkimporttitle') });
+      Origin.contentHeader.setTitle({ 
+        breadcrumbs: [{ title: Origin.l10n.t('app.projects'), url: 'projects' }], 
+        title: Origin.l10n.t('app.frameworkimporttitle') 
+      });
       this.listenTo(Origin, {
         'actions:check': this.checkCourse,
         'actions:import': this.importcourse

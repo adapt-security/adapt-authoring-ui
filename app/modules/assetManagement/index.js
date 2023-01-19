@@ -88,7 +88,7 @@ define(function(require) {
         id: 'upload'
       }]
     }]);
-    Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
+    Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
     Origin.contentPane.setView(AssetManagementView, {}, { fullWidth: true });
     Origin.trigger('assetManagement:loaded');
   }
@@ -97,7 +97,7 @@ define(function(require) {
     const isNew = location === undefined;
     const model = ApiModel.Asset({ _id: location });
     const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
-    Origin.trigger('contentHeader:updateTitle', { breadcrumbs, title });
+    Origin.contentHeader.setTitle({ breadcrumbs, title });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
     if(!isNew) {
       try {

@@ -45,10 +45,7 @@ define(function(require) {
           return Object.assign(data, { [type]: { groups: [], ViewClass: VIEWS[type] } });
         }, {})
       };
-      Origin.on({
-        'contentHeader:updateTitle': this.updateTitle,
-        'router, contentHeader:hide, remove:views': this.remove
-      }, this);
+      Origin.on('router contentHeader:hide remove:views', this.remove, this);
     }
     render() {
       this.remove(false);

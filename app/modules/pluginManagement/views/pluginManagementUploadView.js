@@ -8,7 +8,7 @@ define(function(require){
     className: 'pluginManagement-upload-plugin',
 
     preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.uploadplugin') });
+      Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.uploadplugin') });
       this.listenTo(Origin, 'actions:save', this.uploadFile);
       Origin.on('actions:cancel', () => Origin.router.navigateBack());
     },

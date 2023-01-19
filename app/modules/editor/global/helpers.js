@@ -14,7 +14,7 @@ define(function(require) {
           page: page,
           langString: Origin.l10n.t('app.' + getLangKey())
         };
-        Origin.trigger('contentHeader:updateTitle', {
+        Origin.contentHeader.setTitle({
           breadcrumbs: generateBreadcrumbs(data),
           title: getTitleForModel(data)
         });

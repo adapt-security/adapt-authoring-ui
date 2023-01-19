@@ -74,7 +74,7 @@ define(function(require) {
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
     
-    Origin.trigger('contentHeader:updateTitle', { 
+    Origin.contentHeader.setTitle({
       breadcrumbs: ['dashboard'], 
       title: Origin.l10n.t(`app.projects`) 
     });

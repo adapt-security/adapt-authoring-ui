@@ -13,7 +13,7 @@ define(function(require){
 
     initialize: function() {
       OriginView.prototype.initialize.apply(this, arguments);
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.usermanagementtitle') });
+      Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.usermanagementtitle') });
       this.users = new ApiCollection([], { url: 'api/users' });
       this.roles = new ApiCollection([], { url: 'api/roles' });
 

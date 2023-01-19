@@ -24,7 +24,10 @@ define(function(require) {
   });
 
   function renderAddUser() {
-    Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.addnewuser') });
+    Origin.contentHeader.setTitle({ 
+      breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], 
+      title: Origin.l10n.t('app.addnewuser') 
+    });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
     Origin.contentPane.setView(AddUserView, { model: new Backbone.Model() });
   }
@@ -92,7 +95,10 @@ define(function(require) {
         buttonText: Origin.l10n.t('app.addnewuser')
       }]
     }]);
-    Origin.trigger('contentHeader:updateTitle', { breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], title: Origin.l10n.t('app.usermanagementtitle') });
+    Origin.contentHeader.setTitle({ 
+      breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], 
+      title: Origin.l10n.t('app.usermanagementtitle') 
+    });
     Origin.contentPane.setView(UserManagementView, {}, { fullWidth: true });
     Origin.on('actions:adduser', () => Origin.router.navigateTo('userManagement/addUser'));
   }
