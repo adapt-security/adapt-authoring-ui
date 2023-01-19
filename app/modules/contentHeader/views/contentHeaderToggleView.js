@@ -26,15 +26,12 @@ define(function(require) {
       var maxX = $(window).width() - width - 5;
       if($btns.offset().left > maxX) $btns.css('left', maxX - $('.contentHeader .buttons').offset().left);
     },
-    onClicked(event) {
-      event.preventDefault();
-      event.stopPropagation();
+    onClicked() {
       var $btns = $('.groups', this.$el);
       if(!$btns.hasClass('show')) $('.groups').removeClass('show');
       $btns.toggleClass('show');
     },
-    onItemClicked(event) {
-    }
+    onItemClicked() {}
   });
 
   return ContentHeaderToggleButtonView;
