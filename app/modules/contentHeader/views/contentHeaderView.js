@@ -78,8 +78,9 @@ define(function(require) {
         })
       });
     }
-    updateTitle(data) {
+    setTitle(data) {
       Object.assign(this.data, data);
+      this.render();
     }
     setButtons(type, groups) {
       if(!this.data.buttons[type]) {
