@@ -55,10 +55,18 @@ define(['backbone', 'underscore', 'core/origin', 'core/models/apiModel'], functi
               }
               resolve(memo);
             }, 
-            error: () => {
-              const text = Origin.l10n.t('app.errorfetchingdata', { url: this.url });
-              Origin.Notify.alert({ type: 'error', text });
-              if(!options.silent === false) reject(text);
+            error: (model, jqXhr) => {
+              const error = jqXhr && jqXhr.responseJSON;
+              
+              if(options.silent === false) return reject(new Error(error));
+              
+              const errorFormatted = JSON.stringify(error, null, '&nbsp;').replaceAll('\n', '<br/>');
+
+              Origin.Notify.alert({ 
+                type: 'error', 
+                text: `${Origin.l10n.t('app.errorfetchingdata', { url: this.url })}
+                  <details><summary>Debug information</summary><pre>${errorFormatted}</pre></details>`
+              });
             }
           }, options));
         });
