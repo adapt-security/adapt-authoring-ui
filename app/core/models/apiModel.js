@@ -23,7 +23,7 @@ define(['backbone'], function(Backbone) {
       return new Promise((resolve, reject) => {
         Backbone.Model.prototype.fetch.call(this, _.assign({
           success: () => resolve(this), 
-          error: () => this.onFetchError(options.silent === false ? reject : undefined)
+          error: (model, jqXhr) => this.onFetchError(jqXhr, options.silent === false ? reject : undefined)
         }, options));
       });
     },
