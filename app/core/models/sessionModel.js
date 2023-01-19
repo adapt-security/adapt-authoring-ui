@@ -4,68 +4,69 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
     initialize: function(Origin, options = {}) {
       options.endpoint = 'auth/check';
       ApiModel.prototype.initialize.call(this, {}, options);
-
+      // need to access Origin this way to avoid circular dependency
       this.Origin = Origin;
 
-      this.on('sync', () => this.set('isAuthenticated', true));
-      this.on('error', (model, jqXhr) => {
-        this.set({ 
-          isAuthenticated: false, 
-          error: jqXhr.responseJSON && jqXhr.responseJSON.message
-        });
-      });
-      Origin.on('window:active', async () => {
-        try {
-          await this.fetch({ silent: false });
-        } catch(e) {
-          console.log(e);
-          Origin.Notify.alert({ type: 'info', text: Origin.l10n.t('app.loggedout') });
-          this.navigateToLogin();
-        }
-      });
+      this.on('sync error', (model, jqXhr) => this.updateAuthStatus(jqXhr.hasOwnProperty('status') ? jqXhr : undefined));
+      Origin.on('window:active', this.checkAuthStatus, this);
+
+      this.checkAuthStatus();
     },
 
     hasScopes: function(scopes) {
       if(!scopes) {
         return false;
       }
-      var assignedScopes = this.get('scopes');
       if(this.get('isSuper')) {
         return true;
       }
-      if(!assignedScopes || !assignedScopes.length) {
-        return false;
-      }
       if(!Array.isArray(scopes)) {
-        return assignedScopes.includes(scopes);
+        scopes = [scopes];
+      }
+      var assignedScopes = this.get('scopes');
+      if(!assignedScopes?.length) {
+        return false;
       }
       return scopes.every(s => assignedScopes.includes(s));
     },
 
-    login: function (email, password, persistSession, cb) {
-      const onError = ({ responseJSON }) => {
+    checkAuthStatus: async function() {
+      if(this.Origin?.location?.module === 'user' && this.Origin?.location?.route1 !== 'profile') {
+        return;
+      }
+      try {
+        await this.fetch({ silent: false });
+      } catch(e) {
+        this.Origin.Notify.alert({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
+        this.Origin.router.navigateToLogin();
+      }
+    },
+
+    updateAuthStatus: function(jqXhr) {
+      const isInit = !this.has('isAuthenticated');
+      this.set({ 
+        isAuthenticated: jqXhr === undefined, 
+        error: jqXhr?.responseJSON?.message
+      });
+      if(isInit) this.trigger('ready');
+    },
+
+    login: async function (email, password, persistSession, cb) {
+      try {
+        await $.ajax({ 
+          url: 'api/auth/local',
+          method: 'POST',
+          data: JSON.stringify({ email, password, persistSession }),
+          contentType: "application/json",
+          dataType: "json"
+        });
+        await this.fetch();
+        this.Origin.trigger('login:changed');
+        cb();
+      } catch({ responseJSON }) {
         this.clear();
         cb(responseJSON);
-      };
-      $.ajax({ 
-        url: 'api/auth/local',
-        method: 'POST',
-        data: JSON.stringify({ email, password, persistSession }),
-        contentType: "application/json",
-        dataType: "json"
-      })
-        .done(() => {
-          this.fetch({ 
-            success: () => {
-              this.once('sync', () => {
-                cb();
-                this.Origin.trigger('login:changed');
-              });
-            },
-            error: onError
-          });
-        })
-        .fail(onError);
+      }
     },
     
     logout: async function() {
