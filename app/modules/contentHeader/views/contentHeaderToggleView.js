@@ -26,7 +26,7 @@ define(function(require) {
       var maxX = $(window).width() - width - 5;
       if($btns.offset().left > maxX) $btns.css('left', maxX - $('.contentHeader .buttons').offset().left);
     },
-    onClicked() {
+    onClicked(event) {
       event.preventDefault();
       event.stopPropagation();
       var $btns = $('.groups', this.$el);
