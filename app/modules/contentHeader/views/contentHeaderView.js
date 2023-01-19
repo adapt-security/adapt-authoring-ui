@@ -42,7 +42,7 @@ define(function(require) {
     constructor() {
       this.data = {
         buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
-          return { ...data, [type]: { groups: [], ViewClass: VIEWS[type] } };
+          return Object.assign(data, { [type]: { groups: [], ViewClass: VIEWS[type] } });
         }, {})
       };
       Origin.on('router contentHeader:hide remove:views', this.remove, this);

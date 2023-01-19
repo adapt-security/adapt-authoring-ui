@@ -31,7 +31,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
     },
 
     checkAuthStatus: async function() {
-      if(this.Origin?.location?.module === 'user' && this.Origin?.location?.route1 !== 'profile') {
+      if(this.Origin.location && this.Origin.location.module === 'user' && this.Origin.location.route1 !== 'profile') {
         return;
       }
       try {
