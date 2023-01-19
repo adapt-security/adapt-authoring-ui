@@ -1,5 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(['backbone', 'core/origin'], function(Backbone, Origin) {
+define(['backbone'], function(Backbone) {
 
   var ApiModel = Backbone.Model.extend({
     idAttribute: '_id',
@@ -49,9 +49,9 @@ define(['backbone', 'core/origin'], function(Backbone, Origin) {
       if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
     },
     onFetchError: function(reject) {
-      const text = Origin.l10n.t('app.errorfetchingdata', { url: this.url });
-      Origin.Notify.alert({ type: 'error', text });
-      if(reject) reject(new Error(text));
+      const Origin = require('core/origin');
+      const text = Origin.l10n.t('app.errorfetchingdata', { url: this.url() });
+      reject ? reject(new Error(text)) : Origin.Notify.alert({ type: 'error', text });
     }
   });
   /**
