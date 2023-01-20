@@ -3,7 +3,6 @@ define(function(require){
   var Backbone = require('backbone');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
-  var ContentCollection = require('core/collections/contentCollection');
   var ContentModel = require('core/models/contentModel');
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorPageArticleView = require('./editorPageArticleView');
