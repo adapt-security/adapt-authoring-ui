@@ -13,7 +13,7 @@ define(function(require){
 
     events: _.extend({}, EditorOriginView.prototype.events, {
       'click .add-block': 'addBlock',
-      'click .article-delete': 'deleteArticlePrompt',
+      'click .article-delete': 'deletePrompt',
       'click .open-context-article': 'openContextMenu',
       'dblclick': 'loadArticleEdit',
       'click .editor-collapse-article': 'toggleCollapseArticle'
@@ -53,9 +53,8 @@ define(function(require){
         'contextMenu:article:copy': this.onCopy,
         'contextMenu:article:copyID': this.onCopyID,
         'contextMenu:article:cut': this.onCut,
-        'contextMenu:article:delete': this.deleteArticlePrompt,
+        'contextMenu:article:delete': this.deletePrompt,
         'contextMenu:article:collapse': this.toggleCollapseArticle,
-        'contextMenu:article:delete': this.deleteArticlePrompt
       });
     },
 
@@ -121,33 +120,6 @@ define(function(require){
       await model.save();
       this.addBlockView(model, true);
       Origin.trigger('editor:refreshData');
-    },
-
-    deleteArticlePrompt: function(event) {
-      event && event.preventDefault();
-
-      Origin.Notify.confirm({
-        type: 'warning',
-        title: Origin.l10n.t('app.deletearticle'),
-        text: Origin.l10n.t('app.confirmdeletearticle') + '<br />' + '<br />' + Origin.l10n.t('app.confirmdeletearticlewarning'),
-        callback: _.bind(this.deleteArticleConfirm, this)
-      });
-
-    },
-
-    deleteArticleConfirm: function(result) {
-      if (result.isConfirmed) {
-        Origin.trigger('editorView:deleteArticle:' + this.model.get('_id'));
-      }
-    },
-
-    deletePageArticle: function(event) {
-      event && event.preventDefault();
-
-      this.model.destroy({
-        success: () => this.remove(),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
-      });
     },
 
     loadArticleEdit: function (event) {

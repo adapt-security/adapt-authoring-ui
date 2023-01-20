@@ -159,7 +159,26 @@ define(function(require){
       });
     },
 
-    buildErrorMessage: function(errorObjs, message = "") {
+    deletePrompt: function() {
+      Origin.Notify.confirm({
+        type: 'warning',
+        text: Origin.l10n.t('app.confirmdelete', { type: this.model.get('_type') }),
+        callback: () => {
+          if(!result.isConfirmed) {
+            return;
+          }
+          this.model.destroy({
+            success: () => this.remove(),
+            error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
+          });
+        }
+      });
+    },
+
+    buildErrorMessage: function(errorObjs, message) {
+      if(!message) {
+        message = "";
+      }
       _.each(errorObjs, function(item, key) {
         if(item.hasOwnProperty('message')) {
           message += `<span class="key">${item.title || key}</span>: ${item.message}<br/>`;

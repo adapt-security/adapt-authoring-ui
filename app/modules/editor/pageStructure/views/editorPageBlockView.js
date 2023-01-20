@@ -16,7 +16,7 @@ define(function(require){
       autoRender: false
     }),
     events: _.extend({}, EditorOriginView.prototype.events, {
-      'click .block-delete': 'deleteBlockPrompt',
+      'click .block-delete': 'deletePrompt',
       'click .add-component': 'showComponentList',
       'click .open-context-block': 'openContextMenu',
       'dblclick': 'loadBlockEdit'
@@ -78,7 +78,7 @@ define(function(require){
         'contextMenu:block:edit': this.loadBlockEdit,
         'contextMenu:block:copy': this.onCopy,
         'contextMenu:block:copyID': this.onCopyID,
-        'contextMenu:block:delete': this.deleteBlockPrompt
+        'contextMenu:block:delete': this.deletePrompt
       });
     },
 
@@ -102,24 +102,6 @@ define(function(require){
         if(layout === layoutOptions.right.type) return [layoutOptions.left];
       }
       return [];
-    },
-
-    deleteBlockPrompt: function(event) {
-      event && event.preventDefault();
-
-      Origin.Notify.confirm({
-        type: 'warning',
-        title: Origin.l10n.t('app.deleteblock'),
-        text: `${Origin.l10n.t('app.confirmdeleteblock')}<br/><br/>${Origin.l10n.t('app.confirmdeleteblockwarning')}`,
-        callback: result => result.isConfirmed && this.deleteBlock()
-      });
-    },
-
-    deleteBlock: function(event) {
-      this.model.destroy({
-        success: () => this.remove(),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
-      });
     },
 
     setupDragDrop: function() {

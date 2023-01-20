@@ -7,7 +7,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       autoRender: false,
     }),
     events: _.extend({}, EditorOriginView.prototype.events, {
-      'click .component-delete': 'deleteComponentPrompt',
+      'click .component-delete': 'deletePrompt',
       'click .component-move': 'evaluateMove',
       'click .open-context-component': 'openContextMenu',
       'dblclick': 'loadComponentEdit'
@@ -24,7 +24,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         'contextMenu:component:edit': this.loadComponentEdit,
         'contextMenu:component:copy': this.onCopy,
         'contextMenu:component:copyID': this.onCopyID,
-        'contextMenu:component:delete': this.deleteComponentPrompt
+        'contextMenu:component:delete': this.deletePrompt
       });
       this.evaluateLayout(layouts => {
         this.model.set({
@@ -41,29 +41,6 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         this.trigger('componentView:postRender');
         Origin.trigger('pageView:itemRendered', this);
       }, this));
-    },
-
-    deleteComponentPrompt: function(event) {
-      event && event.preventDefault();
-
-      Origin.Notify.confirm({
-        type: 'warning',
-        title: Origin.l10n.t('app.deletecomponent'),
-        text: `${Origin.l10n.t('app.confirmdeletecomponent')}<br/><br/>${Origin.l10n.t('app.confirmdeletecomponentwarning')}`,
-        callback: result => result.isConfirmed && this.deleteComponent()
-      });
-    },
-
-    deleteComponent: function() {
-      this.model.destroy({
-        success: _.bind(function(model) {
-          this.remove();
-          Origin.trigger('editorView:renderPage');
-        }, this),
-        error: function(response) {
-          console.error(response);
-        }
-      })
     },
 
     loadComponentEdit: function(event) {
