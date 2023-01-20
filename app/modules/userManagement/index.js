@@ -83,7 +83,7 @@ define(function(require) {
           {
             id: 'contentreviewer',
             type: 'toggle',
-            buttonText: Origin.l10n.t('app.contentreviews'),
+            buttonText: Origin.l10n.t('app.contentreviewers'),
             checked: true
           }
         ]
