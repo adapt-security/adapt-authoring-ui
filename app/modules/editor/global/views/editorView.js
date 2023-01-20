@@ -32,9 +32,7 @@ define(function(require) {
         'editorView:copy': this.addToClipboard,
         'editorView:copyID': this.copyIdToClipboard,
         'editorView:paste': this.pasteFromClipboard,
-        'actions:publish': this.downloadProject,
-        'actions:preview': this.previewProject,
-        'actions:export': this.exportProject
+        'actions': this.buildProject,
       });
       this.render();
       this.renderCurrentEditorView();
@@ -42,30 +40,6 @@ define(function(require) {
 
     postRender: function() {
 
-    },
-
-    previewProject: function() {
-      if(Origin.editor.isPreviewPending) {
-        return;
-      }
-      if(!this.validateCourse()) {
-        return;
-      }
-      Origin.editor.isPreviewPending = true;
-      
-      const previewWindow = window.open('loading', 'preview');
-      
-      $.post(`api/adapt/preview/${Origin.editor.data.course.get('_id')}`)
-        .done(data => {
-          previewWindow.location.href = data.preview_url;
-        })
-        .fail((jqXHR, textStatus, errorThrown) => {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorgeneratingpreview') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
-          previewWindow.close();
-        });
     },
 
     validateCourse: function() {
@@ -89,60 +63,38 @@ define(function(require) {
       return errors.length === 0;
     },
 
-    exportProject: async function(error) {
-      // TODO - very similar to export in project/views/projectView.js, remove duplication
-      // aleady processing, don't try again
-      if(error || this.exporting) return;
-
-      this.exporting = true;
-      if(!this.validateCourse()) {
+    buildProject: async function(type) {
+      if(this.isBuilding || !this.validateCourse()) {
         return;
+      } 
+      const isPreview = type === 'preview';
+      let previewWindow;
+      
+      if(isPreview) {
+        previewWindow = window.open('loading', 'preview');
       }
-      $.ajax({
-        url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
-        method: 'POST',
-        success: data => {
-          this.exporting = false;
-          var $downloadForm = $('#downloadForm');
-          $downloadForm.attr('action', data.export_url);
-          $downloadForm.submit();
-        },
-        error: jqXHR => {
-          this.exporting = false;
-          Origin.Notify.alert({
-            type: 'error',
-            title: Origin.l10n.t('app.exporterrortitle'),
-            text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
+      try {
+        this.isBuilding = true;
+        const data = await $.post(`api/adapt/${type}/${Origin.editor.data.course.get('_id')}`);
+        if(isPreview) {
+          previewWindow.location.href = data.preview_url;
+        } else {
+          const $downloadForm = $('#downloadForm');
+          $downloadForm.attr('action', data[`${type}_url`]);
+          $downloadForm.trigger('submit');
         }
-      });
-    },
-
-    downloadProject: function() {
-      if(Origin.editor.isDownloadPending) {
-        return;
-      }
-      if(!this.validateCourse()) {
-        return;
-      }
-      $('.editor-common-sidebar-download-inner').addClass('display-none');
-      $('.editor-common-sidebar-downloading').removeClass('display-none');
-
-      $.ajax({
-        url: `api/adapt/publish/${Origin.editor.data.course.get('_id')}`,
-        method: 'POST',
-        success: (data, textStatus, jqXHR) => {
-          var $downloadForm = $('#downloadForm');
-          $downloadForm.attr('action', data.publish_url);
-          $downloadForm.submit();
-        },
-        error: jqXHR => {
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
+      } catch(e) {
+        if(isPreview) {
+          previewWindow.close();
         }
-      });
+        Origin.Notify.alert({
+          type: 'error',
+          title: Origin.l10n.t('app.builderrortitle'),
+          text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: e.responseJSON.message })
+        });
+      } finally {
+        this.isBuilding = true;
+      }
     },
 
     addToClipboard: function(model) {
@@ -180,15 +132,6 @@ define(function(require) {
           Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
         }
       });
-    },
-
-    createModel: function (type) {
-      switch (type) {
-        case 'contentObjects': return new ContentModel({ _type: 'contentobject' });
-        case 'articles': return new ContentModel({ _type: 'article' });
-        case 'blocks': return new ContentModel({ _type: 'block' });
-        case 'components': return new ContentModel({ _type: 'component' });
-      }
     },
 
     renderCurrentEditorView: function() {
