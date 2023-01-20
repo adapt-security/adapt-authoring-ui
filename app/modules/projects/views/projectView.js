@@ -139,9 +139,7 @@ define(function(require) {
       var opts = { id: this.model.get('_id') };
       if(Helpers.copyStringToClipboard(opts.id)) {
         Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
-        return;
       }
-      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.copyidtoclipboarderror', opts) });
     },
 
     onProjectShowTagsButtonClicked: function(event) {
