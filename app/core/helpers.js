@@ -32,18 +32,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return text.replace(/_| /g, "-").toLowerCase();
     },
 
-    keyToTitleString: function(key) {
-      if (!key) return;
-      // check translatable strings first
-      var l10nKey = 'app.scaffold.' + key;
-      if(Origin.l10n.has(l10nKey)) {
-        return Origin.l10n.t(l10nKey);
-      }
-      // fall-back: remove all _ and capitalise
-      var string = key.replace(/_/g, '').replace(/[A-Z]/g, ' $&').toLowerCase();
-      return this.capitalise(string);
-    },
-
     momentFormat: function(date, format) {
       if (typeof date == 'undefined') {
         return '-';
