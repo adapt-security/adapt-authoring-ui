@@ -1,5 +1,9 @@
 @import 'colours';
 
+@main-logo-url: none;
+@sub-logo-url: none;
+@login-bg-url: none;
+
 .module-user {
   &.location-login,
   &.location-forgot,
@@ -32,11 +36,29 @@
     }
   }
 
-  .login-logo {
-    height: 123px;
-    background-image: url('assets/adapt-learning-logo-white.png');
-    background-position: center;
+  .bg {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: @login-bg-image;
     background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: bottom;
+  }
+
+  .main-logo {
+    height: 123px;
+    background: no-repeat center contain @main-logo-url;
+  }
+  
+  .sub-logo {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+    background: no-repeat center contain @sub-logo-url;
   }
 
   .login-title {
