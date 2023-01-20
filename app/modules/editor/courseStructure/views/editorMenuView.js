@@ -14,7 +14,6 @@ define(function(require){
       this.listenTo(Origin, {
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
         'editorView:menuView:addItem': this.onItemAdded,
-        'editorView:itemDeleted': this.onItemDeleted,
         'window:resize': this.setupHorizontalScroll
       });
     },
@@ -191,11 +190,6 @@ define(function(require){
 
     onItemAdded: function(newModel) {
       this.content.add(newModel);
-    },
-
-    onItemDeleted: async function(oldModel) {
-      await this.updateContentObjects(true);
-      Origin.trigger('editorView:menuView:updateSelectedItem', this.content.findWhere({ _id: oldModel.get('_parentId') }));
     }
   }, {
     template: 'editorMenu'

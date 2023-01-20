@@ -13,7 +13,7 @@ define(function(require){
     events: {
       'click .editor-menu-item-inner': 'onMenuItemClicked',
       'click .open-context-contentObject': 'openContextMenu',
-      'click .contentObject-delete': 'deleteItemPrompt',
+      'click .contentObject-delete': 'deletePrompt',
       'mousedown .handle': 'enableDrag'
     },
 
@@ -37,7 +37,7 @@ define(function(require){
 
       this.on(`contextMenu:${type}:copy`, this.copyMenuItem);
       this.on(`contextMenu:${type}:copyID`, this.copyID);
-      this.on(`contextMenu:${type}:delete`, this.deleteItemPrompt);
+      this.on(`contextMenu:${type}:delete`, this.deletePrompt);
       this.on(`contextMenu:${type}:edit`, this.editMenuItem);
 
       this.$el.closest('.editor-menu').on('mousemove', _.bind(this.handleDrag, this));
@@ -74,55 +74,12 @@ define(function(require){
       Origin.router.navigateTo(`editor/${courseId}/${type}/${menuItemId}/edit`);
     },
 
-    deleteItemPrompt: function(event) {
-      event && event.preventDefault();
-
-      this.listenToOnce(Origin, 'editorView:removeItem:'+ this.model.get('_id'), this.deleteItem);
-      this.listenToOnce(Origin, 'editorView:cancelRemoveItem:'+ this.model.get('_id'), this.cancelDeleteItem);
-
-      var self = this;
-
-      Origin.Notify.confirm({
-        type: 'warning',
-        title: Origin.l10n.t('app.deleteitem'+ this.model.get('_type')),
-        text: Origin.l10n.t('app.confirmdelete' + this.model.get('_type')) + '<br/><br/>' + Origin.l10n.t('app.confirmdeletewarning' + this.model.get('_type')),
-        callback: result => self.onConfirmRemovePopup(result.isConfirmed)
-      });
-    },
-
-    onConfirmRemovePopup: function(isConfirmed) {
-      var id = this.model.get('_id');
-      if (isConfirmed) {
-        Origin.trigger('editorView:removeItem:' + id);
-      } else {
-        Origin.trigger('editorView:cancelRemoveItem:' + id);
-      }
-    },
-
     copyMenuItem: function() {
       Origin.trigger('editorView:copy', this.model);
     },
 
     copyID: function() {
       Origin.trigger('editorView:copyID', this.model);
-    },
-
-    deleteItem: function(event) {
-      this.stopListening(Origin, 'editorView:cancelRemoveItem:'+ this.model.get('_id'), this.cancelDeleteItem);
-      // We also need to navigate to the parent element - but if it's the courseId let's
-      // navigate up to the menu
-      var type = this.model.get('_type');
-      var isTopLevel = (type === 'page' || type === 'menu');
-      var parentId = isTopLevel ? '' : '/' + this.model.get('_parentId');
-      Origin.router.navigateTo('editor/' + Origin.editor.data.course.id + '/menu' + parentId);
-
-      this.model.destroy({
-        success: _.bind(function(model) {
-          Origin.trigger('editorView:itemDeleted', model);
-          this.remove()
-        }, this),
-        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errordelete' })
-      });
     },
 
     cancelDeleteItem: function() {
