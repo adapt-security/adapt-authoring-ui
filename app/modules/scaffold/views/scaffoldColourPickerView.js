@@ -21,7 +21,7 @@ define(['core/origin', 'libraries/spectrum/spectrum'], function(Origin) {
         showInput: true,
         showPalette: true,
         showButtons: true,
-        cancelText: Origin.l10n.t('app.scaffold.colourPickerCancel'),
+        cancelText: Origin.l10n.t('app.scaffoldcolourPickerCancel'),
         allowEmpty: true, // to allow empty strings in schema default value
         palette: [],
         preferredFormat: "hex3",
