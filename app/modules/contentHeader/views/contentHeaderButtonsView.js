@@ -43,8 +43,12 @@ define(function(require) {
       $item = $(event.currentTarget).parents('.item');
       const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
       let eventName = this.data.type;
-      if(data.id) eventName += `:${data.id}`;
-      Origin.trigger(eventName, data.eventData);
+      if(data.id) {
+        Origin.trigger(`${eventName}:${data.id}`, data.eventData);
+        Origin.trigger(eventName, data.id, data.eventData);
+      } else {
+        Origin.trigger(eventName, data.eventData);
+      }
     }
   });
 
