@@ -114,7 +114,7 @@ define(function(require){
             const { _id } = await $.ajax({ url: 'api/content/insertrecusive', method: 'post', data: { title } });
             Origin.router.navigateTo(`editor/${_id}/menu`);
           } catch(e) {
-            SweetAlert.showValidationMessage(e);
+            SweetAlert.showValidationMessage(e.responseJSON.message);
           }
         }
       });
