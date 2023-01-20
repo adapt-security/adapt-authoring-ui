@@ -1,8 +1,9 @@
 @import 'colours';
 
-@main-logo-url: none;
+@main-logo-url: url('assets/adapt-learning-logo-white.png');
 @sub-logo-url: none;
-@login-bg-url: none;
+@login-bg: url(assets/login_bg.jpg);
+@login-bg-image-url: none;
 
 .module-user {
   &.location-login,
@@ -12,6 +13,9 @@
 
     max-width: 450px;
     margin: 0 auto;
+    background: @login-bg;
+    background-size: cover;
+    background-position: fixed;
     color: @white;
 
     #app {
@@ -42,7 +46,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-image: @login-bg-image;
+    background-image: @login-bg-image-url;
     background-repeat: no-repeat;
     background-position-x: right;
     background-position-y: bottom;
@@ -50,22 +54,25 @@
 
   .main-logo {
     height: 123px;
-    background: no-repeat center contain @main-logo-url;
+    background: @main-logo-url;
+    background-repeat: no-repeat;
+    background-position-x: center;
   }
   
   .sub-logo {
     position: relative;
     height: 50px;
     width: 100%;
-    margin-top: 20px;
-    background: no-repeat center contain @sub-logo-url;
+    margin: 20px 0;
+    background: @sub-logo-url;
+    background-repeat: no-repeat;
+    background-position-x: center;
   }
 
   .login-title {
     text-align: center;
     font-size: 32px;
-    margin-top: 60px;
-    margin-bottom: 40px;
+    margin-bottom: 40px 0;
   }
 
   #loginError {
