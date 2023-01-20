@@ -103,9 +103,9 @@ define(function(require){
 
     onCreateCourse: function() {
       const { SweetAlert } = Origin.Notify.alert({
-        title: Origin.l10n.t('app.newcoursetitle'),
+        title: Origin.l10n.t('app.addnewproject'),
         input: 'text',
-        inputLabel: Origin.l10n.t('app.newcourseinstruction'),
+        inputLabel: Origin.l10n.t('app.newprojectinstruction'),
         showCancelButton: true,
         showLoaderOnConfirm: true,
         inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
