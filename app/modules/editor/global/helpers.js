@@ -1,5 +1,4 @@
 define(function(require) {
-  var Handlebars = require('handlebars');
   var Origin = require('core/origin');
 
   var Helpers = {
