@@ -95,14 +95,11 @@ define(function(require){
 
     addNewArticle: async function(event) {
       event && event.preventDefault();
-      const model = await new ContentModel({
+      await new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'article'
       }).save();
-      var articleView = this.addArticleView(model);
-      articleView._skipRender = true; // prevent render of blocks in postRender
-      articleView.addBlock();
     },
 
     loadPageEdit: function(event) {

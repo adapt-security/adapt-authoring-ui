@@ -67,20 +67,12 @@ define(function(require) {
 
     addNewMenuItem: async function(event) {
       event && event.preventDefault();
-      const _type = $(event.currentTarget).attr('data-type');
-      const model = new ContentModel(await $.ajax({ url: `api/content/insertrecusive?rootId=${this._parentId}`, method: 'post', data: { _type } }));
-
-      var newMenuItemView = this.addMenuItemView(model);
-      newMenuItemView.$el.addClass('syncing');
-      newMenuItemView.$el.attr('data-id', model.get('_id'));
-      newMenuItemView.$el.children('.editor-menu-item-inner').attr('data-id', model.get('_id'));
-      newMenuItemView.render();
-      
-      newMenuItemView.$el.removeClass('syncing');
-      
-      this.setHeight();
-      
-      Origin.trigger('editorView:menuView:addItem', model);
+      await $.ajax({ 
+        url: `api/content/insertrecusive?rootId=${this._parentId}`, 
+        method: 'post', 
+        data: { _type: $(event.currentTarget).attr('data-type') } 
+      });
+      Origin.editor.data.load();
     },
 
     addMenuItemView: function(model) {

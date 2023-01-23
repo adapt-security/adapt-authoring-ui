@@ -12,8 +12,8 @@ define(function(require){
     preRender: function() {
       this.layerViews = [];
       this.listenTo(Origin, {
+        'editorData:loaded': this.render,
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
-        'editorView:menuView:addItem': this.onItemAdded,
         'window:resize': this.setupHorizontalScroll
       });
     },
@@ -136,10 +136,6 @@ define(function(require){
           if (ui.item.hasClass('content-type-menu')) ui.sender.sortable("cancel");
         }
       });
-    },
-
-    onItemAdded: function(newModel) {
-      this.content.add(newModel);
     }
   }, {
     template: 'editorMenu'

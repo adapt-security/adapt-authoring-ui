@@ -82,10 +82,6 @@ define(function(require){
       Origin.trigger('editorView:copyID', this.model);
     },
 
-    cancelDeleteItem: function() {
-      this.stopListening(Origin, 'editorView:removeItem:'+ this.model.get('_id'), this.deleteItem);
-    },
-
     enableDrag: function(event) {
       this.model.set('_isDragging', true);
     },
@@ -97,13 +93,11 @@ define(function(require){
       if(!this.model.get('_isDragging')) {
         return;
       }
-
       var $currentLayer = $(".editor-menu-layer[data-over='true'] > .editor-menu-layer-inner");
 
       if(!$currentLayer.length) {
         return;
       }
-
       this.autoScrollTimer = window.setInterval(function() {
         var SCROLL_THRESHOLD = $currentLayer.height()*0.2;
         var SCROLL_INCREMENT = 4;
