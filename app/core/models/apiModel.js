@@ -59,7 +59,7 @@ define(['backbone'], function(Backbone) {
       Origin.Notify.alert({ 
         type: 'error', 
         text: `${Origin.l10n.t('app.errorfetchingdata', { url: this.url() })}
-          <details><summary>Debug information</summary>${errorFormatted}</details>`
+          <details><summary>Debug information</summary><pre>${errorFormatted}</pre></details>`
       });
     }
   });
