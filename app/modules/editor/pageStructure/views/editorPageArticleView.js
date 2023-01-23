@@ -98,28 +98,12 @@ define(function(require){
 
     addBlock: async function(event) {
       event && event.preventDefault();
-      const model = new ContentModel({
+      new ContentModel({
         _parentId: this.model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id'),
-        layoutOptions: [{
-            type: 'left',
-            name: 'app.layoutleft',
-            pasteZoneRenderOrder: 2
-          }, {
-            type: 'full',
-            name: 'app.layoutfull',
-            pasteZoneRenderOrder: 1
-          }, {
-            type: 'right',
-            name: 'app.layoutright',
-            pasteZoneRenderOrder: 3
-        }],
-        _type: 'block',
-        parent: this.model
-      });
-      await model.save();
-      this.addBlockView(model, true);
-      Origin.trigger('editor:refreshData');
+        _type: 'block'
+      }).save();
+      Origin.editor.data.load();
     },
 
     loadArticleEdit: function (event) {
