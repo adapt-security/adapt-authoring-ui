@@ -160,7 +160,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         type: 'PATCH',
         url:`api/content/${id}`,
         data: { _layout: layout },
-        success: () => Origin.trigger('editorView:renderPage'),
+        success: () => Origin.editor.data.load(),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
     }

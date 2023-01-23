@@ -29,6 +29,7 @@ define([
         if(Origin.location.route2 === 'page') {
           await this.components.fetch();
         }
+        Origin.trigger('editorData:loaded');
       },
       getParent(model) {
         return this.content.findWhere({ _id: typeof model === 'string' ? model : model.get('_parentId') });

@@ -30,7 +30,7 @@ define(function(require){
               _layout: (!isLeft && !isRight) ? 'full' : (isLeft ? 'left' : 'right'),
               _parentId: view.model.get('_parentId')
             },
-            success: () => Origin.trigger('editorView:renderPage'),
+            success: () => Origin.editor.data.load(),
             error: ({ responseJSON }) => Origin.Notify.alert({ type: 'error', text: responseJSON.message })
           });
         }

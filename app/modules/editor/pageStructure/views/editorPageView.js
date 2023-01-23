@@ -25,7 +25,7 @@ define(function(require){
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
         'pageView:itemAnimated': this.onChildRendered,
-        'editorView:renderPage': this.render
+        'editorData:loaded': this.render
       });
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
         {
