@@ -168,32 +168,21 @@ define(function(require){
 
     addComponentViews: function() {
       this.$('.page-components').empty();
-
-      var addPasteZonesFirst = this.model.children.length && this.model.children.first().get('_layout') !== 'full';
-      this.addComponentButtonLayout(this.model.children);
-
-      if (addPasteZonesFirst) this.setupPasteZones();
-      // Add component elements
-      for(var i = 0, count = this.model.children.length; i < count; i++) {
-        var view = new EditorPageComponentView({ model: this.model.children.at(i) });
-        this.$('.page-components').append(view.$el);
-      }
-      if (!addPasteZonesFirst) this.setupPasteZones();
+      this.addComponentButtonLayout();
+      this.model.children.forEach(model => this.$('.page-components').append(new EditorPageComponentView({ model }).$el));
+      this.setupPasteZones();
     },
 
-    addComponentButtonLayout: function(components) {
-      if(components.length === 2) {
+    addComponentButtonLayout: function() {
+      if(this.model.children.length === 2) {
         return;
       }
-      if(components.length === 0) {
+      if(this.model.children.length === 0) {
         this.$('.add-component').addClass('full');
-        return;
+      } else {
+        var layout = this.model.children.first().get('_layout');
+        this.$('.add-component').addClass(layout === 'left' ? 'right' : 'left');
       }
-      var layout = components.first().get('_layout');
-      var className = '';
-      if(layout === 'left') className = 'right';
-      if(layout === 'right') className = 'left';
-      this.$('.add-component').addClass(className);
     },
 
     loadBlockEdit: function (event) {
@@ -221,37 +210,22 @@ define(function(require){
     },
 
     setupPasteZones: function() {
-      // Add available paste zones
-      var layouts = this.model.get('layoutOptions').slice();
-      var dragLayouts = this.model.get('dragLayoutOptions').slice();
-
-      _.each(this.sortArrayByKey(dragLayouts, 'pasteZoneRenderOrder'), function(layout) {
-        var pasteComponent = new ContentModel({ _type: 'component' });
-        pasteComponent.set('_parentId', this.model.get('_id'));
-        pasteComponent.set('_type', 'component');
-        pasteComponent.set('_pasteZoneLayout', layout.type);
-        var $pasteEl = new EditorPageComponentPasteZoneView({ model: pasteComponent }).$el;
-        $pasteEl.addClass('drop-only');
-        this.$('.page-components').append($pasteEl);
-      }, this);
-
-      _.each(this.sortArrayByKey(layouts, 'pasteZoneRenderOrder'), function(layout) {
-        var pasteComponent = new ContentModel({ _type: 'component' });
-        pasteComponent.set('_parentId', this.model.get('_id'));
-        pasteComponent.set('_type', 'component');
-        pasteComponent.set('_pasteZoneLayout', layout.type);
-        this.$('.page-components').append(new EditorPageComponentPasteZoneView({ model: pasteComponent }).$el);
+      _.each(this.sortArrayByKey(this.model.get('layoutOptions'), 'pasteZoneRenderOrder'), layout => {
+        var model = new ContentModel({ 
+          _type: 'component',
+          _parentId: this.model.get('_id'),
+          _pasteZoneLayout: layout.type,
+        });
+        this.$('.page-components').append(
+          new EditorPageComponentPasteZoneView({ model, customClasses: 'drop-only' }).$el,
+          new EditorPageComponentPasteZoneView({ model }).$el
+        );
       }, this);
     },
 
-    onPaste: function(data) {
-      (new ContentModel({ _id: data._id, _type: 'component' })).fetch({
-        success: _.bind(function(model) {
-          this.model.children.push(model);
-          this.render();
-        }, this),
-        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })
-      });
+    onPaste: async function(data) {
+      this.model.children.push(await new ContentModel({ _id: data._id, _type: 'component' }).save());
+      this.render();
     }
 
   }, {

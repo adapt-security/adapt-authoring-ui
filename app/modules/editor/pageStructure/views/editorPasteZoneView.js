@@ -5,9 +5,16 @@ define(function(require){
   var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorPasteZoneView = EditorOriginView.extend({
-    className: 'display-none paste-zone',
+    className: () => {
+      return `display-none paste-zone ${this.customClasses}`;
+    },
     events: {
       'click .editor-paste-zone-paste': 'onPasteElementClicked'
+    },
+
+    initialize: function(options) {
+      this.customClasses = options.customClasses;
+      EditorOriginView.prototype.initialize.apply(this, arguments);
     },
 
     preRender: function() {
