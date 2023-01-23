@@ -13,10 +13,6 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       'dblclick': 'loadComponentEdit'
     }),
 
-    getSiblings: function() {
-      return this.model.parent.children;
-    },
-
     preRender: function() {
       this.$el.addClass('component-' + this.model.get('_layout'));
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
@@ -128,7 +124,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         right: false,
         full: false
       };
-      const siblings = this.getSiblings();
+      const siblings = this.model.siblings;
       var showFull = supportedLayout.full && siblings.length < 1;
       switch(this.model.get('_layout')) {
         case 'left':
@@ -150,13 +146,13 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     evaluateMove: function(event) {
       event && event.preventDefault();
       var $btn = $(event.currentTarget);
-      const siblings = this.getSiblings();
+      const siblings = this.model.siblings;
       var isLeft = $btn.hasClass('component-move-left');
       var isRight = $btn.hasClass('component-move-right');
       // move self to layout of clicked button
       this.moveComponent(this.model.get('_id'), (isLeft ? 'left' : isRight ? 'right' : 'full'));
       // move sibling to inverse of self
-      var siblingId = siblings.length && siblings[0].get('_id');
+      var siblingId = siblings.length && siblings.first().get('_id');
       if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
     },
 

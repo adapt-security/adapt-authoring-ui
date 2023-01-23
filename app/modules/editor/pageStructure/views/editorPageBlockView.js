@@ -93,7 +93,7 @@ define(function(require){
         left: { type: 'left', name: 'app.layoutleft', pasteZoneRenderOrder: 2 },
         right: { type: 'right', name: 'app.layoutright', pasteZoneRenderOrder: 3 }
       };
-      if (this.model.children.length === 0) {
+      if (!this.model.children.length) {
         return [layoutOptions.full,layoutOptions.left,layoutOptions.right];
       }
       if (this.model.children.length === 1) {

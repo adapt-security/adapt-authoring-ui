@@ -113,19 +113,12 @@ define(function(require){
     // @return {Array}
     getItemHeirarchy: function(model, done) {
       var hierarchy = [];
-      if (model.get('_type') === 'menu') {
-        hierarchy.push(model);
-      }
-      var _getParent = (model, callback) => {
-        var parent = this.content.findWhere({ _id: model.get('_parentId') });
-        if (parent) {
-          hierarchy.push(parent);
-          return _getParent(parent, callback);
-        }
-        hierarchy.push(Origin.editor.data.course);
-        callback();
-      };
-      _getParent(model, () => typeof done === 'function' && done(hierarchy.reverse()));
+      let parent = model;
+      do {
+        parent = parent.parent;
+        hierarchy.push(parent);
+      } while (parent)
+      if(typeof done === 'function') done(hierarchy.reverse());
     },
 
     onSelectedItemChanged: function(model) {
