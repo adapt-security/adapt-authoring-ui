@@ -41,7 +41,7 @@ define(function(require) {
     renderComponentList: function() {
       Origin.trigger('editorComponentListView:removeSubviews');
 
-      this.model.get('components').forEach(function(componentType) {
+      Origin.editor.data.components.forEach(function(componentType) {
         if(!componentType.get('isEnabled')) {
           return;
         }

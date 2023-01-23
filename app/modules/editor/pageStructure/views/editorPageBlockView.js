@@ -57,15 +57,15 @@ define(function(require){
 
     handleAsyncPostRender: function() {
       var renderedChildren = [];
-      if(this.model.children.length === 0) {
+      if(this.model.getChildren().length === 0) {
         return this.animateIn();
       }
       this.listenTo(Origin, 'editorPageComponent:postRender', function(view) {
         var id = view.model.get('_id');
-        if(this.model.children.indexOf(view.model) !== -1 && renderedChildren.indexOf(id) === -1) {
+        if(this.model.getChildren().indexOf(view.model) !== -1 && renderedChildren.indexOf(id) === -1) {
           renderedChildren.push(id);
         }
-        if(renderedChildren.length === this.model.children.length) {
+        if(renderedChildren.length === this.model.getChildren().length) {
           this.stopListening(Origin, 'editorPageComponent:postRender');
           this.animateIn();
         }
@@ -93,11 +93,11 @@ define(function(require){
         left: { type: 'left', name: 'app.layoutleft', pasteZoneRenderOrder: 2 },
         right: { type: 'right', name: 'app.layoutright', pasteZoneRenderOrder: 3 }
       };
-      if (!this.model.children.length) {
+      if (!this.model.getChildren().length) {
         return [layoutOptions.full,layoutOptions.left,layoutOptions.right];
       }
-      if (this.model.children.length === 1) {
-        var layout = this.model.children.first().get('_layout');
+      if (this.model.getChildren().length === 1) {
+        var layout = this.model.getChildren().first().get('_layout');
         if(layout === layoutOptions.left.type) return [layoutOptions.right];
         if(layout === layoutOptions.right.type) return [layoutOptions.left];
       }
@@ -169,18 +169,18 @@ define(function(require){
     addComponentViews: function() {
       this.$('.page-components').empty();
       this.addComponentButtonLayout();
-      this.model.children.forEach(model => this.$('.page-components').append(new EditorPageComponentView({ model }).$el));
+      this.model.getChildren().forEach(model => this.$('.page-components').append(new EditorPageComponentView({ model }).$el));
       this.setupPasteZones();
     },
 
     addComponentButtonLayout: function() {
-      if(this.model.children.length === 2) {
+      if(this.model.getChildren().length === 2) {
         return;
       }
-      if(this.model.children.length === 0) {
+      if(this.model.getChildren().length === 0) {
         this.$('.add-component').addClass('full');
       } else {
-        var layout = this.model.children.first().get('_layout');
+        var layout = this.model.getChildren().first().get('_layout');
         this.$('.add-component').addClass(layout === 'left' ? 'right' : 'left');
       }
     },
@@ -201,7 +201,6 @@ define(function(require){
           body: Origin.l10n.t('app.pleaseselectcomponent'),
           _parentId: this.model.get('_id'),
           layoutOptions: this.model.get('layoutOptions'),
-          components: this.model.components,
           parent: this.model
         }),
         $parentElement: this.$el,
@@ -224,7 +223,7 @@ define(function(require){
     },
 
     onPaste: async function(data) {
-      this.model.children.push(await new ContentModel({ _id: data._id, _type: 'component' }).save());
+      this.model.getChildren().push(await new ContentModel({ _id: data._id, _type: 'component' }).save());
       this.render();
     }
 

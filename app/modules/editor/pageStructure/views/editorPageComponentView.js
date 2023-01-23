@@ -22,13 +22,12 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         'contextMenu:component:copyID': this.onCopyID,
         'contextMenu:component:delete': this.deletePrompt
       });
-      this.evaluateLayout(layouts => {
-        this.model.set({
-          _movePositions: layouts,
-          componentName: this.model.component.get('displayName')
-        });
-        this.render();
+      const layouts = this.evaluateLayout();
+      this.model.set({
+        _movePositions: layouts,
+        componentName: Origin.editor.data.components.findWhere({ name: this.model.get('_component') }).get('displayName')
       });
+      this.render();
     },
 
     postRender: function () {
@@ -124,7 +123,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         right: false,
         full: false
       };
-      const siblings = this.model.siblings;
+      const siblings = this.model.getSiblings();
       var showFull = supportedLayout.full && siblings.length < 1;
       switch(this.model.get('_layout')) {
         case 'left':
@@ -140,13 +139,13 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
           movePositions.right = supportedLayout.half;
           break
       }
-      cb(movePositions);
+      return movePositions;
     },
 
     evaluateMove: function(event) {
       event && event.preventDefault();
       var $btn = $(event.currentTarget);
-      const siblings = this.model.siblings;
+      const siblings = this.model.getSiblings();
       var isLeft = $btn.hasClass('component-move-left');
       var isRight = $btn.hasClass('component-move-right');
       // move self to layout of clicked button

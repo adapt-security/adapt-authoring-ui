@@ -1,5 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+  var Origin = require('core/origin');
   var ApiModel = require('./apiModel');
 
   var ContentModel = ApiModel.extend({
@@ -12,15 +13,24 @@ define(function(require) {
       if(typeAttributes) Object.assign(this, typeAttributes);
     },
     // TODO added for convenience, shouldn't depend on Origin.editor.data
-    get parent() {
-      return Origin.editor.data.getParent(this.model);
+    getParent() {
+      return Origin.editor && Origin.editor.data && Origin.editor.data.getParent(this);
     },
-    get siblings() {
-      return Origin.editor.data.getChildren(this.parent);
+    getSiblings() {
+      return Origin.editor && Origin.editor.data && Origin.editor.data.getChildren(this.getParent());
     },
-    get children() {
-      return Origin.editor.data.getChildren(this.model);
+    getChildren() {
+      return Origin.editor && Origin.editor.data && Origin.editor.data.getChildren(this);
     },
+    getHierarchy() {
+      const hierarchy = [this];
+      let model = this;
+      do {
+        model = model.getParent();
+        if(model) hierarchy.push(model);
+      } while(model);
+      return hierarchy.reverse();
+    }
   });
 
   return ContentModel;

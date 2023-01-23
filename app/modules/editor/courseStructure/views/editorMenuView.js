@@ -10,7 +10,7 @@ define(function(require){
     tagName: "div",
 
     preRender: function() {
-      this.layerViews = {};
+      this.layerViews = [];
       this.listenTo(Origin, {
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
         'editorView:menuView:addItem': this.onItemAdded,
@@ -19,59 +19,26 @@ define(function(require){
     },
 
     postRender: async function() {
-      await this.updateContentObjects();
       this.renderLayers();
       _.defer(this.setViewToReady);
     },
     // Renders all menu layers from the current course to the Origin.editor.currentContentObject
     renderLayers: function() {
-      var selectedModel = Origin.editor.currentContentObject || Origin.editor.data.course;
-      this.getItemHeirarchy(selectedModel, hierarchy => {
-        var ids = [];
+      this.layerViews.forEach(v => v.remove());
+      $('.editor-menu-inner').empty();
 
-        for (var i = 0; i < hierarchy.length; i++) {
-          var item = hierarchy[i];
-          var id = item.get('_id');
-          ids.push(id);
-          if (!this.layerViews.hasOwnProperty(id)) {
-            this.renderLayer(item);
-          }
+      const hierarchy = (Origin.editor.currentContentObject || Origin.editor.data.course).getHierarchy();
+      hierarchy.forEach(c => {
+        const models = c.getChildren().filter(c => c.get('_type') === 'menu' || c.get('_type') === 'page');
+        if(!models.length) {
+          return;
         }
-        // remove all unused layerviews 
-        for (var id in this.layerViews) {
-          if (!this.layerViews.hasOwnProperty(id) || ids.indexOf(id) > -1) {
-            continue;
-          }
-          this.layerViews[id].remove();
-          delete this.layerViews[id];
-        }
+        const menuLayerView = new EditorMenuLayerView({ _parentId: c.get('_id'), models });
+        $('.editor-menu-inner').append(menuLayerView.$el);
+        this.layerViews.push(menuLayerView);
       });
     },
 
-    // Renders a single menu layer
-    renderLayer: function(model) {
-      var menuLayerView = new EditorMenuLayerView({
-        _parentId: model.get('_id'),
-        models: this.content.where({ _parentId: model.get('_id') })
-      });
-      this.layerViews[model.get('_id')] = menuLayerView;
-      $('.editor-menu-inner').append(menuLayerView.$el);
-    },
-
-    updateContentObjects: async function(fetch = false) {
-      return new Promise((resolve, reject) => {
-        if(!this.content) {
-          this.content = new ContentCollection(undefined, {
-            customQuery: { 
-              _courseId: Origin.location.route1,
-              $or: [{ _type: 'menu' }, { _type: 'page' }] 
-            } 
-          });
-        }
-        this.content.fetch({ success: () => resolve(), error: (model, jxXhr) => reject(jqXhr.responseJSON) });
-      });
-    },
-    
     updateItemViews: function(previousParent, model) {
       // since we remove the childViews when the layerView is destroyed 
       // we must move menuItemView to its new layerView
@@ -108,22 +75,12 @@ define(function(require){
       this.$('.editor-menu-item').removeClass('selected');
     },
 
-    // Generates an array with the inheritence line from a given contentobject to the current course
-    // @param {Model} contentModel
-    // @return {Array}
-    getItemHeirarchy: function(model, done) {
-      var hierarchy = [];
-      let parent = model;
-      do {
-        parent = parent.parent;
-        hierarchy.push(parent);
-      } while (parent)
-      if(typeof done === 'function') done(hierarchy.reverse());
-    },
-
     onSelectedItemChanged: function(model) {
-      if (model && model.get('_id') === Origin.editor.currentContentObject && Origin.editor.currentContentObject.get('_id')) return;
-
+      const currentId = Origin.editor.currentContentObject && Origin.editor.currentContentObject.get('_id');
+      const newId = model && model.get('_id');
+      if(newId === currentId) {
+        return;
+      }
       Origin.editor.currentContentObject = model;
       this.renderLayers();
     },

@@ -63,7 +63,7 @@ define(function(require){
       });
       this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
       // Iterate over each article and add it to the page
-      this.model.children
+      this.model.getChildren()
         .filter(c => c.get('_type') === 'article')
         .sort(Helpers.sortContentObjects)
         .forEach(c => this.addArticleView(c));

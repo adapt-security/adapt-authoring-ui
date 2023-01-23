@@ -70,7 +70,7 @@ define(function(require){
       });
       this.$('.article-blocks').append(view.$el);
       // Iterate over each block and add it to the article
-      const children = this.model.children.sort(Helpers.sortContentObjects);
+      const children = this.model.getChildren().sort(Helpers.sortContentObjects);
       Origin.editor.blockCount += children.length;
       children.forEach(c => this.addBlockView(c));
     },

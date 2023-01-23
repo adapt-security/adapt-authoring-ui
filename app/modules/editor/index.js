@@ -35,7 +35,7 @@ define([
       },
       getChildren(model) {
         const customQuery = { _parentId: typeof model === 'string' ? model : model.get('_id') };
-        new ContentCollection(this.content.where(customQuery), { customQuery })
+        return new ContentCollection(this.content.where(customQuery), { customQuery });
       },
       getComponent(model) {
         return this.components.findWhere({ name: model.get('_component') } );

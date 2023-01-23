@@ -7,16 +7,15 @@ define(function(require) {
     * expects backbone model
     */
     setPageTitle: function(model) {
-      getNearestPage(model, function(page) {
-        var data = {
-          model: model || {},
-          page: page,
-          langString: Origin.l10n.t('app.' + getLangKey())
-        };
-        Origin.contentHeader.setTitle({
-          breadcrumbs: generateBreadcrumbs(data),
-          title: getTitleForModel(data)
-        });
+      const page = getNearestPage(model);
+      var data = {
+        model: model || {},
+        page: page,
+        langString: Origin.l10n.t('app.' + getLangKey())
+      };
+      Origin.contentHeader.setTitle({
+        breadcrumbs: generateBreadcrumbs(data),
+        title: getTitleForModel(data)
       });
     }
   }
@@ -72,19 +71,19 @@ define(function(require) {
   }
 
   function getNearestPage(model, cb) {
-    var _recurse = function(model) {
-      var type = model.get('_type');
-      
-      if(!type || type === 'course' || type === 'config') {
-        return cb(); // pages don't apply here, so just return
+    do {
+      switch(model.get('_type')) {
+        case 'course': 
+        case 'config': 
+        case undefined: 
+          return;
+        case 'page': 
+        case 'menu': 
+          return model;
+        default: 
+          model = model.getParent();
       }
-      if (type === 'page' || type === 'menu') {
-        return cb(model); // we're at the top of the hierarchy
-      }
-      _recurse(model.parent);
-    };
-    // start recursion
-    _recurse(model);
+    } while(model);
   }
 
   return Helpers;
