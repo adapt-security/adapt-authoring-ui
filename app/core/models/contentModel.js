@@ -17,7 +17,8 @@ define(function(require) {
       return Origin.editor && Origin.editor.data && Origin.editor.data.getParent(this);
     },
     getSiblings() {
-      return Origin.editor && Origin.editor.data && Origin.editor.data.getChildren(this.getParent());
+      const children = Origin.editor && Origin.editor.data && Origin.editor.data.getChildren(this.getParent());
+      return children.filter(s => s.get('_id') !== this.get('_id'));
     },
     getChildren() {
       return Origin.editor && Origin.editor.data && Origin.editor.data.getChildren(this);
