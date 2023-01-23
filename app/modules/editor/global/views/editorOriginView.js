@@ -163,8 +163,8 @@ define(function(require){
       Origin.Notify.confirm({
         type: 'warning',
         text: Origin.l10n.t('app.confirmdelete', { type: this.model.get('_type') }),
-        callback: () => {
-          if(!result.isConfirmed) {
+        callback: ({ isConfirmed }) => {
+          if(!isConfirmed) {
             return;
           }
           this.model.destroy({
