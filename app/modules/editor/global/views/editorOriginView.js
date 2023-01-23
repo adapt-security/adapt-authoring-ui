@@ -168,7 +168,6 @@ define(function(require){
             return;
           }
           this.model.destroy({
-            success: () => Origin.editor.data.load(),
             error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
           });
         }

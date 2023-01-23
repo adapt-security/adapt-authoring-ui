@@ -11,6 +11,8 @@ define(function(require) {
       
       const typeAttributes = ContentAttributes[attributes._type];
       if(typeAttributes) Object.assign(this, typeAttributes);
+
+      this.on('sync destroy', () => Origin.editor && Origin.editor.data && Origin.editor.data.load())
     },
     // TODO added for convenience, shouldn't depend on Origin.editor.data
     getParent() {

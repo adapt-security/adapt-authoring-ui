@@ -103,7 +103,6 @@ define(function(require){
         _courseId: Origin.editor.data.course.get('_id'),
         _type: 'block'
       }).save();
-      Origin.editor.data.load();
     },
 
     loadArticleEdit: function (event) {

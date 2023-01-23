@@ -155,14 +155,8 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       if (siblingId) this.moveComponent(siblingId, (isLeft ? 'right' : 'left'));
     },
 
-    moveComponent: function (id, layout) {
-      $.ajax({
-        type: 'PATCH',
-        url:`api/content/${id}`,
-        data: { _layout: layout },
-        success: () => Origin.editor.data.load(),
-        error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
-      });
+    moveComponent: function (id, _layout) {
+      this.model.save({ _layout });
     }
   }, {
     template: 'editorPageComponent'
