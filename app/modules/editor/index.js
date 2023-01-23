@@ -16,6 +16,7 @@ define([
    */
   Origin.editor = {
     data: {
+      components: ApiCollection.ContentPlugins({ customQuery: { type: 'component' } }),
       content: new ContentCollection(),
       get course() { return this.content.findWhere({ _type: 'course' }); },
       get config() { return this.content.findWhere({ _type: 'config' }); },
@@ -25,20 +26,19 @@ define([
         this.content.customQuery._courseId = Origin.location.route1;
         await this.content.fetch();
 
-        let components = ApiCollection.ContentPlugins({ customQuery: { type: 'component' } });
         if(Origin.location.route2 === 'page') {
-          await components.fetch();
+          await this.components.fetch();
         }
-        /**
-         * Set each model's parent and children models for easy reference
-         */
-        this.content.forEach(c => {
-          const customQuery = { _parentId: c.get('_id') };
-          c.parent = this.content.findWhere({ _id: c.get('_parentId') });
-          c.children = new ContentCollection(this.content.where(customQuery), { customQuery });
-          if(c.get('_type') === 'block') c.components = components;
-          if(c.get('_type') === 'component') c.component = components.findWhere({ name: c.get('_component') } );
-        });
+      },
+      getParent(model) {
+        return this.content.findWhere({ _id: typeof model === 'string' ? model : model.get('_parentId') });
+      },
+      getChildren(model) {
+        const customQuery = { _parentId: typeof model === 'string' ? model : model.get('_id') };
+        new ContentCollection(this.content.where(customQuery), { customQuery })
+      },
+      getComponent(model) {
+        return this.components.findWhere({ name: model.get('_component') } );
       }
     }
   };

@@ -10,7 +10,17 @@ define(function(require) {
       
       const typeAttributes = ContentAttributes[attributes._type];
       if(typeAttributes) Object.assign(this, typeAttributes);
-    }
+    },
+    // TODO added for convenience, shouldn't depend on Origin.editor.data
+    get parent() {
+      return Origin.editor.data.getParent(this.model);
+    },
+    get siblings() {
+      return Origin.editor.data.getChildren(this.parent);
+    },
+    get children() {
+      return Origin.editor.data.getChildren(this.model);
+    },
   });
 
   return ContentModel;
