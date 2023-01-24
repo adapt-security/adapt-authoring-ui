@@ -9,7 +9,7 @@ define(function(require){
         data: data,
         method: method,
         error: function({ responseText }, status, error) {
-          Origin.Notify.alert({ 
+          Origin.Notify.toast({ 
             type: 'error', 
             text: error + (responseText ? `: ${responseText}` : '') 
           });

@@ -37,7 +37,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
       try {
         await this.fetch({ silent: false });
       } catch(e) {
-        this.Origin.Notify.alert({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
+        this.Origin.Notify.toast({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
         this.Origin.router.navigateToLogin();
       }
     },

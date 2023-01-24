@@ -55,7 +55,7 @@ define(function(require) {
         this.$('.reset-introduction').addClass('display-none');
         this.$('.message .success').removeClass('display-none');
       } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.resetpassworderror') });
+        Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.resetpassworderror') });
         console.error(e);
       }
     }

@@ -18,7 +18,7 @@ define(function(require) {
       try {
         if(this.preRender) await this.preRender();
       } catch(e) {
-        return Origin.Notify.alert({ type: 'error', text: e.toString() });
+        console.error(e);
       }
       this.render();
     },

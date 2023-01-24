@@ -62,7 +62,7 @@ define(function(require){
           if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + parentId);
         },
         error: function(jqXHR) {
-          Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message });
+          Origin.Notify.toast({ type: 'error', text: jqXHR.responseJSON.message });
         }
       });
     }

@@ -86,7 +86,7 @@ define(function(require){
     },
 
     onError: function(e) {
-      Origin.Notify.alert({ type: 'error', text: e.message })
+      Origin.Notify.toast({ type: 'error', text: e.message })
     }
   }, {
     template: 'frameworkImport'

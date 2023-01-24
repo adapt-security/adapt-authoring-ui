@@ -70,7 +70,7 @@ define(function(require){
       if(this.createdUserId) {
         $.ajax('api/users/' + this.createdUserId, { method: 'DELETE', error: _.bind(this.onAjaxError, this) });
       }
-      Origin.Notify.alert({
+      Origin.Notify.toast({
         type: 'error',
         title: Origin.l10n.t('app.adduserfail'),
         text: jqXhr.responseJson && jqXhr.responseJson.message || error

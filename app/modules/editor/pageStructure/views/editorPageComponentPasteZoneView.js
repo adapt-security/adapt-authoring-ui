@@ -31,7 +31,7 @@ define(function(require){
               _parentId: view.model.get('_parentId')
             },
             success: () => Origin.editor.data.load(),
-            error: ({ responseJSON }) => Origin.Notify.alert({ type: 'error', text: responseJSON.message })
+            error: ({ responseJSON }) => Origin.Notify.toast({ type: 'error', text: responseJSON.message })
           });
         }
       });

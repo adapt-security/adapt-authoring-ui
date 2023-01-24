@@ -39,7 +39,7 @@ define(function(require){
     },
 
     onUploadSuccess: function(data) {
-      Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
+      Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
 
       $('.loading').hide();
 
@@ -53,7 +53,7 @@ define(function(require){
       var resText = data && data.responseText;
       var message = resError || resText || '';
 
-      Origin.Notify.alert({
+      Origin.Notify.toast({
         type: 'error',
         title: Origin.l10n.t('app.uploadpluginerror'),
         text: message

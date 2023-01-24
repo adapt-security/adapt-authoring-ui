@@ -103,7 +103,7 @@ define(function(require) {
       try {
         await model.fetch();
       } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
+        Origin.Notify.toast({ type: 'error', text: e.responseJSON.message });
       }
     }
     Origin.contentPane.setView(AssetManagementEditAssetView, { model });

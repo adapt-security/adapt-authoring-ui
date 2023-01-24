@@ -58,7 +58,7 @@ define(function(require) {
       validateChildren(Origin.editor.data.course);
 
       if(errors.length) {
-        Origin.Notify.alert({ type: 'error', html: errors.join('<br/>') });
+        Origin.Notify.toast({ type: 'error', html: errors.join('<br/>') });
       }
       return errors.length === 0;
     },
@@ -89,7 +89,7 @@ define(function(require) {
         if(isPreview) {
           previewWindow.close();
         }
-        Origin.Notify.alert({
+        Origin.Notify.toast({
           type: 'error',
           title: Origin.l10n.t('app.builderrortitle'),
           text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: e.responseJSON.message })
@@ -109,7 +109,7 @@ define(function(require) {
       if (helpers.copyStringToClipboard(id)) {
         Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id }) });
       } else {
-        Origin.Notify.alert({
+        Origin.Notify.toast({
           type: 'warning',
           text: Origin.l10n.t('app.copyidtoclipboarderror', { id })
         });
@@ -130,7 +130,7 @@ define(function(require) {
           Origin.trigger(`editorView:refreshView`);
         },
         fail: ({ message }) => {
-          Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
+          Origin.Notify.toast({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
         }
       });
     },

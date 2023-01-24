@@ -53,7 +53,7 @@ define(function(require){
         this.contentPlugins.customQuery.includeUpdateInfo = true;
         await this.contentPlugins.fetch({ reset: true });
       } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
+        Origin.Notify.toast({ type: 'error', text: e.responseJSON.message });
       }
     },
 

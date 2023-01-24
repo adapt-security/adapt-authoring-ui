@@ -43,7 +43,7 @@ define(function(require){
       try {
         await $.post(`${this.model.url()}/update`);
       } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: e.responseJSON.message });
+        Origin.Notify.toast({ type: 'error', text: e.responseJSON.message });
       }
       this.model.fetch();
       return false;
@@ -60,7 +60,7 @@ define(function(require){
           if(!result.isConfirmed) return;
           this.model.destroy({ 
             success: () => this.remove(),
-            error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
+            error: (model, jqXhr) => Origin.Notify.toast({ type: 'error', text: jqXhr.responseJSON.message })
           });
         }
       });

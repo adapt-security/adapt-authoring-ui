@@ -94,7 +94,7 @@ define([
     
     if(eventData.action === 'new' && eventData.type === 'component') {
       if(!Origin.editor.data.newcomponent) {
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.componentdatamissing') });
+        Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.componentdatamissing') });
         Origin.router.navigateBack();
         return;
       }

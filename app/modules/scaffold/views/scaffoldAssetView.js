@@ -67,7 +67,7 @@ define([
       currentModel.save(attributesToSave, {
         patch: attributesToSave !== undefined,
         success: () => this.trigger('change', this),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
+        error: () => Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
       });
     },
 

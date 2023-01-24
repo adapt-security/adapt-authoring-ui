@@ -104,7 +104,7 @@ define([
     },
 
     onSaveError: function(errorMessage) {
-      Origin.Notify.alert({ type: 'error', text: errorMessage });
+      Origin.Notify.toast({ type: 'error', text: errorMessage });
     }
 
   }, {

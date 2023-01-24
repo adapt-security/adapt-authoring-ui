@@ -69,7 +69,7 @@ define(function(require){
           this.courses.fetch({ recursive: false, reset: true })
         ]);
       } catch(e) {
-        Origin.Notify.alert({ type: 'error', text: e.responseJson.message });
+        Origin.Notify.toast({ type: 'error', text: e.responseJson.message });
       }
     },
 

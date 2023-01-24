@@ -143,7 +143,7 @@ define(function(require) {
 
     validateForm: function() {
       if (!this.getSelectedTheme()) {
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errornothemeselected') });
+        Origin.Notify.toast({ type: 'warning', text: Origin.l10n.t('app.errornothemeselected') });
         return false;
       }
       return true;
@@ -261,7 +261,7 @@ define(function(require) {
     },
 
     onError: function(collection, response, options) {
-      Origin.Notify.alert({ type: 'error', text: response });
+      Origin.Notify.toast({ type: 'error', text: response });
     },
 
     onThemeChanged: function() {

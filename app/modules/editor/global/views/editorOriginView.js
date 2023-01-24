@@ -64,7 +64,7 @@ define(function(require){
 
     componentPasteLocation: function() {
       if ($('.block-inner .add-control').length > 0) return;
-      Origin.Notify.alert({
+      Origin.Notify.toast({
         type: 'error',
         text: Origin.l10n.t('app.componentcopyerror')
       });
@@ -168,7 +168,7 @@ define(function(require){
             return;
           }
           this.model.destroy({
-            error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
+            error: () => Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
           });
         }
       });
@@ -246,7 +246,7 @@ define(function(require){
     },
 
     onSaveError: function(pTitle, pText) {
-      Origin.Notify.alert({ 
+      Origin.Notify.toast({ 
         type: 'error', 
         title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'), 
         text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')

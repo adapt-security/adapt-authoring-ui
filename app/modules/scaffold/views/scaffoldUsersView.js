@@ -25,7 +25,7 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
     fetchUsers: function(callback) {
       $.get('api/users')
         .done(callback.bind(this))
-        .fail(error => Origin.Notify.alert({ type: 'error', text: error }));
+        .fail(error => Origin.Notify.toast({ type: 'error', text: error }));
     },
 
     initSelectize: function(users) {
@@ -50,7 +50,7 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
           if(value !== Origin.sessionModel.get('id')) {
             return;
           }
-          Origin.Notify.alert({
+          Origin.Notify.toast({
             type: 'warning',
             text: Origin.l10n.t('app.stopsharingwithyourself')
           });

@@ -125,7 +125,7 @@ define(function(require){
 
     handleError(error) {
       const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
-      Origin.Notify.alert({ type: 'error', text });
+      Origin.Notify.toast({ type: 'error', text });
     },
 
     onPasswordKeyup: function() {

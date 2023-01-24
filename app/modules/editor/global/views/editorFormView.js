@@ -113,8 +113,11 @@ define(function(require) {
     save: async function() {
       var errors = this.form.validate();
       if(errors) {
-        this.onSaveError(Origin.l10n.t('app.validationfailed'), this.buildErrorMessage(errors));
-        return;
+        return Origin.Notify.toast({ 
+          type: 'error', 
+          title: Origin.l10n.t('app.validationfailed'),
+          text: this.buildErrorMessage(errors)
+        });
       }
       this.form.commit();
       this.model.pruneAttributes();
@@ -140,14 +143,6 @@ define(function(require) {
     getAttributesToSave: function() {
       var changed = this.model.changedAttributes();
       if(changed) return Object.assign(changed, { _id: this.model.get('_id'), _courseId: this.model.get('_courseId') });
-    },
-
-    onSaveError: function(pTitle, pText) {
-      Origin.Notify.alert({ 
-        type: 'error', 
-        title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'), 
-        text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')
-      });
     }
   }, {
     template: 'editorForm'
