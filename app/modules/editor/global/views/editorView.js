@@ -79,9 +79,11 @@ define(function(require) {
         if(isPreview) {
           previewWindow.location.href = data.preview_url;
         } else {
-          const $downloadForm = $('#downloadForm');
-          $downloadForm.attr('action', data[`${type}_url`]);
-          $downloadForm.trigger('submit');
+          Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.buildready') });
+          const $tempForm = $(`<form method="get" action="${data[`${type}_url`]}"></form>`);
+          $('body').append($tempForm);
+          $tempForm.trigger('submit');
+          $tempForm.remove();
         }
       } catch(e) {
         if(isPreview) {
