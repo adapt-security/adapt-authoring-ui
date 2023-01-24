@@ -47,15 +47,15 @@
     }
 
     > .buttons {
-      position: relative;
-      float: right;
-      top: -5px;
-
-      > div {
-        display: inline-block;
-      }
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
 
       button.toggle {
+        margin-top: 10px;
         padding: 0 15px;
         color: @primary-color;
         cursor: pointer;
@@ -89,8 +89,6 @@
               padding-bottom: 0;
             }
             .item {
-              display: block;
-              padding: 10px 0;
               color: white;
               text-align: left;
               &:last-child {
@@ -141,8 +139,11 @@
         }
       }
 
-      .actions .groups .group .items .item {
-        display: inline-block;
+      .actions {
+        margin: 0 15px;
+        .groups .group .items .item {
+          display: inline-block;
+        }
       }
       .filters .items .item {
         &[data-type="select"] {
