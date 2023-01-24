@@ -17,6 +17,8 @@ define(function(require) {
     if(typeof data === 'string') {
       data = { text: data };
     }
+    if(data.html) data.text = data.html;
+
     data = _.extend({}, defaults, data);
     appendToast(data);
   };
@@ -27,8 +29,10 @@ define(function(require) {
     data.icon = "i";
     
     var $el = $(`<div class="${data.type} toast">`)
-      .append($(`<div class="icon">${getIconHTML(data.type)}</div>`))
-      .append($(`<div class="body">${data.text}</div>`));
+      .append($(`<div class="icon">${getIconHTML(data.type)}</div>`));
+    
+    if(data.title) $el.append($(`<div class="body">${data.title}</div>`))
+    if(data.text) $el.append($(`<div class="body">${data.text || data.html}</div>`));
     
     if(data.persist) {
       $el.append($('<button>', { 'class': 'close', text: data.buttonText }));
@@ -43,7 +47,7 @@ define(function(require) {
     let iconName = '';
     switch(type) {
       case 'info': iconName = 'info-circle'; break; 
-      case 'error': iconName = 'skull-crossbones'; break; 
+      case 'error': iconName = 'exclamation-circle'; break; 
       case 'warning': iconName = 'exclamation-triangle'; break; 
       case 'success': iconName = 'check-circle'; break; 
     }
@@ -55,7 +59,7 @@ define(function(require) {
     $el.removeClass('visible');
     setTimeout(() => {
       $el.remove();
-      this.$el.addClass('display-none');
+      $container.addClass('display-none');
       if(data.callback) data.callback.apply();
     }, 500);
   };
