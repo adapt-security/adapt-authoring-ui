@@ -94,6 +94,7 @@ define(function(require) {
           title: Origin.l10n.t('app.builderrortitle'),
           text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: e.responseJSON.message })
         });
+      }
       this.isBuilding = false;
     },
 
