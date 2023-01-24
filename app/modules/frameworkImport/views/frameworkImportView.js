@@ -16,7 +16,8 @@ define(function(require){
       });
       this.listenTo(Origin, {
         'actions:check': this.checkCourse,
-        'actions:import': this.importcourse
+        'actions:import': this.importCourse,
+        'actions:cancel': () => Origin.router.navigateToDashboard()
       });
     },
 
@@ -33,22 +34,32 @@ define(function(require){
     },
 
     isValid: function() {
-      var $uploadFile = this.$('.asset-file');
-      const isValid = $uploadFile.val() !== '';
-      $uploadFile.toggleClass('input-error', !isValid);
-      $('.field-file').find('span.error').text(isValid ? '' : Origin.l10n.t('app.pleaseaddfile'));
-      return isValid;
+      if(this.$('.asset-file').val() === '') {
+        return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
+      }
+      return true;
     },
 
     checkCourse: async function() {
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
+          this.transformStatusData(data);
           $('.actions button.check').addClass('display-none');
           if(data.canImport) $('.actions button.import').removeClass('display-none');
-          this.$el.html(Handlebars.templates.frameworkImportSummary(data));
+          this.$('form.frameworkImport').addClass('display-none');
+          this.$el.append(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
+    },
+
+    transformStatusData: function(data) {
+      Object.values(data.statusReport).forEach(messages => {
+        messages.forEach(m => m.text = Origin.l10n.t(`app.import.status.${m.code}`));
+      });
+      data.versions.forEach(v => {
+        v.statusText = Origin.l10n.t(`app.import.plugins.status.${v.status}`);
+      });
     },
     
     importCourse: function() {
@@ -59,7 +70,6 @@ define(function(require){
     },
 
     doImport: async function(dryRun = false) {
-
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
