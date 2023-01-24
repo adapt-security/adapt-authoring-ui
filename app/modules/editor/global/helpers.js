@@ -11,7 +11,7 @@ define(function(require) {
       var data = {
         model: model || {},
         page: page,
-        langString: Origin.l10n.t('app.' + getLangKey())
+        langString: Origin.l10n.t(getLangKey())
       };
       Origin.contentHeader.setTitle({
         breadcrumbs: generateBreadcrumbs(data),
@@ -32,7 +32,7 @@ define(function(require) {
     if(Origin.location.route2 === 'component' && Origin.location.route3 === 'new') {
       return 'edit';
     }
-    return Origin.location.route4;
+    return Origin.location.route4 || '';
   }
 
   function generateBreadcrumbs(data) {
@@ -61,13 +61,18 @@ define(function(require) {
   }
 
   function getLangKey() {
-    var type = getType();
-    var action = getAction();
-
-    if ((type === 'page' || type === 'menu') && action === 'edit') {
-      return 'editorpagesettings';
-    }
-    return 'editor' + type;
+    return {
+      settings: 'app.editorcourse',
+      config: 'app.editorconfig',
+      pageedit: 'app.editorpagesettings',
+      page: 'app.editorpage',
+      menuedit: 'app.editorpagesettings',
+      menu: 'app.editormenu',
+      menusettings: 'app.editormenupicker',
+      articleedit: 'app.editorarticle',
+      blockedit: 'app.editorblock',
+      componentedit: 'app.editorcomponent'
+    }[`${getType()}${getAction()}`];
   }
 
   function getNearestPage(model, cb) {
