@@ -51,21 +51,21 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
       if(isInit) this.trigger('ready');
     },
 
-    login: async function (email, password, persistSession, cb) {
+    login: async function (data) {
       try {
         await $.ajax({ 
           url: 'api/auth/local',
           method: 'POST',
-          data: JSON.stringify({ email, password, persistSession }),
+          data: JSON.stringify(data),
           contentType: "application/json",
           dataType: "json"
         });
         await this.fetch();
         this.Origin.trigger('login:changed');
-        cb();
-      } catch({ responseJSON }) {
+        return this;
+      } catch(e) {
         this.clear();
-        cb(responseJSON);
+        throw e;
       }
     },
 

@@ -39,26 +39,20 @@ define(function(require) {
       this.handleEnterKey(e);
     },
 
-    submitLoginDetails: function(e) {
+    submitLoginDetails: async function(e) {
       e && e.preventDefault();
-
-      var inputUsernameEmail = $.trim(this.$("#login-input-username").val());
-      var inputPassword = $.trim(this.$("#login-input-password").val());
-      var shouldPersist = this.$('#remember-me').prop('checked');
-
-      // Validation
-      if (inputUsernameEmail === '' || inputPassword === '') {
-        this.loginFailed(LoginView.ERR_MISSING_FIELDS);
-        return false;
-      } else {
-        $('#login-input-username').removeClass('input-error');
-      }
-      this.model.login(inputUsernameEmail, inputPassword, shouldPersist, error => {
-        if(error) {
-          return this.loginFailed(null, error.message);
-        }
+      $('#login-input-username').removeClass('input-error');
+      try {
+        await this.model.login({
+          email: $.trim(this.$("#login-input-username").val()),
+          password: this.$("#login-input-password").val(),
+          shouldPersist: this.$('#remember-me').prop('checked')
+        });
         Origin.router.navigateToDashboard();
-      });
+      } catch(e) {
+        const { code, message } = e.responseJSON;
+        return this.loginFailed(code, message);
+      }
     },
 
     loginFailed: function(errorCode, message) {
