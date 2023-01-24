@@ -58,7 +58,7 @@ define(function(require) {
       validateChildren(Origin.editor.data.course);
 
       if(errors.length) {
-        Origin.Notify.toast({ type: 'error', html: errors.join('<br/>') });
+        Origin.Notify.toast({ type: 'warning', html: errors.join('<br/>') });
       }
       return errors.length === 0;
     },
