@@ -21,7 +21,6 @@ define(function(require) {
         this.header.data.breadcrumbs = this.headerConfig.breadcrumbs;
         Object.entries(this.headerConfig.buttons).forEach(([type, groups]) => this.header.setButtons(type, groups));
       }
-      this.header.setTitle(this.options.title);
       this.header.setButtons(this.options.buttons);
 
       $('.modal-popup-content-inner', this.$el)
