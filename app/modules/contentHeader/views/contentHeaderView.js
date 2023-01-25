@@ -39,7 +39,8 @@ define(function(require) {
         }]
       };
     }
-    constructor() {
+    constructor($container) {
+      this.$container = $container;
       this.data = {
         buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
           return Object.assign(data, { [type]: { groups: [], ViewClass: VIEWS[type] } });
@@ -51,7 +52,7 @@ define(function(require) {
       this.remove(false);
       const template = Handlebars.templates.contentHeader;
       this.$el = $(template(this.getTemplateData()));
-      $('#app').prepend(this.$el);
+      this.$container ? this.$container.append(this.$el) : $('#app').prepend(this.$el);
       // create buttons
       for (let type in this.data.buttons) {
         const { ViewClass, groups } = this.data.buttons[type];
