@@ -31,57 +31,9 @@ define(function(require) {
   });
 
   function loadAssetsView() {
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
-      {
-        name: Origin.l10n.t('app.search'),
-        items: [
-          {
-            id: 'search',
-            type: 'search',
-            placeholder: Origin.l10n.t('app.searchbyname')
-          }
-        ]
-      },
-      {
-        id: 'type',
-        name: Origin.l10n.t('app.type'),
-        items: [
-          {
-            id: 'image',
-            type: 'toggle',
-            buttonText: Origin.l10n.t('app.filetypeimage'),
-            checked: true
-          },
-          {
-            id: 'video',
-            type: 'toggle',
-            buttonText: Origin.l10n.t('app.filetypevideo'),
-            checked: true
-          },
-          {
-            id: 'audio',
-            type: 'toggle',
-            buttonText: Origin.l10n.t('app.filetypeaudio'),
-            checked: true
-          },
-          {
-            id: 'other',
-            type: 'toggle',
-            buttonText: Origin.l10n.t('app.filetypeother'),
-            checked: true
-          }
-        ]
-      },
-      {
-        name: Origin.l10n.t('app.tags'),
-        items: [
-          {
-            id: 'tags',
-            type: 'tags'
-          }
-        ]
-      }
-    ]);
+    Object.entries(AssetManagementView.contentHeaderButtons).forEach(([type, groups]) => {
+      Origin.contentHeader.setButtons(type, groups);
+    });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
       items: [{
         buttonText: Origin.l10n.t('app.uploadnewasset'),

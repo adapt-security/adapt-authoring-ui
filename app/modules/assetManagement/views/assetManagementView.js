@@ -38,5 +38,60 @@ define(function(require){
     template: 'assetManagement'
   });
 
+  // TODO specified here for the modal view, this needs doing better
+  AssetManagementView.contentHeaderButtons = {
+    filters: [
+      {
+        name: Origin.l10n.t('app.search'),
+        items: [
+          {
+            id: 'search',
+            type: 'search',
+            placeholder: Origin.l10n.t('app.searchbyname')
+          }
+        ]
+      },
+      {
+        id: 'type',
+        name: Origin.l10n.t('app.type'),
+        items: [
+          {
+            id: 'image',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeimage'),
+            checked: true
+          },
+          {
+            id: 'video',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypevideo'),
+            checked: true
+          },
+          {
+            id: 'audio',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeaudio'),
+            checked: true
+          },
+          {
+            id: 'other',
+            type: 'toggle',
+            buttonText: Origin.l10n.t('app.filetypeother'),
+            checked: true
+          }
+        ]
+      },
+      {
+        name: Origin.l10n.t('app.tags'),
+        items: [
+          {
+            id: 'tags',
+            type: 'tags'
+          }
+        ]
+      }
+    ]
+  };
+
   return AssetManagementView;
 });
