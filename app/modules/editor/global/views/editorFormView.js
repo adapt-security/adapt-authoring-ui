@@ -124,8 +124,11 @@ define(function(require) {
 
       var attrs = this.getAttributesToSave();
       if(attrs) attrs._type = this.model.get('_type');
-
-      await this.model.save(attrs, { patch: !!attrs });
+      try {
+        await this.model.save(attrs, { patch: !!attrs, silent: false });
+      } catch(e) {
+        return Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.validationfailed'), text: e.message });
+      }
       Origin.router.navigateBack();
     },
 
