@@ -94,9 +94,34 @@ define([
     onAssetButtonClicked: function(event) {
       event.preventDefault();
 
-      Origin.modal.setView({ view: new AssetManagementView() });
-      Origin.on('modal:close', (action, view) => {
-        const selected = view.collectionView.getSelected();
+      Origin.modal.setView({ 
+        view: new AssetManagementView(),
+        header: { 
+          title: 'Test', 
+          buttons: Object.assign(AssetManagementView.contentHeaderButtons, {
+            actions: [{
+              items: [
+                {
+                  id: 'done',
+                  buttonText: Origin.l10n.t('app.done'),
+                },
+                {
+                  id: 'autofill',
+                  buttonText: Origin.l10n.t('app.autofill'),
+                  buttonClass: 'secondary-hollow'
+                },
+                {
+                  id: 'close',
+                  buttonText: Origin.l10n.t('app.cancel'),
+                  buttonClass: 'action-secondary'
+                }
+              ]
+            }],
+          })
+        }
+      });
+      Origin.on('actions', action => {
+        const selected = Origin.modal.view.collectionView.getSelected();
         if(action === 'cancel' || !selected) {
           return;
         }
