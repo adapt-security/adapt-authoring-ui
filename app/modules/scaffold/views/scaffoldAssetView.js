@@ -1,9 +1,10 @@
 define([
-  'core/collections/apiCollection',
-  'modules/assetManagement/views/assetManagementModalView',
+  'backbone',
+  'backboneForms',
   'core/helpers',
-  'core/origin'
-], function(ApiCollection, AssetManagementModalView, Helpers, Origin) {
+  'core/origin',
+  'modules/assetManagement/views/assetManagementView'
+], function(Backbone, BackboneForms, Helpers, Origin, AssetManagementView) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -94,10 +95,13 @@ define([
       event.preventDefault();
 
       Origin.modal.setView({ view: new AssetManagementView() });
-      Origin.modal.show();
-      Origin.on('modal:done', model => {
-        this.setValue(data.assetId);
-        if(data._shouldAutofill) Origin.trigger('scaffold:assets:autofill', data.assetId);
+      Origin.on('modal:close', (action, view) => {
+        const selected = view.collectionView.getSelected();
+        if(action === 'cancel' || !selected) {
+          return;
+        }
+        if(action === 'autofill') Origin.trigger('scaffold:assets:autofill', selected.get('_id'));
+        if(action === 'done') this.setValue(selected.get('_id'));
       });
     },
 
