@@ -18,12 +18,10 @@ define(function(require){
     },
 
     postRender: function() {
-      var view = new AssetManagementCollectionView({ collection: this.collection });
-      this.$('.asset-management-assets-container-inner').append(view.$el);
+      this.collectionView = new AssetManagementCollectionView({ collection: this.collection });
+      this.$('.asset-management-assets-container-inner').append(this.collectionView.$el);
       // defer setting ready status until images are ready
-      _.defer(function() {
-        view.$el.imageready(this.setViewToReady);
-      });
+      _.defer(() => this.collectionView.$el.imageready(this.setViewToReady));
     },
 
     onAssetClicked: function(model) {
