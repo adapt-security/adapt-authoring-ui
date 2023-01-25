@@ -46,7 +46,7 @@ define(function(require){
 
     initEventListeners: function() {
       this.listenTo(Origin, {
-        'filters': this.filter,
+        'filters modal:filters': this.filter,
         'assetManagement:collection:refresh': this.resetCollection
       });
     },
