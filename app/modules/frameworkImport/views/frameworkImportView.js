@@ -47,7 +47,7 @@ define(function(require){
           this.transformStatusData(data);
           $('.actions button.check').addClass('display-none');
           if(data.canImport) $('.actions button.import').removeClass('display-none');
-          this.$('form.frameworkImport').addClass('display-none');
+          this.$('#import_upload').addClass('display-none');
           this.$el.append(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
