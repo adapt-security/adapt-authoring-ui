@@ -1,16 +1,13 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
+  var ContentHeader = require('modules/contentHeader/views/contentHeaderView');
 
   var ModalView = Backbone.View.extend({
     className: 'modal',
 
     initialize(options) {
-      this.listenTo(Origin, {
-        'remove:views': this.remove,
-        'modal:done': this.onDoneButtonClicked,
-        'modal:cancel': this.onCloseButtonClicked
-      });
+      this.listenTo(Origin, 'remove:views', this.remove);
     },
 
     render() {
@@ -18,12 +15,17 @@ define(function(require) {
         .html(Handlebars.templates['modal'](this.options))
         .appendTo('body');
 
+      this.header = new ContentHeader($('.modal-popup-header', this.$el));
+      if(this.headerConfig) {
+        this.header.data.title = this.headerConfig.title;
+        Object.entries(this.headerConfig.buttons).forEach(([type, groups]) => this.header.setButtons(type, groups));
+      }
+      this.header.setTitle(this.options.title);
+      this.header.setButtons(this.options.buttons);
+
       $('.modal-popup-content-inner', this.$el)
         .empty()
         .append(this.view && this.view.$el)
-
-      this.$('.modal-popup-close').on('click', this.onCloseButtonClicked.bind(this));
-      this.$('.modal-popup-done').on('click', this.onDoneButtonClicked.bind(this));
 
       return this;
     },
@@ -31,13 +33,12 @@ define(function(require) {
     setView(options = {}) {
       this.view = options.view;
       delete options.view;
-      this.options = _.extend({
-        showCancelButton: true,
-        showDoneButton: true,
-        showScrollbar: true,
-        disableCancelButton: false,
-        disableDoneButton: false
-      }, options.options);
+      
+      this.headerConfig = options.header;
+      delete options.header;
+
+      this.options = _.extend({ showScrollbar: true }, options.options);
+
       this.render();
       this.show();
     },

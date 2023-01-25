@@ -1,23 +1,5 @@
 <div class="modal-popup {{#unless showScrollbar}}no-scroll{{/unless}}">
-  <div class="modal-popup-toolbar clearfix">
-    {{#if title}}
-    <div class="modal-popup-title">
-      <h2 class="modal-popup-title-inner">{{title}}</h2>
-    </div>
-    {{/if}}
-    <div class="model-popup-toolbar-buttons">
-      {{#if showDoneButton}}
-        <button href="#" class="modal-popup-done" {{#if disableDoneButton}}disabled{{/if}}>
-          <i class="fa fa-check"></i>{{t 'app.done'}}
-        </button>
-      {{/if}}
-      {{#if showCancelButton}}
-        <button href="#" class="modal-popup-close" {{#if disableCancelButton}}disabled{{/if}}>
-          <i class="fa fa-times"></i>{{t 'app.cancel'}}
-        </button>
-      {{/if}}
-    </div>
-  </div>
+  <div class="modal-popup-header"></div>
   <div class="modal-popup-inner">
     {{#if body}}
       <div class="modal-popup-body">
