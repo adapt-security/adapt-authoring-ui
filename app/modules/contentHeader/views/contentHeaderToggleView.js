@@ -3,11 +3,6 @@ define(function(require) {
   var ContentHeaderButtonsView = require('./contentHeaderButtonsView');
 
   var ContentHeaderToggleButtonView = ContentHeaderButtonsView.extend({
-    events() {
-      return Object.assign(ContentHeaderButtonsView.prototype.events, {
-        'click .item': 'onItemClicked'
-      });
-    },
     constructor() {
       ContentHeaderButtonsView.prototype.constructor.apply(this, arguments);
     },
@@ -18,17 +13,22 @@ define(function(require) {
 
       ContentHeaderButtonsView.prototype.render.apply(this);
 
+      console.log(this.$el);
+      console.log($('.item', this.$el));
+
+      $('.item', this.$el).on('click', this.onItemClicked.bind(this));
+
       setTimeout(this.repositionButtons.bind(this), 500);
     },
     repositionButtons() {
       var $btns = $('.groups', this.$el);
       var width = $btns.outerWidth(true);
       var maxX = $(window).width() - width - 5;
-      if($btns.offset().left > maxX) $btns.css('left', maxX - $('.contentHeader .buttons').offset().left);
+      if($btns.offset().left > maxX) $btns.css('left', maxX - $('.contentHeader .buttons', this.$el).offset().left);
     },
     onClicked() {
       var $btns = $('.groups', this.$el);
-      if(!$btns.hasClass('show')) $('.groups').removeClass('show');
+      if(!$btns.hasClass('show')) $('.groups', this.$el).removeClass('show');
       $btns.toggleClass('show');
     },
     onItemClicked() {}

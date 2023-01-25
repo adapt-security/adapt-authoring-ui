@@ -7,10 +7,6 @@ define(function(require) {
     className: 'contentHeader-button',
     tagName: 'span',
 
-    events: {
-      'click button': 'onClicked'
-    },
-
     async initialize(options) {
       this.listenTo(Origin, 'remove:views', this.remove);
 
@@ -34,6 +30,9 @@ define(function(require) {
       });
       if(!this.constructor.template) this.constructor.template = 'contentHeaderButtons';
       this.$el.html(Handlebars.templates[this.constructor.template](this.data));
+
+      $('button', this.$el).on('click', this.onClicked.bind(this));
+
       return this;
     },
 

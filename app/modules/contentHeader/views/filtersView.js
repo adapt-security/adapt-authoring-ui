@@ -24,7 +24,7 @@ define(function(require) {
       return data;
     },
     getItemValue(group, item) {
-      const $item = $(`.group[data-index="${group.index}"] .item[data-index="${item.index}"]`);
+      const $item = $(`.group[data-index="${group.index}"] .item[data-index="${item.index}"]`, this.$el);
       switch(item.type) {
         case 'search':
           return $('input', $item).val();
@@ -38,8 +38,8 @@ define(function(require) {
     },
     onClicked() {
       ContentHeaderToggleView.prototype.onClicked.call(this, arguments);
-      if($('.groups').hasClass('show')) {
-        $('.groups input[type=text]').first().trigger('focus');
+      if($('.groups', this.$el).hasClass('show')) {
+        $('.groups input[type=text]', this.$el).first().trigger('focus');
       } else {
         $(document).trigger('focus');
       }
