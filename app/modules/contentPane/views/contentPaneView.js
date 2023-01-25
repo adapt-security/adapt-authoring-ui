@@ -27,9 +27,8 @@ define(function(require) {
     },
 
     render: function() {
-      var template = Handlebars.templates[this.constructor.template];
-      this.$el.html(template());
-      $('.app-inner').append(cpv.$el);
+      this.$el.html(Handlebars.templates[this.constructor.template]());
+      $('.app-inner').append(this.$el);
       return this;
     },
 
