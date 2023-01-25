@@ -40,6 +40,16 @@ define(function(require) {
       };
     }
     constructor($container, eventId) {
+      // each additional contentHeader must have a unique eventId to avoid event pollution
+      const $existingHeaders = $('.contentHeader');
+      if($existingHeaders.length) {
+        $existingHeaders.each(h => {
+          if($(h).attr('data-id') === eventId) {
+            const msg = eventId ? `ContentHeader instance already exists with the id '${eventId}'` : 'Must define a unique eventId'
+            throw new Error(msg);
+          }
+        });
+      }
       this.$container = $container;
       this.data = {
         eventId: eventId,
@@ -53,6 +63,7 @@ define(function(require) {
       this.remove(false);
       const template = Handlebars.templates.contentHeader;
       this.$el = $(template(this.getTemplateData()));
+      if(this.data.eventId) this.$el.attr('data-id', this.data.eventId);
       this.$container ? this.$container.append(this.$el) : $('#app').prepend(this.$el);
       // create buttons
       for (let type in this.data.buttons) {
