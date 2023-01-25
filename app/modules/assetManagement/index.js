@@ -90,7 +90,6 @@ define(function(require) {
     }]);
     Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
     Origin.contentPane.setView(AssetManagementView, {}, { fullWidth: true });
-    Origin.trigger('assetManagement:loaded');
   }
 
   async function loadEditAssetView(location) {
