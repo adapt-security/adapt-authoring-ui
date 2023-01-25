@@ -4,17 +4,20 @@
   position: fixed;
   top:0;
   left:0;
-  width:100%;
-  height:100%;
+  width:100vw;
+  height:100vh;
   padding: 30px;
   box-sizing: border-box;
   z-index:4000;
-  overflow-y: scroll;
+  overflow-y: hidden;
   background: rgba(0,0,0,0.4);
   
   .modal-popup {
     height: 100%;
     background-color: @ui-content-color;
+    border-radius: 4px;
+    overflow: hidden;
+    
     &-header .contentHeader {
       background-color: @tertiary-color;
       &-inner {
@@ -29,6 +32,10 @@
       .modal-popup-content {
         height: 100%;  
         overflow-y:auto;
+        
+        &-inner {
+          height: 100%;  
+        }
       }
     }
   }
