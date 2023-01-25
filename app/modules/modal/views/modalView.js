@@ -4,10 +4,6 @@ define(function(require) {
 
   var ModalView = Backbone.View.extend({
     className: 'modal',
-    events: {
-      'click .modal-popup-close': 'onCloseButtonClicked',
-      'click .modal-popup-done': 'onDoneButtonClicked'
-    },
 
     initialize(options) {
       this.listenTo(Origin, {
@@ -22,13 +18,19 @@ define(function(require) {
         .html(Handlebars.templates['modal'](this.options))
         .appendTo('body');
 
-      this.$('.modal-popup-content-inner').append(this.view.$el);
+      $('.modal-popup-content-inner', this.$el)
+        .empty()
+        .append(this.view && this.view.$el)
+
+      this.$('.modal-popup-close').on('click', this.onCloseButtonClicked.bind(this));
+      this.$('.modal-popup-done').on('click', this.onDoneButtonClicked.bind(this));
 
       return this;
     },
 
-    setView(view, options) {
-      this.view = view;
+    setView(options = {}) {
+      this.view = options.view;
+      delete options.view;
       this.options = _.extend({
         showCancelButton: true,
         showDoneButton: true,
@@ -37,16 +39,17 @@ define(function(require) {
         disableDoneButton: false
       }, options.options);
       this.render();
+      this.show();
     },
 
     onCloseButtonClicked(event) {
       event && event.preventDefault();
-      this.hide('cancel');
+      this.show(false, 'cancel');
     },
 
     onDoneButtonClicked(event) {
       event && event.preventDefault();
-      this.hide('done');
+      this.show(false, 'done');
     },
 
     show(shouldShow = true, action) {
@@ -54,16 +57,11 @@ define(function(require) {
       if(shouldShow) {
         return Origin.trigger('modal:open');
       }
-      Origin.trigger(`modal:${action}`, this.view.model);
-      Origin.trigger('modal:close');
-      this.view.remove();
-      this.remove();
-    },
-
-    hide(action) {
-      this.show(false, action);
+      this.$el.remove();
+      this.view && this.view.remove();
+      Origin.trigger(`modal:${action}`, this.view);
+      Origin.trigger('modal:close', action, this.view);
     }
-
   });
 
   return ModalView;
