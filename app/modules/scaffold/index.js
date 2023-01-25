@@ -4,7 +4,6 @@ define([
   'backboneForms',
   'backboneFormsLists',
   './backboneFormsOverrides',
-  './views/scaffoldAssetItemView',
   './views/scaffoldAssetView',
   './views/scaffoldCodeEditorView',
   './views/scaffoldColourPickerView',
