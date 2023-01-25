@@ -38,8 +38,8 @@ define(function(require) {
     },
 
     triggerEvent(data, id) {
-      const eventName = `${this.data.eventId ? `${eventId}:` : ''}${this.data.type}`;
-      if(data.id) Origin.trigger(`${eventName}:${id}`, data);
+      const eventName = `${this.data.eventId ? `${this.data.eventId}:` : ''}${this.data.type}`;
+      if(id) Origin.trigger(`${eventName}:${id}`, data);
       Origin.trigger(eventName, data);
     },
 
