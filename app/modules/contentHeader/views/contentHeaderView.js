@@ -44,7 +44,7 @@ define(function(require) {
       const $existingHeaders = $('.contentHeader');
       if($existingHeaders.length) {
         $existingHeaders.each(h => {
-          if($(h).attr('data-id') === eventId) {
+          if($(h).attr('data-id') === eventId || ($(h).attr('data-id') && !eventId)) {
             const msg = eventId ? `ContentHeader instance already exists with the id '${eventId}'` : 'Must define a unique eventId'
             throw new Error(msg);
           }
