@@ -18,6 +18,7 @@ define(function(require) {
       this.header = new ContentHeader($('.modal-popup-header', this.$el));
       if(this.headerConfig) {
         this.header.data.title = this.headerConfig.title;
+        this.header.data.breadcrumbs = this.headerConfig.breadcrumbs;
         Object.entries(this.headerConfig.buttons).forEach(([type, groups]) => this.header.setButtons(type, groups));
       }
       this.header.setTitle(this.options.title);
