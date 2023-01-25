@@ -36,14 +36,10 @@ define(function(require) {
       return this;
     },
 
-    triggerEvent(data) {
+    triggerEvent(data, id) {
       const eventName = `${this.data.eventId ? `${eventId}:` : ''}${this.data.type}`;
-      if(data.id) {
-        Origin.trigger(`${eventName}:${data.id}`, data.eventData);
-        Origin.trigger(eventName, data.id, data.eventData);
-      } else {
-        Origin.trigger(eventName, data.eventData);
-      }
+      if(data.id) Origin.trigger(`${eventName}:${id}`, data);
+      Origin.trigger(eventName, data);
     },
 
     onClicked(event) {
@@ -51,7 +47,7 @@ define(function(require) {
       event.stopPropagation();
       $item = $(event.currentTarget).parents('.item');
       const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
-      this.triggerEvent(data);
+      this.triggerEvent(data.eventData, data.id);
     }
   });
 
