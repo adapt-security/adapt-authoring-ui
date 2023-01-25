@@ -4,99 +4,67 @@ define(function(require) {
 
   var ModalView = Backbone.View.extend({
     className: 'modal',
-
     events: {
       'click .modal-popup-close': 'onCloseButtonClicked',
       'click .modal-popup-done': 'onDoneButtonClicked'
     },
 
-    initialize: function(options) {
-      this.view = options.view;
-      this.options = _.extend({
-        _shouldShowCancelButton: true,
-        _shouldShowDoneButton: true,
-        _shouldShowScrollbar: true,
-        _shouldDisableCancelButton: false,
-        _shouldDisableDoneButton: false
-      }, options.options);
-      this.context = options.context;
-
+    initialize(options) {
       this.listenTo(Origin, {
         'remove:views': this.remove,
-        'modal:onCancel': this.onCloseButtonClicked,
-        'modal:onUpdate': this.onDoneButtonClicked,
-        'modal:disableCancelButton': this.onCloseButtonDisabled,
-        'modal:disableDoneButton': this.onDoneButtonDisabled,
-        'modal:enableCancelButton': this.onCloseButtonEnabled,
-        'modal:enableDoneButton': this.onDoneButtonEnabled
+        'modal:done': this.onDoneButtonClicked,
+        'modal:cancel': this.onCloseButtonClicked
       });
-
-      this.render();
     },
 
-    render: function() {
-      var data = _.omit(this.options, 'model');
-      var template = Handlebars.templates['modal'];
-      this.$el.html(template(data)).appendTo('body');
-      _.defer(_.bind(this.postRender, this));
+    render() {
+      this.$el
+        .html(Handlebars.templates['modal'](this.options))
+        .appendTo('body');
+
+      this.$('.modal-popup-content-inner').append(this.view.$el);
 
       return this;
     },
 
-    postRender: function() {
-      if (this.options._shouldDisableCancelButton) {
-        this.onCloseButtonDisabled();
+    setView(view, options) {
+      this.view = view;
+      this.options = _.extend({
+        showCancelButton: true,
+        showDoneButton: true,
+        showScrollbar: true,
+        disableCancelButton: false,
+        disableDoneButton: false
+      }, options.options);
+      this.render();
+    },
+
+    onCloseButtonClicked(event) {
+      event && event.preventDefault();
+      this.hide('cancel');
+    },
+
+    onDoneButtonClicked(event) {
+      event && event.preventDefault();
+      this.hide('done');
+    },
+
+    show(shouldShow = true, action) {
+      $('html').toggleClass('no-scroll', shouldShow);
+      if(shouldShow) {
+        return Origin.trigger('modal:open');
       }
-      if (this.options._shouldDisableDoneButton) {
-        this.onDoneButtonDisabled();
-      }
-      if(this.options._shouldShowScrollbar === false) {
-        this.$el.css('overflow-y', 'hidden');
-      }
-      this.modalView = new this.view(this.options);
-      this.$('.modal-popup-content-inner').append(this.modalView.$el);
-      $('html').addClass('no-scroll');
-    },
-
-    onCloseButtonClicked: function(event) {
-      if (event) event.preventDefault();
-      this.closeModal('onCancel');
-    },
-
-    onDoneButtonClicked: function(event) {
-      if (event) event.preventDefault();
-      this.closeModal('onUpdate');
-    },
-
-    onCloseButtonDisabled: function() {
-      this.$('.modal-popup-close').attr('disabled', true);
-    },
-
-    onDoneButtonDisabled: function() {
-      this.$('.modal-popup-done').attr('disabled', true);
-    },
-
-    onCloseButtonEnabled: function() {
-      this.$('.modal-popup-close').attr('disabled', false);
-    },
-
-    onDoneButtonEnabled: function() {
-      this.$('.modal-popup-done').attr('disabled', false);
-    },
-
-    closeModal: function(callbackType) {
-      var data = this.modalView.getData();
-      if (this.options[callbackType]) {
-        this.options[callbackType].call(this.context, data);
-      }
-      this.modalView.remove();
-      Origin.trigger('modal:closed');
-      $('html').removeClass('no-scroll');
+      Origin.trigger(`modal:${action}`, this.view.model);
+      Origin.trigger('modal:close');
+      this.view.remove();
       this.remove();
+    },
+
+    hide(action) {
+      this.show(false, action);
     }
 
   });
 
   return ModalView;
-
 });

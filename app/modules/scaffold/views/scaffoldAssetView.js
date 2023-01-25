@@ -93,19 +93,12 @@ define([
     onAssetButtonClicked: function(event) {
       event.preventDefault();
 
-      Origin.trigger('modal:open', AssetManagementModalView, {
-        collection: ApiCollection.Assets(),
-        assetType: this.assetType,
-        _shouldShowScrollbar: false,
-        onUpdate: function(data) {
-          if(data) {
-            this.setValue(data.assetId);
-            if(data._shouldAutofill) {
-              Origin.trigger('scaffold:assets:autofill', data.assetId);
-            }
-          }
-        }
-      }, this);
+      Origin.modal.setView({ view: new AssetManagementView() });
+      Origin.modal.show();
+      Origin.on('modal:done', model => {
+        this.setValue(data.assetId);
+        if(data._shouldAutofill) Origin.trigger('scaffold:assets:autofill', data.assetId);
+      });
     },
 
     onClearButtonClicked: function(event) {
