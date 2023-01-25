@@ -31,8 +31,10 @@ define(function(require) {
     var $el = $(`<div class="${data.type} toast">`)
       .append($(`<div class="icon">${getIconHTML(data.type)}</div>`));
     
-    if(data.title) $el.append($(`<div class="body">${data.title}</div>`))
-    if(data.text) $el.append($(`<div class="body">${data.text || data.html}</div>`));
+    const $body = $(`<div class="body"></div>`);
+    if(data.title) $body.append($(`<div class="title">${data.title}</div>`))
+    if(data.text) $body.append($(`<div class="text">${data.text || data.html}</div>`));
+    $el.append($body);
     
     if(data.persist) {
       $el.append($('<button>', { 'class': 'close', text: data.buttonText }));
