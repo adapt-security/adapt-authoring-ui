@@ -23,7 +23,7 @@ define(['backbone'], function(Backbone) {
       return new Promise((resolve, reject) => {
         Backbone.Model.prototype.fetch.call(this, _.assign({
           success: () => resolve(this), 
-          error: (model, jqXhr) => this.onFetchError(jqXhr, options.silent === false ? reject : undefined)
+          error: (model, jqXhr) => this.onError(jqXhr, options.silent === false ? reject : undefined)
         }, options));
       });
     },
@@ -37,7 +37,7 @@ define(['backbone'], function(Backbone) {
       return new Promise((resolve, reject) => {
         Backbone.Model.prototype.save.call(this, attributes, _.assign({
           success: () => resolve(this), 
-          error: (model, jqXhr) => this.onFetchError(jqXhr, options.silent === false ? reject : undefined)
+          error: (model, jqXhr) => this.onError(jqXhr, options.silent === false ? reject : undefined)
         }, options));
       });
     },
@@ -48,17 +48,17 @@ define(['backbone'], function(Backbone) {
     pruneAttributes: function() {
       if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
     },
-    onFetchError: function(jqXhr, reject) {
+    onError: function(jqXhr, reject) {
       const Origin = require('core/origin');
       const error = jqXhr && jqXhr.responseJSON;
+      error.url = this.url;
       
       if(reject) return reject(new Error(error));
-      
       const errorFormatted = JSON.stringify(error, null, '&nbsp;').replaceAll('\n', '<br/>');
 
       Origin.Notify.alert({ 
         type: 'error', 
-        text: `${Origin.l10n.t('app.errorfetchingdata', { url: this.url() })}
+        text: `${Origin.l10n.t('app.apierror')}
           <details><summary>Debug information</summary><pre>${errorFormatted}</pre></details>`
       });
     }
