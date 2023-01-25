@@ -62,6 +62,10 @@ define(function(require) {
       this.view && this.view.remove();
       Origin.trigger(`modal:${action}`, this.view);
       Origin.trigger('modal:close', action, this.view);
+    },
+
+    close() {
+      this.show(false);
     }
   });
 

@@ -122,6 +122,7 @@ define([
         }
       });
       Origin.on('actions', action => {
+        Origin.modal.close();
         const selected = Origin.modal.view.collectionView.getSelected();
         if(action === 'cancel' || !selected) {
           return;
