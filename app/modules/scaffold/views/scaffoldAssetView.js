@@ -102,8 +102,13 @@ define([
             actions: [{
               items: [
                 {
+                  id: 'upload',
+                  buttonText: Origin.l10n.t('app.upload'),
+                  buttonClass: 'primary'
+                },
+                {
                   id: 'done',
-                  buttonText: Origin.l10n.t('app.done'),
+                  buttonText: Origin.l10n.t('app.select'),
                 },
                 {
                   id: 'autofill',
