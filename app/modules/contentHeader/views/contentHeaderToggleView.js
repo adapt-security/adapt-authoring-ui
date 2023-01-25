@@ -13,9 +13,6 @@ define(function(require) {
 
       ContentHeaderButtonsView.prototype.render.apply(this);
 
-      console.log(this.$el);
-      console.log($('.item', this.$el));
-
       $('.item', this.$el).on('click', this.onItemClicked.bind(this));
 
       setTimeout(this.repositionButtons.bind(this), 500);
