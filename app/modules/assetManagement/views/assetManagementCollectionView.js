@@ -26,8 +26,6 @@ define(function(require){
     preRender: function(options) {
       this.initEventListeners();
 
-      this.isModal = options.isModal || false;
-
       if(options.types) {
         this.filters = options.types;
       }
@@ -46,7 +44,7 @@ define(function(require){
 
     initEventListeners: function() {
       this.listenTo(Origin, {
-        'filters modal:filters': this.filter,
+        'filters': this.filter,
         'assetManagement:collection:refresh': this.resetCollection
       });
     },
