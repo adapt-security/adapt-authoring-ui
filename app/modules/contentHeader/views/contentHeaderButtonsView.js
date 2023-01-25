@@ -25,7 +25,8 @@ define(function(require) {
         group.index = groupIndex;
         group.items.forEach((item, itemIndex) => {
           item.index = itemIndex;
-          item.itemHtml = itemTemplate(Object.assign(item, { group }));
+          item.uniqueId = `${this.data.eventId ? `${this.data.eventId}-` : ''}${groupIndex}-${itemIndex}`;
+          item.itemHtml = itemTemplate(Object.assign(item, { eventId: this.data.eventId, group }));
         });
       });
       if(!this.constructor.template) this.constructor.template = 'contentHeaderButtons';

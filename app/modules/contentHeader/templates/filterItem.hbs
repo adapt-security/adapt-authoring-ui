@@ -32,6 +32,6 @@
 {{/ifValueEquals}}
 
 {{#ifValueEquals type 'toggle'}}
-  <input type="checkbox" id="filter-{{group.index}}-{{index}}" {{#if checked}}checked{{/if}} />
-  <label for="filter-{{group.index}}-{{index}}">{{> part_contentHeaderButtonContent}}</label>
+  <input type="checkbox" id="filter-{{uniqueId}}" {{#if checked}}checked{{/if}} />
+  <label for="filter-{{uniqueId}}">{{> part_contentHeaderButtonContent}}</label>
 {{/ifValueEquals}}
