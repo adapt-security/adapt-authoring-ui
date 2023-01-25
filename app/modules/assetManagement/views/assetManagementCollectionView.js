@@ -19,6 +19,10 @@ define(function(require){
     pageSize: 1,
     assets: [],
 
+    getSelected: function() {
+      return this.assets.findWhere({ _isSelected: true });
+    },
+
     preRender: function(options) {
       this.initEventListeners();
 
