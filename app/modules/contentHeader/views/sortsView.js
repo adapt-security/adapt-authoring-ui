@@ -32,7 +32,7 @@ define(function(require) {
       }
       this.updateIcon();
 
-      Origin.trigger(this.data.type, { [$selected.attr('data-id')]: this.direction });
+      this.triggerEvent({ [$selected.attr('data-id')]: this.direction });
     }
   }, {
     defaultButtonIcon: 'fa-sort',

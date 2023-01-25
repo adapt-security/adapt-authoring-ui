@@ -39,9 +39,10 @@ define(function(require) {
         }]
       };
     }
-    constructor($container) {
+    constructor($container, eventId) {
       this.$container = $container;
       this.data = {
+        eventId: eventId,
         buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
           return Object.assign(data, { [type]: { groups: [], ViewClass: VIEWS[type] } });
         }, {})
@@ -57,7 +58,7 @@ define(function(require) {
       for (let type in this.data.buttons) {
         const { ViewClass, groups } = this.data.buttons[type];
         if(!groups.length) continue;
-        $(`.${type}`, this.$el).append(new ViewClass({ type, groups }).$el);
+        $(`.${type}`, this.$el).append(new ViewClass({ eventId: this.data.eventId, type, groups }).$el);
       }
     }
     getTemplateData() {

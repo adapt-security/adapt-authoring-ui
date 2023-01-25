@@ -36,18 +36,22 @@ define(function(require) {
       return this;
     },
 
-    onClicked(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      $item = $(event.currentTarget).parents('.item');
-      const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
-      let eventName = this.data.type;
+    triggerEvent(data) {
+      const eventName = `${this.data.eventId ? `${eventId}:` : ''}${this.data.type}`;
       if(data.id) {
         Origin.trigger(`${eventName}:${data.id}`, data.eventData);
         Origin.trigger(eventName, data.id, data.eventData);
       } else {
         Origin.trigger(eventName, data.eventData);
       }
+    },
+
+    onClicked(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      $item = $(event.currentTarget).parents('.item');
+      const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
+      this.triggerEvent(data);
     }
   });
 

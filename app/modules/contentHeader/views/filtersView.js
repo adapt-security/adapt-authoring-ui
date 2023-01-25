@@ -54,7 +54,7 @@ define(function(require) {
       if(type === 'tags') {
         $(event.target).toggleClass('action-primary selected');
       }
-      Origin.trigger(this.data.type, this.getFilterData());
+      this.triggerEvent(this.getFilterData());
     }
   }, {
     defaultButtonIcon: 'fa-eye',
