@@ -15,7 +15,7 @@ define(function(require) {
         .html(Handlebars.templates['modal'](this.options))
         .appendTo('body');
 
-      this.header = new ContentHeader($('.modal-popup-header', this.$el));
+      this.header = new ContentHeader($('.modal-popup-header', this.$el), 'modal');
       if(this.headerConfig) {
         this.header.data.title = this.headerConfig.title;
         this.header.data.breadcrumbs = this.headerConfig.breadcrumbs;
