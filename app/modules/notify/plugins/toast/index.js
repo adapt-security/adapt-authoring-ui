@@ -17,16 +17,25 @@ define(function(require) {
     if(typeof data === 'string') {
       data = { text: data };
     }
+    if(data.html) data.text = data.html;
+
     data = _.extend({}, defaults, data);
     appendToast(data);
   };
 
   function appendToast(data) {
-    data.icon = "i";
-    var $el = $(`<div class="${data.type} toast">`)
-      .append($(`<div class="icon">${getIconHTML(data.type)}</div>`))
-      .append($(`<div class="body">${data.text}</div>`));
+    $container.removeClass('display-none');
 
+    data.icon = "i";
+    
+    var $el = $(`<div class="${data.type} toast">`)
+      .append($(`<div class="icon">${getIconHTML(data.type)}</div>`));
+    
+    const $body = $(`<div class="body"></div>`);
+    if(data.title) $body.append($(`<div class="title">${data.title}</div>`))
+    if(data.text) $body.append($(`<div class="text">${data.text || data.html}</div>`));
+    $el.append($body);
+    
     if(data.persist) {
       $el.append($('<button>', { 'class': 'close', text: data.buttonText }));
     } else {
@@ -40,7 +49,7 @@ define(function(require) {
     let iconName = '';
     switch(type) {
       case 'info': iconName = 'info-circle'; break; 
-      case 'error': iconName = 'skull-crossbones'; break; 
+      case 'error': iconName = 'exclamation-circle'; break; 
       case 'warning': iconName = 'exclamation-triangle'; break; 
       case 'success': iconName = 'check-circle'; break; 
     }
@@ -52,6 +61,7 @@ define(function(require) {
     $el.removeClass('visible');
     setTimeout(() => {
       $el.remove();
+      $container.addClass('display-none');
       if(data.callback) data.callback.apply();
     }, 500);
   };
@@ -60,7 +70,7 @@ define(function(require) {
     Origin.Notify.register('toast', Toast);
 
     Origin.on('origin:dataReady', function() {
-      $container = $('<div class="toast-container">');
+      $container = $('<div class="toast-container display-none">');
       $('.app-inner').append($container);
     });
   };

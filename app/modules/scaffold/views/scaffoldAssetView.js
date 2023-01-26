@@ -1,9 +1,10 @@
 define([
-  'modules/assetManagement/collections/assetCollection',
-  'modules/assetManagement/views/assetManagementModalView',
+  'backbone',
+  'backboneForms',
   'core/helpers',
-  'core/origin'
-], function(AssetCollection, AssetManagementModalView, Helpers, Origin) {
+  'core/origin',
+  'modules/assetManagement/views/assetManagementView'
+], function(Backbone, BackboneForms, Helpers, Origin, AssetManagementView) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -19,7 +20,7 @@ define([
 
     initialize: function(options) {
       Backbone.Form.editors.Base.prototype.initialize.call(this, options);
-      this.listenTo(Origin, 'scaffold:assets:autofill', this.setValue);
+      this.listenTo(Origin, `scaffold:assets:autofill:${this.schema.autofillId}`, this.setValue);
       this.setValue(this.value);
     },
 
@@ -67,7 +68,7 @@ define([
       currentModel.save(attributesToSave, {
         patch: attributesToSave !== undefined,
         success: () => this.trigger('change', this),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
+        error: () => Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.errorsaveasset') })
       });
     },
 
@@ -92,20 +93,52 @@ define([
 
     onAssetButtonClicked: function(event) {
       event.preventDefault();
-
-      Origin.trigger('modal:open', AssetManagementModalView, {
-        collection: new AssetCollection,
-        assetType: this.assetType,
-        _shouldShowScrollbar: false,
-        onUpdate: function(data) {
-          if(data) {
-            this.setValue(data.assetId);
-            if(data._shouldAutofill) {
-              Origin.trigger('scaffold:assets:autofill', data.assetId);
-            }
-          }
+      const actionButtons = [
+        {
+          id: 'upload',
+          buttonText: Origin.l10n.t('app.upload'),
+          buttonClass: 'primary'
+        },
+        {
+          id: 'done',
+          buttonText: Origin.l10n.t('app.select'),
+        },
+        {
+          id: 'autofill',
+          buttonText: Origin.l10n.t('app.autofill'),
+          buttonClass: 'secondary-hollow'
+        },
+        {
+          id: 'close',
+          buttonText: Origin.l10n.t('app.cancel'),
+          buttonClass: 'action-secondary'
         }
-      }, this);
+      ].filter(b => b.id !== 'autofill' || this.schema.autofillId !== undefined);
+
+      Origin.modal.setView({ 
+        view: new AssetManagementView(),
+        header: { 
+          showCourseTitle: false,
+          breadcrumbs: [{ title: Origin.l10n.t('app.assetmanagement') }],
+          title: Origin.l10n.t('app.selectasset'), 
+          buttons: Object.assign(AssetManagementView.contentHeaderButtons, {
+            actions: [{ items: actionButtons }],
+          })
+        }
+      });
+      Origin.on('modal:actions', action => {
+        if(action !== 'upload') Origin.modal.close();
+        const selected = Origin.modal.view.collectionView.getSelected();
+        if(action === 'cancel' || !selected) {
+          return;
+        }
+        if(action === 'done') {
+          this.setValue(selected.get('_id'));
+        }
+        if(action === 'autofill') {
+          Origin.trigger(`scaffold:assets:autofill:${this.schema.autofillId}`, selected.get('_id'));
+        }
+      });
     },
 
     onClearButtonClicked: function(event) {

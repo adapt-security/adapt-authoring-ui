@@ -2,12 +2,5 @@
 define(function(require) {
   var Origin = require('core/origin');
   var ModalView = require('./views/modalView');
-
-  Origin.on('modal:open', function(view, options, context) {
-    new ModalView({
-      view: view,
-      options: options,
-      context: context
-    });
-  });
+  Origin.modal = new ModalView();
 });

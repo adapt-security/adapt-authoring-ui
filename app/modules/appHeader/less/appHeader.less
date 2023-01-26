@@ -2,6 +2,11 @@
 @import 'fonts';
 @import 'sharedStyles';
 
+@app-header-bg-regular-url: url("assets/top-bar-1080.jpg");
+@app-header-bg-large-url: url("assets/top-bar-2560.jpg");
+@app-header-logo-display: none;
+@app-header-logo-url: none;
+
 .appHeader {
   position:fixed;
   top:0px;
@@ -22,9 +27,9 @@
   position: absolute;
   top: 0;
   z-index: -1;
-  background:url("assets/top-bar-1080.jpg");
+  background: @app-header-bg-regular-url;
   @media (min-width: 1920px) {
-    background:url("assets/top-bar-2560.jpg");
+    background: @app-header-bg-large-url;
   }
 }
 
@@ -47,6 +52,15 @@
 
 .appHeader-left {
 	float:left;
+
+  .appHeader-product-logo {
+    display: @app-header-logo-display;
+    width: 36px;
+    background: @app-header-logo-url;
+    background-position-y: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
   .appHeader-product-name {
     .no-select;
   }

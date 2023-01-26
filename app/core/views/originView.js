@@ -30,7 +30,6 @@ define(function(require){
       this.$el.html(template(data));
       _.defer(_.bind(function() {
         this.postRender();
-        this.onReady();
         if (this.constructor.template) {
           Origin.trigger(this.constructor.template + ':postRender', this);
         }
@@ -42,11 +41,8 @@ define(function(require){
       this.setViewToReady();
     },
 
-    onReady: function() {
-
-    },
-
     setViewToReady: function() {
+      Origin.trigger(this.constructor.template + ':ready', this);
       Origin.trigger('origin:hideLoading');
     },
 

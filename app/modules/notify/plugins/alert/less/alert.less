@@ -58,6 +58,11 @@
   }
 }
 
+// override to stop content being hidden
+body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+  overflow: initial !important;
+}
+
 body.swal2-toast-shown .swal2-container.swal2-top-right {
   top: 63px !important;
   max-width: 500px;

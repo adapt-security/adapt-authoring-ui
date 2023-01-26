@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
-  var Helpers = require('core/helpers');
+  var ApiCollection = require('core/collections/apiCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var PluginTypeView = require('./pluginTypeView');
@@ -12,75 +11,66 @@ define(function(require){
     pluginType: "plugin",
 
     events: {
-      'click .refresh-all-plugins': 'refreshPluginList'
+      'click .refresh-all-plugins': 'fetch'
     },
 
-    initialize: async function(options) {
-      this.currentPluginType = options.pluginType;
+    initialize: function(options) {
+      this.contentPlugins = ApiCollection.ContentPlugins();
+      this.contentPlugins.on('sync', this.renderPlugins, this);
+      this.currentFilters = {};
 
-      this.contentPlugins = new ContentPluginCollection(undefined, { filter: { includeUpdateInfo: true } }); // all plugins
-      this.pluginCollections = {}; // sorted plugins go here
+      Origin.on({
+        'actions:upload': () => Origin.router.navigateTo('pluginManagement/upload'),
+        'filters': this.filter,
+        'links': window.open
+      }, this);
 
-      await this.refreshPluginList();
-      
+      this.fetch();
+
       return OriginView.prototype.initialize.apply(this, arguments);
     },
 
-    preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.' + this.currentPluginType + 'management') });
-      this.refreshPluginList();
-    },
-    
-    render: function() {
-      this.model = {
-        toJSON: _.bind(function() { return { type: this.currentPluginType }; }, this)
-      };
-      return OriginView.prototype.render.apply(this, arguments);
+    renderStatusMessage: function(message) {
+      this.$('.pluginManagement-plugins').append(`<div class="pluginManagement-status">${Origin.l10n.t(message)}</div>`);
     },
 
-    renderPluginTypeViews: function() {
+    renderPlugins: function() {
       this.$('.pluginManagement-plugins').empty();
+  
+      this.contentPlugins.forEach(c => {
+        if(this.currentFilters.updateAvailable && !c.get('canBeUpdated')) {
+          return;
+        }
+        this.$('.pluginManagement-plugins').append(new PluginTypeView({ model: c }).$el);
+      });
+      if(!$('.pluginType-item ').length) this.renderStatusMessage('app.noplugintypes');
 
-      var coll = this.pluginCollections[this.currentPluginType];
-      if(!coll.length) {
-        this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
-      } else {
-        coll.forEach(this.renderPluginTypeView);
-      }
       this.setViewToReady();
     },
 
-    renderPluginTypeView: function(pluginType, index) {
-      var cssClass = `tb-row-${Helpers.odd(index)}`;
-      var view = new PluginTypeView({ model: pluginType });
-      this.$('.pluginManagement-plugins').append(view.$el.addClass(cssClass));
+    fetch: async function() {
+      try {
+        this.contentPlugins.customQuery.includeUpdateInfo = true;
+        await this.contentPlugins.fetch({ reset: true });
+      } catch(e) {
+        Origin.Notify.toast({ type: 'error', text: e.responseJSON.message });
+      }
     },
 
-    refreshPluginList: async function(e) {
-      if(e) { // triggered by the UI, so handle button style
-        e.preventDefault();
-        var $btn = $(e.currentTarget);
-        if($btn.is(':disabled')) return false;
-        $btn.attr('disabled', true);
+    filter: function(filters) {
+      this.currentFilters = filters;
+      const filterQuery = {
+        isEnabled: filters.isEnabled
+      };
+      if(filters.search) {
+        const q = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
+        filterQuery.$or = [{ title: q }, { description: q }];
       }
-      try {
-        // sort the plugins by name and group by type
-        await this.contentPlugins.fetch();
-        this.pluginCollections = this.contentPlugins
-          .slice()
-          .sort((a,b) => a.get('name').localeCompare(b.get('name')))
-          .reduce((memo,p) => {
-            var type = p.get('type');
-            if(!memo[type]) memo[type] = [];
-            memo[type].push(p);
-            return memo;
-          }, {});
-        // reset the button
-        if(e) $(e.currentTarget).attr('disabled', false);
-        this.renderPluginTypeViews();
-      } catch(e) {
-        console.error(e);
+      if(filters.type) {
+        filterQuery.type = { $in: Object.entries(filters.type).filter(([k,v]) => v).map(([k]) => k) };
       }
+      this.contentPlugins.customQuery = filterQuery;
+      this.fetch();
     }
   }, {
     template: 'pluginManagement'

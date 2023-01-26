@@ -29,20 +29,6 @@ define(function(require){
       });
     },
 
-    getChildren: function() {
-      return Origin.editor.data.content.where({ _parentId: this.model.get('_id') }).sort((a,b) => {
-        return a._sortOrder < b._sortOrder ? -1 : 1;
-      });
-    },
-    
-    getSiblings: function() {
-      return Origin.editor.data.content.models.filter(m => {
-        const sameParent = m.get('_parentId') === this.model.get('_parentId')
-        const isMe = m.get('_id') === this.model.get('_id');
-        return sameParent & !isMe;
-      });
-    },
-
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
       
@@ -78,7 +64,7 @@ define(function(require){
 
     componentPasteLocation: function() {
       if ($('.block-inner .add-control').length > 0) return;
-      Origin.Notify.alert({
+      Origin.Notify.toast({
         type: 'error',
         text: Origin.l10n.t('app.componentcopyerror')
       });
@@ -173,7 +159,25 @@ define(function(require){
       });
     },
 
-    buildErrorMessage: function(errorObjs, message = "") {
+    deletePrompt: function() {
+      Origin.Notify.confirm({
+        type: 'warning',
+        text: Origin.l10n.t('app.confirmdelete', { type: this.model.get('_type') }),
+        callback: ({ isConfirmed }) => {
+          if(!isConfirmed) {
+            return;
+          }
+          this.model.destroy({
+            error: () => Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
+          });
+        }
+      });
+    },
+
+    buildErrorMessage: function(errorObjs, message) {
+      if(!message) {
+        message = "";
+      }
       _.each(errorObjs, function(item, key) {
         if(item.hasOwnProperty('message')) {
           message += `<span class="key">${item.title || key}</span>: ${item.message}<br/>`;
@@ -242,7 +246,7 @@ define(function(require){
     },
 
     onSaveError: function(pTitle, pText) {
-      Origin.Notify.alert({ 
+      Origin.Notify.toast({ 
         type: 'error', 
         title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'), 
         text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')

@@ -181,7 +181,7 @@ define(function(require){
           $btn.addClass('submitted');
           Helpers.ajax('api/auth/local/invite', { email: this.model.get('email') }, 'POST', () => {
             $btn.removeClass('submitted');
-            Origin.Notify.alert({
+            Origin.Notify.toast({
               type: 'success',
               text: Origin.l10n.t('app.invitesent', { email: this.model.get('email') })
             });
@@ -201,7 +201,7 @@ define(function(require){
           $btn.addClass('submitted');
           Helpers.ajax('api/auth/local/forgotpass', { email: this.model.get('email') }, 'POST', () => {
             $btn.removeClass('submitted');
-            Origin.Notify.alert({
+            Origin.Notify.toast({
               type: 'success',
               text: Origin.l10n.t('app.resetsent', { email: this.model.get('email') })
             });
@@ -223,7 +223,7 @@ define(function(require){
           const email = this.model.get('email');
           Helpers.ajax('api/auth/local/changepass', { email, password }, 'POST', () => {
             this.model.fetch();
-            Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.changepasswordtext', { email }) });
+            Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.changepasswordtext', { email }) });
           });
         }
       });
@@ -325,7 +325,7 @@ define(function(require){
 
     onError: function(error) {
       // HACK setTimeout workaround to give sweetalert time to clean up after a confirm
-      setTimeout(() => Origin.Notify.alert({ type: 'error', text: error.message || error }), 100);
+      setTimeout(() => Origin.Notify.toast({ type: 'error', text: error.message || error }), 100);
     }
   }, {
     template: 'user'

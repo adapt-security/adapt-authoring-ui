@@ -1,5 +1,4 @@
 define(function(require) {
-  var Handlebars = require('handlebars');
   var Origin = require('core/origin');
 
   var Helpers = {
@@ -8,16 +7,15 @@ define(function(require) {
     * expects backbone model
     */
     setPageTitle: function(model) {
-      getNearestPage(model, function(page) {
-        var data = {
-          model: model || {},
-          page: page,
-          langString: Origin.l10n.t('app.' + getLangKey())
-        };
-        Origin.trigger('contentHeader:updateTitle', {
-          breadcrumbs: generateBreadcrumbs(data),
-          title: getTitleForModel(data)
-        });
+      const page = getNearestPage(model);
+      var data = {
+        model: model || {},
+        page: page,
+        langString: Origin.l10n.t(getLangKey())
+      };
+      Origin.contentHeader.setTitle({
+        breadcrumbs: generateBreadcrumbs(data),
+        title: getTitleForModel(data)
       });
     }
   }
@@ -34,7 +32,7 @@ define(function(require) {
     if(Origin.location.route2 === 'component' && Origin.location.route3 === 'new') {
       return 'edit';
     }
-    return Origin.location.route4;
+    return Origin.location.route4 || '';
   }
 
   function generateBreadcrumbs(data) {
@@ -63,37 +61,35 @@ define(function(require) {
   }
 
   function getLangKey() {
-    var type = getType();
-    var action = getAction();
-
-    if ((type === 'page' || type === 'menu') && action === 'edit') {
-      return 'editorpagesettings';
-    }
-    return 'editor' + type;
+    return {
+      settings: 'app.editorcourse',
+      config: 'app.editorconfig',
+      pageedit: 'app.editorpagesettings',
+      page: 'app.editorpage',
+      menuedit: 'app.editorpagesettings',
+      menu: 'app.editormenu',
+      menusettings: 'app.editormenupicker',
+      articleedit: 'app.editorarticle',
+      blockedit: 'app.editorblock',
+      componentedit: 'app.editorcomponent'
+    }[`${getType()}${getAction()}`];
   }
 
   function getNearestPage(model, cb) {
-    var _recurse = function(model) {
-      var type = model.get('_type');
-      
-      if(!type || type === 'course' || type === 'config') {
-        return cb(); // pages don't apply here, so just return
+    do {
+      switch(model.get('_type')) {
+        case 'course': 
+        case 'config': 
+        case undefined: 
+          return;
+        case 'page': 
+        case 'menu': 
+          return model;
+        default: 
+          model = model.getParent();
       }
-      if (type === 'page' || type === 'menu') {
-        return cb(model); // we're at the top of the hierarchy
-      }
-      _recurse(Origin.editor.data.content.findWhere({ _id: model.get('_parentId') }));
-    };
-    // start recursion
-    _recurse(model);
+    } while(model);
   }
-
-  function getComponentDisplayName(name) {
-    const plugin = Origin.editor.data.componentTypes.findWhere({ name });
-    return plugin ? plugin.get('displayName') : '';
-  }
-
-  Handlebars.registerHelper('getComponentDisplayName', getComponentDisplayName);
 
   return Helpers;
 });

@@ -3,10 +3,9 @@ define(function(require) {
   var Origin = require('core/origin');
   var PluginManagementView = require('./views/pluginManagementView');
   var PluginManagementUploadView = require('./views/pluginManagementUploadView');
-  var PluginManagementSidebarView = require('./views/pluginManagementSidebarView');
-  var PluginManagementUploadSidebarView = require('./views/pluginManagementUploadSidebarView');
 
   var scopes = ["write:contentplugins"];
+  var breadcrumbs = [{ title: Origin.l10n.t('app.pluginmanagement'), url: 'pluginManagement' }];
   
   Origin.on('router:initialize', () => Origin.router.restrictRoute('pluginManagement', scopes));
 
@@ -22,15 +21,62 @@ define(function(require) {
   });
 
   Origin.on('router:pluginManagement', function(location, subLocation, action) {
-    if (!location) {
-      location = 'extension';
-    }
     if ('upload' === location) {
+      Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.uploadplugin') });
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
       Origin.contentPane.setView(PluginManagementUploadView);
-      Origin.sidebar.addView(new PluginManagementUploadSidebarView().$el, {});
     } else {
-      Origin.contentPane.setView(PluginManagementView, { pluginType: location });
-      Origin.sidebar.addView(new PluginManagementSidebarView().$el);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.FILTERS, [
+        {
+          id: 'type',
+          name: 'Types',
+          items: [
+            {
+              id: 'component',
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.components'),
+              checked: true
+            },
+            {
+              id: 'extension',
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.extensions'),
+              checked: true
+            },
+            {
+              id: 'menu',
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.menus'),
+              checked: true
+            },
+            {
+              id: 'theme',
+              type: 'toggle',
+              buttonText: Origin.l10n.t('app.themes'),
+              checked: true
+            }
+          ]
+        }
+      ]);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{
+        items: [
+          {
+            id: 'upload',
+            buttonText: Origin.l10n.t('app.uploadplugin')
+          }
+        ]
+      }]);
+      Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.LINKS, [{ 
+        items: [
+          {
+            buttonText: Origin.l10n.t('app.getnewplugins'),
+            buttonIcon: 'fa-external-link',
+            eventData: 'https://www.adaptlearning.org/index.php/plugin-browser/'
+          }
+        ] 
+      }]);
+      Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.managepluginstitle') });
+      Origin.contentPane.setView(PluginManagementView, { pluginType: location }, { fullWidth: true });
     }
   });
 });

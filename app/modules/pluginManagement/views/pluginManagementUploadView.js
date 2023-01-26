@@ -8,8 +8,9 @@ define(function(require){
     className: 'pluginManagement-upload-plugin',
 
     preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.uploadplugin') });
-      this.listenTo(Origin, 'pluginManagement:uploadPlugin', this.uploadFile);
+      Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.uploadplugin') });
+      this.listenTo(Origin, 'actions:save', this.uploadFile);
+      Origin.on('actions:cancel', () => Origin.router.navigateBack());
     },
 
     postRender: function() {
@@ -31,7 +32,6 @@ define(function(require){
     validate: function() {
       if(_.isEmpty(this.$('form input').val())) {
         this.$('.field-error').removeClass('display-none');
-        Origin.trigger('sidebar:resetButtons');
         return false;
       }
       this.$('.field-error').addClass('display-none');
@@ -39,23 +39,21 @@ define(function(require){
     },
 
     onUploadSuccess: function(data) {
-      Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
+      Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
 
-      Origin.trigger('sidebar:resetButtons');
       $('.loading').hide();
 
       Origin.router.navigateTo(`pluginManagement/${data.pluginType || ''}`);
     },
 
     onUploadError: function(data) {
-      Origin.trigger('sidebar:resetButtons');
       $('.loading').hide();
 
       var resError = data && data.responseJSON && data.responseJSON.message;
       var resText = data && data.responseText;
       var message = resError || resText || '';
 
-      Origin.Notify.alert({
+      Origin.Notify.toast({
         type: 'error',
         title: Origin.l10n.t('app.uploadpluginerror'),
         text: message

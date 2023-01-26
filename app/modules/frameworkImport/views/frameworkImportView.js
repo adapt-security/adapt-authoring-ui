@@ -10,10 +10,14 @@ define(function(require){
     createdCourseId: false,
 
     preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.frameworkimporttitle') });
+      Origin.contentHeader.setTitle({ 
+        breadcrumbs: [{ title: Origin.l10n.t('app.projects'), url: 'projects' }], 
+        title: Origin.l10n.t('app.frameworkimporttitle') 
+      });
       this.listenTo(Origin, {
-        'frameworkImport:check': this.checkCourse,
-        'frameworkImport:import': this.importcourse
+        'actions:check': this.checkCourse,
+        'actions:import': this.importCourse,
+        'actions:cancel': () => Origin.router.navigateToDashboard()
       });
     },
 
@@ -30,23 +34,32 @@ define(function(require){
     },
 
     isValid: function() {
-      var $uploadFile = this.$('.asset-file');
-      const isValid = $uploadFile.val() !== '';
-      $uploadFile.toggleClass('input-error', !isValid);
-      $('.field-file').find('span.error').text(isValid ? '' : Origin.l10n.t('app.pleaseaddfile'));
-      return isValid;
+      if(this.$('.asset-file').val() === '') {
+        return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
+      }
+      return true;
     },
 
     checkCourse: async function() {
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
-          $('button.frameworkimport.check').addClass('display-none');
-          if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
-          this.$el.html(Handlebars.templates.frameworkImportSummary(data));
+          this.transformStatusData(data);
+          $('.actions button.check').addClass('display-none');
+          if(data.canImport) $('.actions button.import').removeClass('display-none');
+          this.$('#import_upload').addClass('display-none');
+          this.$el.append(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
-        .finally(() => Origin.trigger('sidebar:resetButtons'));
+    },
+
+    transformStatusData: function(data) {
+      Object.values(data.statusReport).forEach(messages => {
+        messages.forEach(m => m.text = Origin.l10n.t(`app.import.status.${m.code}`));
+      });
+      data.versions.forEach(v => {
+        v.statusText = Origin.l10n.t(`app.import.plugins.status.${v.status}`);
+      });
     },
     
     importCourse: function() {
@@ -57,8 +70,6 @@ define(function(require){
     },
 
     doImport: async function(dryRun = false) {
-      Origin.trigger('sidebar:updateButton', 'button.frameworkimport', Origin.l10n.t('app.working'));
-
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
@@ -85,7 +96,7 @@ define(function(require){
     },
 
     onError: function(e) {
-      Origin.Notify.alert({ type: 'error', text: e.message })
+      Origin.Notify.toast({ type: 'error', text: e.message })
     }
   }, {
     template: 'frameworkImport'

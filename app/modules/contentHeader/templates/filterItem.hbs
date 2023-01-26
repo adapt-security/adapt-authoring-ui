@@ -1,23 +1,37 @@
-{{!-- toggle --}}
-{{#ifValueEquals type 'toggle'}}
-  <input type="checkbox" id="{{eventName}}" {{#if checked}}checked{{/if}} />
-  <label for="{{eventName}}">{{> part_headerButtonContent}}</label>
-{{/ifValueEquals}}
-{{!-- search --}}
 {{#ifValueEquals type 'search'}}
-  <div class="label">{{buttonText}}</div>
+  {{#if buttonText}}
+    <div class="label">{{buttonText}}</div>
+  {{/if}}
   <input type="text" placeholder="{{placeholder}}">
 {{/ifValueEquals}}
-{{!-- tags --}}
+
+{{#ifValueEquals type 'select'}}
+  {{#if buttonText}}
+    <div class="label">{{buttonText}}</div>
+  {{/if}}
+  <select>
+    {{#each values}}
+      <option value={{#if value}}{{value}}{{else}}{{this}}{{/if}}>{{#if label}}{{label}}{{else}}{{this}}{{/if}}</option>
+    {{/each}}
+  </select>
+{{/ifValueEquals}}
+
 {{#ifValueEquals type 'tags'}}
-  <div class="label">{{buttonText}}</div>
+  {{#if buttonText}}
+    <div class="label">{{buttonText}}</div>
+  {{/if}}
   <div class="tags">
-    {{#if ../tags.length}}
-      {{#each ../tags}}
-        <span class="tag" data-value="{{_id}}">{{title}}</span>
+    {{#if tags.length}}
+      {{#each tags}}
+        <span class="tag secondary-hollow btn" data-value="{{_id}}">{{title}}</span>
       {{/each}}
     {{else}}
       {{t 'app.notags'}}
     {{/if}}
   </div>
+{{/ifValueEquals}}
+
+{{#ifValueEquals type 'toggle'}}
+  <input type="checkbox" id="filter-{{uniqueId}}" {{#if checked}}checked{{/if}} />
+  <label for="filter-{{uniqueId}}">{{> part_contentHeaderButtonContent}}</label>
 {{/ifValueEquals}}

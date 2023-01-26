@@ -1,10 +1,9 @@
 define([
   'core/origin',
-  'core/helpers',
+  'core/collections/apiCollection',
   'backboneForms',
   'backboneFormsLists',
   './backboneFormsOverrides',
-  './views/scaffoldAssetItemView',
   './views/scaffoldAssetView',
   './views/scaffoldCodeEditorView',
   './views/scaffoldColourPickerView',
@@ -14,7 +13,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, Helpers, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
@@ -61,6 +60,16 @@ define([
       }
     };
 
+    var generateFieldClasses = function() {
+      const adapt = field._adapt;
+      const classes = [formsConfig.fieldClass || ''];
+
+      if(adapt) {
+        if(adapt.translatable) classes.push('is-translatable');
+      }
+      return classes.join(' ');
+    };
+
     var getValidators = function() {
       var validators = formsConfig.validators || [];
 
@@ -97,7 +106,7 @@ define([
       editorAttrs: formsConfig.editorAttrs,
       editorClass: formsConfig.editorClass,
       fieldAttrs: formsConfig.fieldAttrs,
-      fieldClass: formsConfig.fieldClass,
+      fieldClass: generateFieldClasses(),
       help: field.description,
       itemType: itemsProperties ? 'Object' : items && getType(items),
       inputType: formsConfig.type ? formsConfig : getType(),
@@ -144,6 +153,7 @@ define([
     '_layout',
     '_menu',
     '_parentId',
+    '_sortOrder',
     '_supportedLayout',
     '_theme',
     '_themePreset',
@@ -151,6 +161,7 @@ define([
     '_type',
     'createdAt',
     'createdBy',
+    'layoutOptions',
     'menuSettings',
     'themeSettings',
     'themeVariables',
@@ -261,8 +272,9 @@ define([
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
       try {
-        const plugin = Origin.editor.data.componentTypes.findWhere({ name: model.get('_component') });
-        schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
+        const plugins = ApiCollection.ContentPlugins({ customQuery: { name: model.get('_component') } });
+        await plugins.fetch();
+        schemaType = `${plugins.first().get('targetAttribute').slice(1)}-${schemaType}`;
       } catch(e) {} // nothing to do
     }
     const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';

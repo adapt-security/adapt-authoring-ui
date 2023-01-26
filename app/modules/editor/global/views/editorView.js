@@ -3,13 +3,9 @@
  * TODO I think this exists to add extra functionality to the menu/page structure pages
  */
 define(function(require) {
-  var ArticleModel = require('core/models/articleModel');
-  var BlockModel = require('core/models/blockModel');
-  var ComponentModel = require('core/models/componentModel');
-  var ContentObjectModel = require('core/models/contentObjectModel');
-  var EditorMenuView = require('../../contentObject/views/editorMenuView');
+  var EditorMenuView = require('../../courseStructure/views/editorMenuView');
   var EditorOriginView = require('./editorOriginView');
-  var EditorPageView = require('../../contentObject/views/editorPageView');
+  var EditorPageView = require('../../pageStructure/views/editorPageView');
   var helpers = require('core/helpers');
   var Origin = require('core/origin');
 
@@ -30,57 +26,20 @@ define(function(require) {
     preRender: function(options) {
       this.currentView = options.currentView;
       Origin.editor.isPreviewPending = false;
-      this.currentCourseId = Origin.editor.data.course.get('_id');
-      this.currentCourse = Origin.editor.data.course;
-      this.currentPageId = options.currentPageId;
 
       this.listenTo(Origin, {
         'editorView:refreshView': this.setupEditor,
         'editorView:copy': this.addToClipboard,
         'editorView:copyID': this.copyIdToClipboard,
         'editorView:paste': this.pasteFromClipboard,
-        'editorCommon:download': this.downloadProject,
-        'editorCommon:preview': this.previewProject,
-        'editorCommon:export': this.exportProject
+        'actions': this.buildProject,
       });
       this.render();
-      this.setupEditor();
+      this.renderCurrentEditorView();
     },
 
     postRender: function() {
 
-    },
-
-    setupEditor: function() {
-      this.renderCurrentEditorView();
-    },
-
-    previewProject: function() {
-      if(Origin.editor.isPreviewPending) {
-        return;
-      }
-      if(!this.validateCourse()) {
-        return;
-      }
-      Origin.editor.isPreviewPending = true;
-      $('.editor-common-sidebar-preview-inner').addClass('display-none');
-      $('.editor-common-sidebar-previewing').removeClass('display-none');
-      
-      const previewWindow = window.open('loading', 'preview');
-      
-      $.post(`api/adapt/preview/${this.currentCourseId}`)
-        .done(data => {
-          this.resetPreviewProgress();
-          previewWindow.location.href = data.preview_url;
-        })
-        .fail((jqXHR, textStatus, errorThrown) => {
-          this.resetPreviewProgress();
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorgeneratingpreview') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
-          previewWindow.close();
-        });
     },
 
     validateCourse: function() {
@@ -96,97 +55,47 @@ define(function(require) {
         children.forEach(c => validateChildren(c));
       };
       
-      validateChildren(this.currentCourse);
+      validateChildren(Origin.editor.data.course);
 
       if(errors.length) {
-        Origin.Notify.alert({ type: 'error', html: errors.join('<br/>') });
+        Origin.Notify.toast({ type: 'warning', html: errors.join('<br/>') });
       }
       return errors.length === 0;
     },
 
-    exportProject: async function(error) {
-      // TODO - very similar to export in project/views/projectView.js, remove duplication
-      // aleady processing, don't try again
-      if(error || this.exporting) return;
-
-      this.showExportAnimation();
-      this.exporting = true;
-      if(!this.validateCourse()) {
+    buildProject: async function(type) {
+      if(this.isBuilding || !this.validateCourse()) {
         return;
+      } 
+      const isPreview = type === 'preview';
+      let previewWindow;
+      
+      if(isPreview) {
+        previewWindow = window.open('loading', 'preview');
       }
-      $.ajax({
-        url: `api/adapt/export/${Origin.editor.data.course.get('_id')}`,
-        method: 'POST',
-        success: data => {
-          this.showExportAnimation(false);
-          this.exporting = false;
-          var $downloadForm = $('#downloadForm');
-          $downloadForm.attr('action', data.export_url);
-          $downloadForm.submit();
-        },
-        error: jqXHR => {
-          this.showExportAnimation(false);
-          this.exporting = false;
-          Origin.Notify.alert({
-            type: 'error',
-            title: Origin.l10n.t('app.exporterrortitle'),
-            text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
+      try {
+        this.isBuilding = true;
+        const data = await $.post(`api/adapt/${type}/${Origin.editor.data.course.get('_id')}`);
+        if(isPreview) {
+          previewWindow.location.href = data.preview_url;
+        } else {
+          Origin.Notify.toast({ type: 'info', text: Origin.l10n.t('app.buildready') });
+          const $tempForm = $(`<form method="get" action="${data[`${type}_url`]}"></form>`);
+          $('body').append($tempForm);
+          $tempForm.trigger('submit');
+          $tempForm.remove();
         }
-      });
-    },
-
-    showExportAnimation: function(show = true) {
-      const $btn = $('button.editor-common-sidebar-export');
-      if(show) {
-        $('.editor-common-sidebar-export-inner', $btn).addClass('display-none');
-        $('.editor-common-sidebar-exporting', $btn).removeClass('display-none');
-      } else {
-        $('.editor-common-sidebar-export-inner', $btn).removeClass('display-none');
-        $('.editor-common-sidebar-exporting', $btn).addClass('display-none');
-      }
-    },
-
-    downloadProject: function() {
-      if(Origin.editor.isDownloadPending) {
-        return;
-      }
-      if(!this.validateCourse()) {
-        return;
-      }
-      $('.editor-common-sidebar-download-inner').addClass('display-none');
-      $('.editor-common-sidebar-downloading').removeClass('display-none');
-
-      $.ajax({
-        url: `api/adapt/publish/${this.currentCourseId}`,
-        method: 'POST',
-        success: (data, textStatus, jqXHR) => {
-          this.resetDownloadProgress();
-          var $downloadForm = $('#downloadForm');
-          $downloadForm.attr('action', data.publish_url);
-          $downloadForm.submit();
-        },
-        error: jqXHR => {
-          this.resetDownloadProgress();
-          Origin.Notify.alert({
-            type: 'error',
-            text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: jqXHR.responseJSON.message })
-          });
+      } catch(e) {
+        if(isPreview) {
+          previewWindow.close();
         }
-      });
-    },
-  
-    resetPreviewProgress: function() {
-      $('.editor-common-sidebar-preview-inner').removeClass('display-none');
-      $('.editor-common-sidebar-previewing').addClass('display-none');
-      $('.editor-common-sidebar-preview-wrapper .dropdown').removeClass('active');
-      Origin.editor.isPreviewPending = false;
-    },
-
-    resetDownloadProgress: function() {
-      $('.editor-common-sidebar-download-inner').removeClass('display-none');
-      $('.editor-common-sidebar-downloading').addClass('display-none');
-      Origin.editor.isDownloadPending = false;
+        Origin.Notify.toast({
+          type: 'error',
+          title: Origin.l10n.t('app.builderrortitle'),
+          text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: e.responseJSON.message })
+        });
+      }
+      this.isBuilding = false;
     },
 
     addToClipboard: function(model) {
@@ -198,14 +107,11 @@ define(function(require) {
       var id = model.get('_id');
 
       if (helpers.copyStringToClipboard(id)) {
-        Origin.Notify.alert({
-          type: 'info',
-          text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id })
-        });
+        Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id }) });
       } else {
-        Origin.Notify.alert({
+        Origin.Notify.toast({
           type: 'warning',
-          text: Origin.l10n.t('app.copyidtoclipboarderror', { id: id })
+          text: Origin.l10n.t('app.copyidtoclipboarderror', { id })
         });
       }
     },
@@ -219,45 +125,23 @@ define(function(require) {
         data: JSON.stringify({ _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }),
         success: newData => {
           Origin.editor.clipboardId = null;
-          Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
+          Origin.trigger('editorView:menuView:addItem', new ContentModel(newData))
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
           Origin.trigger(`editorView:refreshView`);
         },
         fail: ({ message }) => {
-          Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
+          Origin.Notify.toast({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
         }
       });
-    },
-
-    createModel: function (type) {
-      switch (type) {
-        case 'contentObjects': return new ContentObjectModel();
-        case 'articles': return new ArticleModel();
-        case 'blocks': return new BlockModel();
-        case 'components': return new ComponentModel();
-      }
     },
 
     renderCurrentEditorView: function() {
       Origin.trigger('editorView:removeSubViews');
 
-      if(this.currentView === 'menu') {
-        this.renderEditorMenu();
-      } else if(this.currentView === 'page') {
-        this.renderEditorPage();
-      }
+      const ViewClass = this.currentView === 'menu' ? EditorMenuView : EditorPageView;
+      this.$('.editor-inner').html(new ViewClass({ model: this.model }).$el);
+      
       Origin.trigger('editorSidebarView:addOverviewView');
-    },
-
-    renderEditorMenu: function() {
-      var view = new EditorMenuView({ model: Origin.editor.data.course });
-      this.$('.editor-inner').html(view.$el);
-    },
-
-    renderEditorPage: function() {
-      var model = Origin.editor.data.content.findWhere({ _id: this.currentPageId });
-      var view = new EditorPageView({ model });
-      this.$('.editor-inner').html(view.$el);
     },
 
     // Event handling

@@ -80,13 +80,13 @@ define(function(require) {
     deleteProjectPrompt: function(event) {
       event && event.preventDefault();
       var isShared = this.model.get('_isShared') || (this.model.get('_shareWithUsers') && this.model.get('_shareWithUsers').length > 0);
-      var titleKey = isShared ? 'deletesharedproject' : 'deleteproject';
-      var textKey = isShared ? 'confirmdeletesharedprojectwarning' : 'confirmdeleteprojectwarning';
+      var titleKey = isShared ? 'app.deletesharedproject' : 'app.deleteproject';
+      var textKey = isShared ? 'app.confirmdeletesharedprojectwarning' : 'app.confirmdeleteprojectwarning';
 
       Origin.Notify.confirm({
         type: 'warning',
-        title: Origin.l10n.t('app.' + titleKey),
-        html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t('app.' + textKey),
+        title: Origin.l10n.t(titleKey),
+        html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t(textKey),
         destructive: isShared,
         callback: this.deleteProjectConfirm.bind(this)
       });
@@ -102,7 +102,7 @@ define(function(require) {
           this.remove();
         }.bind(this),
         error: function(model, response, options) {
-          _.delay(() => Origin.Notify.alert({ type: 'error', text: response.responseJSON.message }), 1000);
+          _.delay(() => Origin.Notify.toast({ type: 'error', text: response.responseJSON.message }), 1000);
         }
       });
     },
@@ -139,9 +139,7 @@ define(function(require) {
       var opts = { id: this.model.get('_id') };
       if(Helpers.copyStringToClipboard(opts.id)) {
         Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
-        return;
       }
-      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', opts) });
     },
 
     onProjectShowTagsButtonClicked: function(event) {

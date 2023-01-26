@@ -30,8 +30,7 @@ define(function(require){
 
     onEditButtonClicked: function(event) {
       event.preventDefault();
-      var assetId = this.model.get('_id');
-      Origin.router.navigateTo(`assetManagement/${assetId}/edit`);
+      Origin.trigger('assetManagement:edit', this.model);
     },
 
     onDeleteButtonClicked: function(event) {
@@ -54,7 +53,7 @@ define(function(require){
         Origin.trigger('assetManagement:assetPreviewView:delete');
         this.remove();
       } catch(e) {
-        Origin.Notify.alert({
+        Origin.Notify.toast({
           type: 'error',
           text: Origin.l10n.t('app.errordeleteasset', { message: e.responseJSON && e.responseJSON.message || e.responseText })
         });

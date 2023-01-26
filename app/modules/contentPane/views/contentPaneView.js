@@ -13,7 +13,9 @@ define(function(require) {
     },
     animDuration: 500,
 
-    initialize: function() {
+    
+
+    initialize: function(options) {
       this.listenToEvents();
       this.render();
     },
@@ -25,22 +27,31 @@ define(function(require) {
     },
 
     render: function() {
-      var template = Handlebars.templates[this.constructor.template];
-      this.$el.html(template());
+      this.$el.html(Handlebars.templates[this.constructor.template]());
+      $('.app-inner').append(this.$el);
       return this;
     },
 
-    // expects a backbone view
-    setView: function(view) {
+    setView: function(ViewClass, viewOptions = {}, options = {}) {
+      const view = new ViewClass(viewOptions);
       if(!view.$el || !view.$el[0] || !_.isElement(view.$el[0])) {
         console.log('ContentPaneView.setView: expects a Backbone.View instance, received', view);
       }
       if(this.$('.contentPane-inner').html() !== '') {
         this.removeView();
       }
+      this.$el.toggleClass('full-width', !!options.fullWidth);
       this.$('.contentPane-inner').html(view.$el);
       Origin.trigger('contentPane:changed');
       this.animateIn(_.bind(this.resize, this));
+    },
+
+    enableScroll: function() {
+      this.$el.removeClass('no-scroll');
+    },
+
+    disableScroll: function() {
+      this.$el.addClass('no-scroll');
     },
 
     removeView: function(cb) {

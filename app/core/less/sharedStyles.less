@@ -29,12 +29,7 @@
 }
 
 .no-ui {
-  background: url(assets/login_bg.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  .sidebar, .appHeader, .contentHeader {
+  .appHeader, .contentHeader {
     display: none;
   }
 }
@@ -47,10 +42,9 @@
 
 // Page-style form background
 .form-container-style {
-  max-width: 1000px;
-  margin: 20px;
   border: 1px solid darken(@ui-content-color, 10%);
   background-color: @white;
+  margin: 30px;
   > .inner {
     padding: 30px;
     form .form-group {

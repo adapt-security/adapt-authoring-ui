@@ -1,10 +1,11 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ApiCollection = require('core/collections/apiCollection');
+  var ApiModel = require('core/models/apiModel');
+  var AssetItemView = require('./assetManagementItemView');
+  var AssetForm = require('./assetForm');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var AssetItemView = require('./assetManagementItemView');
-  var AssetModel = require('../models/assetModel');
-  var TagsCollection = require('core/collections/tagsCollection');
 
   var AssetCollectionView = OriginView.extend({
     className: "asset-management-collection",
@@ -19,43 +20,44 @@ define(function(require){
     pageSize: 1,
     assets: [],
 
+    isModal: function() {
+      return this.$el && this.$el.parents('.modal').length > 0;
+    },
+
+    getSelected: function() {
+      return this.assets.findWhere({ _isSelected: true });
+    },
+
     preRender: function(options) {
       this.initEventListeners();
-
-      this.isModal = options.isModal || false;
 
       if(options.types) {
         this.filters = options.types;
       }
-      this.tagsCollection = new TagsCollection();
+      this.assets = ApiCollection.Assets();
+      this.tags = ApiCollection.Tags();
 
       this._doLazyScroll = _.bind(_.throttle(this.doLazyScroll, 250), this);
       this._onResize = _.bind(_.debounce(this.onResize, 400), this);
     },
 
     postRender: function() {
-      if(this.isModal) {
-        this.initPaging();
-      } else {
-        Origin.on('contentPane:ready', () => this.initPaging());
-      }
-      // init lazy scrolling
+      this.initPaging();
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
       $(window).on('resize', this._onResize);
     },
 
     initEventListeners: function() {
       this.listenTo(Origin, {
-        'assetManagement:sidebarFilter:add': this.addFilter,
-        'assetManagement:sidebarFilter:remove': this.removeFilter,
-        'assetManagement:sidebarView:filter': this.filterBySearchInput,
-        'assetManagement:assetManagementSidebarView:filterByTags': this.filterByTags,
-        'assetManagement:collection:refresh': this.resetCollection
+        'actions:upload modal:actions:upload assetManagement:edit': this.renderAssetForm,
+        'filters modal:filters': this.filter,
+        'assetManagement:collection:refresh': this.resetCollection,
+        'assetForm:close': this.onFormClose
       });
     },
 
     initPaging: function() {
-      var $item = new AssetItemView({ model: new AssetModel() }).$el;
+      var $item = new AssetItemView({ model: ApiModel.Asset() }).$el;
       var containerHeight = $('.asset-management-assets-container').outerHeight();
       var itemHeight = $item.outerHeight(true);
       var columns = Math.floor($('.asset-management-assets-container').outerWidth()/$item.outerWidth(true));
@@ -66,6 +68,21 @@ define(function(require){
       this.resetCollection(this.setViewToReady);
     },
 
+    renderAssetForm: async function(model) {
+      if(!this.form) this.form = new AssetForm({ model, $container: this.$('.asset-management-form') });
+    },
+
+    onFormClose: async function(error, model) {
+      this.form = undefined;
+      if(error) {
+        return Origin.Notify[this.isModal() ? 'alert' : 'toast']({ type: 'error', text: error.message });
+      }
+      this.resetCollection();
+      Origin.once('assetManagement:assetManagementCollection:fetched', () => {
+        this.$(`.asset-management-list-item.id-${model.get('_id')}`).trigger('click');
+      });
+    },
+    
     appendAssetItem: function (asset) {
       if(!asset) {
         return;
@@ -74,7 +91,7 @@ define(function(require){
       const assetTags = asset.get('tags');
       if(assetTags) {
         assetTags.forEach(tId => {
-          tagsMapped.push(this.tagsCollection.find(t => t.get('_id') === tId).attributes);
+          tagsMapped.push(this.tags.find(t => t.get('_id') === tId).attributes);
         });
         asset.set('tagsMapped', tagsMapped);
       }
@@ -89,30 +106,15 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
-      this.collection.customQuery.tags = { $all: this.tags };
-      
-      if(this.search) {
-        this.collection.customQuery.$or = [
-          { title: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } },
-          { description: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } } 
-        ]
-      } else {
-        delete this.collection.customQuery.$or;
-      }
-      if(this.filters.length) {
-        this.collection.customQuery.type = { $in: this.filters };
-      } else {
-        delete this.collection.customQuery.type;
-      }
-      Object.assign(this.collection.options, {
+      Object.assign(this.assets.options, {
         skip: this.allAssets.length,
         limit: this.pageSize,
         page: this.page++,
         sort: this.sort
       });
-      await this.tagsCollection.fetch();
+      await this.tags.fetch();
       
-      this.collection.fetch({
+      this.assets.fetch({
         success: _.bind(function(collection, response) {
           this.allAssets.push(...collection.models);
           this.isCollectionFetching = false;
@@ -130,7 +132,6 @@ define(function(require){
           if(typeof cb === 'function') cb(collection);
         }, this),
         error: function(error) {
-          console.log(error);
           this.isCollectionFetching = false;
         }
       });
@@ -144,39 +145,32 @@ define(function(require){
       this.shouldStopFetches = false;
       this.fetchCount = 0;
       this.page = 0;
-      this.collection.reset();
+      this.assets.reset();
 
       if(shouldFetch) this.fetchCollection(cb);
     },
 
-    // Filtering
+    filter: function(filters) {
+      const filterQuery = {};
 
-    addFilter: function(filterType) {
-      this.filters.push(filterType);
-      this.resetCollection();
-    },
+      if(filters.pageSize) {
+        this.model.set('pageSize', filters.pageSize);
+      }
+      if(filters.search) {
+        const q = {  $regex: `.*${filters.search.toLowerCase()}.*`, $options: 'i' };
+        filterQuery.$or = [{ title: q }, { description: q }];
+      }
+      if(filters.type) {
+        filterQuery.type = { $in: Object.entries(filters.type).filter(([k,v]) => v).map(([k]) => k) };
+      }
+      if(filters.tags.length) {
+        filterQuery.tags = { $all: filters.tags };
+      }
+      this.assets.customQuery = filterQuery;
 
-    removeFilter: function(filterType) {
-      // remove filter from this.filters
-      this.filters = this.filters.filter(item => item !== filterType);
-      this.resetCollection();
-    },
-
-    filterBySearchInput: function (filterText) {
       this.resetCollection(null, false);
-      this.search = filterText;
-      this.fetchCollection();
-
-      $(".asset-management-modal-filter-search" ).focus();
-    },
-
-    filterByTags: function(tags) {
-      this.resetCollection(null, false);
-      this.tags = _.pluck(tags, 'id');
       this.fetchCollection();
     },
-
-    // Event handling
 
     onResize: function() {
       this.initPaging();
@@ -194,7 +188,7 @@ define(function(require){
 
     remove: function() {
       $('.asset-management-assets-container').off('scroll', this._doLazyScroll);
-      $(window).on('resize', this._onResize);
+      $(window).off('resize', this._onResize);
 
       OriginView.prototype.remove.apply(this, arguments);
     }

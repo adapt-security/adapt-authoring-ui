@@ -1,0 +1,239 @@
+@import 'colours';
+
+.editor-component-list {
+  position: fixed;
+  top: -20px;
+  right: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s;
+  &.show {
+    opacity: 1;
+    top: 0;
+  }
+
+  .click-capture {
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+  }
+
+  &-sidebar {
+    width: 800px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 #ccc;
+    border-radius: 5px;
+  }
+
+  &-sidebar-exit {
+    margin: 0 15px;
+    font-size: 150%;
+    cursor: pointer;
+  }
+
+  &-sidebar-header {
+    border-bottom: 1px solid #CCCCCC;
+    display: flex;
+    background: @tertiary-color;
+    color: white;
+    width: 100%;
+    align-items: center;
+  }
+
+  .editor-component-list-sidebar-text {
+    flex: 2;
+    padding: 15px;
+    font-size: 15px;
+  }
+
+  &-sidebar-search {
+    flex: 1;
+    &-field input {
+      width: 100%;
+      border-radius: 0;
+      background-color: #F2F0F1;
+    }
+  }
+
+  &-sidebar-list {
+    max-height: 600px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    overflow-y: auto;
+  }
+
+  &-sidebar-filter-half {
+    float: left;
+    width: 50%;
+    padding: 18px 0px;
+    text-align: center;
+  }
+
+  &-sidebar-filter-full {
+    float: left;
+    width: 50%;
+    padding: 18px 0px;
+    text-align: center;
+  }
+
+  &-sidebar-filter-single {
+    width: 100%;
+    padding: 18px 0px;
+    background-color: #333c4e;
+    color: @white;
+    text-align: center;
+  }
+
+  &-sidebar-filter button {
+    background-color: #333c4e;
+    color: #9cabc4;
+    transition: all 0.3s;
+    &:hover {
+      background-color: #293141;
+      color: @white;
+    }
+    &.selected {
+      background-color: #15a4fa;
+      color: @white;
+    }
+  }
+}
+
+.editor-component-list-item {
+  position: relative;
+  padding: 0;
+  text-align: left;
+  border: 1px solid #efefef;
+  border-top: none;
+  border-left: none;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  &.restricted {
+    color: lightgray;
+  }
+
+  &.selected {
+    &.restricted {
+      color: black;
+    }
+  }
+
+  &:hover {
+    background-color: lighten(@primary-color, 40%);
+  }
+  &.selected,
+  &.selected:hover {
+    background-color: lighten(@primary-color, 35%);
+  }
+
+  &-details {
+    padding-left: 75px;
+  }
+
+  &-inner {
+    padding: 20px;
+    min-height: 44px;
+  }
+
+  &-display-name {
+    font-weight: @font-weight-bold;
+  }
+
+  &-version,
+  &-name {
+    margin-top: 6px;
+    font-size: 11px;
+  }
+
+  &-overlay {
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s;
+    &.show { height: 40px; }
+  }
+
+  &-overlay-inner {
+    text-align: center;
+    display: flex;
+  }
+
+  &-overlay-button {
+    flex-grow: 1;
+    border-radius: 0 !important;
+    margin-right: 1px;
+    &:last-child { 
+      margin-right: 0; 
+    }
+  }
+
+  &-overlay-button-inner {
+    display: block;
+    padding: 16px;
+    border-right: 1px solid #454545;
+  }
+
+  &-icon {
+    width: 55px;
+    height: 40px;
+    float: left;
+    margin: 5px 20px 0 0;
+    background-repeat: no-repeat;
+    background-image: url("assets/icon-default.png");
+    // core components, override above
+    &.adapt-contrib- {
+      &assessmentResults {
+        background-image: url("assets/icon-assessment.png");
+      }
+      &blank {
+        background-image: url("assets/icon-blank.png");
+      }
+      &accordion {
+        background-image: url("assets/icon-accordion.png");
+      }
+      &graphic {
+        background-image: url("assets/icon-graphic.png");
+      }
+      &gmcq {
+        background-image: url("assets/icon-gmcq.png");
+      }
+      &hotgraphic {
+        background-image: url("assets/icon-hot-graphic.png");
+      }
+      &matching {
+        background-image: url("assets/icon-matching.png");
+      }
+      &media {
+        background-image: url("assets/icon-media.png");
+      }
+      &mcq {
+        background-image: url("assets/icon-mcq.png");
+      }
+      &narrative {
+        background-image: url("assets/icon-narrative.png");
+      }
+      &slider {
+        background-image: url("assets/icon-slider.png");
+      }
+      &text {
+        background-image: url("assets/icon-text.png");
+      }
+      &textInput {
+        background-image: url("assets/icon-text.png");
+      }
+    }
+  }
+}

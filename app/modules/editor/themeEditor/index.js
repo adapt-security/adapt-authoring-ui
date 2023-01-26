@@ -2,14 +2,31 @@
 define(function(require) {
   var Origin = require('core/origin');
   var EditorThemingView = require('./views/editorThemingView.js');
-  var EditorThemingSidebarView = require('./views/editorThemingSidebarView.js');
-
-  Origin.on('editorCommon:theme', function() {
-    Origin.router.navigate(`#/editor/${Origin.editor.data.course.get('_id')}/${ROUTE}`, { trigger: true });
-  });
 
   Origin.on('editor:selecttheme', () => {
-    Origin.sidebar.addView(new EditorThemingSidebarView().$el);
+    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ 
+      items: [
+        {
+          id: 'save',
+          buttonText: Origin.l10n.t('app.save')
+        },
+        {
+          id: 'savepreset',
+          buttonText: Origin.l10n.t('app.savepreset'),
+          buttonClass: 'short secondary-hollow action-btn'
+        },
+        {
+          id: 'restorepreset',
+          buttonText: Origin.l10n.t('app.restorepreset'),
+          buttonClass: 'short action-secondary'
+        },
+        {
+          id: 'cancel',
+          buttonText: Origin.l10n.t('app.cancel'),
+          buttonClass: 'action-secondary'
+        }
+      ]
+    }]);
     Origin.contentPane.setView(EditorThemingView);
   });
 });

@@ -11,6 +11,7 @@
   border-bottom: 1px solid fade(@primary-color, 20%);
 
   &-inner {
+    position: relative;
     color: @contentHeader-title;
     padding: 15px;
 
@@ -38,24 +39,26 @@
         overflow: hidden;
       }
     }
-    .titles {
-      .course, .title { .truncate; }
-      .title {
-        font-size: 18px;
-        font-weight: @font-weight-bold;
+    .contentHeader-titles {
+      .titles {
+        .course, .title { .truncate; }
+        .title {
+          font-size: 18px;
+          font-weight: @font-weight-bold;
+        }
       }
     }
 
     > .buttons {
-      position: relative;
-      float: right;
-      top: -5px;
-
-      > div {
-        display: inline-block;
-      }
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
 
       button.toggle {
+        margin-top: 10px;
         padding: 0 15px;
         color: @primary-color;
         cursor: pointer;
@@ -63,7 +66,7 @@
           font-size: 18px;
         }
       }
-      .buttons-container {
+      .groups {
         &.show { 
           animation-name: slidein;
           animation-duration: 0.3s;
@@ -71,62 +74,50 @@
         }
         @keyframes slidein {
           from { height: 0; opacity: 0; margin-top: 0; }
-          1% { height: inherit;  }
-          to { height: inherit; margin-top: 20px; opacity: 1; }
+          1% { height: inherit; padding: 25px }
+          to { height: inherit; padding: 25px; margin-top: 20px; opacity: 1; }
         }
-        height: 0;
-        position: absolute;
-        overflow: hidden;
-        margin-left: -6px;
-        min-width: 200px;
-        background: @tertiary-color;
-        border-radius: @button-radius;
-        
-        .title {
-          padding: 20px;
-          font-weight: bold;
-          color: white;
-        }
-        .items {
-          padding: 10px;
-          .item {
-            display: block;
-            padding: 15px;
-            color: white;
-            text-align: left;
+        .group {
+          padding-bottom: 20px;
+          &:last-child {
+            padding-bottom: 0;
+          }
+          .name {
+            padding-bottom: 10px;
+            font-weight: bold;
+          }
+          .items {
+            padding-bottom: 10px;
             &:last-child {
-              margin-bottom: 0;
+              padding-bottom: 0;
             }
-            .label {
-              margin-bottom: 8px;
-            }
-            i,
-            input[type='checkbox'] {
-              margin-right: 8px;
-              color: @secondary-color;
-              accent-color: @secondary-color;
-            }
-            input[type='radio'] {
-              display: none;
-            }
-            input[type='text'] {
+            .item {
               color: white;
-              width: auto;
-              border-color: lighten(@tertiary-color, 15%);
-              background-color: lighten(@tertiary-color, 5%);
-              &::placeholder {
-                border-color: lighten(@tertiary-color, 15%);
+              text-align: left;
+              &:last-child {
+                margin-bottom: 0;
               }
-            }
-            .tags {
-              padding: 10px 0;
-              .tag {
-                padding: 5px;
-                background: lighten(@tertiary-color, 15%);
-                font-weight: bold;
-                cursor: pointer;
-                &.selected {
-                  color: @secondary-color;
+              &.no-padding {
+                padding: 0;
+              }
+              .label {
+                margin-bottom: 8px;
+              }
+              i,
+              input[type='checkbox'] {
+                margin-right: 8px;
+                color: @secondary-color;
+                accent-color: @secondary-color;
+              }
+              input[type='radio'] {
+                display: none;
+              }
+              input[type='text'] {
+                color: white;
+                border-color: lighten(@tertiary-color, 15%);
+                background-color: lighten(@tertiary-color, 5%);
+                &::placeholder {
+                  border-color: lighten(@tertiary-color, 15%);
                 }
               }
             }
@@ -134,17 +125,87 @@
         }
       }
 
-      .actions {
-        margin: 10px 20px;
-        margin-right: 0;
+      .sorts,
+      .filters {
+        .groups {
+          height: 0;
+          position: absolute;
+          overflow: hidden;
+          padding: 0 25px;
+          margin-left: -6px;
+          min-width: 200px;
+          background: @tertiary-color;
+          border-radius: @button-radius;
+          .name {
+            color: white;
+          }
+        }
       }
-      
+
+      .actions {
+        margin: 0 15px;
+        .groups .group .items .item {
+          display: inline-block;
+        }
+      }
+      .filters .items {
+        .item[data-type="select"] {
+          select {
+            width: 100%;
+          }
+        }
+        .item[data-type="tags"] {
+          .tags {
+            max-height: 150px;
+            padding: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 3px;
+            .tag {
+              padding: 5px;
+              cursor: pointer;
+            }
+            .no-tags {
+              opacity: 0.4;
+            }
+          }
+        }
+        .item[data-type="toggle"] {
+          padding: 10px 0;
+        }
+      }
       .sorts .items > .item {
         .direction i { 
           color: rgba(255, 255, 255, 0.2); 
         }
         &.selected {
           .direction i { color: @secondary-color; }
+        }
+      }
+    }
+  }
+
+  .links {
+    background: @tertiary-color;
+    .items {
+      text-align: center;
+      .item {
+        display: inline-block;
+        .btn {
+          color: white;
+          border: none;
+          border-radius: 0;
+          &.selected,
+          &:hover {
+            color: @secondary-color;
+          }
+          i {
+            font-size: 120%;
+          }
+          .text {
+            margin-left: 8px;
+            font-weight: normal;
+            font-size: 100%;
+          }
         }
       }
     }

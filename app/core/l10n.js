@@ -9,6 +9,7 @@ define(['polyglot'], function(Polyglot) {
           polyglot = new Polyglot({
             locale: locale,
             phrases: await $.get(`/api/lang/${locale}`),
+            interpolation: { prefix: '${', suffix: '}' },
             warn: message => Origin.debug && console.warn('l10n:', message)
           });
         } catch(e) {

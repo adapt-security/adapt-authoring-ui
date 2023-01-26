@@ -1,15 +1,14 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
+  var ApiCollection = require('core/collections/apiCollection');
+  var ApiModel = require('core/models/apiModel');
   var Backbone = require('backbone');
-  var ContentPluginCollection = require('core/collections/contentPluginCollection');
-  var EditorOriginView = require('../../global/views/editorOriginView');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
-  var PresetCollection = require('../collections/editorPresetCollection.js');
-  var PresetModel = require('../models/editorPresetModel.js');
+  var OriginView = require('core/views/originView');
   var PresetEditView = require('./editorPresetEditView.js');
 
-  var ThemingView = EditorOriginView.extend({
+  var ThemingView = OriginView.extend({
     tagName: 'div',
     className: 'theming',
     events: {
@@ -21,21 +20,22 @@ define(function(require) {
 
     initialize: async function() {
       this.listenTo(Origin, {
-        'editorThemingSidebar:views:save': this.saveData,
-        'editorThemingSidebar:views:savePreset': this.onSavePresetClicked,
-        'editorThemingSidebar:views:resetToPreset': this.resetFormSettings,
+        'actions:cancel': this.navigateBack,
+        'actions:restorepreset': this.resetFormSettings,
+        'actions:save': this.saveData,
+        'actions:savepreset': this.onSavePresetClicked,
         'managePresets:edit': this.onEditPreset,
         'managePresets:delete': this.onDeletePreset
       });
       await this.initData();
-      EditorOriginView.prototype.initialize.apply(this, arguments);
+      OriginView.prototype.initialize.apply(this, arguments);
       this.render();
     },
 
     initData: async function() {
       this.model = new Backbone.Model(Origin.editor.data.course.get('themeVariables'));
-      this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
-      this.presets = new PresetCollection();
+      this.themes = ApiCollection.ContentPlugins({ customQuery: { type: 'theme' } });
+      this.presets = ApiCollection.CourseThemePresets();
       
       await Promise.all([this.themes.fetch(), this.presets.fetch()]);
 
@@ -47,9 +47,9 @@ define(function(require) {
     render: async function() {
       this.$el.hide();
 
-      EditorOriginView.prototype.render.apply(this, arguments);
+      OriginView.prototype.render.apply(this, arguments);
 
-      Origin.trigger('contentHeader:updateTitle', {
+      Origin.contentHeader.setTitle({
         breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
         title: Origin.l10n.t('app.themingtitle')
       });
@@ -143,7 +143,7 @@ define(function(require) {
 
     validateForm: function() {
       if (!this.getSelectedTheme()) {
-        Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errornothemeselected') });
+        Origin.Notify.toast({ type: 'warning', text: Origin.l10n.t('app.errornothemeselected') });
         return false;
       }
       return true;
@@ -151,7 +151,7 @@ define(function(require) {
 
     savePreset: function(presetName) {
       this.form.commit();
-      new PresetModel().save({
+      ApiModel.CourseThemePreset().save({
         displayName: presetName,
         parentTheme: this.getSelectedTheme().get('name'),
         properties: this.model.attributes
@@ -261,7 +261,7 @@ define(function(require) {
     },
 
     onError: function(collection, response, options) {
-      Origin.Notify.alert({ type: 'error', text: response });
+      Origin.Notify.toast({ type: 'error', text: response });
     },
 
     onThemeChanged: function() {

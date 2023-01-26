@@ -1,3 +1,4 @@
+@import 'buttons';
 @import 'colours';
 
 @default-project-bg: url(assets/origami-project.jpg);
@@ -118,14 +119,6 @@ ul.projects-options {
     }
 }
 
-.projects-sidebar-filter-input {
-    width:168px;
-}
-
-.projects-sidebar-filter-clear {
-    padding:6px;
-}
-
 #projects-tags_tagsinput {
     display:inline-block;
     padding:4px;
@@ -139,14 +132,28 @@ ul.projects-options {
     color: @tertiary-color;
 }
 
-.sidebar-search-tag {
-    margin-top: 40px;
-}
 
-.sidebar-tag {
-    text-align: left;
-
-     &.selected span:first-child i:before{
-        content:'\f205';
+.projects .nav {
+  padding: 10px;
+  padding-top: 0;
+  text-align: center;
+  .inner {
+    display: inline-block;
+    margin: 0 auto;
+    .summary {
+      display: inline-block;
+      padding: 10px 20px;
+      background: @tertiary-color;
+      border-radius: 3px;
+      text-transform: uppercase;
+      color: white;
     }
+    button {
+      min-width: 40px;
+      &.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+    }
+  }
 }

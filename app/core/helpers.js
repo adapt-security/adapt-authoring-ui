@@ -32,18 +32,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return text.replace(/_| /g, "-").toLowerCase();
     },
 
-    keyToTitleString: function(key) {
-      if (!key) return;
-      // check translatable strings first
-      var l10nKey = 'app.scaffold.' + key;
-      if(Origin.l10n.has(l10nKey)) {
-        return Origin.l10n.t(l10nKey);
-      }
-      // fall-back: remove all _ and capitalise
-      var string = key.replace(/_/g, '').replace(/[A-Z]/g, ' $&').toLowerCase();
-      return this.capitalise(string);
-    },
-
     momentFormat: function(date, format) {
       if (typeof date == 'undefined') {
         return '-';
@@ -220,19 +208,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return value.length > 0 && regEx.test(value);
     },
 
-    contentModelMap: function(type) {
-      var contentModels = {
-        course: 'core/models/courseModel',
-        contentobject: 'core/models/contentObjectModel',
-        article: 'core/models/articleModel',
-        block: 'core/models/blockModel',
-        component: 'core/models/componentModel'
-      };
-      if(contentModels.hasOwnProperty(type)) {
-        return require(contentModels[type]);
-      }
-    },
-
     // Ensures list is iterated (doesn't guarantee order), even if using async iterator
     // @param list Array or Backbone.Collection
     // @param func Function to use as iterator. Will be passed item, index and callback function
@@ -337,17 +312,28 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
 
     submitForm($form, options = {}) {
       return new Promise(async (resolve, reject) => {
+        if($form.$el) $form = $form.$el; // for Scaffold forms
         const body = new FormData($form[0]);
-        if(options.extendedData) Object.entries(options.extendedData).forEach(([attr, val]) => body.append(attr, val));
-        const res = await fetch($form.attr('action'), { method: $form.attr('method'), body });
-        if(res.status === 204) {
-          return resolve();
+        if(options.data) {
+          Object.entries(options.data).forEach(d => body.append(...d));
+          delete options.data;
         }
-        const data = await res.json();
-        if(res.status > 299) {
-          return reject(data);
+        if(typeof options.beforeSubmit === 'function') {
+          options.beforeSubmit(body);
+          delete options.beforeSubmit;
         }
-        resolve(data);
+        const reqOptions = Object.assign({ method: $form.attr('method'), body }, options);
+        const res = await fetch(options.url || $form.attr('url'), reqOptions);
+        const data = res.body ? await res.json() : undefined;
+        res.status > 299 ? reject(data) : resolve(data);
+      });
+    },
+    ajaxSubmit($form, options = {}) {
+      return new Promise(async (resolve, reject) => {
+        $form.$el.ajaxSubmit(Object.assign(options, {
+          success: data => resolve(data),
+          error: jqXhr => reject(jqXhr.responseJSON)
+        }));
       });
     }
   }

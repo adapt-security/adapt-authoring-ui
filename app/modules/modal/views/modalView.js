@@ -1,102 +1,76 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var Origin = require('core/origin');
+  var ContentHeader = require('modules/contentHeader/views/contentHeaderView');
 
   var ModalView = Backbone.View.extend({
     className: 'modal',
 
-    events: {
-      'click .modal-popup-close': 'onCloseButtonClicked',
-      'click .modal-popup-done': 'onDoneButtonClicked'
+    initialize(options) {
+      this.listenTo(Origin, 'remove:views', this.remove);
     },
 
-    initialize: function(options) {
-      this.view = options.view;
-      this.options = _.extend({
-        _shouldShowCancelButton: true,
-        _shouldShowDoneButton: true,
-        _shouldShowScrollbar: true,
-        _shouldDisableCancelButton: false,
-        _shouldDisableDoneButton: false
-      }, options.options);
-      this.context = options.context;
+    render() {
+      this.$el
+        .html(Handlebars.templates['modal'](this.options))
+        .appendTo('body');
 
-      this.listenTo(Origin, {
-        'remove:views': this.remove,
-        'modal:onCancel': this.onCloseButtonClicked,
-        'modal:onUpdate': this.onDoneButtonClicked,
-        'modal:disableCancelButton': this.onCloseButtonDisabled,
-        'modal:disableDoneButton': this.onDoneButtonDisabled,
-        'modal:enableCancelButton': this.onCloseButtonEnabled,
-        'modal:enableDoneButton': this.onDoneButtonEnabled
-      });
+      this.header = new ContentHeader($('.modal-popup-header', this.$el), 'modal');
+      if(this.headerConfig) {
+        const buttonEntries = Object.entries(this.headerConfig.buttons || {});
+        
+        delete this.headerConfig.buttons;
+        Object.assign(this.header.data, this.headerConfig);
 
-      this.render();
-    },
-
-    render: function() {
-      var data = _.omit(this.options, 'model');
-      var template = Handlebars.templates['modal'];
-      this.$el.html(template(data)).appendTo('body');
-      _.defer(_.bind(this.postRender, this));
+        if(buttonEntries.length) {
+          buttonEntries.forEach(([type, groups]) => this.header.setButtons(type, groups));
+        }
+      }
+      $('.modal-popup-content-inner', this.$el)
+        .empty()
+        .append(this.view && this.view.$el)
 
       return this;
     },
 
-    postRender: function() {
-      if (this.options._shouldDisableCancelButton) {
-        this.onCloseButtonDisabled();
+    setView(options = {}) {
+      this.view = options.view;
+      delete options.view;
+      
+      this.headerConfig = options.header;
+      delete options.header;
+
+      this.options = _.extend({ showScrollbar: true }, options.options);
+
+      this.render();
+      this.show();
+    },
+
+    onCloseButtonClicked(event) {
+      event && event.preventDefault();
+      this.show(false, 'cancel');
+    },
+
+    onDoneButtonClicked(event) {
+      event && event.preventDefault();
+      this.show(false, 'done');
+    },
+
+    show(shouldShow = true, action) {
+      $('html').toggleClass('no-scroll', shouldShow);
+      if(shouldShow) {
+        return Origin.trigger('modal:open');
       }
-      if (this.options._shouldDisableDoneButton) {
-        this.onDoneButtonDisabled();
-      }
-      if(this.options._shouldShowScrollbar === false) {
-        this.$el.css('overflow-y', 'hidden');
-      }
-      this.modalView = new this.view(this.options);
-      this.$('.modal-popup-content-inner').append(this.modalView.$el);
-      $('html').addClass('no-scroll');
+      this.$el.remove();
+      this.view && this.view.remove();
+      Origin.trigger(`modal:${action}`, this.view);
+      Origin.trigger('modal:close', action, this.view);
     },
 
-    onCloseButtonClicked: function(event) {
-      if (event) event.preventDefault();
-      this.closeModal('onCancel');
-    },
-
-    onDoneButtonClicked: function(event) {
-      if (event) event.preventDefault();
-      this.closeModal('onUpdate');
-    },
-
-    onCloseButtonDisabled: function() {
-      this.$('.modal-popup-close').attr('disabled', true);
-    },
-
-    onDoneButtonDisabled: function() {
-      this.$('.modal-popup-done').attr('disabled', true);
-    },
-
-    onCloseButtonEnabled: function() {
-      this.$('.modal-popup-close').attr('disabled', false);
-    },
-
-    onDoneButtonEnabled: function() {
-      this.$('.modal-popup-done').attr('disabled', false);
-    },
-
-    closeModal: function(callbackType) {
-      var data = this.modalView.getData();
-      if (this.options[callbackType]) {
-        this.options[callbackType].call(this.context, data);
-      }
-      this.modalView.remove();
-      Origin.trigger('modal:closed');
-      $('html').removeClass('no-scroll');
-      this.remove();
+    close() {
+      this.show(false);
     }
-
   });
 
   return ModalView;
-
 });
