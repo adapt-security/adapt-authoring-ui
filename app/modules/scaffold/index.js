@@ -164,9 +164,7 @@ define([
 
     Object.entries(properties).forEach(([k,v]) => {
       try {
-        if(v._backboneForms.showInUi === false && !blacklist.includes(k)) {
-          blacklist.push(k)
-        }
+        if(v._backboneForms.showInUi === false && !blacklist.includes(k)) blacklist.push(k)
       } catch(e) {}
     });
     properties = _.omit(properties, blacklist);
@@ -241,6 +239,9 @@ define([
 
     requiredKeys.forEach(function(requiredKey) {
       var field = schema[requiredKey];
+      if(!field) {
+        throw new Error(`Required attribute '${requiredKey}' not present on schema, ${JSON.stringify(schema, null, 2)}`);
+      }
       var config = field._backboneForms || {};
 
       if (typeof config === 'string') {
@@ -252,7 +253,7 @@ define([
     });
   }
 
-  Scaffold.buildForm = async function(options) {
+  Scaffold.buildFormInternal = async function(options) {
     var model = options.model;
     var schemaType = model.get('_type') || model._type || model.get('type') || model.type || options.schemaType;
 
@@ -264,21 +265,25 @@ define([
         schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
       } catch(e) {} // nothing to do
     }
-    let schema;
-    try {
-      const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
-      schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
-    } catch(e) {
-      console.error(e);
-    }
+    const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
+    const schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
+
     options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);
     alternativeModel = options.alternativeModelToSave;
     alternativeAttribute = options.alternativeAttributeToSave;
     currentModel = options.model;
     currentForm = new Backbone.Form(options).render();
-
     return currentForm;
+  };
+
+  Scaffold.buildForm = async function(options) {
+    try {
+      return await Scaffold.buildFormInternal(options);
+    } catch(e) {
+      console.trace(e);
+      throw new Error(Origin.l10n.t('app.formbuilderror'));
+    }
   };
 
   Scaffold.addCustomField = function(fieldName, view, overwrite) {
