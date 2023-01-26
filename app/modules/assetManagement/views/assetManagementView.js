@@ -11,7 +11,6 @@ define(function(require){
 
     preRender: function() {
       this.listenTo(Origin, {
-        'actions:upload': () => Origin.router.navigateTo('assetManagement/upload'),
         'assetManagement:assetItemView:preview': this.onAssetClicked,
         'assetManagement:assetPreviewView:delete': this.onAssetDeleted
       });

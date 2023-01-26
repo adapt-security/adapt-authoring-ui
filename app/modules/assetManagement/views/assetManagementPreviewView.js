@@ -30,8 +30,7 @@ define(function(require){
 
     onEditButtonClicked: function(event) {
       event.preventDefault();
-      var assetId = this.model.get('_id');
-      Origin.router.navigateTo(`assetManagement/${assetId}/edit`);
+      Origin.trigger('assetManagement:edit', this.model);
     },
 
     onDeleteButtonClicked: function(event) {

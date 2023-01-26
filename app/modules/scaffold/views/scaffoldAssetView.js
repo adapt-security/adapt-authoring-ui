@@ -20,7 +20,7 @@ define([
 
     initialize: function(options) {
       Backbone.Form.editors.Base.prototype.initialize.call(this, options);
-      this.listenTo(Origin, 'scaffold:assets:autofill', this.setValue);
+      this.listenTo(Origin, `scaffold:assets:autofill:${this.schema.autofillId}`, this.setValue);
       this.setValue(this.value);
     },
 
@@ -93,46 +93,49 @@ define([
 
     onAssetButtonClicked: function(event) {
       event.preventDefault();
+      const actionButtons = [
+        {
+          id: 'upload',
+          buttonText: Origin.l10n.t('app.upload'),
+          buttonClass: 'primary'
+        },
+        {
+          id: 'done',
+          buttonText: Origin.l10n.t('app.select'),
+        },
+        {
+          id: 'autofill',
+          buttonText: Origin.l10n.t('app.autofill'),
+          buttonClass: 'secondary-hollow'
+        },
+        {
+          id: 'close',
+          buttonText: Origin.l10n.t('app.cancel'),
+          buttonClass: 'action-secondary'
+        }
+      ].filter(b => b.id !== 'autofill' || this.schema.autofillId !== undefined);
 
       Origin.modal.setView({ 
         view: new AssetManagementView(),
         header: { 
           title: Origin.l10n.t('app.selectasset'), 
           buttons: Object.assign(AssetManagementView.contentHeaderButtons, {
-            actions: [{
-              items: [
-                {
-                  id: 'upload',
-                  buttonText: Origin.l10n.t('app.upload'),
-                  buttonClass: 'primary'
-                },
-                {
-                  id: 'done',
-                  buttonText: Origin.l10n.t('app.select'),
-                },
-                {
-                  id: 'autofill',
-                  buttonText: Origin.l10n.t('app.autofill'),
-                  buttonClass: 'secondary-hollow'
-                },
-                {
-                  id: 'close',
-                  buttonText: Origin.l10n.t('app.cancel'),
-                  buttonClass: 'action-secondary'
-                }
-              ]
-            }],
+            actions: [{ items: actionButtons }],
           })
         }
       });
       Origin.on('modal:actions', action => {
-        Origin.modal.close();
+        if(action !== 'upload') Origin.modal.close();
         const selected = Origin.modal.view.collectionView.getSelected();
         if(action === 'cancel' || !selected) {
           return;
         }
-        if(action === 'autofill') Origin.trigger('scaffold:assets:autofill', selected.get('_id'));
-        if(action === 'done') this.setValue(selected.get('_id'));
+        if(action === 'done') {
+          this.setValue(selected.get('_id'));
+        }
+        if(action === 'autofill') {
+          Origin.trigger(`scaffold:assets:autofill:${this.schema.autofillId}`, selected.get('_id'));
+        }
       });
     },
 
