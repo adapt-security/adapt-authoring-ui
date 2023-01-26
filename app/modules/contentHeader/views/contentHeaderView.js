@@ -78,8 +78,7 @@ define(function(require) {
       }
       const course = Origin.editor && Origin.editor.data && Origin.editor.data.course;
 
-      return Object.assign(this.data, {
-        course: course && course.get('title') !== this.data.title ? { title: course.get('title') } : undefined,
+      Object.assign(this.data, {
         breadcrumbs: this.data.breadcrumbs.map(b => {
           if(b === 'dashboard') {
             return { title: Origin.l10n.t('app.dashboard'), url: '#' };
@@ -90,6 +89,11 @@ define(function(require) {
           return b;
         })
       });
+      const courseTitle = course && course.get('title');
+      if(this.data.showCourseTitle !== false && courseTitle && courseTitle !== this.data.title) {
+        this.data.course = { title: course.get('title') };
+      }
+      return this.data;
     }
     setTitle(data) {
       Object.assign(this.data, data);
