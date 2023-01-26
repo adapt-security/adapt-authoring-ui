@@ -39,8 +39,11 @@ define(function(require) {
 
     triggerEvent(data, id) {
       const eventName = `${this.data.eventId ? `${this.data.eventId}:` : ''}${this.data.type}`;
-      if(id) Origin.trigger(`${eventName}:${id}`, data);
-      Origin.trigger(eventName, data);
+      if(!id) {
+        return Origin.trigger(eventName, data);
+      }
+      Origin.trigger(`${eventName}:${id}`, data);
+      Origin.trigger(eventName, id, data);
     },
 
     onClicked(event) {
