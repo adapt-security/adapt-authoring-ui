@@ -13,7 +13,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
