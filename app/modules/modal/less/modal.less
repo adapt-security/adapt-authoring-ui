@@ -6,17 +6,18 @@
   left:0;
   width:100vw;
   height:100vh;
-  padding: 30px;
+  padding: 40px;
   box-sizing: border-box;
   z-index:4000;
   overflow-y: hidden;
-  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(7px);
   
   .modal-popup {
     height: 100%;
+    overflow: hidden;
     background-color: @ui-content-color;
     border-radius: 4px;
-    overflow: hidden;
+    box-shadow: 0 0 7px rgba(0,0,0,0.2);
     
     &-header .contentHeader {
       background-color: @tertiary-color;
