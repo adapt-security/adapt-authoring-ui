@@ -3,10 +3,9 @@ define(function(require){
   var ApiCollection = require('core/collections/apiCollection');
   var ApiModel = require('core/models/apiModel');
   var AssetItemView = require('./assetManagementItemView');
-  var Helpers = require('core/helpers');
+  var AssetForm = require('./assetForm');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
-  var ScaffoldFileView = require('modules/scaffold/views/scaffoldFileView');
 
   var AssetCollectionView = OriginView.extend({
     className: "asset-management-collection",
@@ -20,6 +19,10 @@ define(function(require){
     page: 1,
     pageSize: 1,
     assets: [],
+
+    isModal: function() {
+      return this.$el && this.$el.parents('.modal').length > 0;
+    },
 
     getSelected: function() {
       return this.assets.findWhere({ _isSelected: true });
@@ -41,10 +44,6 @@ define(function(require){
     postRender: function() {
       this.initPaging();
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
-
-      this.$('.asset-management-form button.save').on('click', this.saveAssetForm.bind(this));
-      this.$('.asset-management-form button.cancel').on('click', this.removeAssetForm.bind(this));
-
       $(window).on('resize', this._onResize);
     },
 
@@ -52,7 +51,9 @@ define(function(require){
       this.listenTo(Origin, {
         'actions:upload modal:actions:upload assetManagement:edit': this.renderAssetForm,
         'filters modal:filters': this.filter,
-        'assetManagement:collection:refresh': this.resetCollection
+        'assetManagement:collection:refresh': this.resetCollection,
+        'modal:assetManagement:success': this.onFormSuccess,
+        'modal:assetManagement:error': this.onFormError
       });
     },
 
@@ -69,87 +70,7 @@ define(function(require){
     },
 
     renderAssetForm: async function(model) {
-      if(this.form) {
-        return;
-      }
-      if(!model) {
-        model = ApiModel.Asset();
-      }
-      model.set('_type', 'asset');
-      
-      form = await Origin.scaffold.buildForm({ model });
-      
-      const input = new ScaffoldFileView({ schema: { file: { type: "File" }, editorClass: 'field' }, key: 'file' });
-      input.$el.insertBefore($('.field', form.$el).first());
-      input.render();
-
-      this.$('.asset-management-form-preview').empty();
-
-      if(model.get('hasThumb')) {
-        const thumbUrl = `/api/assets/serve/${model.get('_id')}?thumb=true&${Helpers.timestring(model.get('updatedAt'))}`;
-        this.$('.asset-management-form-preview').append(`<img src="${thumbUrl}" />`);
-      }
-      this.$('.asset-management-form-container').append(form.el);
-      this.$('.asset-management-form').addClass('show');
-      this.form = form;
-    },
-
-    saveAssetForm: async function() {
-      this.form.commit();
-      const model = this.form.model;
-      const hasFile = $('input[name="file"]').val() !== '';
-      const hasChanged = Object.keys(model.changedAttributes()).filter(a => a !== '_type').length > 0;
-      try {
-        if(model.isNew() && !hasFile) {
-          return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
-        }
-        if(hasChanged) {
-          if(!hasFile) { // don't upload empty file
-            $('input[type="file"]', this.form.$el).remove();
-          }
-          const validationErrors = this.form.validate();
-          if(validationErrors) {
-            return Origin.Notify.toast({ 
-              type: 'error', 
-              title: Origin.l10n.t('app.validationfailed'),
-              text: Object.values(validationErrors).map(e => `${e.title} ${e.type}`).join('<br/>')
-            });
-          }
-          await Helpers.ajaxSubmit(this.form, {
-            method: model.isNew() ? 'POST' : 'PATCH', 
-            url: model.url(),
-            beforeSerialize: this.sanitiseFormData
-          });
-          this.resetCollection();
-          Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.updateaccesssuccess') });
-        }
-      } catch(e) {
-        Origin.Notify.toast({ type: 'error', text: e.message, persist: true });
-      }
-      this.removeAssetForm();
-    },
-
-    sanitiseFormData: function($form) {
-      $('input', $form).each((i, el) => {
-        const $input = $(el);
-        const name = $input.attr('name');
-        const val = $input.val();
-        
-        if((name === 'tags' || name === 'url') && !val) {
-          $input.remove();
-        }
-        if(name === "tags") {
-          $input.val(JSON.stringify(val));
-        } 
-      });
-    },
-
-    removeAssetForm: function() {
-      this.$('.asset-management-form').removeClass('show');
-      setTimeout(() => {
-        this.form.remove();
-        this.form = null;
-      }, 500);
+      if(!this.form) this.form = new AssetForm({ model, $container: this.$('.asset-management-form') });
     },
 
     appendAssetItem: function (asset) {
@@ -245,6 +166,14 @@ define(function(require){
 
     onResize: function() {
       this.initPaging();
+    },
+
+    onFormSuccess: function() {
+      this.resetCollection();
+    },
+    
+    onFormError: function(e) {
+      Origin.Notify[this.isModal() ? 'alert' : 'toast']({ type: 'error', text: e.message });
     },
 
     doLazyScroll: function(e) {
