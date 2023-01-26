@@ -52,8 +52,7 @@ define(function(require){
         'actions:upload modal:actions:upload assetManagement:edit': this.renderAssetForm,
         'filters modal:filters': this.filter,
         'assetManagement:collection:refresh': this.resetCollection,
-        'modal:assetManagement:success': this.onFormSuccess,
-        'modal:assetManagement:error': this.onFormError
+        'assetForm:close': this.onFormClose
       });
     },
 
@@ -73,6 +72,17 @@ define(function(require){
       if(!this.form) this.form = new AssetForm({ model, $container: this.$('.asset-management-form') });
     },
 
+    onFormClose: async function(error, model) {
+      this.form = undefined;
+      if(error) {
+        return Origin.Notify[this.isModal() ? 'alert' : 'toast']({ type: 'error', text: error.message });
+      }
+      this.resetCollection();
+      Origin.once('assetManagement:assetManagementCollection:fetched', () => {
+        this.$(`.asset-management-list-item.id-${model.get('_id')}`).trigger('click');
+      });
+    },
+    
     appendAssetItem: function (asset) {
       if(!asset) {
         return;
@@ -162,18 +172,8 @@ define(function(require){
       this.fetchCollection();
     },
 
-    // Event handling
-
     onResize: function() {
       this.initPaging();
-    },
-
-    onFormSuccess: function() {
-      this.resetCollection();
-    },
-    
-    onFormError: function(e) {
-      Origin.Notify[this.isModal() ? 'alert' : 'toast']({ type: 'error', text: e.message });
     },
 
     doLazyScroll: function(e) {
