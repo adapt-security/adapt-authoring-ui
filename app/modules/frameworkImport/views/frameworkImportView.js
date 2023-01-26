@@ -13,7 +13,7 @@ define(function(require){
       Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.frameworkimporttitle') });
       this.listenTo(Origin, {
         'frameworkImport:check': this.checkCourse,
-        'frameworkImport:import': this.importcourse
+        'frameworkImport:import': this.importCourse
       });
     },
 
