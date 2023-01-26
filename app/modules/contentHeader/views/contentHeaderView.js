@@ -92,6 +92,8 @@ define(function(require) {
       const courseTitle = course && course.get('title');
       if(this.data.showCourseTitle !== false && courseTitle && courseTitle !== this.data.title) {
         this.data.course = { title: course.get('title') };
+      } else {
+        delete this.data.course;
       }
       return this.data;
     }
