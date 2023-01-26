@@ -17,12 +17,15 @@ define(function(require) {
 
       this.header = new ContentHeader($('.modal-popup-header', this.$el), 'modal');
       if(this.headerConfig) {
-        this.header.data.title = this.headerConfig.title;
-        this.header.data.breadcrumbs = this.headerConfig.breadcrumbs;
-        Object.entries(this.headerConfig.buttons).forEach(([type, groups]) => this.header.setButtons(type, groups));
-      }
-      this.header.setButtons(this.options.buttons);
+        const buttonEntries = Object.entries(this.headerConfig.buttons || {});
+        
+        delete this.headerConfig.buttons;
+        Object.assign(this.header.data, this.headerConfig);
 
+        if(buttonEntries.length) {
+          buttonEntries.forEach(([type, groups]) => this.header.setButtons(type, groups));
+        }
+      }
       $('.modal-popup-content-inner', this.$el)
         .empty()
         .append(this.view && this.view.$el)
