@@ -1,7 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
-  var ApiModel = require('core/models/apiModel');
-  var AssetManagementEditAssetView = require('./views/assetManagementEditAssetView');
   var AssetManagementView = require('./views/assetManagementView');
   var Origin = require('core/origin');
 
@@ -23,14 +21,12 @@ define(function(require) {
   
 
   Origin.on('router:assetManagement', function(location, subLocation, action) {
+    if(location) {
+      return;
+    }
     Origin.assetManagement = {
       filterData: {}
     };
-    if(!location) return loadAssetsView();
-    loadEditAssetView(subLocation === 'edit' ? location : undefined);
-  });
-
-  function loadAssetsView() {
     Object.entries(AssetManagementView.contentHeaderButtons).forEach(([type, groups]) => {
       Origin.contentHeader.setButtons(type, groups);
     });
@@ -42,21 +38,5 @@ define(function(require) {
     }]);
     Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
     Origin.contentPane.setView(AssetManagementView, {}, { fullWidth: true });
-  }
-
-  async function loadEditAssetView(location) {
-    const isNew = location === undefined;
-    const model = ApiModel.Asset({ _id: location });
-    const title = Origin.l10n.t(isNew ? 'app.newasset' : 'app.editasset');
-    Origin.contentHeader.setTitle({ breadcrumbs, title });
-    Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
-    if(!isNew) {
-      try {
-        await model.fetch();
-      } catch(e) {
-        Origin.Notify.toast({ type: 'error', text: e.responseJSON.message });
-      }
-    }
-    Origin.contentPane.setView(AssetManagementEditAssetView, { model });
-  }
+  });
 });
