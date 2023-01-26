@@ -201,7 +201,6 @@ define(function(require){
           if(typeof cb === 'function') cb(collection);
         }, this),
         error: function(error) {
-          console.log(error);
           this.isCollectionFetching = false;
         }
       });
