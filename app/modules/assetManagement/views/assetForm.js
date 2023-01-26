@@ -55,32 +55,24 @@ define(function(require){
               text: Object.values(validationErrors).map(e => `${e.title} ${e.type}`).join('<br/>')
             });
           }
-          await Helpers.ajaxSubmit(this.form, {
+          const newData = await Helpers.submitForm(this.form, {
             method: model.isNew() ? 'POST' : 'PATCH', 
             url: model.url(),
-            beforeSerialize: this.sanitiseData
+            beforeSubmit: this.sanitiseData
           });
-          Origin.trigger('modal:assetManagement:success');
+          Origin.trigger('assetForm:close', undefined, ApiModel.Asset(newData));
           this.remove();
         }
       } catch(e) {
-        Origin.trigger('modal:assetManagement:error', e);
+        Origin.trigger('assetForm:close', e);
       }
     }
 
-    sanitiseData($form) {
-      $('input', $form).each((i, el) => {
-        const $input = $(el);
-        const name = $input.attr('name');
-        const val = $input.val();
-        
-        if((name === 'tags' || name === 'url') && !val) {
-          $input.remove();
-        }
-        if(name === "tags") {
-          $input.val(JSON.stringify(val));
-        } 
-      });
+    sanitiseData(formData) {
+      const tags = formData.get('tags');
+      tags ? formData.set('tags', JSON.stringify(tags)) : formData.delete('tags');
+      
+      if(!formData.get('url')) formData.delete('url');
     }
 
     remove() {
@@ -89,6 +81,7 @@ define(function(require){
       this.$container.removeClass('show');
       this.form && this.form.remove();
       this.form = null;
+      Origin.trigger('assetForm:close');
     }
   };
 
