@@ -118,6 +118,8 @@ define([
       Origin.modal.setView({ 
         view: new AssetManagementView(),
         header: { 
+          showCourseTitle: false,
+          breadcrumbs: [{ title: Origin.l10n.t('app.assetmanagement') }],
           title: Origin.l10n.t('app.selectasset'), 
           buttons: Object.assign(AssetManagementView.contentHeaderButtons, {
             actions: [{ items: actionButtons }],
