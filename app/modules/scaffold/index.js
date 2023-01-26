@@ -212,8 +212,12 @@ define([
       fieldsets[key] = {
         key: key,
         legend: value.title,
+        description: value.description,
         fields: [key]
       };
+      // stop the titles displaying twice
+      var backboneSchema = options.model.schema[key];
+      if(backboneSchema) backboneSchema.title = backboneSchema.help = undefined;
     }
     // remove any empty fieldsets
     Object.keys(fieldsets).forEach(k => {
