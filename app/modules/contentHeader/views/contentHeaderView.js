@@ -26,7 +26,7 @@ define(function(require) {
     constructor() {
       this.data = {
         buttons: Object.values(this.BUTTON_TYPES).reduce((data, type) => {
-          return { ...data, [type]: { items: [], ViewClass: VIEWS[type] } };
+          return Object.assign(data, { [type]: { items: [], ViewClass: VIEWS[type] } });
         }, {})
       };
       Origin.on('contentHeader:updateTitle', this.updateTitle.bind(this));
