@@ -37,9 +37,9 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
       try {
         await this.fetch({ silent: false });
       } catch(e) {
-        this.Origin.modal.show(false);
-        this.Origin.Notify.toast({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
-        this.Origin.router.navigateToLogin();
+        if(this.Origin.modal) this.Origin.modal.show(false);
+        if(this.Origin.Notify) this.Origin.Notify.toast({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
+        if(this.Origin.router) this.Origin.router.navigateToLogin();
       }
     },
 
@@ -84,3 +84,4 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
 
   return SessionModel;
 });
+
