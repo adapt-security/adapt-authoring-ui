@@ -49,7 +49,7 @@ define(function(require) {
           $el.append(new ViewClass({ collection: new Backbone.Collection(items) }).$el);
           continue;
         }
-        for (let item of items) $el.append(new ViewClass({ type, ...item }).$el);
+        for (let item of items) $el.append(new ViewClass(Object.assign(type, item)).$el);
       }
     }
     getTemplateData() {
