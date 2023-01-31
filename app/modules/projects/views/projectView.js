@@ -147,7 +147,7 @@ define(function(require) {
         event.preventDefault();
         event.stopPropagation();
       }
-      this.$('.tag-container').show().velocity({ opacity: 1 });
+      this.$('.tag-container').show();
     },
 
     onProjectHideTagsButtonClicked: function(event) {
@@ -155,7 +155,7 @@ define(function(require) {
         event.preventDefault();
         event.stopPropagation();
       }
-      this.$('.tag-container').velocity({ opacity: 0 }).hide();
+      this.$('.tag-container').hide();
     }
   }, {
     template: 'project'

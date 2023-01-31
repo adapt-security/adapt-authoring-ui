@@ -61,15 +61,9 @@ define(function(require) {
     },
 
     animateIn: function(cb) {
-      this.$el.css(this.hiddenCSS);
-      this.$el.velocity(
-        this.visibleCSS,
-        this.animDuration,
-        () => {
-          Origin.trigger('contentPane:ready');
-          if(cb) cb();
-        }
-      );
+      this.$el.css(this.visibleCSS);
+      Origin.trigger('contentPane:ready');
+      if(cb) cb();
     },
 
     resize: function() {

@@ -41,18 +41,8 @@ define(function(require){
     },
 
     animateIn: function() {
-      this.$el.velocity({
-        scale: [1, 0.95],
-        opacity: [1, 0.4]
-      }, {
-        duration: 400,
-        begin: function() {
-          this.$el.removeClass('page-content-syncing');
-        }.bind(this),
-        complete: function() {
-          Origin.trigger('pageView:itemAnimated', this);
-        }.bind(this)
-      })
+      this.$el.removeClass('page-content-syncing');
+      Origin.trigger('pageView:itemAnimated', this);
     },
 
     handleAsyncPostRender: function() {

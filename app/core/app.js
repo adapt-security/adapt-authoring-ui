@@ -10,8 +10,7 @@
       'jqueryUI',
       'polyfill',
       'scrollTo',
-      'selectize',
-      'velocity'
+      'selectize'
     ], Handlebars => {
       window.Handlebars = $.extend(Handlebars, window.Handlebars);
       callback();

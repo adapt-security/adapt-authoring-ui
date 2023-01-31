@@ -219,7 +219,7 @@ define(function(require){
         this.skipAnimation = false;
         duration = 0;
       }
-      this.$('.article-content').velocity(shouldCollapse ? 'slideUp' : 'slideDown', duration);
+      this.$('.article-content')[shouldCollapse ? 'slideUp' : 'slideDown'](duration);
     }
 
   }, {
