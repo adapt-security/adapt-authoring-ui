@@ -43,7 +43,8 @@ define(function(require){
         .then(data => {
           $('button.frameworkimport.check').addClass('display-none');
           if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
-          this.$el.html(Handlebars.templates.frameworkImportSummary(data));
+          this.$('#import_upload').addClass('display-none');
+          this.$el.append(Handlebars.templates.frameworkImportSummary(data));
         })
         .catch(this.onError)
         .finally(() => Origin.trigger('sidebar:resetButtons'));
