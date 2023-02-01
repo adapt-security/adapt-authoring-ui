@@ -50,7 +50,7 @@ define(function(require) {
       OriginView.prototype.render.apply(this, arguments);
 
       Origin.contentHeader.setTitle({
-        breadcrumbs: ['dashboard','course', { title: Origin.l10n.t('app.themeeditor') }],
+        breadcrumbs: ['course', { title: Origin.l10n.t('app.themeeditor') }],
         title: Origin.l10n.t('app.themingtitle')
       });
       await this.renderForm();
