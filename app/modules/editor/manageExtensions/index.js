@@ -6,7 +6,7 @@ define(function(require) {
   Origin.on('editor:extensions', function() {
     Origin.contentHeader.setTitle({
       breadcrumbs: ['course', { title: Origin.l10n.t('app.editorextensions') }],
-      title: Origin.editor.data.course.get('title')
+      title: Origin.l10n.t('app.extensionstitle')
     });
     Origin.contentPane.setView(EditorExtensionsEditView, { model: Origin.editor.data.course });
   });

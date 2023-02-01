@@ -56,6 +56,16 @@ define(function(require) {
   }
 
   function getTitleForModel(data) {
+    var type = data.model && data.model.get && data.model.get('_type');
+    if(type === 'menu') {
+      return Origin.l10n.t('editor.coursestructuretitle');
+    }
+    if(type === 'course') {
+      return Origin.l10n.t('editor.coursesettingstitle');
+    }
+    if(type === 'config') {
+      return Origin.l10n.t('editor.configsettingstitle');
+    }
     var modelTitle = data.model.title || data.model.get && data.model.get('title');
     return modelTitle || Origin.editor.data.course.get('title');
   }
