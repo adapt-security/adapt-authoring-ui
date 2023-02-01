@@ -1,5 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
+  var ColorLabelPopupView = require('./colorLabelPopupView');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
 
@@ -27,6 +28,7 @@ define(function(require){
         'sidebarFieldsetFilter:filterForm': this.filterForm,
         'editorView:pasteCancel': this.hidePasteZones
       });
+      this.on(`contextMenu:${this.model.get('_type')}:colorLabel`, this.showColorLabelPopup);
     },
 
     render: function() {
@@ -200,6 +202,10 @@ define(function(require){
         e.preventDefault();
       }
       Origin.trigger('contextMenu:open', this, e);
+    },
+
+    showColorLabelPopup: function() {
+      (new ColorLabelPopupView({ parentView: this })).$el.appendTo(document.body);
     },
 
     onFieldObjectClicked: function(event) {
