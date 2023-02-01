@@ -84,7 +84,7 @@ define(function(require) {
             return { title: Origin.l10n.t('app.dashboard'), url: '#' };
           }
           if(b === 'course') {
-            return { title: Origin.l10n.t('app.editormenu'), url: `#/editor/${course.get('_id')}/menu` };
+            return { title: course.get('title'), url: `#/editor/${course.get('_id')}/menu` };
           }
           return b;
         })

@@ -40,7 +40,7 @@ define(function(require) {
     var action = getAction();
     var isMenu = type === 'menu';
     var isEditor = action === 'edit';
-    var crumbs = ['dashboard'];
+    var crumbs = [];
 
     if (!isMenu || isEditor) {
       crumbs.push('course');
@@ -48,7 +48,7 @@ define(function(require) {
     if (!isMenu && isEditor) {
       crumbs.push({
         title: Origin.l10n.t('app.editorpage'),
-        url: '#/editor/' + data.page.get('_courseId') + '/page/' + data.page.get('_id')
+        url: `#/editor/${data.page.get('_courseId')}/page/${data.page.get('_id')}`
       });
     }
     crumbs.push({ title: data.langString });
