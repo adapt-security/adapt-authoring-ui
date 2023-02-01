@@ -28,7 +28,9 @@ define(function(require){
         'sidebarFieldsetFilter:filterForm': this.filterForm,
         'editorView:pasteCancel': this.hidePasteZones
       });
-      this.on(`contextMenu:${this.model.get('_type')}:colorLabel`, this.showColorLabelPopup);
+      if(this.model) {
+        this.on(`contextMenu:${this.model.get('_type')}:colorLabel`, this.showColorLabelPopup);
+      }
     },
 
     render: function() {
