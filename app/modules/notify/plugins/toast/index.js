@@ -2,7 +2,7 @@
 define(function(require) {
   var _ = require('underscore');
   var Origin = require('core/origin');
-  // are overridden by any values passed to Toast
+  // these are overridden by any values passed to Toast
   var defaults = {
     type: 'info',
     text: '',
@@ -12,51 +12,36 @@ define(function(require) {
     callback: null
   };
   var $container;
-
+  
   var Toast = function(data) {
-    if(typeof data === 'string') {
-      data = { text: data };
-    }
-    if(data.html) data.text = data.html;
-
-    data = _.extend({}, defaults, data);
-    appendToast(data);
+    if(typeof data === 'string') data = { text: data };
+    appendToast(Object.assign({}, defaults, { text: data.html, icon: getIcon(data.type) }, data));
   };
-
+  
   function appendToast(data) {
     $container.removeClass('display-none');
-
-    data.icon = "i";
     
-    var $el = $(`<div class="${data.type} toast">`)
-      .append($(`<div class="icon">${getIconHTML(data.type)}</div>`));
-    
-    const $body = $(`<div class="body"></div>`);
-    if(data.title) $body.append($(`<div class="title">${data.title}</div>`))
-    if(data.text) $body.append($(`<div class="text">${data.text || data.html}</div>`));
-    $el.append($body);
-    
-    if(data.persist) {
-      $el.append($('<button>', { 'class': 'close', text: data.buttonText }));
-    } else {
-      setTimeout(() => close(data, $el), data.timeout);
-    }
-    $el.on('click', () => close(data, $el))
+    const $el = $(Handlebars.templates.toast(data));
+    $el.close = () => close(data, $el);
     $el.appendTo($container);
-    setTimeout(() => $el.addClass('visible'), 0);
-  }
-  function getIconHTML(type) {
-    let iconName = '';
-    switch(type) {
-      case 'info': iconName = 'info-circle'; break; 
-      case 'error': iconName = 'exclamation-circle'; break; 
-      case 'warning': iconName = 'exclamation-triangle'; break; 
-      case 'success': iconName = 'check-circle'; break; 
+    setTimeout(() => $el.addClass('visible'), 1);
+
+    if(data.persist) {
+      $('button.close', $el).on('click', $el.close);
+    } else {
+      $el.on('click', $el.close);
+      setTimeout($el.close, data.timeout);
     }
-    return `<i class="fa fa-${iconName}"></i>`;
-
   }
-
+  function getIcon(type) {
+    switch(type) {
+      case 'info': return 'info-circle';
+      case 'error': return 'exclamation-circle';
+      case 'warning': return 'exclamation-triangle';
+      case 'success': return 'check-circle';
+    }
+  }
+  
   function close(data, $el) {
     $el.removeClass('visible');
     setTimeout(() => {
@@ -65,16 +50,17 @@ define(function(require) {
       if(data.callback) data.callback.apply();
     }, 500);
   };
-
+  
   var init = function() {
     Origin.Notify.register('toast', Toast);
-
+  
     Origin.on('origin:dataReady', function() {
       $container = $('<div class="toast-container display-none">');
       $('.app-inner').append($container);
     });
   };
-
+  
   return init;
-
-});
+  
+  });
+  
