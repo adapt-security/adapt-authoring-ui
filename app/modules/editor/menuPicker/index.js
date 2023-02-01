@@ -6,7 +6,10 @@ define(function(require) {
 
   Origin.on('editor:menusettings', function(data) {
     var model = Origin.editor.data.config;
-    Helpers.setPageTitle(model);
+    Origin.contentHeader.setTitle({
+      breadcrumbs: ['course', { title: Origin.l10n.t('app.editormenupicker') }],
+      title: Origin.l10n.t('app.menupickertitle')
+    });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
     Origin.contentPane.setView(EditorMenuSettingsEditView, { model }, { fullWidth: true });
   });
