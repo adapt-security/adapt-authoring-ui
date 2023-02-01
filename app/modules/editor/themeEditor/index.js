@@ -27,6 +27,10 @@ define(function(require) {
         }
       ]
     }]);
+    Origin.contentHeader.setTitle({
+      breadcrumbs: ['course', { title: Origin.l10n.t('app.thememanagement') }],
+      title: Origin.l10n.t('app.themingtitle')
+    });
     Origin.contentPane.setView(EditorThemingView);
   });
 });

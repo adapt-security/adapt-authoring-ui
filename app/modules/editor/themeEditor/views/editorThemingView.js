@@ -49,10 +49,6 @@ define(function(require) {
 
       OriginView.prototype.render.apply(this, arguments);
 
-      Origin.contentHeader.setTitle({
-        breadcrumbs: ['course', { title: Origin.l10n.t('app.thememanagement') }],
-        title: Origin.l10n.t('app.themingtitle')
-      });
       await this.renderForm();
       this.updateThemeSelect();
       this.updatePresetSelect();
