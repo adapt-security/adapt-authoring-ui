@@ -21,7 +21,7 @@ define(function(require){
     }),
 
     preRender: function() {
-      EditorHelpers.setPageTitle(model);
+      EditorHelpers.setPageTitle(this.model);
 
       Origin.editor.blockCount = 0;
       

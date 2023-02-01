@@ -134,9 +134,6 @@ define([
 
   Origin.on('editor:contentObject', async data => {
     const model = data.id ? Origin.editor.data.get({ _id: data.id }) : Origin.editor.data.course;
-    
-    Helpers.setPageTitle(model);
-
     const actionButtons = [
       {
         id: 'preview',
