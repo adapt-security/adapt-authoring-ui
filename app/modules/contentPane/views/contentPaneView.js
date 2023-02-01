@@ -43,7 +43,8 @@ define(function(require) {
       this.$el.toggleClass('full-width', !!options.fullWidth);
       this.$('.contentPane-inner').html(view.$el);
       Origin.trigger('contentPane:changed');
-      this.animateIn(_.bind(this.resize, this));
+      this.animateIn();
+      setTimeout(() => this.resize(), 1);
     },
 
     enableScroll: function() {
@@ -60,10 +61,9 @@ define(function(require) {
       Origin.trigger('contentPane:emptied');
     },
 
-    animateIn: function(cb) {
+    animateIn: function() {
       this.$el.css(this.visibleCSS);
       Origin.trigger('contentPane:ready');
-      if(cb) cb();
     },
 
     resize: function() {
