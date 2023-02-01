@@ -127,7 +127,7 @@ define(function(require) {
       try {
         await this.model.save(attrs, { patch: !!attrs, silent: false });
       } catch(e) {
-        return Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.validationfailed'), text: e.message });
+        return Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.errorsavetitle'), text: e.message });
       }
       Origin.router.navigateBack();
     },
