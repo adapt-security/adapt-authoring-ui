@@ -9,6 +9,10 @@ define(function(require){
     tagName: "div",
 
     preRender: function() {
+      Origin.contentHeader.setTitle({
+        breadcrumbs: ['course', { title: Origin.l10n.t('app.editormenu') }],
+        title: Origin.l10n.t('app.coursestructuretitle')
+      });
       this.layerViews = [];
       this.listenTo(Origin, {
         'editorData:loaded': this.render,

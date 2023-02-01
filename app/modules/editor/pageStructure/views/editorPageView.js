@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var Backbone = require('backbone');
+  var EditorHelpers = require('modules/editor/global/helpers');
   var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var ContentModel = require('core/models/contentModel');
@@ -20,6 +21,8 @@ define(function(require){
     }),
 
     preRender: function() {
+      EditorHelpers.setPageTitle(model);
+
       Origin.editor.blockCount = 0;
       
       this.listenTo(Origin, {
