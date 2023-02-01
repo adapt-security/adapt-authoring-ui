@@ -92,7 +92,8 @@ define(function(require) {
         Origin.Notify.toast({
           type: 'error',
           title: Origin.l10n.t('app.builderrortitle'),
-          text: Origin.l10n.t('app.errorgeneric') + Origin.l10n.t('app.debuginfo', { message: e.responseJSON.message })
+          debugInfo: e.responseJSON.message,
+          persist: true
         });
       }
       this.isBuilding = false;
