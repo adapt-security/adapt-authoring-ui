@@ -39,6 +39,7 @@ define(function(require){
       this.on(`contextMenu:${type}:copyID`, this.copyID);
       this.on(`contextMenu:${type}:delete`, this.deletePrompt);
       this.on(`contextMenu:${type}:edit`, this.editMenuItem);
+      this.on(`contextMenu:${type}:structure`, this.editMenuItem);
 
       this.$el.closest('.editor-menu').on('mousemove', _.bind(this.handleDrag, this));
     },
@@ -46,9 +47,8 @@ define(function(require){
     setupClasses: function() {
       const classes = [`content-type-${this.model.get('_type')}`];
       if(Origin.editor.currentContentObject) {
-        const selectedId = Origin.editor.currentContentObject.get('_id');
-        const isSelected = this.model.getHierarchy().some(c => c.get('_id') === selectedId);
-        if(isSelected) classes.push('selected');
+        const selectedIds = Origin.editor.currentContentObject.getHierarchy().map(c => c.get('_id'));
+        if(selectedIds.includes(this.model.get('_id'))) classes.push('selected');
       }
       this.$el.addClass(classes.join(' '));
     },
