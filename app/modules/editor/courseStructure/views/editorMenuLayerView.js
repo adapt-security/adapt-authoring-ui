@@ -121,7 +121,7 @@ define(function(require) {
     },
 
     onPaste: function(data) {
-      this.addMenuItemView(new ContenModel(Object.assign(data, { _type: 'contentobject' })));
+      this.addMenuItemView(new ContentModel(Object.assign(data, { _type: 'contentobject' })));
     },
 
     remove: function() {
