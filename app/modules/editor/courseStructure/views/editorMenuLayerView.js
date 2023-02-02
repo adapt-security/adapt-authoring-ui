@@ -95,7 +95,7 @@ define(function(require) {
     cancelPasteMenuItem: function(event) {
       event && event.preventDefault();
       this.hidePasteZones();
-      var target = new ContenModel({
+      var target = new ContentModel({
         _type: 'contentobject',
         _parentId: this._parentId,
         _courseId: Origin.editor.data.course.get('_id')
