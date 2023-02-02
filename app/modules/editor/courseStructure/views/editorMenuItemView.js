@@ -49,6 +49,7 @@ define(function(require){
 
     onMenuItemClicked: function(event) {
       event && event.preventDefault();
+      this.$el.addClass('selected');
       this.trigger('click', this);
       // handle double-click
       if(this.clickTimerActive) {
