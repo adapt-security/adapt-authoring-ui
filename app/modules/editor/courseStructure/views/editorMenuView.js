@@ -40,6 +40,8 @@ define(function(require){
         $('.editor-menu-inner').append(menuLayerView.$el);
         this.layerViews.push(menuLayerView);
       });
+      const firstButton = this.layerViews[0].childViews[0];
+      firstButton.trigger('click', firstButton);
     },
 
     updateItemViews: function(previousParent, model) {
@@ -81,7 +83,7 @@ define(function(require){
     onSelectedItemChanged: function(model) {
       const currentId = Origin.editor.currentContentObject && Origin.editor.currentContentObject.get('_id');
       const newId = model && model.get('_id');
-      if(model.get('_type') !== 'menu' || newId === currentId) {
+      if(newId === currentId) {
         return;
       }
       Origin.editor.currentContentObject = model;

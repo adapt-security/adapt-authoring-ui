@@ -108,6 +108,8 @@ define(function(require) {
       if (menuItem.$el.hasClass('selected')) {
         return;
       }
+      this.$('.editor-menu-item').removeClass('selected');
+      menuItem.$el.addClass('selected');
       Origin.trigger('editorView:menuView:updateSelectedItem', menuItem.model);
     },
 

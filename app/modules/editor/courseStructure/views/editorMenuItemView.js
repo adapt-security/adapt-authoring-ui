@@ -44,12 +44,17 @@ define(function(require){
     },
 
     setupClasses: function() {
-      this.$el.addClass('content-type-' + this.model.get('_type'));
+      const classes = [`content-type-${this.model.get('_type')}`];
+      if(Origin.editor.currentContentObject) {
+        const selectedId = Origin.editor.currentContentObject.get('_id');
+        const isSelected = this.model.getHierarchy().some(c => c.get('_id') === selectedId);
+        if(isSelected) classes.push('selected');
+      }
+      this.$el.addClass(classes.join(' '));
     },
 
     onMenuItemClicked: function(event) {
       event && event.preventDefault();
-      this.$el.addClass('selected');
       this.trigger('click', this);
       // handle double-click
       if(this.clickTimerActive) {
