@@ -6,7 +6,7 @@ define(function(require) {
 
   Origin.on('user:profile', () => Origin.router.navigateTo('user/profile'));
 
-  Origin.on('router:user', async function(location, subLocation, action) {
+  Origin.on('router:user', async function(location) {
     if(location !== 'profile') {
       return;
     }
