@@ -33,7 +33,7 @@ define(function(require){
       const hierarchy = (Origin.editor.currentContentObject || Origin.editor.data.course).getHierarchy();
       hierarchy.forEach(c => {
         const models = c.getChildren().filter(c => c.get('_type') === 'menu' || c.get('_type') === 'page');
-        if(!models.length) {
+        if(!models.length && c.get('_type') !== 'course') {
           return;
         }
         const menuLayerView = new EditorMenuLayerView({ _parentId: c.get('_id'), models });
