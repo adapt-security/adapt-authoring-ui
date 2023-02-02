@@ -74,7 +74,15 @@ define(function(require) {
     }
     getTemplateData() {
       if(!this.data.breadcrumbs) {
-        return this.data;
+        const moduleTitles = {
+          projects: 'app.projects',
+          assetManagement: 'app.assetmanagement',
+          pluginManagement: 'app.pluginmanagement',
+          userManagement: 'app.usermanagement',
+          user: 'app.userprofile'
+        };
+        const key = moduleTitles[Origin.location.module];
+        if(key) this.data.breadcrumbs = [{ title: Origin.l10n.t(key) }];
       }
       const course = Origin.editor && Origin.editor.data && Origin.editor.data.course;
 

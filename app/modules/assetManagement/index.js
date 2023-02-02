@@ -4,7 +4,6 @@ define(function(require) {
   var Origin = require('core/origin');
 
   const scopes = ['write:assets'];
-  const breadcrumbs = [{ title: Origin.l10n.t('app.assetmanagement'), url: 'assetManagement' }];
 
   Origin.on('router:initialize', () => Origin.router.restrictRoute('assetManagement', scopes));
   
@@ -36,7 +35,7 @@ define(function(require) {
         id: 'upload'
       }]
     }]);
-    Origin.contentHeader.setTitle({ breadcrumbs, title: Origin.l10n.t('app.manageallassets') });
+    Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.manageallassets') });
     Origin.contentPane.setView(AssetManagementView, {}, { fullWidth: true });
   });
 });

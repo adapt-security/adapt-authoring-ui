@@ -74,10 +74,7 @@ define(function(require) {
     }
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, [{ items: actionButtons }]);
     
-    Origin.contentHeader.setTitle({
-      breadcrumbs: ['dashboard'], 
-      title: Origin.l10n.t(`app.projects`) 
-    });
+    Origin.contentHeader.setTitle({ title: Origin.l10n.t(`app.projectstitle`) });
     Origin.contentPane.setView(ProjectsView, {}, { fullWidth: true });
   });
 

@@ -11,7 +11,7 @@ define(function(require) {
     if(!Origin.sessionModel.hasScopes(featureScopes)) {
       return;
     }
-    Origin.on('router:frameworkImport', renderMainView);
+    Origin.on('router:projects/frameworkImport', renderMainView);
   });
 
   function renderMainView(location, subLocation, action) {

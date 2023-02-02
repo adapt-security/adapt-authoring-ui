@@ -12,7 +12,7 @@ define(function(require) {
     }
     const model = ApiModel.User({ _id: 'me' });
     await model.fetch();
-    Origin.contentHeader.setTitle({title: Origin.l10n.t('app.editprofiletitle')});
+    Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.userprofiletitle') });
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
     Origin.contentPane.setView(UserProfileView, { model });
   });

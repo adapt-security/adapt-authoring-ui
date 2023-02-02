@@ -95,10 +95,7 @@ define(function(require) {
         buttonText: Origin.l10n.t('app.addnewuser')
       }]
     }]);
-    Origin.contentHeader.setTitle({ 
-      breadcrumbs: [{ title: Origin.l10n.t('app.usermanagement'), url: '#' }], 
-      title: Origin.l10n.t('app.usermanagementtitle') 
-    });
+    Origin.contentHeader.setTitle({ title: Origin.l10n.t('app.usermanagementtitle') });
     Origin.contentPane.setView(UserManagementView, {}, { fullWidth: true });
     Origin.on('actions:adduser', () => Origin.router.navigateTo('userManagement/addUser'));
   }
