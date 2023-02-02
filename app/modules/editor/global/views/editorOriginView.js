@@ -78,7 +78,7 @@ define(function(require){
     showPasteZones: function(type) {
       $('.paste-zone').addClass('display-none');
       $('.add-control').addClass('display-none');
-      if(type) $('.paste-zone-' + type).removeClass('display-none').addClass('show');
+      if(type) $('.paste-zone-' + (type === 'menu' ? 'page' : type)).removeClass('display-none').addClass('show');
       if(this.currentView === "page") {
         this.componentPasteLocation();
       }

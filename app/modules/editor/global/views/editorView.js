@@ -3,6 +3,7 @@
  * TODO I think this exists to add extra functionality to the menu/page structure pages
  */
 define(function(require) {
+  var ContentModel = require('core/models/contentModel');
   var EditorMenuView = require('../../courseStructure/views/editorMenuView');
   var EditorOriginView = require('./editorOriginView');
   var EditorPageView = require('../../pageStructure/views/editorPageView');
@@ -126,9 +127,8 @@ define(function(require) {
         data: JSON.stringify({ _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }),
         success: newData => {
           Origin.editor.clipboardId = null;
-          Origin.trigger('editorView:menuView:addItem', new ContentModel(newData))
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
-          Origin.trigger(`editorView:refreshView`);
+          Origin.editor.data.load();
         },
         fail: ({ message }) => {
           Origin.Notify.toast({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
