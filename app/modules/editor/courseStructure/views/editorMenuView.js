@@ -42,6 +42,8 @@ define(function(require){
       });
       const firstButton = this.layerViews[0].childViews[0];
       firstButton.trigger('click', firstButton);
+
+      this.setUpInteraction();
     },
 
     updateItemViews: function(previousParent, model) {
@@ -104,17 +106,19 @@ define(function(require){
         start: function(event, ui) {
           ui.placeholder.height(ui.item.height());
         },
-        stop: _.bind(function(event,ui) {
-          var $draggedElement = ui.item;
-          var id = $('.editor-menu-item-inner', $draggedElement).attr('data-id');
-          var _sortOrder = $draggedElement.index() + 1;
-          var _parentId = $draggedElement.closest('.editor-menu-layer').attr('data-parentId');
-          var currentModel = this.content.findWhere({ _id: id });
-          currentModel.save({ _sortOrder, _parentId }, {
-            patch: true,
-            success: model => this.updateItemViews(currentModel.get('_parentId'), model)
-          });
+        stop: _.bind(function(event, ui) {
+          var $el = ui.item;
+          var currentModel = Origin.editor.data.content.findWhere({ _id: $('.editor-menu-item-inner', $el).attr('data-id') });
           currentModel.set('_isDragging', false);
+          const data = {
+            _sortOrder: $el.index() + 1,
+            _parentId: $el.closest('.editor-menu-layer').attr('data-parentId')
+          };
+          Object.entries(data).forEach(([key, val]) => {
+            if(currentModel.get(key) === val) delete data[key];
+          });
+          // only save if something's changed
+          if(Object.keys(data).length) currentModel.save(data, { patch: true });
         }, this),
         over: function(event, ui) {
           $(event.target).closest('.editor-menu-layer').attr('data-over', true);
