@@ -66,20 +66,6 @@ define(function(require){
       this.scrollToElement();
     },
 
-    addSelectedItemStyling: function(id) {
-      this.$('.editor-menu-item[data-id="' + id + '"]').addClass('selected');
-      var model = this.content.findWhere({ _id: id });
-      var parentId = model && model.get('_parentId');
-      if (parentId) {
-        // recurse
-        this.addSelectedItemStyling(parentId);
-      }
-    },
-
-    removeSelectedItemStyling: function() {
-      this.$('.editor-menu-item').removeClass('selected');
-    },
-
     onSelectedItemChanged: function(model) {
       const currentId = Origin.editor.currentContentObject && Origin.editor.currentContentObject.get('_id');
       const newId = model && model.get('_id');
