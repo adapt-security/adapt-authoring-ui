@@ -38,10 +38,17 @@ define(function(require) {
     ContextMenu.addItem('article', getDefaultItems());
     ContextMenu.addItem('block', getDefaultItems());
     ContextMenu.addItem('component', getDefaultItems());
-    ContextMenu.addItem('page', getDefaultItems());
-    ContextMenu.addItem('menu', getDefaultItems(['copy']));
+    ContextMenu.addItem('menu', getDefaultItems());
     ContextMenu.addItem('page-min', getDefaultItems(['copy','delete','colorLabel']));
     ContextMenu.addItem('course', getDefaultItems(['colorLabel']));
+
+    var pageItems = getDefaultItems();
+    pageItems.splice(1, 0, {
+      title: Origin.l10n.t('app.editstructure'),
+      className: 'context-menu-item',
+      callbackEvent: "structure"
+    });
+    ContextMenu.addItem('page', pageItems);
   };
 
   /*
