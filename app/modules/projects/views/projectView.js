@@ -141,7 +141,7 @@ define(function(require) {
         Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.copyidtoclipboardsuccess', opts) });
         return;
       }
-      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.app.copyidtoclipboarderror', opts) });
+      Origin.Notify.alert({ type: 'warning', text: Origin.l10n.t('app.copyidtoclipboarderror', opts) });
     },
 
     onProjectShowTagsButtonClicked: function(event) {
