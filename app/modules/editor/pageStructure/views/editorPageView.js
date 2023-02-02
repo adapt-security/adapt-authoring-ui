@@ -30,6 +30,7 @@ define(function(require){
         'pageView:itemAnimated': this.onChildRendered,
         'editorData:loaded': this.render
       });
+      /*
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
         {
           title: Origin.l10n.t('app.collapseAllArticles'),
@@ -46,7 +47,7 @@ define(function(require){
           group: 'collapseArticle',
         }
       ]);
-
+      */
       this._onScroll = _.bind(_.throttle(this.onScroll, 400), this);
     },
 
