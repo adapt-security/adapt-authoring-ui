@@ -73,13 +73,15 @@ define(function(require){
       this.trigger('dblclick', this);
     },
 
-    editMenuItem: function() {
+    editMenuItem: function(eventName) {
       var courseId = Origin.editor.data.course.get('_id');
       var type = this.model.get('_type');
       var menuItemId = this.model.get('_id');
-      Origin.router.navigateTo(`editor/${courseId}/${type}/${menuItemId}/edit`);
+      let route = `editor/${courseId}/${type}/${menuItemId}/`;
+      if(eventName === 'edit') route += 'edit'
+      Origin.router.navigateTo(route);
     },
-
+    
     copyMenuItem: function() {
       Origin.trigger('editorView:copy', this.model);
     },
