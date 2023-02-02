@@ -81,7 +81,7 @@ define(function(require){
     onSelectedItemChanged: function(model) {
       const currentId = Origin.editor.currentContentObject && Origin.editor.currentContentObject.get('_id');
       const newId = model && model.get('_id');
-      if(newId === currentId) {
+      if(model.get('_type') !== 'menu' || newId === currentId) {
         return;
       }
       Origin.editor.currentContentObject = model;
