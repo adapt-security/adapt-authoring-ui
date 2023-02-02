@@ -106,6 +106,8 @@ define(function(require) {
       return this.data;
     }
     setTitle(data) {
+      delete this.data.breadcrumbs;
+      delete this.data.title;
       Object.assign(this.data, data);
       this.render();
     }
