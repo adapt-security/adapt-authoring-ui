@@ -27,7 +27,7 @@ define(function(require) {
       event && event.preventDefault();
 
       var callbackEvent = this.model.get('callbackEvent');
-      this.model.get('contextView').trigger('contextMenu:' + this.model.get('type') + ':' + callbackEvent);
+      this.model.get('contextView').trigger('contextMenu:' + this.model.get('type') + ':' + callbackEvent, callbackEvent);
 
       Origin.trigger('contextMenu:closeContextMenu');
     }
