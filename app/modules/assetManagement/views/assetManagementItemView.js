@@ -41,12 +41,12 @@ define(function(require){
       switch(type) {
         case 'audio': return 'fa-file-audio-o';
         case 'image': return 'fa-file-image-o';
-        case 'font': return 'fa-file-code-o';
+        case 'font': return 'fa-font';
         case 'video': return 'fa-file-video-o';
       }
       switch(subtype) {
         case 'pdf': return 'fa-file-pdf-o';
-        case 'zip': return 'fa-file-zipper-o';
+        case 'zip': return 'fa-file-archive-o';
       }
       return 'fa-file-o';
     },
