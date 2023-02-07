@@ -7,13 +7,14 @@ define([
   './views/scaffoldAssetView',
   './views/scaffoldCodeEditorView',
   './views/scaffoldColourPickerView',
+  './views/scaffoldContentIdView',
   './views/scaffoldDisplayTitleView',
   './views/scaffoldFileView',
   './views/scaffoldItemsModalView',
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, ApiCollection, BackboneForms, BackboneFormsLists, Overrides, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldContentIdView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
