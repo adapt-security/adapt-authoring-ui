@@ -73,7 +73,7 @@ define(function(require){
       Origin.Notify.toast({
         type: 'error',
         title: Origin.l10n.t('app.adduserfail'),
-        text: jqXhr.responseJson && jqXhr.responseJson.message || error
+        text: jqXhr.responseJSON && jqXhr.responseJSON.message || jqXhr
       });
     }
   }, {
