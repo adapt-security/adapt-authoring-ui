@@ -55,7 +55,6 @@ define([
         const d = dataArr[i];
         if(d.name === "tags") {
           if(!d.value.length) dataArr.splice(i--, 1);
-          else d.value = JSON.stringify(d.value);
         } else if(d.name === "url" && d.value === "") {
           dataArr.splice(i--, 1);
         }
