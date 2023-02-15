@@ -79,7 +79,7 @@ define([
         },
         {
           buttonText: Origin.l10n.t('app.manageextensions'),
-          buttonIcon: 'fa-puzzle-piece ',
+          buttonIcon: 'fa-puzzle-piece',
           eventData: 'extensions'
         }
       ].map(i => Object.assign(i, { buttonClass: i.eventData === Origin.location.route2 ? 'selected' : '' }))
