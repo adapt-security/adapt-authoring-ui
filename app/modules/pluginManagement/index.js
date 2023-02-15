@@ -12,7 +12,7 @@ define(function(require) {
     Origin.globalMenu.addItem({
       location: 'global',
       text: Origin.l10n.t('app.pluginmanagement'),
-      icon: 'fa-plug',
+      icon: 'fa-puzzle-piece',
       route: 'pluginManagement',
       sortOrder: 3,
       scopes
