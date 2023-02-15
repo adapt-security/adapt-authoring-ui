@@ -70,8 +70,7 @@ define(function(require){
 
     sanitiseData(formData) {
       const tags = formData.get('tags');
-      tags ? formData.set('tags', JSON.stringify(tags)) : formData.delete('tags');
-      
+      if(tags) formData.set('tags', JSON.stringify(tags.split(',')));
       if(!formData.get('url')) formData.delete('url');
     }
 
