@@ -1,6 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var _ = require('underscore');
+  var Helpers = require('core/helpers');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
 
@@ -17,16 +18,20 @@ define(function(require){
       _.defer(this.setViewToReady);
     },
 
-    uploadFile: function() {
+    uploadFile: async function() {
       if(this.validate()) {
         $('.loading').show();
-        this.$('.plugin-form').ajaxSubmit({
-          success: this.onUploadSuccess,
-          error: this.onUploadError
-        });
+        try {
+          const form = this.$('.plugin-form');
+          await Helpers.submitForm(form);
+        } catch(e) {
+          Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.uploadpluginerror'), text: e.responseJSON && e.responseJSON.message });
+          Origin.router.navigateTo('pluginManagement/upload');
+        }
+        Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
+        Origin.router.navigateTo('pluginManagement');
+        $('.loading').hide();
       }
-      // Return false to prevent the page submitting
-      return false;
     },
 
     validate: function() {
@@ -36,30 +41,7 @@ define(function(require){
       }
       this.$('.field-error').addClass('display-none');
       return true;
-    },
-
-    onUploadSuccess: function(data) {
-      Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
-
-      $('.loading').hide();
-
-      Origin.router.navigateTo(`pluginManagement/${data.pluginType || ''}`);
-    },
-
-    onUploadError: function(data) {
-      $('.loading').hide();
-
-      var resError = data && data.responseJSON && data.responseJSON.message;
-      var resText = data && data.responseText;
-      var message = resError || resText || '';
-
-      Origin.Notify.toast({
-        type: 'error',
-        title: Origin.l10n.t('app.uploadpluginerror'),
-        text: message
-      });
-      Origin.router.navigateTo('pluginManagement/upload');
-    },
+    }
   }, {
     template: 'pluginManagementUpload'
   });

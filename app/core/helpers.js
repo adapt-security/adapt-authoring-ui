@@ -327,14 +327,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
         const data = res.body ? await res.json() : undefined;
         res.status > 299 ? reject(data) : resolve(data);
       });
-    },
-    ajaxSubmit($form, options = {}) {
-      return new Promise(async (resolve, reject) => {
-        $form.$el.ajaxSubmit(Object.assign(options, {
-          success: data => resolve(data),
-          error: jqXhr => reject(jqXhr.responseJSON)
-        }));
-      });
     }
   }
 
