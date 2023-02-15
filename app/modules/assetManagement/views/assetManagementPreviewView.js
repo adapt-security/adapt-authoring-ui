@@ -56,7 +56,7 @@ define(function(require){
       } catch(e) {
         Origin.Notify.alert({
           type: 'error',
-          text: Origin.l10n.t('app.errordeleteasset', { message: e.responseJSON && e.responseJSON.message || e.responseText })
+          text: e.responseJSON && e.responseJSON.message || e.responseText
         });
       }
     }
