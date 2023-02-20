@@ -322,10 +322,16 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
           options.beforeSubmit(body);
           delete options.beforeSubmit;
         }
-        const reqOptions = Object.assign({ method: $form.attr('method'), body }, options);
-        const res = await fetch(options.url || $form.attr('url'), reqOptions);
-        const data = res.body ? await res.json() : undefined;
-        res.status > 299 ? reject(data) : resolve(data);
+        const xhr = new XMLHttpRequest();
+        xhr.open(options.method || $form.attr('method'), options.url || $form.attr('url'), true);
+        xhr.onprogress = typeof options.onProgress === 'function' ? options.onProgress : () => {};
+        xhr.onreadystatechange = () => { 
+          if(xhr.readyState !== XMLHttpRequest.DONE) return;
+          let responseData = xhr.response;
+          try { responseData = JSON.parse(responseData); } catch(e) {}
+          xhr.status > 299 ? reject(responseData) : resolve(responseData);  
+        }
+        xhr.send(body);
       });
     }
   }
