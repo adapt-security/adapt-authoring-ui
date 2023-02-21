@@ -132,14 +132,16 @@ define(function(require) {
       Origin.router.navigateBack();
     },
 
-    buildErrorMessage: function(errorObjs, message = `${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>`) {
+    buildErrorMessage: function(errorObjs, message = `${Origin.l10n.t('app.validationfailedmessage')}`) {
+      message += '<ul class="error-list">';
       _.each(errorObjs, function(item, key) {
         if(item.hasOwnProperty('message')) {
-          message += `<span class="key">${item.title || key}</span>: ${item.message}<br/>`;
+          message += `<li><span class="key">${item.title || key}</span>: ${item.message}<br/></li>`;
         } else if(_.isObject(item)) { // recurse
           message = this.buildErrorMessage(item, message);
         }
       }, this);
+      message += '</ul>';
       return message;
     },
 
