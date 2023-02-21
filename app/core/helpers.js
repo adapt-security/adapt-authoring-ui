@@ -313,6 +313,12 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
     submitForm($form, options = {}) {
       return new Promise(async (resolve, reject) => {
         if($form.$el) $form = $form.$el; // for Scaffold forms
+        const method = options.method || $form.attr('method');
+        const url = options.url || $form.attr('action');
+        if(!method || !url) {
+          console.error('Helpers#submitForm: method and URL must be specified either as form attributes or options');
+          return;
+        }
         const body = new FormData($form[0]);
         if(options.data) {
           Object.entries(options.data).forEach(d => body.append(...d));
