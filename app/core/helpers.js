@@ -323,7 +323,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
           delete options.beforeSubmit;
         }
         const xhr = new XMLHttpRequest();
-        xhr.open(options.method || $form.attr('method'), options.url || $form.attr('url'), true);
+        xhr.open(method, url, true);
         xhr.onprogress = typeof options.onProgress === 'function' ? options.onProgress : () => {};
         xhr.onreadystatechange = () => { 
           if(xhr.readyState !== XMLHttpRequest.DONE) return;
