@@ -20,6 +20,8 @@ define(function(require){
     async render() {
       this.form = await Origin.scaffold.buildForm({ model: this.model });
       
+      this.progressBar = this.form.$el.prepend(Handlebars.partials['part_formLoadingBar']());
+
       const input = new ScaffoldFileView({ schema: { file: { type: "File" }, editorClass: 'field' }, key: 'file' });
       input.$el.insertBefore($('.field', this.form.$el).first());
       input.render();
@@ -58,7 +60,8 @@ define(function(require){
           const newData = await Helpers.submitForm(this.form, {
             method: model.isNew() ? 'POST' : 'PATCH', 
             url: model.url(),
-            beforeSubmit: this.sanitiseData
+            beforeSubmit: this.sanitiseData,
+            onProgress: e => $('.value', this.progressBar).css('width', e.loaded/e.total*100)
           });
           Origin.trigger('assetForm:close', undefined, ApiModel.Asset(newData));
           this.remove();
