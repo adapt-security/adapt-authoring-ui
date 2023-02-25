@@ -61,7 +61,7 @@ define(function(require){
             method: model.isNew() ? 'POST' : 'PATCH', 
             url: model.url(),
             beforeSubmit: this.sanitiseData,
-            onProgress: e => $('.value', this.progressBar).css('width', e.loaded/e.total*100)
+            onProgress: e => $('.value', this.progressBar).css('width', `${e.loaded/e.total*100}%`)
           });
           Origin.trigger('assetForm:close', undefined, ApiModel.Asset(newData));
           this.remove();
