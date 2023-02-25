@@ -20,8 +20,6 @@ define(function(require){
     async render() {
       this.form = await Origin.scaffold.buildForm({ model: this.model });
       
-      this.progressBar = this.form.$el.prepend(Handlebars.partials['part_formLoadingBar']());
-
       const input = new ScaffoldFileView({ schema: { file: { type: "File" }, editorClass: 'field' }, key: 'file' });
       input.$el.insertBefore($('.field', this.form.$el).first());
       input.render();
@@ -41,6 +39,7 @@ define(function(require){
       const model = this.form.model;
       const hasFile = !!$('input[name="file"]', this.form.$el).val();
       const hasChanged = Object.keys(model.changedAttributes()).filter(a => a !== '_type').length > 0;
+      let progressBar;
       try {
         if(model.isNew() && !hasFile) {
           return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
@@ -48,6 +47,8 @@ define(function(require){
         if(hasChanged) {
           if(!hasFile) { // don't upload empty file
             $('input[type="file"]', this.form.$el).remove();
+          } else {
+            progressBar = this.form.$el.prepend(Handlebars.partials['part_formLoadingBar']());
           }
           const validationErrors = this.form.validate();
           if(validationErrors) {
@@ -61,7 +62,7 @@ define(function(require){
             method: model.isNew() ? 'POST' : 'PATCH', 
             url: model.url(),
             beforeSubmit: this.sanitiseData,
-            onProgress: e => $('.value', this.progressBar).css('width', `${e.loaded/e.total*100}%`)
+            onProgress: e => $('.value', progressBar).css('width', `${e.loaded/e.total*100}%`)
           });
           Origin.trigger('assetForm:close', undefined, ApiModel.Asset(newData));
           this.remove();
