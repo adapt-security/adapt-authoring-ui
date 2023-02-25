@@ -38,7 +38,7 @@ define(function(require) {
     setHeroURI: function() {
       let heroImageURI = this.model.get('heroImage');
       if(heroImageURI && !Helpers.isAssetExternal(heroImageURI)) {
-        heroImageURI = `api/assets/serve/${heroImageURI}?thumb=true`;
+        heroImageURI = `api/assets/serve/${heroImageURI}`;
       }
       this.model.set('heroImageURI', heroImageURI);
     },
