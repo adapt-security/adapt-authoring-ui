@@ -24,13 +24,12 @@ define(function(require){
         try {
           const form = this.$('.plugin-form');
           await Helpers.submitForm(form);
+          Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
+          Origin.router.navigateTo('pluginManagement');
         } catch(e) {
-          Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.uploadpluginerror'), text: e.responseJSON && e.responseJSON.message });
+          Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.uploadpluginerror'), text: e.message });
           Origin.router.navigateTo('pluginManagement/upload');
         }
-        Origin.Notify.toast({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
-        Origin.router.navigateTo('pluginManagement');
-        $('.loading').hide();
       }
     },
 
