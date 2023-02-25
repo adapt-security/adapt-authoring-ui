@@ -27,8 +27,8 @@
     {{/ifValueEquals}}
     <div class="pluginType-update col-10 col-centered">
       <div class="pluginType-update-inner tb-col-inner">
-        {{#if isLocalPackage}}
-          <i title="{{t 'app.uploadedbyuser'}}" class="user-uploaded fa fa-user"></i>
+        {{#if isLocalInstall}}
+            <button title="{{t 'app.uploadedbyuser'}}" class="plugin-update btn secondary" disabled="disabled"><i class="fa fa-code"></i></button>
         {{else}}
           {{#if canBeUpdated}}
             <button title="{{t 'app.updateplugin'}} {{latestCompatibleVersion}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
