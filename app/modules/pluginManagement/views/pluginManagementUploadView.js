@@ -26,7 +26,7 @@ define(function(require){
           Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.uploadpluginsuccess') });
           Origin.router.navigateTo('pluginManagement');
         } catch(e) {
-          Origin.Notify.alert({ type: 'error', title: Origin.l10n.t('app.uploadpluginerror'), text: e.responseJSON && e.responseJSON.message });
+          Origin.Notify.alert({ type: 'error', title: Origin.l10n.t('app.uploadpluginerror'), text: e.message });
           Origin.router.navigateTo('pluginManagement/upload');
         } finally {
           $('.loading').hide();
