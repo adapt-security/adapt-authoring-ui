@@ -50,7 +50,10 @@
         .left { text-align: left; }
       }
 
+      tr.INSTALLED { color: @primary-color; }
       tr.UPDATED { color: @success-color; }
+      tr.OLDER { color: @warning-color; }
+      tr.NO_CHANGE { color: rgba(0,0,0,0.7); }
     }
 
     .statusReport > div {
@@ -64,8 +67,15 @@
       }
       .messages {
         padding: 10px 0;
-        > div {
+        .message {
           padding: 5px 15px;
+          margin-bottom: 5px;
+          .data {
+            background: rgba(0,0,0,0.2);
+            .key {
+              font-weight: bold;
+            }
+          }
         }
       }
       &.error {
