@@ -66,12 +66,16 @@
         font-size: 16px;
       }
       .messages {
-        padding: 10px 0;
+        padding: 10px;
         .message {
-          padding: 5px 15px;
-          margin-bottom: 5px;
+          margin-bottom: 10px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          .code {
+            font-weight: bold;
+          }
           .data {
-            background: rgba(0,0,0,0.2);
             .key {
               font-weight: bold;
             }
