@@ -39,15 +39,27 @@ define(function(require){
 
     checkCourse: async function() {
       if(!this.isValid()) return;
-      this.doImport(true)
-        .then(data => {
-          $('button.frameworkimport.check').addClass('display-none');
-          if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
-          this.$('#import_upload').addClass('display-none');
-          this.$el.append(Handlebars.templates.frameworkImportSummary(data));
-        })
-        .catch(this.onError)
-        .finally(() => Origin.trigger('sidebar:resetButtons'));
+      try {
+        const data = await this.doImport(true);
+        $('button.frameworkimport.check').addClass('display-none');
+        if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
+        this.$('#import_upload').addClass('display-none');
+        this.$el.append(Handlebars.templates.frameworkImportSummary(this.transformStatusData(data)));
+      } catch(e) {
+        this.onError(e);
+      } finally {
+        Origin.trigger('sidebar:resetButtons');
+      }
+    },
+
+    transformStatusData: function(data) {
+      Object.values(data.statusReport).forEach(v => {
+        v.forEach(v2 => v2.codeKey = `app.importstatus.${v2.code}`);
+      });
+      Object.values(data.versions).forEach(v => {
+        v.statusKey = `app.importstatus.${v.status}`;
+      });
+      return data;
     },
     
     importCourse: function() {
