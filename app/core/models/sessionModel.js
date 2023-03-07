@@ -12,7 +12,7 @@ define(['require', 'backbone'], function(require, Backbone) {
         this.set({ isAuthenticated: false, error });
       });
       // handle 401 errors as a 'log-out'
-      $(document).ajaxError((event, jqXhr) => jqXhr.status == 401 && this.logout());
+      // $(document).ajaxError((event, jqXhr) => jqXhr.status === 401 && this.logout());
     },
 
     hasScopes: function(scopes) {
