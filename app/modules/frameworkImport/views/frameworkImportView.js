@@ -98,7 +98,8 @@ define(function(require){
     },
 
     onError: function(e) {
-      Origin.Notify.alert({ type: 'error', text: e.message })
+      Origin.Notify.alert({ type: 'error', text: e.message });
+      Origin.trigger('sidebar:resetButtons');
     }
   }, {
     template: 'frameworkImport'
