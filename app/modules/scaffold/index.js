@@ -271,8 +271,8 @@ define([
         schemaType = `${plugin.get('targetAttribute').slice(1)}-${schemaType}`;
       } catch(e) {} // nothing to do
     }
-    const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
-    const schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
+    const query = model.get('_courseId') ? `&_courseId=${model.get('_courseId')}` : '';
+    const schema = await $.getJSON(`api/content/schema?_type=${schemaType}${query}`);
 
     options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);
