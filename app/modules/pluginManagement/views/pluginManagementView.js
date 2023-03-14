@@ -27,7 +27,16 @@ define(function(require){
     },
 
     preRender: function() {
-      Origin.trigger('contentHeader:updateTitle', { title: Origin.l10n.t('app.' + this.currentPluginType + 'management') });
+      const titles = {
+        component: Origin.l10n.t('app.components'),
+        extension: Origin.l10n.t('app.extensions'),
+        menu: Origin.l10n.t('app.menus'),
+        theme: Origin.l10n.t('app.themes')
+      };
+      Origin.trigger('contentHeader:updateTitle', { 
+        breadcrumbs: [{ title: Origin.l10n.t('app.pluginmanagement') }],
+        title: titles[this.currentPluginType] 
+      });
       this.refreshPluginList();
     },
     
