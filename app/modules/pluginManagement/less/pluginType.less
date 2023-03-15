@@ -1,17 +1,25 @@
-.pluginType-item.tb-row .row-disabled {
+.pluginType-item.tb-row {
+  border-left: 5px solid white;
+
+  &.row-disabled {
     color: #B5C2C6;
+  }
+  &.has-update {
+    border-left-color: @secondary-color;
+    background: lighten(@secondary-color, 53%);
+  }
+  .pluginType-update {
+    .user-uploaded {
+      padding: 10px 14px;
+    }
+    button {
+      &.plugin-update-check {
+        .secondary;
+      }
+      &.plugin-update-confirm {
+        .primary;
+      }
+    }
+  }
 }
 
-.pluginType-update {
-  .user-uploaded {
-    padding: 10px 14px;
-  }
-  button {
-    &.plugin-update-check {
-      .secondary;
-    }
-    &.plugin-update-confirm {
-      .primary;
-    }
-  }
-}
