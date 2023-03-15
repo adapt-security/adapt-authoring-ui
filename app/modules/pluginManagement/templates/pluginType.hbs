@@ -28,7 +28,7 @@
     <div class="pluginType-update col-10 col-centered">
       <div class="pluginType-update-inner tb-col-inner">
         {{#if isLocalInstall}}
-            <button title="{{t 'app.uploadedbyuser'}}" class="plugin-update btn secondary" disabled="disabled"><i class="fa fa-code"></i></button>
+            <button title="{{t 'app.uploadedbyuser'}}" class="plugin-update btn secondary" disabled="disabled"><i class="fa fa-ban"></i></button>
         {{else}}
           {{#if canBeUpdated}}
             <button title="{{t 'app.updateplugin'}} {{latestCompatibleVersion}}" class="plugin-update btn secondary"><i class="fa fa-refresh"></i></button>
