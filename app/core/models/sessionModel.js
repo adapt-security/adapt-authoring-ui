@@ -11,8 +11,7 @@ define(['require', 'backbone'], function(require, Backbone) {
         const error = jqXhr.responseJSON && jqXhr.responseJSON.message;
         this.set({ isAuthenticated: false, error });
       });
-      // handle 401 errors as a 'log-out'
-      // $(document).ajaxError((event, jqXhr) => jqXhr.status === 401 && this.logout());
+      Origin.on('window:active', this.checkAuthStatus, this);
     },
 
     hasScopes: function(scopes) {
@@ -30,6 +29,19 @@ define(['require', 'backbone'], function(require, Backbone) {
         return assignedScopes.includes(scopes);
       }
       return scopes.every(s => assignedScopes.includes(s));
+    },
+
+    checkAuthStatus: async function() {
+      if(this.Origin.location && this.Origin.location.module === 'user' && this.Origin.location.route1 !== 'profile') {
+        return;
+      }
+      try {
+        await this.fetch({ silent: false });
+      } catch(e) {
+        if(this.Origin.modal) this.Origin.modal.show(false);
+        if(this.Origin.Notify) this.Origin.Notify.toast({ type: 'info', text: this.Origin.l10n.t('app.loggedout') });
+        if(this.Origin.router) this.Origin.router.navigateToLogin();
+      }
     },
 
     login: function (email, password, persistSession, cb) {
