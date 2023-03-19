@@ -1,11 +1,10 @@
 define([
   'core/origin',
-  'backboneForms',
   'core/helpers',
   './scaffoldAssetView',
   'modules/assetManagement/views/assetManagementModalView',
   'modules/assetManagement/collections/assetCollection'
-], function(Origin, BackboneForms, Helpers, ScaffoldAssetView, AssetManagementModalView, AssetCollection) {
+], function(Origin, Helpers, ScaffoldAssetView, AssetManagementModalView, AssetCollection) {
 
   var ScaffoldAssetItemView = ScaffoldAssetView.extend({
 

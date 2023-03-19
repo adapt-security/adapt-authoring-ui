@@ -2,9 +2,14 @@
 define([
   '../collections/apiCollection',
   '../models/contentModel',
+  'core/models/courseModel',
+  'core/models/contentObjectModel',
+  'core/models/articleModel',
+  'core/models/blockModel',
+  'core/models/componentModel',
   '../origin',
   '../helpers'
-], function(ApiCollection, ContentModel, Origin, Helpers) {
+], function(ApiCollection, ContentModel, CourseModel, ContentObjectModel, ArticleModel, BlockModel, ComponentModel, Origin, Helpers) {
   var ContentCollection = ApiCollection.extend({
     url: 'api/content',
     model: ContentModel,
@@ -14,7 +19,19 @@ define([
       ApiCollection.prototype.initialize.apply(this, arguments);
     
       this._type = options._type;
-      if(this._type) this.model = Helpers.contentModelMap(this._type);
+
+      if(this._type) {
+        let m;
+        switch (this._type) {
+          case 'course': m = CourseModel; break;
+          case 'contentobject': m = ContentObjectModel; break;
+          case 'article': m = ArticleModel; break;
+          case 'block': m = BlockModel; break;
+          case 'component': m = ComponentModel;
+        }
+        this.model = m;
+      }
+
       this._courseId = options._courseId;
       this._parentId = options._parentId;
     

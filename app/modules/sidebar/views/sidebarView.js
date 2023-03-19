@@ -47,7 +47,7 @@ define(function(require) {
 				this.$('.sidebar-breadcrumb').velocity({'top': '0px', 'opacity': 1}, function() {
 					Origin.trigger('sidebar:views:animateIn');
 				});
-			});
+			}.bind(this));
 		},
 
 		removeBackButtonRoute: function() {

@@ -22,7 +22,7 @@ define(function(require){
       // defer setting ready status until images are ready
       _.defer(function() {
         view.$el.imageready(this.setViewToReady);
-      });
+      }.bind(this));
     },
 
     onAssetClicked: function(model) {

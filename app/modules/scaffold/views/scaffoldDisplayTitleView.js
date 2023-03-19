@@ -1,4 +1,4 @@
-define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
+define([ 'core/origin'], function(Origin) {
 
   var ScaffoldDisplayTitleView = Backbone.Form.editors.Text.extend({
 

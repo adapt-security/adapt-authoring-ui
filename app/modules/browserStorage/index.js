@@ -1,7 +1,7 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   // don't bother doing anything if there's no storage
-  if(!Storage) return;
+  //if(!Storage) return;
 
   var _ = require('underscore');
   var Origin = require('core/origin');

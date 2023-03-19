@@ -1,10 +1,9 @@
 define([
   'underscore', 
-  'backbone', 
-  'core/l10n',
+  'backbone',
   'core/router',
   'core/models/sessionModel'
-], function(_, Backbone, l10n, Router, SessionModel) {
+], function(_, Backbone, Router, SessionModel) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
@@ -46,8 +45,8 @@ define([
          * @member Origin#l10n
          * @type {l10n}
          */
-        this.l10n = new l10n(this);
-        await this.l10n.load();
+        //this.l10n = new l10n(this);
+        //await this.l10n.load();
         callback();
       } catch(e) {
         console.error(e.message);
