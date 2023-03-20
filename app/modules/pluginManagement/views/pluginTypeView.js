@@ -53,7 +53,7 @@ define(function(require){
       });
       $icon.removeClass().addClass('fa fa-refresh fa-spin');
 
-      $.post(`${this.model.urlRoot}/${this.model.get('_id')}/update`)
+      $.post(`${this.model.url()}/update`)
         .done(function() {
           $btn.attr('title', Origin.l10n.t('app.uptodate'));
           $icon.removeClass().addClass('fa fa-check');
@@ -68,46 +68,34 @@ define(function(require){
       return false;
     },
 
-    deletePluginPrompt: function(event) {
+    deletePluginPrompt: async function(event) {
       event && event.preventDefault();
 
-      $.ajax({
-        'method': 'GET',
-        'url':  this.model.urlRoot + '/' + this.model.get('_id') + '/uses'
-      }).done(function (data) {
-        const popup = {};
+      const useData = await $.get(`${this.model.url()}/uses`);
 
-        if (data.length === 0) {
-          Origin.Notify.confirm({
-            type: 'warning',
-            title: Origin.l10n.t('app.deleteplugin'),
-            text: Origin.l10n.t('app.confirmdeleteplugin', { plugin: this.model.get('displayName') }),
-            destructive: false,
-            callback: this.deletePluginConfirm.bind(this)
-          });
-          return;
-        }
-
-        var courses = '';
-        for (var i = 0, len = data.length; i < len; i++) {
-          courses += data[i].title + ' ' + Origin.l10n.t('app.by') + ' ' + data[i].createdBy.email + '<br />'
-        }
-        popup.type = 'error';
-        popup.title = Origin.l10n.t('app.cannotdelete') + ' ' + this.model.get('displayName');
-        popup.text = Origin.l10n.t('app.coursesused') + '<br />' + courses + '<br />';
-
-        Origin.Notify.alert(popup);
-
-      }.bind(this));
+      if (useData.length === 0) {
+        Origin.Notify.confirm({
+          type: 'warning',
+          title: Origin.l10n.t('app.deleteplugin'),
+          text: Origin.l10n.t('app.confirmdeleteplugin', { plugin: this.model.get('displayName') }),
+          destructive: false,
+          callback: this.deletePluginConfirm.bind(this)
+        });
+        return;
+      }
+      Origin.Notify.alert({
+        type: 'error',
+        title: `${Origin.l10n.t('app.cannotdelete')} ${this.model.get('displayName')}`,
+        text: useData.reduce((s, d) => {
+          return `${s}${d.title} ${Origin.l10n.t('app.by')} ${d.createdBy}<br />`;
+        }, `${Origin.l10n.t('app.coursesused')}<br />`)
+      });
     },
 
     deletePluginConfirm: function(result) {
-      if (!result.isConfirmed) return;
-
-      $.ajax({
-        method: 'DELETE',
-        url: this.model.urlRoot + '/' + this.model.get('_id')
-      }).done(this.remove.bind(this));
+      if (result.isConfirmed) {
+        this.model.destroy().done(this.remove.bind(this));
+      }
     }
   }, {
     template: 'pluginType'
