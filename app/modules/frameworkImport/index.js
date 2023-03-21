@@ -17,6 +17,7 @@ define(function(require) {
   });
 
   function renderImportButton(data) {
+    $('button.projects-sidebar-import-course').remove(); // remove existing button
     var $btn = $(Handlebars.partials.part_frameworkImportButton());
     $('.projects-sidebar-add-course').after($btn);
     $btn.click(() => Origin.router.navigateTo('frameworkImport'));
