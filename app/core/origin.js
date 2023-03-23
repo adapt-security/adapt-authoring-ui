@@ -65,8 +65,8 @@ define([
          * @type {SessionModel}
          */
         Origin.sessionModel = new SessionModel(this);
+        Origin.sessionModel.once('sync', () => _.defer(callback))
         Origin.sessionModel.fetch({
-          success: () => callback(),
           error: (m, jqXhr) => callback(new Error(jqXhr.responseJSON.message))
         });
       }).bind(this));
