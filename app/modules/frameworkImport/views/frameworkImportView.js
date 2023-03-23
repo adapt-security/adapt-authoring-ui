@@ -54,10 +54,10 @@ define(function(require){
 
     transformStatusData: function(data) {
       Object.values(data.statusReport).forEach(v => {
-        v.forEach(v2 => v2.codeKey = `app.importstatus.${v2.code}`);
+        v.forEach(v2 => v2.codeKey = `app.import.status.${v2.code}`);
       });
       Object.values(data.versions).forEach(v => {
-        v.statusKey = `app.importstatus.${v.status}`;
+        v.statusKey = `app.import.status.${v.status}`;
       });
       return data;
     },
