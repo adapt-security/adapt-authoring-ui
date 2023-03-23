@@ -16,6 +16,7 @@
   // 2. Setup require for old-style module declarations (some code still uses these), configure paths then load JQuery
   function setupRequireJS() {
     requirejs.config({
+      baseUrl: '.',
       paths: {
         backbone: 'libraries/backbone.min',
         'backbone.controller': 'libraries/backbone.controller',
@@ -175,7 +176,7 @@
     loadScript('js/adapt.min.js');
   }
 
-  // 1. Load requirejs then set it up
-  loadScript('libraries/require.min.js', setupRequireJS);
+  // 1. Configure RequireJS
+  setupRequireJS();
 
 })();
