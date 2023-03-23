@@ -277,13 +277,11 @@ define([
       schemaType = 'contentobject';
     } else if(schemaType === 'component') {
       try {
-        const plugins = ApiCollection.ContentPlugins({ customQuery: { name: model.get('_component') } });
-        await plugins.fetch();
-        schemaType = `${plugins.first().get('targetAttribute').slice(1)}-${schemaType}`;
+        schemaType = `component&_component=${model.get('_component')}`;
       } catch(e) {} // nothing to do
     }
-    const query = model.get('_courseId') ? `&courseId=${model.get('_courseId')}` : '';
-    const schema = await $.getJSON(`api/content/schema?type=${schemaType}${query}`);
+    const query = model.get('_courseId') ? `&_courseId=${model.get('_courseId')}` : '';
+    const schema = await $.getJSON(`api/content/schema?_type=${schemaType}${query}`);
 
     options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);
