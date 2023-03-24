@@ -1,37 +1,56 @@
-// LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-define(function(require){
-  var OriginView = require('core/views/originView');
-  var Origin = require('core/origin');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import OriginView from 'core/views/originView';
+import Origin from 'core/origin';
+import NavigationJsx from './navigation.jsx';
 
-  var NavigationView = OriginView.extend({
-    tagName: 'nav',
-    className: 'navigation',
+export default class NavigationView extends OriginView {
 
-    initialize: function() {
-      this.listenTo(Origin, 'login:changed', this.loginChanged);
-      this.render();
-    },
+  initialize() {
+    this.listenTo(Origin, 'login:changed', this.loginChanged);
+    this.render();
+  }
 
-    events: {
+  events() {
+    return {
       'click a.navigation-item':'onNavigationItemClicked'
-    },
-
-    render: function() {
-      if(Origin.sessionModel.get('isAuthenticated')) OriginView.prototype.render.apply(this);
-    },
-
-    loginChanged: function() {
-      this.render();
-    },
-
-    onNavigationItemClicked: function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      Origin.trigger('navigation:' + $(event.currentTarget).attr('data-event'));
     }
-  }, {
-    template: 'navigation'
-  });
+  }
 
-  return NavigationView;
-});
+  render() {
+    if (!Origin.sessionModel.get('isAuthenticated')) return;
+
+    this.changed();
+
+    _.defer(_.bind(function() {
+      this.postRender();
+      this.onReady();
+      Origin.trigger('navigation:postRender', this);
+    }, this));
+    return;
+  }
+
+  changed(eventName = null) {
+    if (typeof eventName === 'string' && eventName.startsWith('bubble')) {
+      // Ignore bubbling events as they are outside of this view's scope
+      return;
+    }
+    const props = {
+      // Add view own properties, bound functions etc
+      ...this,
+      // Add model json data
+      ...this.model.toJSON()
+    };
+    ReactDOM.render(<NavigationJsx {...props} />, this.el);
+  }
+
+  loginChanged() {
+    this.render();
+  }
+
+  onNavigationItemClicked(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    Origin.trigger('navigation:' + $(event.currentTarget).attr('data-event'));
+  }
+}
