@@ -304,7 +304,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return '';
     },
     // Comparison operator (ifValueEquals left for compatibility)
-    when: (a, operator, b, block) => {
+    when: function(a, operator, b, block) {
       console.log(a, operator, b);
       const ops = {
         eq: (l,r) => l === r,
