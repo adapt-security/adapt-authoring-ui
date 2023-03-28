@@ -2,7 +2,7 @@
 define(function(require) {
 	var _ = require('underscore');
 	var Origin = require('core/origin');
-	var SweetAlert = require('./sweetalert2-11.1.7.all.min.js');
+	var SweetAlert = require('libraries/sweetalert2-11.1.7.all.min');
 
 	function getSettings(data) {
 		var defaults = {
