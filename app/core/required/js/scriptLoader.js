@@ -42,9 +42,11 @@
         underscore: 'libraries/underscore.min',
         velocity: 'libraries/velocity'
       },
-      map:{
-        "core": "adapt-authoring-ui/app/core",
-        "modules": "adapt-authoring-ui/app/modules"
+      map: {
+        '*': {
+          "core": "adapt-authoring-ui/app/core",
+          "modules": "adapt-authoring-ui/app/modules"
+        }
       },
       waitSeconds: 0
     });
