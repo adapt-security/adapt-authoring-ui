@@ -30,7 +30,7 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
             .done(callback)
             .error(() => callback());
         },
-        onLoad: () => this.setValue.bind(this.value),
+        onLoad: () => this.setValue(this.value),
         onItemAdd: this.onAddTag.bind(this),
         onItemRemove: this.onRemoveTag.bind(this)
       });
