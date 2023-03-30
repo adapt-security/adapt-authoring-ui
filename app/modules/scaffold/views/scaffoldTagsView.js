@@ -15,7 +15,11 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
 
     postRender: function() {
       this.$el.selectize({
-        create: async (title, callback) => callback(await $.post('api/tags', { title })),
+        create: (title, callback) => {
+          $.post('api/tags', { title })
+            .done(callback)
+            .error(() => callback())
+        },
         valueField: '_id',
         labelField: 'title',
         searchField: 'title',
