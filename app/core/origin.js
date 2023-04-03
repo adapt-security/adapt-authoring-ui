@@ -1,11 +1,10 @@
 define([
   'underscore', 
-  'backbone', 
-  'core/l10n',
+  'backbone',
   'core/router',
   'core/browserStorage',
   'core/models/sessionModel'
-], function(_, Backbone, l10n, Router, BrowserStorage, SessionModel) {
+], function(_, Backbone, Router, BrowserStorage, SessionModel) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
@@ -42,20 +41,7 @@ define([
          * @type {Object}
          */
         this.constants = await $.get('/api/config');
-        /**
-         * Global reference to the l10n translation utilities
-         * @member Origin#l10n
-         * @type {l10n}
-         */
-        this.l10n = new l10n(this);
-        /**
-         * Global reference to the l10n translation utilities
-         * @member Origin#l10n
-         * @type {l10n}
-         */
         this.browserStorage = new BrowserStorage(this);
-
-        await this.l10n.load();
         callback();
       } catch(e) {
         console.error(e.message);
@@ -74,8 +60,8 @@ define([
          * @type {SessionModel}
          */
         Origin.sessionModel = new SessionModel(this);
+        Origin.sessionModel.once('sync', () => _.defer(callback))
         Origin.sessionModel.fetch({
-          success: () => callback(),
           error: (m, jqXhr) => callback(new Error(jqXhr.responseJSON.message))
         });
       }).bind(this));

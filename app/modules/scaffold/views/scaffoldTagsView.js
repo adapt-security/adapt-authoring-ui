@@ -1,4 +1,4 @@
-define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
+define([ 'core/origin' ], function(Origin) {
   var ScaffoldTagsView = Backbone.Form.editors.Base.extend({
     tagName: 'input',
     className: 'scaffold-tags',
@@ -24,7 +24,7 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
         load: (query, callback) => {
           $.post('api/tags/query', { title: { $regex: `.*${query}.*`, $options: 'i' } })
             .done(callback)
-            .error(() => callback());
+            .fail(() => callback());
         },
         onLoad: () => this.setValue(this.value),
         onItemAdd: this.onAddTag.bind(this),

@@ -61,7 +61,7 @@ define(function(require) {
       var template = Handlebars.templates['optionsGroup'];
       _.each(availableGroups, function(group) {
         this.$('.options-inner').append(template({ group: group }));
-      });
+      }, this);
     },
 
     setSelectedOption: function(selectedOption) {
