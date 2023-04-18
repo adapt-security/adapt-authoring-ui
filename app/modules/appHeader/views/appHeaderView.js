@@ -23,11 +23,11 @@ export default class AppHeaderView extends OriginView {
 
     this.changed();
 
-    _.defer(_.bind(function() {
+    _.defer(() =>
       this.postRender();
       this.onReady();
       Origin.trigger('appHeader:postRender', this);
-    }, this));
+    });
   }
 
   changed(eventName = null) {
