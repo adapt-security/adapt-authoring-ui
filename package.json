@@ -17,6 +17,8 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
     "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.1.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.0",
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
@@ -30,6 +32,7 @@
     "less": "^3.12.2",
     "magic-string": "^0.30.0",
     "requirejs": "^2.3.6",
+    "resolve": "^1.22.2",
     "rollup": "^2.79.1",
     "upath": "^2.0.1"
   }
