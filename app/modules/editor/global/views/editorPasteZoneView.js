@@ -53,6 +53,7 @@ define(function(require){
           Origin.trigger(eventPrefix + droppedOnId);
           // notify the old parent that the child's gone
           if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + parentId);
+          Origin.trigger('editorView:renderPage');
         },
         error: function(jqXHR) {
           Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message });
