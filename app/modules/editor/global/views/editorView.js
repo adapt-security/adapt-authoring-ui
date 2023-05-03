@@ -221,7 +221,9 @@ define(function(require) {
           Origin.editor.clipboardId = null;
           Origin.trigger('editorView:menuView:addItem', new ContentObjectModel(newData))
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
-          Origin.trigger(`editorView:refreshView`);
+          Origin.trigger('editor:refreshData', () => {
+            Origin.trigger(`editorView:refreshView`);
+          });
         },
         fail: ({ message }) => {
           Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
