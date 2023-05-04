@@ -20,9 +20,7 @@ define(function(require){
       var view = new AssetManagementCollectionView({ collection: this.collection });
       this.$('.asset-management-assets-container-inner').append(view.$el);
       // defer setting ready status until images are ready
-      _.defer(function() {
-        view.$el.imageready(this.setViewToReady);
-      }.bind(this));
+      _.defer(() => view.$el.imageready(this.setViewToReady));
     },
 
     onAssetClicked: function(model) {
