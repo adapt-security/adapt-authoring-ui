@@ -12,6 +12,7 @@ define([
 
     preRender: function() {
       this.listenTo(Origin, 'assetManagement:editAsset', this.save);
+      this.originalAttributes = _.clone(this.model.attributes);
     },
 
     postRender: async function() {
@@ -23,9 +24,9 @@ define([
       input.render();
 
       $('.form-container', this.$el).append(this.form.el);
-      
+
       this.form.on('url:change', () => this.updateTitle());
-      
+
       this.setViewToReady();
     },
 
@@ -53,9 +54,7 @@ define([
       }
       for (let i = 0; i < dataArr.length; i++) {
         const d = dataArr[i];
-        if(d.name === "tags") {
-          if(!d.value.length) dataArr.splice(i--, 1);
-        } else if(d.name === "url" && d.value === "") {
+        if(d.name === "url" && d.value === "") {
           dataArr.splice(i--, 1);
         }
       }
@@ -64,12 +63,24 @@ define([
       if(Object.keys(data).length) return data;
     },
 
+    getAttributesToSave: function() {
+      var changedAttributes = this.model.changedAttributes(this.originalAttributes);
+      // should also include anything that's new
+      var newAttributes = _.omit(this.model.attributes, Object.keys(this.originalAttributes));
+      _.extend(changedAttributes, newAttributes);
+
+      if(!changedAttributes) {
+        return null;
+      }
+      return _.pick(this.model.attributes, Object.keys(changedAttributes));
+    },
+
     save: function() {
       const errors = this.form.validate();
       if(errors) {
         return this.onSaveError(`${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`);
       }
-      const callbacks = { 
+      const callbacks = {
         success: data => this.onSaveSuccess(data),
         error: (model, xhr) => {
           if(typeof xhr === 'string') xhr = model;
@@ -83,9 +94,9 @@ define([
           beforeSubmit: this.sanitiseData,
         }, callbacks));
         return;
-      }      
+      }
       this.form.commit();
-      const data = this.sanitiseData(this.model.changedAttributes());
+      const data = this.sanitiseData(this.getAttributesToSave());
       data ? this.model.save(data, Object.assign({ patch: !this.model.isNew() }, callbacks)) : this.onSaveSuccess();
     },
 
