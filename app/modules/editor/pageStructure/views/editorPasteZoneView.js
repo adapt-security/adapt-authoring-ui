@@ -5,7 +5,7 @@ define(function(require){
   var EditorOriginView = require('../../global/views/editorOriginView');
 
   var EditorPasteZoneView = EditorOriginView.extend({
-    className: () => {
+    className: function() {
       return `display-none paste-zone ${this.customClasses}`;
     },
     events: {

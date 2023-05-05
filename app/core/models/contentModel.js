@@ -3,6 +3,50 @@ define(function(require) {
   var Origin = require('core/origin');
   var ApiModel = require('./apiModel');
 
+  var ContentAttributes = {
+    article: {
+      _type: 'article',
+      _parentType: 'contentobject',
+      _siblingTypes: 'article',
+      _childTypes: 'block',
+      defaults: {
+        _isCollapsible: true,
+        _isCollapsed: false
+      }
+    },
+    block: {
+      _type: 'block',
+      _parentType: 'article',
+      _siblingTypes: 'block',
+      _childTypes: 'component',
+      layoutOptions:  null,
+      dragLayoutOptions: null
+    },
+    component: {
+      _type: 'component',
+      _parentType: 'block',
+      _siblingTypes: 'component'
+    },
+    config: {
+      _type: 'config',
+      _parent: 'course'
+    },
+    contentObject: {
+      _type: 'contentobject',
+      _parentType: 'contentobject',
+      _siblingTypes: 'contentobject',
+      _childTypes: ['contentobject', 'article'],
+      defaults: {
+        _isSelected: false,
+        _isExpanded: false
+      }
+    },
+    course: {
+      _type: 'course',
+      _childTypes: 'contentobject'
+    }
+  };
+
   var ContentModel = ApiModel.extend({
     initialize: function(attributes, options = {}) {
       options.endpoint = 'content';
@@ -11,6 +55,8 @@ define(function(require) {
       
       const typeAttributes = ContentAttributes[attributes._type];
       if(typeAttributes) Object.assign(this, typeAttributes);
+
+      Origin.trigger('contentModel:created', this);
 
       this.on('sync destroy', () => Origin.editor && Origin.editor.data && Origin.editor.data.load())
     },
@@ -38,47 +84,3 @@ define(function(require) {
 
   return ContentModel;
 });
-
-const ContentAttributes = {
-  article: {
-    _type: 'article',
-    _parentType: 'contentobject',
-    _siblingTypes: 'article',
-    _childTypes: 'block',
-    defaults: {
-      _isCollapsible: true,
-      _isCollapsed: false
-    }
-  },
-  block: {
-    _type: 'block',
-    _parentType: 'article',
-    _siblingTypes: 'block',
-    _childTypes: 'component',
-    layoutOptions:  null,
-    dragLayoutOptions: null
-  },
-  component: {
-    _type: 'component',
-    _parentType: 'block',
-    _siblingTypes: 'component'
-  },
-  config: {
-    _type: 'config',
-    _parent: 'course'
-  },
-  contentObject: {
-    _type: 'contentobject',
-    _parentType: 'contentobject',
-    _siblingTypes: 'contentobject',
-    _childTypes: ['contentobject', 'article'],
-    defaults: {
-      _isSelected: false,
-      _isExpanded: false
-    }
-  },
-  course: {
-    _type: 'course',
-    _childTypes: 'contentobject'
-  }
-};

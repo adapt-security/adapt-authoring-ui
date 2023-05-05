@@ -292,7 +292,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return '';
     },
     // Comparison operator (ifValueEquals left for compatibility)
-    when: (a, operator, b, block) => {
+    when: function (a, operator, b, block) {
       console.log(a, operator, b);
       const ops = {
         eq: (l,r) => l === r,
@@ -304,7 +304,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return ops[operator](a, b) ? block.fn(this) : block.inverse(this);
     },
 
-    sortContentObjects: (a, b) => {
+    sortContentObjects: function (a, b) {
       const soA = a._sortOrder || a.get('_sortOrder');
       const soB = b._sortOrder || b.get('_sortOrder');
       return soA > soB ? 1 : -1;

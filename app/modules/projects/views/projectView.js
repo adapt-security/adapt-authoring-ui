@@ -57,7 +57,7 @@ define(function(require) {
     },
 
     editProject: function(event) {
-      event && event.preventDefault();
+      event?.preventDefault?.();
       Origin.router.navigateTo(`editor/${this.model.get('_id')}/menu`);
     },
 
