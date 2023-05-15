@@ -18,6 +18,7 @@ define(function(require){
       this._isShared = options._isShared;
       this.allTags = options.tags.models.slice() || [];
       this.usersCollection = new UserCollection();
+      this.childViews = [];
     },
 
     postRender: function() {
@@ -92,11 +93,6 @@ define(function(require){
       return this.$('.projects-list');
     },
 
-    emptyProjectsContainer: function() {
-      Origin.trigger('dashboard:dashboardView:removeSubViews');
-      this.getProjectsContainer().empty();
-    },
-
     appendProjectItem: function(model) {
       let creatorName;
       try {
@@ -107,11 +103,14 @@ define(function(require){
       }
       if(this._isShared && creatorName) model.set('creatorName', creatorName);
       model.set('tagTitles', model.get('tags').map(tId => this.allTags.find(t => t.get('_id') === tId).get('title')));
-      this.getProjectsContainer().append(new ProjectView({ model }).$el);
+      const view = new ProjectView({ model });
+      this.childViews.push(view);
+      this.getProjectsContainer().append(view.$el);
     },
 
     resetCollection: function(cb) {
-      this.emptyProjectsContainer();
+      this.abortFetches();
+      this.removeChildViews();
       this.allCourses = [];
       this.page = 1;
       this.collection.queryOptions.collation = { locale: navigator.language.substring(0, 2) };
@@ -120,24 +119,37 @@ define(function(require){
       this.fetchCollection(cb);
     },
 
-    fetchCollection: function(cb) {
-      if(this.shouldStopFetches) {
-        return;
+    abortFetches: function() {
+
+      doAbort(this.usersCollectionXhr);
+      doAbort(this.collectionXhr);
+
+      function doAbort(xhr) {
+        if (!xhr) return;
+
+        if(xhr.readyState > 0 && xhr.readyState < 4){
+          xhr.abort();
+        }
       }
+    },
+
+    fetchCollection: function(cb) {
+      if(this.shouldStopFetches) return;
+
       this.isCollectionFetching = true;
       
-      this.usersCollection.fetch({
+      this.usersCollectionXhr = this.usersCollection.fetch({
         success: (collection, response) => {
           Object.assign(this.collection.queryOptions, {
             skip: this.allCourses.length,
             page: this.page++,
           });
-          this.collection.fetch({
+          this.collectionXhr = this.collection.fetch({
             success: (collection, response) => {
               this.isCollectionFetching = false;
               this.allCourses.push(...collection.models);
 
-              this.$('.project-list-item').remove();
+              this.removeChildViews();
               this.allCourses.forEach(a => this.appendProjectItem(a));
 
               // stop further fetching if this is the last page
@@ -145,8 +157,14 @@ define(function(require){
     
               this.$('.no-projects').toggleClass('display-none', this.allCourses.length > 0);
               if(typeof cb === 'function') cb(collection);
+            },
+            error: () => {
+              this.isCollectionFetching = false;
             }
           });
+        },
+        error: () => {
+          this.isCollectionFetching = false;
         }
       });
     },
@@ -206,8 +224,14 @@ define(function(require){
       this.initPaging();
     },
 
+    removeChildViews: function() {
+      this.childViews.forEach(child => child.remove());
+      this.childViews = [];
+    },
+
     remove: function() {
       $('.contentPane').off('scroll', this._doLazyScroll);
+      this.removeChildViews();
       OriginView.prototype.remove.apply(this, arguments);
     }
   }, {

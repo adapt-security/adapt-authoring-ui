@@ -16,7 +16,12 @@ define(function(require) {
       'click .projects-sidebar-tag': 'onFilterButtonClicked',
       'click .projects-sidebar-add-tag': 'onAddTagClicked',
       'click .projects-sidebar-row-filter': 'onFilterRemovedClicked',
-      'keyup .projects-sidebar-filter-search-input': 'filterProjectsByTitle'
+      'keyup .projects-sidebar-filter-search-input': 'onKeyUp',
+      'paste .projects-sidebar-filter-search-input': 'onPaste'
+    },
+
+    preinitialize: function() {
+      this.debouncedFilterProjectsByTitle = _.debounce(this.filterProjectsByTitle.bind(this), 1000);
     },
 
     postRender: function() {
@@ -57,10 +62,8 @@ define(function(require) {
       Origin.router.navigateTo('projects/shared');
     },
 
-    filterProjectsByTitle: function(event, filter) {
-      event && event.preventDefault();
-
-      var filterText = $(event.currentTarget).val().trim();
+    filterProjectsByTitle: function() {
+      var filterText = this.$('.projects-sidebar-filter-search-input').val().trim();
       Origin.trigger('dashboard:dashboardSidebarView:filterBySearch', filterText);
       this.highlightSearchBox();
     },
@@ -148,6 +151,16 @@ define(function(require) {
       this.filterProjectsByTags(tag);
 
       $(event.currentTarget).parent().remove();
+    },
+
+    onKeyUp: function(event) {
+      event && event.preventDefault();
+
+      this.debouncedFilterProjectsByTitle();
+    },
+
+    onPaste: function() {
+      this.filterProjectsByTitle();
     }
   }, {
     template: 'projectsSidebar'
