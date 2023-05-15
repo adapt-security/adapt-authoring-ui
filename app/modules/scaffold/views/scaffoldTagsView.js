@@ -50,7 +50,7 @@ define([ 'core/origin' ], function(Origin) {
     },
 
     onAddTag: async function(_id) {
-      this.model.set('tags', [...this.model.get('tags'), _id]);
+      this.model.set('tags', [...(this.model.get('tags') || []), _id]);
     },
 
     onRemoveTag: function(title) {
