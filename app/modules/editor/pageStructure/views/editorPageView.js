@@ -30,6 +30,14 @@ define(function(require){
         'pageView:itemAnimated': this.onChildRendered,
         'editorData:loaded': this.render
       });
+      this.listenTo(this, {
+        'contextMenu:editor-page:edit': this.loadPageEdit,
+        'contextMenu:editor-page:cut': this.onCut,
+        'contextMenu:editor-page:copy': this.onCopy,
+        'contextMenu:editor-page:copyID': this.onCopyID,
+        'contextMenu:editor-page:paste': this.onPaste
+        /* 'contextMenu:editor-page:delete': this.deletePagePrompt */
+      });
       /*
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
         {
@@ -60,12 +68,12 @@ define(function(require){
       this.$('.page-articles').empty();
       Origin.trigger('editorPageView:removePageSubViews');
       // Insert the 'pre' paste zone for articles
-      var prePasteArticle = new ContentModel({
+      /* var prePasteArticle = new ContentModel({
         _parentId: this.model.get('_id'),
         _type: 'article',
         _pasteZoneSortOrder: 1
-      });
-      this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
+      }); */
+      //this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
       // Iterate over each article and add it to the page
       this.model.getChildren()
         .filter(c => c.get('_type') === 'article')
@@ -77,6 +85,9 @@ define(function(require){
       scrollIntoView = scrollIntoView || false;
 
       var newArticleView = new EditorPageArticleView({ model: articleModel });
+
+      this.addChildView(newArticleView, false);
+
       var sortOrder = articleModel.get('_sortOrder');
       var $articles = this.$('.page-articles .article');
       var index = sortOrder > 0 ? sortOrder-1 : undefined;
@@ -93,7 +104,7 @@ define(function(require){
       // Increment the 'sortOrder' property
       articleModel.set('_pasteZoneSortOrder', sortOrder + 1);
       // Post-article paste zone - sort order of placeholder will be one greater
-      this.$('.page-articles').append(new EditorPasteZoneView({ model: articleModel }).$el);
+      //this.$('.page-articles').append(new EditorPasteZoneView({ model: articleModel }).$el);
       return newArticleView;
     },
 
@@ -106,25 +117,12 @@ define(function(require){
       }).save();
     },
 
-    loadPageEdit: function(event) {
-      event && event.preventDefault();
+    loadPageEdit: function() {
        Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/page/${this.model.get('_id')}/edit`);
     },
 
-    // TODO fragile HACK, refactor context menu code to allow what I want to do later...
-    openContextMenu: function(event) {
-      if(!event) return console.log('Error: needs a current target to attach the menu to...');
-      event.preventDefault();
-      event.stopPropagation();
-
-      var fakeModel = new Backbone.Model({ _id: this.model.get('_id'), _type: 'page-min' });
-      var fakeView = new Backbone.View({ model: fakeModel });
-
-      this.listenTo(fakeView, {
-        'contextMenu:page-min:edit': this.loadPageEdit,
-        'contextMenu:page-min:copyID': this.onCopyID
-      });
-      Origin.trigger('contextMenu:open', fakeView, event);
+    getContextMenuType(e) {
+      return 'editor-page';
     },
 
     onCutArticle: function(view) {

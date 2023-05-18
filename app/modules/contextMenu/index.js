@@ -24,23 +24,29 @@ define(function(require) {
   // Privates
 
   var menuItems;
-  var view;
 
   function init() {
     menuItems = new Backbone.Collection();
     setUpMenuItems();
 
-    if(view) view.remove();
-    view = new ContextMenuView({ collection: menuItems });
+    if(Origin.contextMenu.view) Origin.contextMenu.view.remove();
+    Origin.contextMenu.view = new ContextMenuView({ collection: menuItems });
   };
 
   function setUpMenuItems() {
     ContextMenu.addItem('article', getDefaultItems());
     ContextMenu.addItem('block', getDefaultItems());
     ContextMenu.addItem('component', getDefaultItems());
+    ContextMenu.addItem('editor-page', getDefaultItems());
+    ContextMenu.addItem('editor-menu-item', [
+      {
+        title: Origin.l10n.t('app.editstructure'),
+        className: 'context-menu-item',
+        callbackEvent: "open"
+      },
+    ].concat(getDefaultItems()));
     ContextMenu.addItem('menu', getDefaultItems());
-    ContextMenu.addItem('page-min', getDefaultItems(['copy','delete','colorLabel']));
-    ContextMenu.addItem('course', getDefaultItems(['colorLabel']));
+    ContextMenu.addItem('course', getDefaultItems(['colorLabel', 'cut']));
 
     var pageItems = getDefaultItems();
     pageItems.splice(1, 0, {
@@ -62,6 +68,11 @@ define(function(require) {
         callbackEvent: "edit"
       },
       {
+        title: Origin.l10n.t('app.cut'),
+        className: 'context-menu-item',
+        callbackEvent: "cut"
+      },
+      {
         title: Origin.l10n.t('app.copy'),
         className: 'context-menu-item',
         callbackEvent: "copy"
@@ -70,6 +81,11 @@ define(function(require) {
         title: Origin.l10n.t('app.copyidtoclipboard'),
         className: 'context-menu-item',
         callbackEvent: "copyID"
+      },
+      {
+        title: Origin.l10n.t('app.paste'),
+        className: 'context-menu-item',
+        callbackEvent: "paste"
       },
       {
         title: Origin.l10n.t('app.delete'),

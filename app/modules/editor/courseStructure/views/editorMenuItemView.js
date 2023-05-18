@@ -14,7 +14,8 @@ define(function(require){
       'click .editor-menu-item-inner': 'onMenuItemClicked',
       'click .open-context-contentObject': 'openContextMenu',
       'click .contentObject-delete': 'deletePrompt',
-      'mousedown .handle': 'enableDrag'
+      'mousedown .handle': 'enableDrag',
+      'contextmenu': 'onContextMenu'
     },
 
     preRender: function() {
@@ -33,13 +34,13 @@ define(function(require){
     setupEvents: function() {
       this.listenTo(Origin, 'editorView:removeSubViews', this.remove);
 
-      var type = this.model.get('_type');
-
-      this.on(`contextMenu:${type}:copy`, this.copyMenuItem);
-      this.on(`contextMenu:${type}:copyID`, this.copyID);
-      this.on(`contextMenu:${type}:delete`, this.deletePrompt);
-      this.on(`contextMenu:${type}:edit`, this.editMenuItem);
-      this.on(`contextMenu:${type}:structure`, this.editMenuItem);
+      this.on(`contextMenu:editor-menu-item:cut`, this.onCut);
+      this.on(`contextMenu:editor-menu-item:copy`, this.onCopy);
+      this.on(`contextMenu:editor-menu-item:copyID`, this.onCopyID);
+      this.on(`contextMenu:editor-menu-item:delete`, this.deleteItemPrompt);
+      this.on(`contextMenu:editor-menu-item:edit`, this.editMenuItem);
+      this.on(`contextMenu:editor-menu-item:open`, this.openMenuItem);
+      this.on(`contextMenu:editor-menu-item:paste`, this.onPaste);
 
       this.$el.closest('.editor-menu').on('mousemove', _.bind(this.handleDrag, this));
     },
@@ -51,6 +52,10 @@ define(function(require){
         if(selectedIds.includes(this.model.get('_id'))) classes.push('selected');
       }
       this.$el.addClass(classes.join(' '));
+    },
+
+    getContextMenuType(e) {
+      return 'editor-menu-item';
     },
 
     onMenuItemClicked: function(event) {
@@ -81,13 +86,12 @@ define(function(require){
       if(eventName === 'edit') route += 'edit'
       Origin.router.navigateTo(route);
     },
-    
-    copyMenuItem: function() {
-      Origin.trigger('editorView:copy', this.model);
-    },
 
-    copyID: function() {
-      Origin.trigger('editorView:copyID', this.model);
+    openMenuItem: function() {
+      var type = this.model.get('_type');
+      var route = `editor/${Origin.editor.data.course.get('_id')}/${type}/${this.model.get('_id')}`;
+      if (type === 'menu') route += '/edit';
+      Origin.router.navigateTo(route);
     },
 
     enableDrag: function(event) {
@@ -124,6 +128,11 @@ define(function(require){
           $currentLayer.scrollTop($currentLayer.scrollTop()+scrollAmount);
         }
       }, 10);
+    },
+    
+    getSortOrderFromContextMenuPosition: function() {
+      // when pasting directly onto a menu item no sort order is inferred
+      return undefined;
     }
   }, {
     template: 'editorMenuItem'

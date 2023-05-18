@@ -39,6 +39,8 @@ define(function(require) {
     },
 
     renderComponentList: function() {
+      this.removeChildViews();
+
       Origin.trigger('editorComponentListView:removeSubviews');
 
       Origin.editor.data.components.forEach(function(componentType) {
@@ -51,14 +53,15 @@ define(function(require) {
           availablePositions.left = availablePositions.right = supportedLayouts.includes('half-width');
           availablePositions.full = supportedLayouts.includes('full-width');
         }
-        this.$('.editor-component-list-sidebar-list').append(new EditorPageComponentListItemView({
+        const view = new EditorPageComponentListItemView({
           model: componentType,
           availablePositions: availablePositions,
           $parentElement: this.$parentElement,
           parentModel: this.model.get('parent'),
           parentView: this.parentView,
           searchTerms: componentType.get('displayName').toLowerCase()
-        }).$el);
+        });
+        this.addChildView(view);
       }, this);
       this.$el.addClass('show');
     },
@@ -75,6 +78,7 @@ define(function(require) {
       Origin.trigger('editorComponentListView:searchKeyup', $(event.currentTarget).val());
     }
   }, {
+    childContainer:'.editor-component-list-sidebar-list',
     template: 'editorPageComponentList'
   });
 

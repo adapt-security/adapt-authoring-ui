@@ -36,7 +36,7 @@ define(function(require){
         if(!models.length && c.get('_type') !== 'course') {
           return;
         }
-        const menuLayerView = new EditorMenuLayerView({ _parentId: c.get('_id'), models });
+        const menuLayerView = new EditorMenuLayerView({ model: c, _parentId: c.get('_id'), models });
         $('.editor-menu-inner').append(menuLayerView.$el);
         this.layerViews.push(menuLayerView);
       });

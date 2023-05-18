@@ -66,8 +66,10 @@ define(function(require){
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
       this.listenTo(this, {
         'contextMenu:block:edit': this.loadBlockEdit,
+        'contextMenu:block:cut': this.onCut,
         'contextMenu:block:copy': this.onCopy,
         'contextMenu:block:copyID': this.onCopyID,
+        'contextMenu:block:paste': this.onPaste,
         'contextMenu:block:delete': this.deletePrompt
       });
     },
@@ -157,10 +159,13 @@ define(function(require){
     },
 
     addComponentViews: function() {
-      this.$('.page-components').empty();
+      this.removeChildViews();
       this.addComponentButtonLayout();
-      this.model.getChildren().forEach(model => this.$('.page-components').append(new EditorPageComponentView({ model }).$el));
-      this.setupPasteZones();
+      this.model.getChildren().forEach(model => {
+        const view = new EditorPageComponentView({ model });
+        this.addChildView(view);
+      });
+      //this.setupPasteZones();
     },
 
     addComponentButtonLayout: function() {
@@ -182,10 +187,18 @@ define(function(require){
       Origin.router.navigateTo(`editor/${courseId}/${type}/${id}/edit`);
     },
 
+    removeComponentListView() {
+      if (!this.componentListView) return;
+      this.componentListView.remove();
+      this.componentListView = null;
+    },
+
     showComponentList: function(event) {
       event.preventDefault();
 
-      $('body').append(new EditorPageComponentListView({
+      this.removeComponentListView();
+
+      this.componentListView = new EditorPageComponentListView({
         model: new Backbone.Model({
           title: Origin.l10n.t('app.addcomponent'),
           body: Origin.l10n.t('app.pleaseselectcomponent'),
@@ -195,7 +208,9 @@ define(function(require){
         }),
         $parentElement: this.$el,
         parentView: this
-      }).$el);
+      });
+
+      $('body').append(this.componentListView.$el);
     },
 
     setupPasteZones: function() {
@@ -205,19 +220,25 @@ define(function(require){
           _parentId: this.model.get('_id'),
           _pasteZoneLayout: layout.type,
         });
-        this.$('.page-components').append(
+        this.$(this.constructor.childContainer).append(
           new EditorPageComponentPasteZoneView({ model, customClasses: 'drop-only' }).$el,
           new EditorPageComponentPasteZoneView({ model }).$el
         );
       }, this);
     },
 
-    onPaste: async function(data) {
+    /* onPaste: async function(data) {
       this.model.getChildren().push(await new ContentModel({ _id: data._id, _type: 'component' }).save());
       this.render();
+    } */
+
+    remove: function() {
+      this.removeComponentListView();
+      return EditorOriginView.prototype.remove.apply(this, arguments);
     }
 
   }, {
+    childContainer: '.page-components',
     template: 'editorPageBlock'
   });
 

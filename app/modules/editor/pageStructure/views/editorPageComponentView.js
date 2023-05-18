@@ -18,8 +18,10 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
       this.on({
         'contextMenu:component:edit': this.loadComponentEdit,
+        'contextMenu:component:cut': this.onCut,
         'contextMenu:component:copy': this.onCopy,
         'contextMenu:component:copyID': this.onCopyID,
+        'contextMenu:component:paste': this.onPaste,
         'contextMenu:component:delete': this.deletePrompt
       });
       const layouts = this.evaluateLayout();

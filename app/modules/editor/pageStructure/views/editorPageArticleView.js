@@ -50,9 +50,11 @@ define(function(require){
 
       this.listenTo(this, {
         'contextMenu:article:edit': this.loadArticleEdit,
+        'contextMenu:article:cut': this.onCut,
         'contextMenu:article:copy': this.onCopy,
         'contextMenu:article:copyID': this.onCopyID,
         'contextMenu:article:cut': this.onCut,
+        'contextMenu:article:paste': this.onPaste,
         'contextMenu:article:delete': this.deletePrompt,
         'contextMenu:article:collapse': this.toggleCollapseArticle,
       });
@@ -61,14 +63,14 @@ define(function(require){
     addBlockViews: function() {
       this.$('.article-blocks').empty();
       // Insert the 'pre' paste zone for blocks
-      var view = new EditorPasteZoneView({
+      /* var view = new EditorPasteZoneView({
         model: new ContentModel({
           _parentId: this.model.get('_id'),
           _type: 'block',
           _pasteZoneSortOrder: 1
         })
       });
-      this.$('.article-blocks').append(view.$el);
+      this.$('.article-blocks').append(view.$el); */
       // Iterate over each block and add it to the article
       const children = this.model.getChildren().sort(Helpers.sortContentObjects);
       Origin.editor.blockCount += children.length;
@@ -79,6 +81,9 @@ define(function(require){
       scrollIntoView = scrollIntoView || false;
 
       var newBlockView = new EditorPageBlockView({ model: blockModel });
+
+      this.addChildView(newBlockView, false);
+
       var $blocks = this.$('.article-blocks .block');
       var sortOrder = blockModel.get('_sortOrder');
       var index = sortOrder > 0 ? sortOrder-1 : undefined;
@@ -93,7 +98,7 @@ define(function(require){
       // Increment the sortOrder property
       blockModel.set('_pasteZoneSortOrder', (blockModel.get('_sortOrder')+1));
       // Post-block paste zone - sort order of placeholder will be one greater
-      this.$('.article-blocks').append(new EditorPasteZoneView({ model: blockModel }).$el);
+      //this.$('.article-blocks').append(new EditorPasteZoneView({ model: blockModel }).$el);
     },
 
     addBlock: async function(event) {

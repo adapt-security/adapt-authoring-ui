@@ -16,6 +16,7 @@ define(function(require) {
       'click a.course-delete': 'deleteProjectPrompt',
       'click .projects-details-tags-button-show': 'onProjectShowTagsButtonClicked',
       'click .projects-details-tags-button-hide': 'onProjectHideTagsButtonClicked',
+      'contextmenu': 'onContextMenu'
     },
 
     preRender: function() {
@@ -25,7 +26,8 @@ define(function(require) {
         'contextMenu:course:edit': this.editProject,
         'contextMenu:course:delete': this.deleteProjectPrompt,
         'contextMenu:course:copy': this.duplicateProject,
-        'contextMenu:course:copyID': this.copyIdToClipboard
+        'contextMenu:course:copyID': this.copyIdToClipboard,
+        'contextMenu:course:paste': this.onPaste,
       });
       this.listenTo(Origin, {
         'dashboard:dashboardView:removeSubViews': this.remove,
@@ -156,6 +158,53 @@ define(function(require) {
         event.stopPropagation();
       }
       this.$('.tag-container').hide();
+    },
+
+    onContextMenu: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      Origin.trigger('contextMenu:open', this, e);
+    },
+
+    onPaste: function(e) {
+      if(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      const source = _.last(Origin.editor.clipboard);
+      console.log('copy', source.get('_type'), 'into', this.model.get('_type'));
+
+      const typeHierarchy = ['course', 'menu', 'page', 'article', 'block', 'component'];
+      const indexOfSource = typeHierarchy.indexOf(source.get('_type'));
+      const indexOfTarget = typeHierarchy.indexOf(this.model.get('_type'));
+      const indexOfPage = typeHierarchy.indexOf('page');
+      const sourceType = source.get('_type');
+      const targetType = this.model.get('_type');
+
+      if (indexOfSource <= indexOfPage && indexOfSource <= indexOfTarget) {
+        // at page level and above...
+        // cannot paste ancestor into descendant, or same type into same type
+        // the exception is menu into menu
+        if (source.get('_type') === 'menu' && this.model.get('_type') === 'menu') {
+          // OK
+          Origin.trigger('editorView:paste', this.model.get('_id'));
+        } else {
+          showError('app.errorpasteoutofscope')
+        }
+      } else if (indexOfSource > indexOfPage && indexOfTarget < indexOfPage) {
+        // page content must be pasted into a page
+        showError('app.errorpasteoutsidepage')
+      } else {
+        Origin.trigger('editorView:paste', this.model.get('_id'));
+      }
+
+      function showError(keyText, keyTitle = 'app.errordefaulttitle', ) {
+        Origin.Notify.alert({ 
+          type: 'error', 
+          title: Origin.l10n.t(keyTitle), 
+          text: Origin.l10n.t(keyText, {sourceType, targetType})
+        });
+      }
     }
   }, {
     template: 'project'

@@ -8,7 +8,8 @@ define(function(require){
     events: {
       'click .paste-cancel': 'onPasteCancel',
       'click .field-object .legend': 'onFieldObjectClicked',
-      'dblclick .editor-item-settings-inner > button': 'onDbClick'
+      'dblclick .editor-item-settings-inner > button': 'onDbClick',
+      'contextmenu': 'onContextMenu'
     },
 
     attributes: function() {
@@ -223,22 +224,100 @@ define(function(require){
       event.stopPropagation();
     },
 
+    onCut: function(e) {
+      e?.preventDefault?.();
+      Origin.trigger('editorView:cut', this.model);
+    },
+
     onCopy: function(e) {
-      e && e.preventDefault();
+      e?.preventDefault?.();
       Origin.trigger('editorView:copy', this.model);
     },
 
     onCopyID: function(e) {
-      e && e.preventDefault();
+      e?.preventDefault?.();
       Origin.trigger('editorView:copyID', this.model);
     },
 
     onPaste: function(e) {
-      if(e) {
-        e.stopPropagation();
-        e.preventDefault();
+      // TODO: this function was hitherto unused
+      // the EditorPageBlockView override also seems to be unused
+
+      // onPaste, onCopy, onCopyID and some others
+      // relate only to content and so probably need to live in a new *class*
+      // EditorOriginView > *EditorContentView* > [EditorMenuView, EditorPageView etc]
+      // however, if we initially want to do this as a private plugin using overrides we don't want the complication of a new inheritance structure
+
+      e?.stopPropagation?.();
+      e?.preventDefault?.();
+
+      const source = _.last(Origin.editor.clipboard);
+
+      const typeHierarchy = ['course', 'menu', 'page', 'article', 'block', 'component'];
+      const indexOfSource = typeHierarchy.indexOf(source.get('_type'));
+      const indexOfTarget = typeHierarchy.indexOf(this.model.get('_type'));
+      const indexOfPage = typeHierarchy.indexOf('page');
+      const sourceType = source.get('_type');
+      const targetType = this.model.get('_type');
+
+      if (indexOfSource <= indexOfPage && indexOfSource <= indexOfTarget) {
+        // at page level and above...
+        // cannot paste ancestor into descendant, or same type into same type
+        // the exception is menu into menu
+        if (source.get('_type') === 'menu' && this.model.get('_type') === 'menu') {
+          this.emitPasteEvent()
+        } else {
+          showError('app.errorpasteoutofscope')
+        }
+      } else if (indexOfSource > indexOfPage && indexOfTarget < indexOfPage) {
+        // page content must be pasted into a page
+        showError('app.errorpasteoutsidepage')
+      } else {
+        this.emitPasteEvent()
       }
-      Origin.trigger('editorView:paste', this.model.get('_parentId'), $(e.target).data('sort-order'), $(e.target).data('paste-layout'));
+
+      function showError(keyText, keyTitle = 'app.errordefaulttitle', ) {
+        Origin.Notify.alert({ 
+          type: 'error', 
+          title: Origin.l10n.t(keyTitle), 
+          text: Origin.l10n.t(keyText, {sourceType, targetType})
+        });
+      }
+    },
+
+    getSelectorForSortOrder: function() {
+      return `.${this.model.get('_type')}`;
+    },
+
+    getSortOrderFromContextMenuPosition: function() {
+      if (Origin.contextMenu.view.isClamped) return;
+
+      const typeHierarchy = ['course', 'menu', 'page', 'article', 'block', 'component'];
+      const indexOfTarget = typeHierarchy.indexOf(this.model.get('_type'));
+      const indexOfPage = typeHierarchy.indexOf('page');
+      const isTargetMenuOrCourse = indexOfTarget < indexOfPage;
+      const coords = Origin.contextMenu.view.mouseCoords;  
+      const selector = isTargetMenuOrCourse ? '.editor-menu-item' : `.${typeHierarchy[indexOfTarget + 1]}`
+      const $children = this.$(selector);
+
+      let lowerBoundIndex = -1;
+
+      $children.toArray().find((el, index) => {
+        const bounds = el.getBoundingClientRect();
+        if (lowerBoundIndex > -1 && coords.y <= bounds.top) return true;
+        if (coords.y >= bounds.bottom) lowerBoundIndex = index;
+      });
+
+      return lowerBoundIndex + 2; // increment and make 1-based
+    },
+
+    emitPasteEvent: function() {
+      const source = _.last(Origin.editor.clipboard);
+      const sourceType = source.get('_type');
+      const sortOrder = this.getSortOrderFromContextMenuPosition();
+
+      console.log(`copy ${sourceType} into ${this.model.get('_type')} ${sortOrder ? 'at position ' + sortOrder : '[sort order unspecified]'}`);
+      Origin.trigger('editorView:paste', this.model.get('_id'), sortOrder);
     },
 
     onPasteCancel: function(e) {
@@ -247,6 +326,7 @@ define(function(require){
     },
 
     onSaveSuccess: function() {
+      // TODO: this event is not fired anymore, remove?
       Origin.trigger('editor:refreshData', () => {
         Origin.router.navigateBack();
         this.remove();
@@ -260,6 +340,12 @@ define(function(require){
         text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')
       });
       Origin.trigger('sidebar:resetButtons');
+    },
+
+    onContextMenu: function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      Origin.trigger('contextMenu:open', this, e);
     }
   });
 

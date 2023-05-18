@@ -172,6 +172,7 @@ define(function(require) {
         await this.postPresetData();
         await this.postSettingsData();
         Origin.trigger('editingOverlay:views:hide');
+        // TODO: this event is not fired anymore, remove?
         Origin.trigger('editor:refreshData', this.navigateBack.bind(this), this);
 
       } catch(e) {

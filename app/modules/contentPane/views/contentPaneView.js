@@ -35,11 +35,10 @@ define(function(require) {
     setView: function(ViewClass, viewOptions = {}, options = {}) {
       const view = new ViewClass(viewOptions);
       if(!view.$el || !view.$el[0] || !_.isElement(view.$el[0])) {
-        console.log('ContentPaneView.setView: expects a Backbone.View instance, received', view);
+        console.error('ContentPaneView.setView: expects a Backbone.View instance, received', view);
       }
-      if(this.$('.contentPane-inner').html() !== '') {
-        this.removeView();
-      }
+      this.removeView();
+      this.view = view;
       this.$el.toggleClass('full-width', !!options.fullWidth);
       this.$('.contentPane-inner').html(view.$el);
       Origin.trigger('contentPane:changed');
@@ -56,7 +55,9 @@ define(function(require) {
     },
 
     removeView: function(cb) {
-      this.$('.contentPane-inner').empty();
+      if (!this.view) return;
+      this.view.remove();
+      this.view = null;
       if(cb) cb.apply(this);
       Origin.trigger('contentPane:emptied');
     },
