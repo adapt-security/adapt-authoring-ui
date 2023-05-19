@@ -63,14 +63,14 @@ define(function(require){
     addBlockViews: function() {
       this.$('.article-blocks').empty();
       // Insert the 'pre' paste zone for blocks
-      /* var view = new EditorPasteZoneView({
+      var view = new EditorPasteZoneView({
         model: new ContentModel({
           _parentId: this.model.get('_id'),
           _type: 'block',
           _pasteZoneSortOrder: 1
         })
       });
-      this.$('.article-blocks').append(view.$el); */
+      this.$('.article-blocks').append(view.$el);
       // Iterate over each block and add it to the article
       const children = this.model.getChildren().sort(Helpers.sortContentObjects);
       Origin.editor.blockCount += children.length;
@@ -98,7 +98,7 @@ define(function(require){
       // Increment the sortOrder property
       blockModel.set('_pasteZoneSortOrder', (blockModel.get('_sortOrder')+1));
       // Post-block paste zone - sort order of placeholder will be one greater
-      //this.$('.article-blocks').append(new EditorPasteZoneView({ model: blockModel }).$el);
+      this.$('.article-blocks').append(new EditorPasteZoneView({ model: blockModel }).$el);
     },
 
     addBlock: async function(event) {
@@ -130,8 +130,8 @@ define(function(require){
           top: 22,
           left: 0
         },
-        appendTo:'.app-inner',
-        containment: '.app-inner',
+        appendTo:'.contentPane',
+        containment: '.contentPane',
         helper: function (e) {
           // Store the offset to stop the page jumping during the start of drag
           // because of the drop zones changing the scroll position on the page

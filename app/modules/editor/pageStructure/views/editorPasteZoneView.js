@@ -59,7 +59,8 @@ define(function(require){
           var eventPrefix = `editorView:move${Helpers.capitalise(type)}:`;
           Origin.trigger(eventPrefix + droppedOnId);
           // notify the old parent that the child's gone
-          if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + parentId);
+          if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + _parentId);
+          Origin.editor.data.load();
         },
         error: function(jqXHR) {
           Origin.Notify.toast({ type: 'error', text: jqXHR.responseJSON.message });

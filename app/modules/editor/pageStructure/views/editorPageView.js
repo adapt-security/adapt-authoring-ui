@@ -68,12 +68,12 @@ define(function(require){
       this.$('.page-articles').empty();
       Origin.trigger('editorPageView:removePageSubViews');
       // Insert the 'pre' paste zone for articles
-      /* var prePasteArticle = new ContentModel({
+      var prePasteArticle = new ContentModel({
         _parentId: this.model.get('_id'),
         _type: 'article',
         _pasteZoneSortOrder: 1
-      }); */
-      //this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
+      });
+      this.$('.page-articles').append(new EditorPasteZoneView({ model: prePasteArticle }).$el);
       // Iterate over each article and add it to the page
       this.model.getChildren()
         .filter(c => c.get('_type') === 'article')
@@ -104,7 +104,7 @@ define(function(require){
       // Increment the 'sortOrder' property
       articleModel.set('_pasteZoneSortOrder', sortOrder + 1);
       // Post-article paste zone - sort order of placeholder will be one greater
-      //this.$('.page-articles').append(new EditorPasteZoneView({ model: articleModel }).$el);
+      this.$('.page-articles').append(new EditorPasteZoneView({ model: articleModel }).$el);
       return newArticleView;
     },
 
@@ -123,11 +123,6 @@ define(function(require){
 
     getContextMenuType(e) {
       return 'editor-page';
-    },
-
-    onCutArticle: function(view) {
-      this.once('pageView:postRender', view.showPasteZones);
-      this.render();
     },
 
     setupScrollListener: function() {
