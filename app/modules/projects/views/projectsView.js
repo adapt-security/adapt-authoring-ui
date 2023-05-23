@@ -125,7 +125,7 @@ define(function(require){
         return;
       }
       this.isCollectionFetching = true;
-      
+
       this.usersCollection.fetch({
         success: (collection, response) => {
           Object.assign(this.collection.queryOptions, {
@@ -142,7 +142,7 @@ define(function(require){
 
               // stop further fetching if this is the last page
               if(response.length < this.collection.queryOptions.limit) this.shouldStopFetches = true;
-    
+
               this.$('.no-projects').toggleClass('display-none', this.allCourses.length > 0);
               if(typeof cb === 'function') cb(collection);
             }
@@ -157,7 +157,7 @@ define(function(require){
       }
       const $last = $('.project-list-item').last();
       const triggerY = ($('.contentPane').offset().top + $('.contentPane').height()) - ($last.height()/2) ;
-      
+
       if($last.offset().top < triggerY) this.fetchCollection();
     },
 
@@ -190,13 +190,13 @@ define(function(require){
     },
 
     doFilter: function(text = "", tags = [], fetch) {
-      this.collection.customQuery.title = { 
+      this.collection.customQuery.title = {
         $regex: `.*${text.toLowerCase()}.*`,
         $options: 'i'
       };
       this.setUserPreference('search', text, true);
 
-      this.collection.customQuery.tags = _.pluck(tags, 'id');
+      this.collection.customQuery.tags = {$all: _.pluck(tags, 'id')};
       this.setUserPreference('tags', this.collection.queryOptions.tags, true);
 
       if(fetch !== false) this.resetCollection();
