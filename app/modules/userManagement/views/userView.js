@@ -31,11 +31,10 @@ define(function(require){
       'click button.resetPassword': 'onResetPasswordClicked',
       'click button.changePassword': 'onChangePasswordClicked',
 
-      'click button.unlock': 'onResetLoginsClicked',
-
       'click button.disable': 'onDisableClicked',
       'click button.delete': 'onDeleteClicked',
-      'click button.restore': 'onRestoreClicked'
+      'click button.restore': 'onRestoreClicked',
+      'click button.unlock': 'onRestoreClicked'
     },
 
     preRender: function() {
@@ -158,16 +157,6 @@ define(function(require){
       } catch(e) {
         this.onError(e);
       }
-    },
-
-    onResetLoginsClicked: function() {
-      Origin.Notify.confirm({
-        text: Origin.l10n.t('app.confirmresetlogins', { email: this.model.get('email') }),
-        callback: result => {
-          if(!result.isConfirmed) return;
-          Helpers.ajax(`api/auth/local/unlock/${this.model.get('_id')}`, null, 'POST', () => this.model.fetch());
-        }
-      });
     },
 
     onInviteClicked: function(e) {
