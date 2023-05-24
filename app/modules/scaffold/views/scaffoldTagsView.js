@@ -55,7 +55,7 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
     },
 
     onAddTag: async function(_id) {
-      this.model.set('tags', [...this.model.get('tags'), _id]);
+      this.model.set('tags', (this.model.get('tags')) ? [...this.model.get('tags'), _id] : [_id]);
     },
 
     onRemoveTag: function(title) {
