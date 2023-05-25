@@ -34,7 +34,7 @@ define(function(require){
         return a._sortOrder < b._sortOrder ? -1 : 1;
       });
     },
-    
+
     getSiblings: function() {
       return Origin.editor.data.content.models.filter(m => {
         const sameParent = m.get('_parentId') === this.model.get('_parentId')
@@ -45,7 +45,7 @@ define(function(require){
 
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
-      
+
       if(this.model) this.$el.attr('data-id', this.model.get('_id'));
 
       return this;
@@ -76,8 +76,8 @@ define(function(require){
       }
     },
 
-    componentPasteLocation: function() {
-      if ($('.block-inner .add-control').length > 0) return;
+    componentPasteLocation: function(type) {
+      if ($('.block-inner .add-control').length > 0 || type !== 'component') return;
       Origin.Notify.alert({
         type: 'error',
         text: Origin.l10n.t('app.componentcopyerror')
@@ -90,7 +90,7 @@ define(function(require){
       $('.add-control').addClass('display-none');
       if(type) $('.paste-zone-' + type).removeClass('display-none').addClass('show');
       if(this.currentView === "page") {
-        this.componentPasteLocation();
+        this.componentPasteLocation(type);
       }
     },
 
@@ -242,9 +242,9 @@ define(function(require){
     },
 
     onSaveError: function(pTitle, pText) {
-      Origin.Notify.alert({ 
-        type: 'error', 
-        title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'), 
+      Origin.Notify.alert({
+        type: 'error',
+        title: _.isString(pTitle) ? pTitle : Origin.l10n.t('app.errordefaulttitle'),
         text: _.isString(pText) ? pText : Origin.l10n.t('app.errorsave')
       });
       Origin.trigger('sidebar:resetButtons');
