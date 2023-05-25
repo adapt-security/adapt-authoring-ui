@@ -54,7 +54,9 @@ define([
       }
       for (let i = 0; i < dataArr.length; i++) {
         const d = dataArr[i];
-        if(d.name === "url" && d.value === "") {
+        if(d.name === "tags") {
+          if(!d.value.length) dataArr.splice(i--, 1);
+        } else if(d.name === "url" && d.value === "") {
           dataArr.splice(i--, 1);
         }
       }
