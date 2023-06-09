@@ -80,7 +80,7 @@ define(function(require) {
     },
 
     deleteProjectPrompt: function(event) {
-      event && event.preventDefault();
+      event?.preventDefault?.();
       var isShared = this.model.get('_isShared') || (this.model.get('_shareWithUsers') && this.model.get('_shareWithUsers').length > 0);
       var titleKey = isShared ? 'app.deletesharedproject' : 'app.deleteproject';
       var textKey = isShared ? 'app.confirmdeletesharedprojectwarning' : 'app.confirmdeleteprojectwarning';
