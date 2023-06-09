@@ -66,15 +66,11 @@ define([
     },
 
     getAttributesToSave: function() {
-      var changedAttributes = this.model.changedAttributes(this.originalAttributes);
-      // should also include anything that's new
-      var newAttributes = _.omit(this.model.attributes, Object.keys(this.originalAttributes));
-      _.extend(changedAttributes, newAttributes);
-
-      if(!changedAttributes) {
-        return null;
+      if(this.model.isNew()) {
+        return this.model.attributes;
       }
-      return _.pick(this.model.attributes, Object.keys(changedAttributes));
+      var changedAttributes = this.model.changedAttributes();
+      return Object.keys(changedAttributes).length ? changedAttributes : undefined;
     },
 
     save: function() {
