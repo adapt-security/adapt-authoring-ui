@@ -95,7 +95,7 @@ define([
       }
       this.form.commit();
       const data = this.sanitiseData(this.getAttributesToSave());
-      data ? this.model.save(data, Object.assign({ patch: !this.model.isNew() }, callbacks)) : this.onSaveSuccess();
+      data ? this.model.save(data, Object.assign({ patch: true }, callbacks)) : this.onSaveSuccess();
     },
 
     onSaveSuccess: function(data) {
