@@ -77,7 +77,7 @@ define(function(require) {
       }
       try {
         this.isBuilding = true;
-        const data = await $.post(`api/adapt/${type}/${Origin.editor.data.course.get('_id')}`);
+        const data = await $.post(`api/adapt/${type}/${Origin.editor.data.course.get('_courseId')}`);
         if(isPreview) {
           previewWindow.location.href = data.preview_url;
         } else {
@@ -151,19 +151,14 @@ define(function(require) {
     renderCurrentEditorView: function() {
       Origin.trigger('editorView:removeSubViews');
 
-      this.removeView();
+      this.removeChildViews();
 
       const ViewClass = this.currentView === 'menu' ? EditorMenuView : EditorPageView;
-      this.view = new ViewClass({ model: this.model });
-      this.$('.editor-inner').html(this.view.$el);
+      const view = new ViewClass({ model: this.model });
+      this.addChildView(view, false);
+      this.$('.editor-inner').html(view.$el);
       
       Origin.trigger('editorSidebarView:addOverviewView');
-    },
-
-    removeView() {
-      if (!this.view) return;
-      this.view.remove();
-      this.view = null;
     },
 
     // Event handling

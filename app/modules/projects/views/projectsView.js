@@ -20,6 +20,10 @@ define(function(require){
       this.pageSize = 25;
 
       this.courses = new ContentCollection(undefined, { _type: 'course' });
+      this.courses.customQuery = {
+        _type: 'course',
+        $expr:{$eq:["$_id", "$_courseId"]}
+      }
       this.users = ApiCollection.Users();
       this.tags = ApiCollection.Tags();
       
@@ -104,14 +108,24 @@ define(function(require){
     onCreateCourse: function() {
       const { SweetAlert } = Origin.Notify.alert({
         title: Origin.l10n.t('app.addnewproject'),
-        input: 'text',
-        inputLabel: Origin.l10n.t('app.newprojectinstruction'),
         showCancelButton: true,
         showLoaderOnConfirm: true,
-        inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
-        preConfirm: async title => {
+        html:
+          `
+          <label for="swal-input-title" class="swal2-input-label">${Origin.l10n.t('app.createcoursetitle')}</label>
+          <input id="swal-input-title" class="swal2-input">
+          <label for="swal-input-lang" class="swal2-input-label">${Origin.l10n.t('app.createcourselang')}</label>
+          <input id="swal-input-lang" value="en" class="swal2-input">
+          `,
+        preConfirm: async () => {
+          const title = document.getElementById('swal-input-title').value;
+          const lang = document.getElementById('swal-input-lang').value;
+          if (!title) {
+            SweetAlert.showValidationMessage(Origin.l10n.t('app.createcoursemissingtitle'));
+            return;
+          }
           try {
-            const [ course ] = await $.ajax({ url: 'api/content/insertrecusive', method: 'post', data: { title } });
+            const [ course ] = await $.ajax({ url: 'api/content/insertrecusive', method: 'post', data: { title, _lang:lang } });
             Origin.router.navigateTo(`editor/${course._id}/menu`);
           } catch(e) {
             SweetAlert.showValidationMessage(e.responseJSON.message);

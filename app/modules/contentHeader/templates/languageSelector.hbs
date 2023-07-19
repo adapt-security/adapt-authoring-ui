@@ -1,0 +1,7 @@
+{{#if languages}}
+<select>
+  {{#each languages}}
+  <option value="{{this}}" {{#ifValueEquals this ../selectedLanguage}}selected{{/ifValueEquals}}>{{this}}</option>
+  {{/each}}
+</select>
+{{/if}}

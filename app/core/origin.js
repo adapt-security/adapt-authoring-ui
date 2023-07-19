@@ -3,8 +3,9 @@ define([
   'backbone',
   'core/router',
   'core/browserStorage',
-  'core/models/sessionModel'
-], function(_, Backbone, Router, BrowserStorage, SessionModel) {
+  'core/models/sessionModel',
+  'core/error/ErrorManagement'
+], function(_, Backbone, Router, BrowserStorage, SessionModel, ErrorManagement) {
   var initialized = false;
   var eventTaps = [];
   var $loading;
@@ -28,6 +29,7 @@ define([
       new Router(this);
       initialized = true;
       this.trigger('origin:dataReady');
+      this.checkForErrors();
     }),
     /**
      * Initialises the application utilities
@@ -52,6 +54,7 @@ define([
      * @function Origin#
      */
     startSession: _.once(function(callback) {
+      this.listenTo(Origin, 'login:changed', this.onLoginChanged);
       initLoading();
       this.loadUtilities((function() {
         /**
@@ -97,6 +100,17 @@ define([
      */
     removeViews: function() {
       Origin.trigger('remove:views');
+    },
+
+    checkForErrors: async function() {
+      if (!this.sessionModel.get('isAuthenticated')) return;
+
+      ErrorManagement.initialize(this);
+      await ErrorManagement.check();
+    },
+
+    onLoginChanged: function() {
+      this.checkForErrors();
     }
   });
 

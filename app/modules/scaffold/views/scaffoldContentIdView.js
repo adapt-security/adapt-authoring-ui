@@ -16,7 +16,7 @@ define([ 'core/origin'], function(Origin) {
     async renderSelect() {
       const _type = this.schema.inputType.split(':')[1] || undefined;
       const options = await $.post('api/content/query', { 
-        _courseId: Origin.editor.data.course.get('_id'), 
+        _courseId: Origin.editor.data.course.get('_courseId'), 
         _type,
         $and: [
           { _type: { $ne: 'course' } },

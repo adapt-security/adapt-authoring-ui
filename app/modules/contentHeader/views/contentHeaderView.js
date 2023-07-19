@@ -5,6 +5,7 @@ define(function(require) {
   const FiltersView = require('./filtersView');
   const LinksView = require('./linksView');
   const SortsView = require('./sortsView');
+  const LanguageSelectorView = require('./languageSelectorView');
 
   const VIEWS = {
     actions: ActionsView,
@@ -50,6 +51,7 @@ define(function(require) {
           }
         });
       }
+      this.childViews = [];
       this.$container = $container;
       this.data = {
         eventId: eventId,
@@ -69,8 +71,16 @@ define(function(require) {
       for (let type in this.data.buttons) {
         const { ViewClass, groups } = this.data.buttons[type];
         if(!groups.length) continue;
-        $(`.${type}`, this.$el).append(new ViewClass({ eventId: this.data.eventId, type, groups }).$el);
+        const buttonView = new ViewClass({ eventId: this.data.eventId, type, groups });
+        $(`.${type}`, this.$el).append(buttonView.$el);
+        this.childViews.push(buttonView)
       }
+      const langView = new LanguageSelectorView({
+        languages: this.data.languages,
+        selectedLanguage: this.data.selectedLanguage
+      });
+      $('.languages', this.$el).append(langView.$el);
+      this.childViews.push(langView);
     }
     getTemplateData() {
       if(!this.data.breadcrumbs) {
@@ -92,7 +102,7 @@ define(function(require) {
             return { title: Origin.l10n.t('app.dashboard'), url: '#' };
           }
           if(b === 'course') {
-            return { title: course.get('title'), url: `#/editor/${course.get('_id')}/menu` };
+            return { title: course.get('title'), url: `#/editor/${course.get('_courseId')}/menu` };
           }
           return b;
         });
@@ -118,9 +128,18 @@ define(function(require) {
       this.data.buttons[type].groups = groups;
       this.render();
     }
+    setLanguages(languages, selectedLanguage) {
+      this.data.languages = languages;
+      this.data.selectedLanguage = selectedLanguage;
+      this.render();
+    }
     remove(resetData = true) {
+      this.childViews.forEach(child => child.remove());
+      this.childViews = [];
       if(this.$el) this.$el.remove();
       if(resetData) {
+        delete this.data.languages;
+        delete this.data.selectedLanguage;
         for (let type in this.data.buttons) this.data.buttons[type].groups = [];
       }
     }

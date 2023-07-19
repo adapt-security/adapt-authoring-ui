@@ -27,8 +27,7 @@ define(function(require){
       
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
-        'pageView:itemAnimated': this.onChildRendered,
-        'editorData:loaded': this.render
+        'pageView:itemAnimated': this.onChildRendered
       });
       this.listenTo(this, {
         'contextMenu:editor-page:edit': this.loadPageEdit,
@@ -112,13 +111,17 @@ define(function(require){
       event && event.preventDefault();
       await new ContentModel({
         _parentId: this.model.get('_id'),
-        _courseId: Origin.editor.data.course.get('_id'),
+        _courseId: Origin.editor.data.course.get('_courseId'),
         _type: 'article'
       }).save();
     },
 
+    getRouteIdentifier: function() {
+      return this.model.get('_friendlyId') || this.model.get('_id');
+    },
+
     loadPageEdit: function() {
-       Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/page/${this.model.get('_id')}/edit`);
+      Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/${this.getRouteIdentifier()}/edit`);
     },
 
     getContextMenuType(e) {

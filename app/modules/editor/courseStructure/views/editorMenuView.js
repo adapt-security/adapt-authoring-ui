@@ -15,7 +15,6 @@ define(function(require){
       });
       this.layerViews = [];
       this.listenTo(Origin, {
-        'editorData:loaded': this.render,
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
         'window:resize': this.setupHorizontalScroll
       });
@@ -131,6 +130,13 @@ define(function(require){
           if (ui.item.hasClass('content-type-menu')) ui.sender.sortable("cancel");
         }
       });
+    },
+
+    remove:function() {
+      Origin.editor.currentContentObject = undefined;
+      this.layerViews.forEach(layer => layer.remove());
+      this.layerViews = [];
+      return EditorOriginView.prototype.remove.call(this, arguments);
     }
   }, {
     template: 'editorMenu'

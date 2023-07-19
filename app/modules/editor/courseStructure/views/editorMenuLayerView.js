@@ -111,9 +111,13 @@ define(function(require) {
       var target = new ContentModel({
         _type: 'contentobject',
         _parentId: this._parentId,
-        _courseId: Origin.editor.data.course.get('_id')
+        _courseId: Origin.editor.data.course.get('_courseId')
       });
       Origin.trigger('editorView:pasteCancel', target);
+    },
+
+    getRouteIdentifier: function(model) {
+      return model.get('_friendlyId') || model.get('_id');
     },
 
     onMenuItemClicked: function(menuItem) {
@@ -127,8 +131,7 @@ define(function(require) {
     },
 
     onMenuItemDblclicked: function({ model }) {
-      var type = model.get('_type');
-      var route = `editor/${Origin.editor.data.course.get('_id')}/${type}/${model.get('_id')}`;
+      var route = `editor/${Origin.editor.data.course.get('_courseId')}/${this.getRouteIdentifier(model)}`;
       if (type === 'menu') route += '/edit';
       Origin.router.navigateTo(route);
     },
