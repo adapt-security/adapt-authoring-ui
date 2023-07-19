@@ -35,7 +35,12 @@ define([
 
         this._languages = langData.languages;
         this._defaultLanguage = langData.defaultLanguage;
-        this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
+        if (this.course?.get('_courseId') === courseId) {
+          this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
+        } else {
+          // if a different course has been opened use its default language
+          this._selectedLanguage = this._defaultLanguage;
+        }
         this.content.customQuery._courseId = courseId;
         this.content.customQuery._lang = this._selectedLanguage;
 
