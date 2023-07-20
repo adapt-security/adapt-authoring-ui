@@ -93,7 +93,7 @@ define(function(require){
       this.checkForFrameworkUpdate();
     },
 
-    checkForFrameworkUpdate: function() {
+    checkForFrameworkUpdate: async function() {
       const enableUpdateApi = Origin.constants['adapt-authoring-adaptframework.enableUpdateApi'];
       const hasPermission = Origin.sessionModel.hasScopes(['update:adapt']);
       if(!enableUpdateApi || !hasPermission) {
@@ -102,7 +102,7 @@ define(function(require){
       const {
         canBeUpdated,
         latestCompatibleVersion
-      } = $.get('/api/adapt/update');
+      } = await $.get('/api/adapt/update');
       if(!canBeUpdated) {
         return;
       }
