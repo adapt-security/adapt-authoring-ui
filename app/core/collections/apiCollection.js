@@ -45,8 +45,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
               memo.push(...d.models);
               const link = res.xhr.getResponseHeader('Link');
               if(link) {
-                const nextUrl = link.match(/<(.+)>; rel="next",/)[1];
-                if(nextUrl) return resolve(_fetch(nextUrl, memo));
+                const nextUrlMatch = link.match(/<(.+)>; rel="next",/);
+                if(nextUrlMatch) return resolve(_fetch(nextUrlMatch[1], memo));
               }
               resolve(memo);
             }, 
