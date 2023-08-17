@@ -93,6 +93,11 @@ define(function(require){
       this.checkForFrameworkUpdate();
     },
 
+    remove: function() {
+      Origin.Notify.snackbar.close()
+      OriginView.prototype.remove.apply(this, arguments);
+    },
+
     checkForFrameworkUpdate: async function() {
       const enableUpdateApi = Origin.constants['adapt-authoring-adaptframework.enableUpdateApi'];
       const hasPermission = Origin.sessionModel.hasScopes(['update:adapt']);
