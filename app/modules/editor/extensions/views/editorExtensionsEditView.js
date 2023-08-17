@@ -17,7 +17,7 @@ define(function(require) {
         url: `api/content/${Origin.editor.data.config.get('_id')}`, 
         method: 'PATCH',
         success: () => Origin.editor.data.config.fetch({ success: () => this.setupExtensions() }), 
-        error: jqXhr => Origin.Notify.alert({ type: 'error', text: jqXhr.status })
+        error: jqXhr => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON && jqXhr.responseJSON.message })
       };
       this.listenTo(this.model, 'change:enabledExtensions', this.render);
       this.setupExtensions(() => this.setViewToReady());
