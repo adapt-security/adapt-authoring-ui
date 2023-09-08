@@ -28,7 +28,7 @@ define(function(require) {
     $('.body', $el).html(data.text);
     $el.attr({ class: data.type });
     
-    $('.close', $el).text(data.buttonText ?? Origin.l10n.t('app.close'));
+    $('.close', $el).text(data.buttonText || Origin.l10n.t('app.close'));
     $('.close', $el).toggle(data.persist);
     if(!data.persist) setTimeout(close, data.timeout);
 
