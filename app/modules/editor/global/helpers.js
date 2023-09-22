@@ -39,6 +39,8 @@ define(function(require) {
       */
       const data = {
         courseId: Origin.location.route1,
+        type: Origin.location.route2,
+        contentType: Origin.location.route2,
         id: Origin.location.route2,
         action: Origin.location.route3
       }

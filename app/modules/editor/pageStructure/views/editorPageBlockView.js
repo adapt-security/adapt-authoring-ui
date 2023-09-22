@@ -181,7 +181,7 @@ define(function(require){
     },
 
     getRouteIdentifier: function() {
-      return this.model.get('_friendlyId') || model.get('_id');
+      return this.model.get('_friendlyId') || this.model.get('_id');
     },
 
     loadBlockEdit: function (event) {

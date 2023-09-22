@@ -27,7 +27,8 @@ define(function(require){
       
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
-        'pageView:itemAnimated': this.onChildRendered
+        'pageView:itemAnimated': this.onChildRendered,
+        'editorData:loaded': this.render
       });
       this.listenTo(this, {
         'contextMenu:editor-page:edit': this.loadPageEdit,

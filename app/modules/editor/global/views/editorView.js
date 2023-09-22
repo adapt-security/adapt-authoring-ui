@@ -142,8 +142,9 @@ define(function(require) {
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
           Origin.editor.data.load();
         },
-        fail: ({ message }) => {
-          Origin.Notify.toast({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
+        error: (jqXhr) => {
+          const message = jqXhr.responseJSON.message || Origin.l10n.t('app.errorpaste')
+          Origin.Notify.toast({ type: 'error', text: message });
         }
       });
     },

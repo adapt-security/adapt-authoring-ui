@@ -33,16 +33,19 @@ define([
         const courseId = Origin.location.route1;
         const langData = await $.get('api/content/languages', {courseId})
 
-        this._languages = langData.languages;
+        this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
         this._defaultLanguage = langData.defaultLanguage;
+        
         if (this.course?.get('_courseId') === courseId) {
           this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
         } else {
           // if a different course has been opened use its default language
           this._selectedLanguage = this._defaultLanguage;
         }
-        this.content.customQuery._courseId = courseId;
-        this.content.customQuery._lang = this._selectedLanguage;
+        this.content.customQuery.$or = [
+          {_courseId: courseId, _lang:this._selectedLanguage},
+          {_type:'config'}
+        ];
 
         await this.content.fetch();
         var eventData = Helpers.parseLocationData();

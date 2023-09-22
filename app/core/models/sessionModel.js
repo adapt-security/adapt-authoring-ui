@@ -62,7 +62,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
           dataType: "json"
         });
         await this.fetch();
-        this.Origin.trigger('login:changed');
+        this.Origin.trigger('login:changed', true);
         return this;
       } catch(e) {
         this.clear();
@@ -77,7 +77,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
         console.error(e);
       }
       this.clear();
-      this.Origin.trigger('login:changed');
+      this.Origin.trigger('login:changed', false);
       this.Origin.router.navigateToLogin();
     }
   });

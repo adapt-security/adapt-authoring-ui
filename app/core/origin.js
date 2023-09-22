@@ -109,8 +109,8 @@ define([
       await ErrorManagement.check();
     },
 
-    onLoginChanged: function() {
-      this.checkForErrors();
+    onLoginChanged: function(isLoggedIn) {
+      if (isLoggedIn) this.checkForErrors();
     }
   });
 
