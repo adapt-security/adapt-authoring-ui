@@ -42,6 +42,15 @@ define(['backbone'], function(Backbone) {
       });
     },
 
+    destroy: async function(options = { silent: true }) {
+      return new Promise((resolve, reject) => {
+        Backbone.Model.prototype.destroy.call(this, _.assign({
+          success: () => resolve(this), 
+          error: (model, jqXhr) => this.onError(jqXhr, options.silent === false ? reject : undefined)
+        }, options));
+      });
+    },
+
     serialize: function() {
       return JSON.stringify(this);
     },
@@ -53,7 +62,7 @@ define(['backbone'], function(Backbone) {
       const error = jqXhr && jqXhr.responseJSON;
       error.url = this.url;
       
-      if(reject) return reject(new Error(error));
+      if(reject) return reject(new Error(error.message));
       const errorFormatted = JSON.stringify(error, null, '&nbsp;').replaceAll('\n', '<br/>');
 
       Origin.Notify.alert({ 
