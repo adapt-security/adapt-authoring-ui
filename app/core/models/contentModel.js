@@ -18,7 +18,7 @@ define(function(require) {
       return JSON.stringify(this);
     },
     pruneAttributes: function() {
-      if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
+      if(this.attributeBlacklist) this.attributeBlacklist.forEach(this.unset);
     }
   });
 
