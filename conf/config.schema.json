@@ -36,7 +36,8 @@
         },
         "extraAllowedContent": {
           "description": "Additional allowed content rules",
-          "type": "string"
+          "type": "string",
+          "default": "aside dd dt dl figcaption figure menu a abbr b bdi bdo cite code data dfn kbd mark q rp rt ruby samp small span time var wbr *(*)"
         },
         "textStyles": {
           "description": "Custom block and inline styles which can be applied to content in the editor",
