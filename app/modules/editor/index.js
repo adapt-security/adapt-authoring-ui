@@ -44,7 +44,7 @@ define([
         }
         this.content.customQuery.$or = [
           {_courseId: courseId, _lang:this._selectedLanguage},
-          {_type:'config'}
+          {_courseId: courseId, _type:'config'}
         ];
 
         await this.content.fetch();

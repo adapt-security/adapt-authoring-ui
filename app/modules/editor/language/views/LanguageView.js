@@ -20,10 +20,18 @@ class LanguageView extends OriginView {
       inputLabel: Origin.l10n.t('app.addlanguageinstruction'),
       showCancelButton: true,
       showLoaderOnConfirm: true,
-      inputValidator: val => !val && Origin.l10n.t('app.invalidempty'),
-      preConfirm: async lang => {
+      inputValidator: val => {
+        if (!val) return Origin.l10n.t('app.invalidempty')
         try {
-          await $.ajax({ url: 'api/content/language', method: 'post', data: { courseId, lang } });
+          Intl.getCanonicalLocales(val)
+        } catch (e) {
+          return Origin.l10n.t('app.invalidlocale')
+        }
+      },
+      preConfirm: async lang => {
+        const [canonical] = Intl.getCanonicalLocales(lang)
+        try {
+          await $.ajax({ url: 'api/content/language', method: 'post', data: { courseId, lang:canonical } });
           Origin.router.navigateTo(`editor/${courseId}/menu`);
         } catch(e) {
           SweetAlert.showValidationMessage(e.responseJSON.message);

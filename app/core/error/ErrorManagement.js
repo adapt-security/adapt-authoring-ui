@@ -10,7 +10,7 @@ class ErrorManagement {
         type: 'get'
       })
     } catch (e) {
-      return new Promise(async resolve => {
+      return new Promise(resolve => {
         const errorJson = JSON.parse(e.responseJSON.message);
         const title = errorJson.title;
         const text = errorJson.text;
@@ -22,7 +22,10 @@ class ErrorManagement {
         this.Origin.Notify.alert({
           title,
           html: `<p>${text}</p><pre>${JSON.stringify(debugInfo, undefined, 2)}</pre>`,
-          callback: resolve
+          callback: resolve,
+          customClass: {
+            popup: 'error-management'
+          }
         })
       });
     }

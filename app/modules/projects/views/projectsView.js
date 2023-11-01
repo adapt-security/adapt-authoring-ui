@@ -1,7 +1,6 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
   var ApiCollection = require('core/collections/apiCollection');
-  var Backbone = require('backbone');
   var ContentCollection = require('core/collections/contentCollection');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
@@ -18,12 +17,8 @@ define(function(require){
       OriginView.prototype.preRender.apply(this, arguments);
       this.page = 1;
       this.pageSize = 25;
-
+      this.configs = new ContentCollection(undefined, { _type: 'config' });
       this.courses = new ContentCollection(undefined, { _type: 'course' });
-      this.courses.customQuery = {
-        _type: 'course',
-        $expr:{$eq:["$_id", "$_courseId"]}
-      }
       this.users = ApiCollection.Users();
       this.tags = ApiCollection.Tags();
       
@@ -65,13 +60,31 @@ define(function(require){
     },
 
     fetch: async function(cb) {
+      const fetchCourses = async () => {
+        const courseQuery = this.configs.map(i => {
+          return {
+            $and: [
+              {_lang: i.get('_defaultLanguage')},
+              {_courseId: i.get('_courseId')}
+            ]
+          }
+        })
+        this.courses.customQuery = {
+          ...(courseQuery.length > 0 && {$and: [{$or: courseQuery}]}),
+          ...this.filterQuery
+        }
+        await this.courses.fetch({ recursive: false, reset: true })
+      }
+
       try {
+        Object.assign(this.configs.queryOptions, { page: this.page, limit: this.pageSize });
         Object.assign(this.courses.queryOptions, { page: this.page, limit: this.pageSize });
         await Promise.all([
           this.tags.fetch(),
           this.users.fetch(),
-          this.courses.fetch({ recursive: false, reset: true })
+          this.configs.fetch({ recursive: false, reset: true }),
         ]);
+        await fetchCourses()
       } catch(e) {
         Origin.Notify.toast({ type: 'error', text: e.responseJson.message });
       }
@@ -100,7 +113,8 @@ define(function(require){
       if(filters.tags.length) {
         filterQuery.tags = { $all: filters.tags };
       }
-      this.courses.customQuery = filterQuery;
+
+      this.filterQuery = filterQuery;
       
       this.fetch();
     },
@@ -119,9 +133,15 @@ define(function(require){
           `,
         preConfirm: async () => {
           const title = document.getElementById('swal-input-title').value;
-          const lang = document.getElementById('swal-input-lang').value;
+          let lang = document.getElementById('swal-input-lang').value;
           if (!title) {
             SweetAlert.showValidationMessage(Origin.l10n.t('app.createcoursemissingtitle'));
+            return;
+          }
+          try {
+            [lang] = Intl.getCanonicalLocales(lang)
+          } catch (e) {
+            SweetAlert.showValidationMessage(Origin.l10n.t('app.invalidlocale'));
             return;
           }
           try {
@@ -135,7 +155,7 @@ define(function(require){
     },
 
     onImportCourse: function() {
-      Origin.router.navigateTo('projects/frameworkImport');
+      Origin.router.navigateTo('frameworkImport');
     },
 
     onNavigation: function(event) {

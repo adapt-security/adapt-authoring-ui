@@ -77,7 +77,7 @@ define(function(require){
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
-      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
+      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { data: { dryRun } })
       return Object.assign(data, { canImport: data.statusReport.error === undefined });
     },
 
@@ -100,7 +100,21 @@ define(function(require){
     },
 
     onError: function(e) {
-      Origin.Notify.toast({ type: 'error', text: e.message })
+      const errorJson = JSON.parse(e.message);
+      const title = errorJson.title;
+      const text = errorJson.text;
+      const debugInfo = errorJson.data;
+
+      delete errorJson.title;
+      delete errorJson.text;
+
+      Origin.Notify.alert({
+        title,
+        html: `<p>${text}</p><pre>${JSON.stringify(debugInfo, undefined, 2)}</pre>`,
+        customClass: {
+          popup: 'frameworkImport'
+        }
+      })
     }
   }, {
     template: 'frameworkImport'
