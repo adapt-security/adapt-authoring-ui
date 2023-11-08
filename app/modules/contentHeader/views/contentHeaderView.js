@@ -75,6 +75,16 @@ define(function(require) {
         $(`.${type}`, this.$el).append(buttonView.$el);
         this.childViews.push(buttonView)
       }
+      this.renderLanguageSelector()
+    }
+    renderLanguageSelector() {
+      switch (Origin.location.route2) {
+        case 'config':
+        case 'selecttheme':
+        case 'menusettings':
+        case 'extensions':
+        case 'languages': return;
+      }
       const langView = new LanguageSelectorView({
         languages: this.data.languages,
         selectedLanguage: this.data.selectedLanguage

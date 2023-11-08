@@ -5,7 +5,8 @@ class LanguageView extends OriginView {
 
   events() {
     return {
-      'click .add': 'addLanguage'
+      'click .add': 'addLanguage',
+      'click .remove': 'removeLanguage'
     }
   }
 
