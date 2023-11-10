@@ -44,6 +44,14 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
+
+          if (data.courseLastUpdated || data.courseLastUpdatedBy) {
+            Origin.Notify.alert({
+              title: Origin.l10n.t('app.importlastupdatedtitle'),
+              text: Origin.l10n.t('app.importlastupdated', {user: data.courseLastUpdatedBy||'unknown user', time: data.courseLastUpdated||'time unknown'})
+            })
+          }
+
           this.transformStatusData(data);
           $('.actions button.check').addClass('display-none');
           if(data.canImport) $('.actions button.import').removeClass('display-none');
