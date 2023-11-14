@@ -1,9 +1,13 @@
 <div class="frameworkImport">
     <div class="summaryText {{#unless canImport}}error{{/unless}}">
-      {{#if canImport}}
-        {{t 'app.coursecanbeimported'}}
+      {{#if canUpdate}}
+        {{t 'app.coursecanbeupdated'}}
       {{else}}
-        {{t 'app.coursecannotbeimported'}}
+        {{#if canImport}}
+          {{t 'app.coursecanbeimported'}}
+        {{else}}
+          {{t 'app.coursecannotbeimported'}}
+        {{/if}}
       {{/if}}
     </div>
   <div class="inner">
