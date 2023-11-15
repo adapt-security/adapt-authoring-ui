@@ -31,6 +31,9 @@ define([
 
       async load() {
         const courseId = Origin.location.route1;
+
+        if (!courseId) return;
+
         const langData = await $.get('api/content/language', {_courseId: courseId})
 
         this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
