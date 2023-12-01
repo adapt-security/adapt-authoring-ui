@@ -1,10 +1,8 @@
 define([
-  'backbone',
-  'backboneForms',
   'core/helpers',
   'core/origin',
   'modules/assetManagement/views/assetManagementView'
-], function(Backbone, BackboneForms, Helpers, Origin, AssetManagementView) {
+], function(Helpers, Origin, AssetManagementView) {
   var ScaffoldAssetView = Backbone.Form.editors.Base.extend({
     assetType: null,
     events: {
@@ -32,7 +30,8 @@ define([
     renderData: async function() {
       this.assetType = this.schema.inputType.media || this.schema.inputType.replace(/Asset|:/g, '');
 
-      let url = thumbUrl = this.value;
+      let url, thumbUrl;
+      url = thumbUrl = this.value;
       
       if(!Helpers.isAssetExternal(this.value)) {
         url = `api/assets/serve/${this.value}`;

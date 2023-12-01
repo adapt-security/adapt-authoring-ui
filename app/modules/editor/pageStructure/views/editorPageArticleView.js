@@ -50,9 +50,11 @@ define(function(require){
 
       this.listenTo(this, {
         'contextMenu:article:edit': this.loadArticleEdit,
+        'contextMenu:article:cut': this.onCut,
         'contextMenu:article:copy': this.onCopy,
         'contextMenu:article:copyID': this.onCopyID,
         'contextMenu:article:cut': this.onCut,
+        'contextMenu:article:paste': this.onPaste,
         'contextMenu:article:delete': this.deletePrompt,
         'contextMenu:article:collapse': this.toggleCollapseArticle,
       });
@@ -79,6 +81,9 @@ define(function(require){
       scrollIntoView = scrollIntoView || false;
 
       var newBlockView = new EditorPageBlockView({ model: blockModel });
+
+      this.addChildView(newBlockView, false);
+
       var $blocks = this.$('.article-blocks .block');
       var sortOrder = blockModel.get('_sortOrder');
       var index = sortOrder > 0 ? sortOrder-1 : undefined;
@@ -125,8 +130,8 @@ define(function(require){
           top: 22,
           left: 0
         },
-        appendTo:'.app-inner',
-        containment: '.app-inner',
+        appendTo:'.contentPane',
+        containment: '.contentPane',
         helper: function (e) {
           // Store the offset to stop the page jumping during the start of drag
           // because of the drop zones changing the scroll position on the page

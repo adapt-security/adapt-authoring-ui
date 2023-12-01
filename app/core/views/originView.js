@@ -41,6 +41,34 @@ define(function(require){
       this.setViewToReady();
     },
 
+    addChildView(childView, appendToContainer = true) {
+      const childViews = this.getChildViews() || [];
+
+      childViews.push(childView);
+      this.setChildViews(childViews);
+
+      if (appendToContainer === false) return childView;
+
+      const $parentContainer = this.$(this.constructor.childContainer);
+      $parentContainer.append(childView.$el);
+      
+      return childView;
+    },
+
+    removeChildViews() {
+      this.getChildViews()?.forEach(child => child.remove());
+    },
+
+    getChildViews() {
+      if (!this._childViews) return this._childViews;
+      // Allow both a deprecated id/view map or a new array of child views
+      return Object.entries(this._childViews).map(([key, value]) => value);
+    },
+
+    setChildViews(value) {
+      this._childViews = value;
+    },
+
     setViewToReady: function() {
       Origin.trigger(this.constructor.template + ':ready', this);
       Origin.trigger('origin:hideLoading');
@@ -77,6 +105,8 @@ define(function(require){
     },
 
     remove: function() {
+      if (this._isRemoved) return;
+
       if (this.form) {
         // remove ckeditor instances
         this.form.$( "textarea" ).each(function () {
@@ -92,7 +122,11 @@ define(function(require){
         });
         this.form.remove();
       }
-      Backbone.View.prototype.remove.apply(this, arguments);
+
+      this.removeChildViews();
+      const retVal = Backbone.View.prototype.remove.apply(this, arguments);
+      this._isRemoved = true;
+      return retVal;
     }
   });
 

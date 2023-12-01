@@ -13,7 +13,8 @@ define(function(require) {
     events: {
       'click button.editor-menu-layer-add': 'addNewMenuItem',
       'click .editor-menu-layer-paste': 'pasteMenuItem',
-      'click .editor-menu-layer-paste-cancel': 'cancelPasteMenuItem'
+      'click .editor-menu-layer-paste-cancel': 'cancelPasteMenuItem',
+      'contextmenu': 'onContextMenu'
     },
 
     initialize: function(options) {
@@ -30,13 +31,25 @@ define(function(require) {
         'editorView:removeSubViews': this.remove,
         'editorMenuView:removeMenuViews': this.remove
       };
-      events['editorView:pasted:' + this._parentId] = this.onPaste;
+      
       this.listenTo(Origin, events);
+
+      this.listenTo(this, {
+        'contextMenu:menu:cut': this.onCut,
+        'contextMenu:menu:copy': this.onCopy,
+        'contextMenu:menu:copyID': this.onCopyID,
+        'contextMenu:menu:paste': this.onPaste,
+        'contextMenu:course:copy': this.onCopy,
+        'contextMenu:course:copyID': this.onCopyID,
+        'contextMenu:course:paste': this.onPaste
+      });
     },
 
     render: function() {
       var data = this.data ? this.data : false;
       var template = Handlebars.templates[this.constructor.template];
+
+      this.removeChildViews();
 
       this.$el.html(template(data));
       this.renderMenuItems();
@@ -120,13 +133,20 @@ define(function(require) {
       Origin.router.navigateTo(route);
     },
 
-    onPaste: function(data) {
-      this.addMenuItemView(new ContentModel(Object.assign(data, { _type: 'contentobject' })));
+    removeChildViews() {
+      this.childViews.forEach(c => {
+        c.off(); // remove our click and dblclick listeners
+        c.remove()
+      });
     },
 
     remove: function() {
-      this.childViews.forEach(c => c.remove());
+      this.removeChildViews();
       EditorOriginView.prototype.remove.apply(this, arguments);
+    },
+
+    getSelectorForSortOrder: function() {
+      return '.editor-menu-item';
     }
   }, {
     template: 'editorMenuLayer'

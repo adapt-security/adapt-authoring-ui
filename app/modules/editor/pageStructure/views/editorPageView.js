@@ -30,6 +30,14 @@ define(function(require){
         'pageView:itemAnimated': this.onChildRendered,
         'editorData:loaded': this.render
       });
+      this.listenTo(this, {
+        'contextMenu:editor-page:edit': this.loadPageEdit,
+        'contextMenu:editor-page:cut': this.onCut,
+        'contextMenu:editor-page:copy': this.onCopy,
+        'contextMenu:editor-page:copyID': this.onCopyID,
+        'contextMenu:editor-page:paste': this.onPaste
+        /* 'contextMenu:editor-page:delete': this.deletePagePrompt */
+      });
       /*
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
         {
@@ -77,6 +85,9 @@ define(function(require){
       scrollIntoView = scrollIntoView || false;
 
       var newArticleView = new EditorPageArticleView({ model: articleModel });
+
+      this.addChildView(newArticleView, false);
+
       var sortOrder = articleModel.get('_sortOrder');
       var $articles = this.$('.page-articles .article');
       var index = sortOrder > 0 ? sortOrder-1 : undefined;
@@ -106,30 +117,12 @@ define(function(require){
       }).save();
     },
 
-    loadPageEdit: function(event) {
-      event && event.preventDefault();
+    loadPageEdit: function() {
        Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/page/${this.model.get('_id')}/edit`);
     },
 
-    // TODO fragile HACK, refactor context menu code to allow what I want to do later...
-    openContextMenu: function(event) {
-      if(!event) return console.log('Error: needs a current target to attach the menu to...');
-      event.preventDefault();
-      event.stopPropagation();
-
-      var fakeModel = new Backbone.Model({ _id: this.model.get('_id'), _type: 'page-min' });
-      var fakeView = new Backbone.View({ model: fakeModel });
-
-      this.listenTo(fakeView, {
-        'contextMenu:page-min:edit': this.loadPageEdit,
-        'contextMenu:page-min:copyID': this.onCopyID
-      });
-      Origin.trigger('contextMenu:open', fakeView, event);
-    },
-
-    onCutArticle: function(view) {
-      this.once('pageView:postRender', view.showPasteZones);
-      this.render();
+    getContextMenuType(e) {
+      return 'editor-page';
     },
 
     setupScrollListener: function() {
@@ -147,9 +140,9 @@ define(function(require){
     onChildRendered: function() {
       this.childrenRenderedCount++;
 
-      if (this.childrenRenderedCount < Origin.editor.blockCount) {
-        return;
-      }
+      if (this.childrenRenderedCount < Origin.editor.blockCount) return;
+      if (!_.isFinite(Origin.editor.scrollTo)) return;
+      
       if (Origin.editor.scrollTo > 0) {
         this.removeScrollListener();
       }

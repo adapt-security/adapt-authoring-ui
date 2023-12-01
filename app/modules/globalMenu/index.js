@@ -27,13 +27,20 @@ define(function(require) {
 
             return this;
         }
+        removeButton() {
+            if (!this.$btn) return;
+            this.$btn.off('click');
+            this.$btn.remove();
+            this.$btn = null;
+        }
         renderButton() {
             if(!this.itemStore.length) {
                 return;
             }
-            var $btn = $(Handlebars.partials.part_globalMenuButton());
-            $('.appHeader .appHeader-left').prepend($btn);
-            $btn.on('click', this.onButtonClick.bind(this));
+            this.removeButton();
+            this.$btn = $(Handlebars.partials.part_globalMenuButton());
+            $('.appHeader .appHeader-left').prepend(this.$btn);
+            this.$btn.on('click', this.onButtonClick.bind(this));
         }
         addItem(item, isSubItem) {
             const isValid = this.validateItem(item, isSubItem);

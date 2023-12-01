@@ -1,4 +1,4 @@
-define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
+define([ 'core/origin'], function(Origin) {
   var ScaffoldContentIdView = Backbone.Form.editors.Base.extend({
     tagName: 'input',
     className: 'scaffold-contentid',

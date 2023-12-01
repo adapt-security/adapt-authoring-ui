@@ -30,6 +30,7 @@ define(function(require) {
 
       this.listenTo(Origin, {
         'editorView:refreshView': this.setupEditor,
+        'editorView:cut': this.cutToClipboard,
         'editorView:copy': this.addToClipboard,
         'editorView:copyID': this.copyIdToClipboard,
         'editorView:paste': this.pasteFromClipboard,
@@ -100,9 +101,16 @@ define(function(require) {
       this.isBuilding = false;
     },
 
+    cutToClipboard: function(model) {
+      //this.showPasteZones(model.get('_type'));
+      Origin.editor.clipboard = [model];
+      Origin.editor.clipboardCut = true;
+    },
+
     addToClipboard: function(model) {
-      this.showPasteZones(model.get('_type'));
-      Origin.editor.clipboardId = model.get('_id');
+      //this.showPasteZones(model.get('_type'));
+      Origin.editor.clipboard = [model];
+      Origin.editor.clipboardCut = false;
     },
 
     copyIdToClipboard: function(model) {
@@ -119,14 +127,18 @@ define(function(require) {
     },
 
     pasteFromClipboard: function(_parentId, _sortOrder, _layout) {
+      const source = _.last(Origin.editor.clipboard);
+      const target = Origin.editor.data.content.findWhere({'_id': _parentId});
+      const isCut = Origin.editor.clipboardCut;
+      console.log(`paste ${source.get('_type')} (${source.get('_id')}) into ${target.get('_type')} (${target.get('_id')}) isCut=${isCut}`);
       Origin.trigger('editorView:pasteCancel');
       $.ajax({
         method: 'POST',
         url: 'api/content/clone',
         headers: { 'Content-Type': 'application/json' },
-        data: JSON.stringify({ _id: Origin.editor.clipboardId, _layout, _parentId, _sortOrder }),
+        data: JSON.stringify({ _id: source.get('_id'), _layout, _parentId, _sortOrder, isCut }),
         success: newData => {
-          Origin.editor.clipboardId = null;
+          Origin.editor.clipboardCut = false;
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
           Origin.editor.data.load();
         },
@@ -139,10 +151,19 @@ define(function(require) {
     renderCurrentEditorView: function() {
       Origin.trigger('editorView:removeSubViews');
 
+      this.removeView();
+
       const ViewClass = this.currentView === 'menu' ? EditorMenuView : EditorPageView;
-      this.$('.editor-inner').html(new ViewClass({ model: this.model }).$el);
+      this.view = new ViewClass({ model: this.model });
+      this.$('.editor-inner').html(this.view.$el);
       
       Origin.trigger('editorSidebarView:addOverviewView');
+    },
+
+    removeView() {
+      if (!this.view) return;
+      this.view.remove();
+      this.view = null;
     },
 
     // Event handling
