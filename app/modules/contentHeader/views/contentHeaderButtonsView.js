@@ -49,7 +49,7 @@ define(function(require) {
     onClicked(event) {
       event.preventDefault();
       event.stopPropagation();
-      $item = $(event.currentTarget).parents('.item');
+      const $item = $(event.currentTarget).parents('.item');
       const data = this.data.groups[$item.parents('.group').attr('data-index')].items[$item.attr('data-index')];
       this.triggerEvent(data.eventData, data.id);
     }

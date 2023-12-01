@@ -1,7 +1,6 @@
 define([
-  'core/origin',
-  'backboneForms'
-], function(Origin, BackboneForms) {
+  'core/origin'
+], function(Origin) {
 
   var templates = Handlebars.templates;
   var fieldTemplate = templates.field;
@@ -245,5 +244,7 @@ define([
       event.preventDefault();
     }
   };
+
+  return undefined;
 
 });

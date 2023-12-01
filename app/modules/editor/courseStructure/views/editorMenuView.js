@@ -23,7 +23,7 @@ define(function(require){
 
     postRender: async function() {
       this.renderLayers();
-      _.defer(this.setViewToReady);
+      _.defer(() => this.setViewToReady());
     },
     // Renders all menu layers from the current course to the Origin.editor.currentContentObject
     renderLayers: function() {

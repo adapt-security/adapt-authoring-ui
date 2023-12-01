@@ -147,9 +147,9 @@ define(function(require){
     onChildRendered: function() {
       this.childrenRenderedCount++;
 
-      if (this.childrenRenderedCount < Origin.editor.blockCount) {
-        return;
-      }
+      if (this.childrenRenderedCount < Origin.editor.blockCount) return;
+      if (!_.isFinite(Origin.editor.scrollTo)) return;
+      
       if (Origin.editor.scrollTo > 0) {
         this.removeScrollListener();
       }
