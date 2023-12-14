@@ -21,7 +21,7 @@ define(function(require){
 
     preRender: function() {
       Origin.editor.blockCount = 0;
-      
+
       this.listenTo(Origin, {
         'editorView:removeSubViews': this.remove,
         'pageView:itemAnimated': this.onChildRendered,
@@ -47,15 +47,18 @@ define(function(require){
       this._onScroll = _.bind(_.throttle(this.onScroll, 400), this);
     },
 
-    render: function() {
-      Origin.editor.data.content.fetch({
-        success: () => {
-          var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
-          this.addArticleViews();
-          return returnVal;
-        },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorfetchingdata') })
-      });
+    render: async function() {
+      try {
+        await Promise.all([
+          Origin.editor.data.content.fetch(),
+        ]);
+
+        var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
+        this.addArticleViews();
+        return returnVal;
+      } catch(e) {
+        return handleError(e);
+      }
     },
 
     postRender: function() {
