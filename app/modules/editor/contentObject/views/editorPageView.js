@@ -49,9 +49,7 @@ define(function(require){
 
     render: async function() {
       try {
-        await Promise.all([
-          Origin.editor.data.content.fetch(),
-        ]);
+        await Origin.editor.data.content.fetch();
 
         var returnVal = EditorOriginView.prototype.render.apply(this, arguments);
         this.addArticleViews();
