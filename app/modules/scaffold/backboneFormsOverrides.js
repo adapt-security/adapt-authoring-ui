@@ -1,7 +1,8 @@
 define([
   'core/origin',
-  'backboneForms'
-], function(Origin, BackboneForms) {
+  'backboneForms',
+  'ckeditor',
+], function(Origin, BackboneForms, CKEditor) {
 
   var templates = Handlebars.templates;
   var fieldTemplate = templates.field;
@@ -66,68 +67,23 @@ define([
   Backbone.Form.editors.TextArea.prototype.render = function() {
     textAreaRender.call(this);
 
-    _.defer(function() {
+    _.defer(async function() {
       const config = Origin.constants['adapt-authoring-ui.ckEditor'];
-
       const ckConfig = {
-        dataIndentationChars: '',
-        disableNativeSpellChecker: false,
-        enterMode: CKEDITOR[config.enterMode],
-        entities: false,
-        allowedContent: config.allowedContent,
-        extraAllowedContent: config.extraAllowedContent,
-        on: {
-          change: function() {
-            this.trigger('change', this);
-          }.bind(this),
-          instanceReady: function() {
-            var writer = this.dataProcessor.writer;
-            var elements = Object.keys(CKEDITOR.dtd.$block);
-
-            var rules = {
-              indent: false,
-              breakBeforeOpen: false,
-              breakAfterOpen: false,
-              breakBeforeClose: false,
-              breakAfterClose: false
-            };
-
-            writer.indentationChars = '';
-            writer.lineBreakChars = '';
-            elements.forEach(function(element) { writer.setRules(element, rules); });
+        style: config.textStyles,
+        style: [
+          {
+            name: 'Red heading',
+            element: 'h2',
+            classes: ['red-heading']
           }
-        },
-        toolbarGroups: [
-          { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-          { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-          { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-          { name: 'forms', groups: [ 'forms' ] },
-          { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
-          '/',
-          { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-          { name: 'links', groups: [ 'links' ] },
-          { name: 'insert', groups: [ 'insert' ] },
-          { name: 'styles', groups: [ 'styles' ] },
-          { name: 'colors', groups: [ 'colors' ] },
-          { name: 'tools', groups: [ 'tools' ] },
-          { name: 'others', groups: [ 'others' ] },
-          { name: 'about', groups: [ 'about' ] }
-        ],
-        removeButtons: 'Save,NewPage,Preview,Print,Templates,PasteFromWord,Checkbox,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,CopyFormatting,Language,Anchor,Iframe,PageBreak,Image,Maximize,ShowBlocks,About,Font,FontSize,Smiley,Cut,Copy,Paste,Undo,Redo,Flash',
+        ]
       };
-      /**
-       * Custom text styles
-       * @see {https://ckeditor.com/docs/ckeditor4/latest/features/styles.html#defining-styles}
-       */
-      if(config.textStyles) {
-        const name = 'adapt_styles';
-        if(!CKEDITOR.stylesSet.get(name)) CKEDITOR.stylesSet.add(name, config.textStyles);
-        ckConfig.stylesSet = name;
-      } else {
-        ckConfig.removeButtons += ',Styles';
+      try {
+        this.editor = await CKEditor.create(this.$el[0], ckConfig);
+      } catch(e) {
+        console.error(e);
       }
-      this.editor = CKEDITOR.replace(this.$el[0], ckConfig);
-
     }.bind(this));
 
     return this;
@@ -148,9 +104,12 @@ define([
   };
 
   // ckeditor removal
-  Backbone.Form.editors.TextArea.prototype.remove = function() {
-    this.editor.removeAllListeners();
-    CKEDITOR.remove(this.editor);
+  Backbone.Form.editors.TextArea.prototype.remove = async function() {
+    try {
+      await this.editor.destroy();
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   // add override to allow prevention of validation
