@@ -66,21 +66,13 @@ define([
   // render ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.render = function() {
     textAreaRender.call(this);
-
     _.defer(async function() {
-      const config = Origin.constants['adapt-authoring-ui.ckEditor'];
-      const ckConfig = {
-        style: config.textStyles,
-        style: [
-          {
-            name: 'Red heading',
-            element: 'h2',
-            classes: ['red-heading']
-          }
-        ]
-      };
       try {
-        this.editor = await CKEditor.create(this.$el[0], ckConfig);
+        this.editor = await CKEditor.create(this.$el[0], {
+          htmlSupport: { // allow all HTML, this will be filtered by the API
+            allow: [{ name: /.*/, attributes: true, classes: true, styles: true }]
+          }
+        });
       } catch(e) {
         console.error(e);
       }
@@ -91,6 +83,7 @@ define([
 
   // get data from ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.getValue = function() {
+    console.log(this.editor.getData());
     return this.editor.getData();
   };
 
