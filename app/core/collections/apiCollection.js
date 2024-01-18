@@ -45,11 +45,14 @@ define(['backbone', 'underscore'], function(Backbone, _) {
               memo.push(...d.models);
               const link = res.xhr.getResponseHeader('Link');
               if(link) {
-                const nextUrlMatch = link.match(/<(.+)>; rel="next",/);
-                if(nextUrlMatch) return resolve(_fetch(nextUrlMatch[1], memo));
+                const nextUrlMatch = link.match(/<[^>]*>; rel="next"/);
+                if(nextUrlMatch) {
+                  const nextUrl = nextUrlMatch[0].match(/<(.*)>/);
+                  return resolve(_fetch(nextUrl[1], memo));
+                }
               }
               resolve(memo);
-            }, 
+            },
             error: console.log
           }, options));
         });
