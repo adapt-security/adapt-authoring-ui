@@ -83,7 +83,6 @@ define([
 
   // get data from ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.getValue = function() {
-    console.log(this.editor.getData());
     return this.editor.getData();
   };
 
