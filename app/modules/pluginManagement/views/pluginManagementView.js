@@ -22,7 +22,7 @@ define(function(require){
       this.pluginCollections = {}; // sorted plugins go here
 
       await this.refreshPluginList();
-      
+
       return OriginView.prototype.initialize.apply(this, arguments);
     },
 
@@ -33,13 +33,13 @@ define(function(require){
         menu: Origin.l10n.t('app.menus'),
         theme: Origin.l10n.t('app.themes')
       };
-      Origin.trigger('contentHeader:updateTitle', { 
+      Origin.trigger('contentHeader:updateTitle', {
         breadcrumbs: [{ title: Origin.l10n.t('app.pluginmanagement') }],
-        title: titles[this.currentPluginType] 
+        title: titles[this.currentPluginType]
       });
       this.refreshPluginList();
     },
-    
+
     render: function() {
       this.model = {
         toJSON: _.bind(function() { return { type: this.currentPluginType }; }, this)
@@ -51,7 +51,7 @@ define(function(require){
       this.$('.pluginManagement-plugins').empty();
 
       var coll = this.pluginCollections[this.currentPluginType];
-      if(!coll.length) {
+      if(!coll) {
         this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
       } else {
         coll.forEach(this.renderPluginTypeView);
@@ -111,7 +111,7 @@ define(function(require){
       if(!canBeUpdated) {
         return;
       }
-      Origin.Notify.snackbar({ 
+      Origin.Notify.snackbar({
         type: 'info',
         text: Origin.l10n.t('app.frameworkupdateavailable', { version: latestCompatibleVersion }),
         buttonText: 'Click to update',
@@ -119,7 +119,7 @@ define(function(require){
           $.post('/api/adapt/update')
             .done(data => Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.frameworkupdatesuccess', data) }))
             .fail(e => Origin.Notify.alert({ type: 'success', text: e.responseJSON.message }));
-        } 
+        }
        });
     }
   }, {
