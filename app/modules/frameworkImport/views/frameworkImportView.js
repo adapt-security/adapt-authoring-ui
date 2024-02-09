@@ -73,7 +73,7 @@ define(function(require){
       Origin.trigger('sidebar:updateButton', 'button.frameworkimport', Origin.l10n.t('app.working'));
 
       if(this.model.get('tags')) {
-        this.$('#tags').val(this.model.get('tags').map(t => t._id));
+        this.$('#tags').val(this.model.get('tags').map(t => t.title));
       }
       const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
       return Object.assign(data, { canImport: data.statusReport.error === undefined });
