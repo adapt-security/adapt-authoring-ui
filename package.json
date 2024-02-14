@@ -11,8 +11,8 @@
   },
   "repository": "github:adapt-security/adapt-authoring-ui",
   "dependencies": {
-    "@babel/core": "^7.23.5",
-    "@babel/preset-env": "^7.23.5",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
     "fs-extra": "^11.2.0",
     "glob": "^10.3.10",
@@ -21,7 +21,7 @@
     "requirejs": "^2.3.6"
   },
   "devDependencies": {
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "standard": "^17.1.0"
   }
 }
