@@ -1,9 +1,11 @@
 class ErrorManagement {
-  initialize(Origin) {
+  initialize (Origin) {
     this.Origin = Origin
   }
-  async check() {
-    if (!this.Origin.sessionModel.get('isAuthenticated')) return;
+
+  // check for data format errors in content
+  async check () {
+    if (!this.Origin.sessionModel.get('isAuthenticated')) return
     try {
       await $.ajax({
         url: 'api/content/check',
@@ -11,13 +13,17 @@ class ErrorManagement {
       })
     } catch (e) {
       return new Promise(resolve => {
-        const errorJson = JSON.parse(e.responseJSON.message);
-        const title = errorJson.title;
-        const text = errorJson.text;
-        const debugInfo = errorJson.data;
+        const msg = e.responseJSON?.message
 
-        delete errorJson.title;
-        delete errorJson.text;
+        if (!msg) return
+
+        const errorJson = JSON.parse(msg)
+        const title = errorJson.title
+        const text = errorJson.text
+        const debugInfo = errorJson.data
+
+        delete errorJson.title
+        delete errorJson.text
 
         this.Origin.Notify.alert({
           title,
@@ -27,7 +33,7 @@ class ErrorManagement {
             popup: 'error-management'
           }
         })
-      });
+      })
     }
   }
 }
