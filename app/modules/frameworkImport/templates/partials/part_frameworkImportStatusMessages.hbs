@@ -3,7 +3,19 @@
     <h3>{{heading}}</h3>
     <div class="messages">
       {{#each messages}}
-        <div>{{text}} {{data}}</div>
+        <div class="message">
+          <div class="code">{{t codeKey}}</div>
+          {{#if data}}
+            <div class="data">
+              {{#each data}}
+                <div>
+                  <span class="key">{{@key}}</span>
+                  <span class="value">{{this}}</span>
+                </div>
+              {{/each}}
+            </div>
+          {{/if}}
+        </div>
       {{/each}}
     </div>
   </div>

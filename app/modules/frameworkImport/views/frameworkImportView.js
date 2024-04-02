@@ -62,16 +62,13 @@ define(function(require){
     },
 
     transformStatusData: function(data) {
-      const STATUS_MAP = {
-        "NO_CHANGE": Origin.l10n.t("app.import.plugins.status.NO_CHANGE"),
-        "UPDATED": Origin.l10n.t("app.import.plugins.status.UPDATED"),
-        "MANAGED_PLUGIN_UPDATE_DISABLED": Origin.l10n.t("app.import.status.MANAGED_PLUGIN_UPDATE_DISABLED"),
-        "MISSING_PLUGINS": Origin.l10n.t("app.import.status.MISSING_PLUGINS"),
-      };
-      Object.values(data.statusReport).forEach(messages => {
-        messages.forEach(m => m.text = STATUS_MAP[m.code]);
+      Object.values(data.statusReport).forEach(v => {
+        v.forEach(v2 => v2.codeKey = `app.import.status.${v2.code}`);
       });
-      data.versions.forEach(v => v.statusText = STATUS_MAP[v.status]);
+      Object.values(data.versions).forEach(v => {
+        v.statusKey = `app.import.status.${v.status}`;
+      });
+      return data;
     },
     
     importCourse: function() {
