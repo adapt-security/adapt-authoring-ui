@@ -3,6 +3,7 @@ define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var Helpers = require('core/helpers');
+  var SweetAlert = require('libraries/sweetalert2-11.1.7.all.min.js');
 
   var FrameworkImportView = OriginView.extend({
     tagName: 'div',
@@ -70,11 +71,21 @@ define(function(require){
       });
       return data;
     },
+
+    showAlert: function() {
+      Origin.Notify.alert({
+        type: 'info',
+        title: Origin.l10n.t('app.importwaittitle'),
+        text: Origin.l10n.t('app.importwaitbody'),
+        showConfirmButton: false
+      });
+    },
     
     importCourse: function() {
       if(!this.isValid()) return;
+      this.showAlert();
       this.doImport()
-        .then(() => Origin.router.navigateToDashboard())
+        .then(this.onSuccess)
         .catch(this.onError);
     },
 
@@ -103,6 +114,11 @@ define(function(require){
         }
       });
       this.model.set({ tags: tags });
+    },
+
+    onSuccess: function() {
+      SweetAlert.close();
+      Origin.router.navigateToDashboard()
     },
 
     onError: function(e) {
