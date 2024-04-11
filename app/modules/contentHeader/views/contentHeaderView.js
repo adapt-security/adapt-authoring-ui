@@ -6,6 +6,7 @@ define(function(require) {
   const LinksView = require('./linksView');
   const SortsView = require('./sortsView');
   const LanguageSelectorView = require('./languageSelectorView');
+  const QuickLinksView = require('./quicklinksView');
 
   const VIEWS = {
     actions: ActionsView,
@@ -76,6 +77,7 @@ define(function(require) {
         this.childViews.push(buttonView)
       }
       this.renderLanguageSelector()
+      this.renderQuickLinks();
     }
     renderLanguageSelector() {
       switch (Origin.location.route2) {
@@ -91,6 +93,12 @@ define(function(require) {
       });
       $('.languages', this.$el).append(langView.$el);
       this.childViews.push(langView);
+    }
+    renderQuickLinks() {
+      if (!this.data.quicklinks) return;
+      const quicklinksView = new QuickLinksView(this.data.quicklinks)
+      $('.quicklinks', this.$el).append(quicklinksView.$el)
+      this.childViews.push(quicklinksView);
     }
     getTemplateData() {
       if(!this.data.breadcrumbs) {
@@ -141,6 +149,10 @@ define(function(require) {
     setLanguages(languages, selectedLanguage) {
       this.data.languages = languages;
       this.data.selectedLanguage = selectedLanguage;
+      this.render();
+    }
+    setQuickLinks(quicklinks) {
+      this.data.quicklinks = quicklinks;
       this.render();
     }
     remove(resetData = true) {

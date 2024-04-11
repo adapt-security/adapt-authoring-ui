@@ -115,6 +115,7 @@ define([
         }
       ].map(i => Object.assign(i, { buttonClass: i.eventData === Origin.location.route2 ? 'selected' : '' }))
     }]);
+    Origin.contentHeader.setQuickLinks(null);
     Origin.contentHeader.setLanguages(Origin.editor.data._languages, Origin.editor.data._selectedLanguage);
 
     Origin.on('links', data => {
