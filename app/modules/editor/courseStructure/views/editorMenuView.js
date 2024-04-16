@@ -16,7 +16,8 @@ define(function(require){
       this.layerViews = [];
       this.listenTo(Origin, {
         'editorView:menuView:updateSelectedItem': this.onSelectedItemChanged,
-        'window:resize': this.setupHorizontalScroll
+        'window:resize': this.setupHorizontalScroll,
+        'editorData:loaded': this.render
       });
     },
 
