@@ -34,6 +34,11 @@ define(function(require) {
       OriginView.prototype.initialize.apply(this, arguments);
     },
 
+    remove: function() {
+      Origin.contentHeader.setQuickLinks(null)
+      return OriginView.prototype.remove.apply(this, arguments)
+    },
+
     render: function() {
       OriginView.prototype.render.apply(this, arguments);
       if(this.model) this.$el.attr('data-id', this.model.get('_id'));

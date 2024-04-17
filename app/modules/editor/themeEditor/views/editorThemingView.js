@@ -44,6 +44,11 @@ define(function(require) {
       this.listenTo(this.presets, 'change', this.updatePresetSelect);
     },
 
+    remove: function() {
+      Origin.contentHeader.setQuickLinks(null)
+      return OriginView.prototype.remove.apply(this, arguments)
+    },
+
     render: async function() {
       this.$el.hide();
 
