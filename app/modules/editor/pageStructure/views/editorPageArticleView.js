@@ -105,14 +105,19 @@ define(function(require){
       event && event.preventDefault();
       new ContentModel({
         _parentId: this.model.get('_id'),
-        _courseId: Origin.editor.data.course.get('_id'),
+        _courseId: Origin.editor.data.course.get('_courseId'),
         _type: 'block'
       }).save();
     },
 
+    getRouteIdentifier: function() {
+      return this.model.get('_friendlyId') || this.model.get('_id');
+    },
+
     loadArticleEdit: function (event) {
-      var courseId = Origin.editor.data.course.get('_id');
-      Origin.router.navigateTo(`editor/${courseId}/${this.model.get('_type')}/${this.model.get('_id')}/edit`);
+      var courseId = Origin.editor.data.course.get('_courseId');
+      var routeId = this.getRouteIdentifier();
+      Origin.router.navigateTo(`editor/${courseId}/${routeId}/edit`);
     },
 
     setupDragDrop: function() {

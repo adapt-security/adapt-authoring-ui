@@ -24,8 +24,19 @@ define(function(require) {
       });
       Helpers.setPageTitle(options.model);
       Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.ACTIONS, Origin.contentHeader.ACTION_BUTTON_TEMPLATES.EDIT_FORM);
+      const quicklinks = this.form.fieldsets.filter(fieldset => Object.keys(fieldset.fields).length)
+      Origin.contentHeader.setQuickLinks(quicklinks.map(fieldset => {
+        return {
+          legend: fieldset.schema.legend
+        }
+      }))
       
       OriginView.prototype.initialize.apply(this, arguments);
+    },
+
+    remove: function() {
+      Origin.contentHeader.setQuickLinks(null)
+      return OriginView.prototype.remove.apply(this, arguments)
     },
 
     render: function() {

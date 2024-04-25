@@ -44,6 +44,11 @@ define(function(require) {
       this.listenTo(this.presets, 'change', this.updatePresetSelect);
     },
 
+    remove: function() {
+      Origin.contentHeader.setQuickLinks(null)
+      return OriginView.prototype.remove.apply(this, arguments)
+    },
+
     render: async function() {
       this.$el.hide();
 
@@ -64,7 +69,13 @@ define(function(require) {
       try {
         this.schemaName = `${this.getSelectedTheme().get('targetAttribute').slice(1)}-theme`;
         this.form = await Origin.scaffold.buildForm({ model: this.model, schemaType: this.schemaName });
-        this.$('.form-container').html(this.form.el);  
+        this.$('.form-container').html(this.form.el);
+        const quicklinks = this.form.fieldsets.filter(fieldset => Object.keys(fieldset.fields).length)
+        Origin.contentHeader.setQuickLinks(quicklinks.map(fieldset => {
+          return {
+            legend: fieldset.schema.legend
+          }
+        }))
       } catch(e) {
         didError = true;
       }

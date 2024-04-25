@@ -5,6 +5,7 @@ define(function(require) {
   const FiltersView = require('./filtersView');
   const LinksView = require('./linksView');
   const SortsView = require('./sortsView');
+  const QuickLinksView = require('./quicklinksView');
 
   const VIEWS = {
     actions: ActionsView,
@@ -50,6 +51,7 @@ define(function(require) {
           }
         });
       }
+      this.childViews = [];
       this.$container = $container;
       this.data = {
         eventId: eventId,
@@ -69,8 +71,17 @@ define(function(require) {
       for (let type in this.data.buttons) {
         const { ViewClass, groups } = this.data.buttons[type];
         if(!groups.length) continue;
-        $(`.${type}`, this.$el).append(new ViewClass({ eventId: this.data.eventId, type, groups }).$el);
+        const buttonView = new ViewClass({ eventId: this.data.eventId, type, groups });
+        $(`.${type}`, this.$el).append(buttonView.$el);
+        this.childViews.push(buttonView)
       }
+      this.renderQuickLinks();
+    }
+    renderQuickLinks() {
+      if (!this.data.quicklinks) return;
+      const quicklinksView = new QuickLinksView(this.data.quicklinks)
+      $('.quicklinks', this.$el).append(quicklinksView.$el)
+      this.childViews.push(quicklinksView);
     }
     getTemplateData() {
       if(!this.data.breadcrumbs) {
@@ -92,7 +103,7 @@ define(function(require) {
             return { title: Origin.l10n.t('app.dashboard'), url: '#' };
           }
           if(b === 'course') {
-            return { title: course.get('title'), url: `#/editor/${course.get('_id')}/menu` };
+            return { title: course.get('title'), url: `#/editor/${course.get('_courseId')}/menu` };
           }
           return b;
         });
@@ -118,7 +129,13 @@ define(function(require) {
       this.data.buttons[type].groups = groups;
       this.render();
     }
+    setQuickLinks(quicklinks) {
+      this.data.quicklinks = quicklinks;
+      this.render();
+    }
     remove(resetData = true) {
+      this.childViews.forEach(child => child.remove());
+      this.childViews = [];
       if(this.$el) this.$el.remove();
       if(resetData) {
         for (let type in this.data.buttons) this.data.buttons[type].groups = [];

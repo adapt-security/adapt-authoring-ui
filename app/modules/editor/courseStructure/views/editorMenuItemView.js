@@ -78,18 +78,21 @@ define(function(require){
       this.trigger('dblclick', this);
     },
 
+    getRouteIdentifier: function() {
+      return this.model.get('_friendlyId') || this.model.get('_id');
+    },
+
     editMenuItem: function(eventName) {
-      var courseId = Origin.editor.data.course.get('_id');
-      var type = this.model.get('_type');
-      var menuItemId = this.model.get('_id');
-      let route = `editor/${courseId}/${type}/${menuItemId}/`;
+      var courseId = Origin.editor.data.course.get('_courseId');
+      let route = `editor/${courseId}/${this.getRouteIdentifier()}/`;
       if(eventName === 'edit') route += 'edit'
       Origin.router.navigateTo(route);
     },
 
     openMenuItem: function() {
+      var courseId = Origin.editor.data.course.get('_courseId');
       var type = this.model.get('_type');
-      var route = `editor/${Origin.editor.data.course.get('_id')}/${type}/${this.model.get('_id')}`;
+      var route = `editor/${courseId}/${this.getRouteIdentifier()}`;
       if (type === 'menu') route += '/edit';
       Origin.router.navigateTo(route);
     },

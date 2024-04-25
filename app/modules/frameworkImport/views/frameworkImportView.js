@@ -3,6 +3,7 @@ define(function(require){
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var Helpers = require('core/helpers');
+  var SweetAlert = require('libraries/sweetalert2-11.1.7.all.min.js');
 
   var FrameworkImportView = OriginView.extend({
     tagName: 'div',
@@ -44,6 +45,14 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport(true)
         .then(data => {
+
+          if (data.courseLastUpdated || data.courseLastUpdatedBy) {
+            Origin.Notify.alert({
+              title: Origin.l10n.t('app.importlastupdatedtitle'),
+              text: Origin.l10n.t('app.importlastupdated', {user: data.courseLastUpdatedBy||'unknown user', time: data.courseLastUpdated||'time unknown'})
+            })
+          }
+
           this.transformStatusData(data);
           $('.actions button.check').addClass('display-none');
           if(data.canImport) $('.actions button.import').removeClass('display-none');
@@ -54,22 +63,29 @@ define(function(require){
     },
 
     transformStatusData: function(data) {
-      const STATUS_MAP = {
-        "NO_CHANGE": Origin.l10n.t("app.import.plugins.status.NO_CHANGE"),
-        "UPDATED": Origin.l10n.t("app.import.plugins.status.UPDATED"),
-        "MANAGED_PLUGIN_UPDATE_DISABLED": Origin.l10n.t("app.import.status.MANAGED_PLUGIN_UPDATE_DISABLED"),
-        "MISSING_PLUGINS": Origin.l10n.t("app.import.status.MISSING_PLUGINS"),
-      };
-      Object.values(data.statusReport).forEach(messages => {
-        messages.forEach(m => m.text = STATUS_MAP[m.code]);
+      Object.values(data.statusReport).forEach(v => {
+        v.forEach(v2 => v2.codeKey = `app.import.status.${v2.code}`);
       });
-      data.versions.forEach(v => v.statusText = STATUS_MAP[v.status]);
+      Object.values(data.versions).forEach(v => {
+        v.statusKey = `app.import.status.${v.status}`;
+      });
+      return data;
+    },
+
+    showAlert: function() {
+      Origin.Notify.alert({
+        type: 'info',
+        title: Origin.l10n.t('app.importwaittitle'),
+        text: Origin.l10n.t('app.importwaitbody'),
+        showConfirmButton: false
+      });
     },
     
     importCourse: function() {
       if(!this.isValid()) return;
+      this.showAlert();
       this.doImport()
-        .then(() => Origin.router.navigateToDashboard())
+        .then(this.onSuccess)
         .catch(this.onError);
     },
 
@@ -77,8 +93,9 @@ define(function(require){
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t._id));
       }
-      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
-      return Object.assign(data, { canImport: data.statusReport.error === undefined });
+      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { data: { dryRun } })
+      const canProceed = data.statusReport.error === undefined
+      return Object.assign(data, { canUpdate: canProceed && data.isUpdate, canImport: canProceed });
     },
 
     onAddTag: function (tag) {
@@ -99,8 +116,27 @@ define(function(require){
       this.model.set({ tags: tags });
     },
 
+    onSuccess: function() {
+      SweetAlert.close();
+      Origin.router.navigateToDashboard()
+    },
+
     onError: function(e) {
-      Origin.Notify.toast({ type: 'error', text: e.message })
+      const errorJson = JSON.parse(e.message);
+      const title = errorJson.title;
+      const text = errorJson.text;
+      const debugInfo = errorJson.data;
+
+      delete errorJson.title;
+      delete errorJson.text;
+
+      Origin.Notify.alert({
+        title,
+        html: `<p>${text}</p><pre>${JSON.stringify(debugInfo, undefined, 2)}</pre>`,
+        customClass: {
+          popup: 'frameworkImport'
+        }
+      })
     }
   }, {
     template: 'frameworkImport'

@@ -121,7 +121,7 @@ define(function(require){
     },
 
     onImportCourse: function() {
-      Origin.router.navigateTo('projects/frameworkImport');
+      Origin.router.navigateTo('frameworkImport');
     },
 
     onNavigation: function(event) {

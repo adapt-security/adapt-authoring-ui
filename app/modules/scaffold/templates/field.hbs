@@ -7,9 +7,11 @@
     <div class="tooltip">{{help}}</div>
   </div>
   {{/if}}
+  {{#unless editorAttrs.disabled}}
   <button class="field-default" data-action="default" title="{{t 'app.reset'}}">
     <i class="fa fa-undo"></i>
   </button>
+  {{/unless}}
   {{else}}
   {{#if legend}}
   <div class="legend">

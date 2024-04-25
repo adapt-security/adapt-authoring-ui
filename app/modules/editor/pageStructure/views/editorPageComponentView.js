@@ -40,9 +40,14 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
       }, this));
     },
 
+    getRouteIdentifier: function() {
+      return this.model.get('_friendlyId') || this.model.get('_id');
+    },
+
     loadComponentEdit: function(event) {
-      const { _courseId, _id, _type } = this.model.attributes;
-      Origin.router.navigateTo(`editor/${_courseId}/${_type}/${_id}/edit`);
+      var courseId = Origin.editor.data.course.get('_courseId');
+      var routeId = this.getRouteIdentifier();
+      Origin.router.navigateTo(`editor/${courseId}/${routeId}/edit`);
     },
 
     setupDragDrop: function() {

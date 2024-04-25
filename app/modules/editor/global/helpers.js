@@ -17,6 +17,66 @@ define(function(require) {
         breadcrumbs: generateBreadcrumbs(data),
         title: getTitleForModel(data)
       });
+    },
+
+    parseLocationData: function() {
+      /* var data = {
+        contentType: Origin.location.route2,
+        type: Origin.location.route2,
+        id: Origin.location.route3,
+        action: Origin.location.route4
+      };
+      if(data.type === 'page' || data.type === 'menu') {
+        data.contentType = 'contentObject';
+      }
+      if(data.type === 'settings') {
+        data.contentType = 'course';
+      }
+      if(data.contentType === 'config' || data.contentType === 'course') {
+        data.id = data.contentType === 'course' ? Origin.location.route1 : Origin.editor.data.config.get('_id');
+        data.action = 'edit';
+      }
+      */
+      const data = {
+        courseId: Origin.location.route1,
+        type: Origin.location.route2,
+        contentType: Origin.location.route2,
+        id: Origin.location.route2,
+        action: Origin.location.route3
+      }
+      
+      if (data.id === 'component') {
+        data.contentType = data.type = 'component';
+      }
+      else if (data.id === 'page' || data.id === 'menu') {
+        data.contentType = 'contentObject';
+        data.type = data.id;
+        delete data.id;
+      } else if (data.id === 'settings') {
+        data.contentType = data.type = 'course';
+        data.id = data.courseId;
+        data.action = 'edit';
+      } else if (data.id === 'config' || data.id === 'course') {
+        // TODO: ensure user cannot choose 'config'/'course' for _friendlyId
+        // TODO: check if link to 'course' is actually used
+        data.contentType = data.type = data.id === 'course' ? 'course' : 'config'
+        data.id = data.id === 'course' ? data.courseId : Origin.editor.data.config.get('_id');
+        data.action = 'edit';
+      }
+      else {
+        const model = Origin.editor.data.get({_friendlyId:data.id}) || Origin.editor.data.get({_id:data.id})
+        if (model) {
+          const type = model.get('_type')
+          if (type === 'page' || type === 'menu') {
+            data.contentType = 'contentObject'
+            data.type = type;
+          } else {
+            data.contentType = data.type = type;
+          }
+        }
+      }
+  
+      return data;
     }
   }
 
@@ -24,20 +84,27 @@ define(function(require) {
   * Private functons
   */
 
-  function getType() {
-    return Origin.location.route2 || Origin.location.route1;
+  function getType(locationData) {
+    locationData = locationData ?? Helpers.parseLocationData();
+    return locationData.type;
   }
 
-  function getAction() {
-    if(Origin.location.route2 === 'component' && Origin.location.route3 === 'new') {
+  function getAction(locationData) {
+    locationData = locationData ?? Helpers.parseLocationData();
+    if(locationData.type === 'component' && locationData.id === 'new') {
       return 'edit';
     }
-    return Origin.location.route4 || '';
+    return Origin.location.route3 || '';
+  }
+
+  function getRouteIdentifier(model) {
+    return model.get('_friendlyId') || model.get('_id');
   }
 
   function generateBreadcrumbs(data) {
-    var type = getType();
-    var action = getAction();
+    var locationData = Helpers.parseLocationData();
+    var type = getType(locationData);
+    var action = getAction(locationData);
     var isMenu = type === 'menu';
     var isEditor = action === 'edit';
     var crumbs = [];
@@ -48,7 +115,7 @@ define(function(require) {
     if (!isMenu && isEditor) {
       crumbs.push({
         title: Origin.l10n.t('app.editorpage'),
-        url: `#/editor/${data.page.get('_courseId')}/page/${data.page.get('_id')}`
+        url: `#/editor/${data.page.get('_courseId')}/${getRouteIdentifier(data.page)}`
       });
     }
     crumbs.push({ title: data.langString });
@@ -71,6 +138,7 @@ define(function(require) {
   }
 
   function getLangKey() {
+    var locationData = Helpers.parseLocationData();
     return {
       settings: 'app.editorcourse',
       config: 'app.editorconfig',
@@ -82,7 +150,7 @@ define(function(require) {
       articleedit: 'app.editorarticle',
       blockedit: 'app.editorblock',
       componentedit: 'app.editorcomponent'
-    }[`${getType()}${getAction()}`];
+    }[`${getType(locationData)}${getAction(locationData)}`];
   }
 
   function getNearestPage(model, cb) {

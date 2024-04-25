@@ -23,10 +23,17 @@ define([
       get(attributes) { return this.content.findWhere(attributes) },
 
       async load() {
-        this.content.customQuery._courseId = Origin.location.route1;
-        await this.content.fetch();
+        const courseId = Origin.location.route1;
 
-        if(Origin.location.route2 === 'page') {
+        if (!courseId) return;
+
+        this.content.customQuery.$or = [
+          {_courseId: courseId}
+        ];
+
+        await this.content.fetch();
+        var eventData = Helpers.parseLocationData();
+        if(eventData.type === 'page') {
           await this.components.fetch();
         }
         Origin.trigger('editorData:loaded');
@@ -68,7 +75,7 @@ define([
           eventData: 'config'
         },
         {
-          buttonText: Origin.l10n.t('app.thememanagement'),
+          buttonText: Origin.l10n.t('app.managetheme'),
           buttonIcon: 'fa-paint-brush',
           eventData: 'selecttheme'
         },
@@ -87,10 +94,10 @@ define([
 
     Origin.on('links', data => {
       if(Origin.location.module !== 'editor') return;
-      Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_id')}/${data}`);
+      Origin.router.navigateTo(`editor/${Origin.editor.data.course.get('_courseId')}/${data}`);
     });
 
-    var eventData = parseLocationData();
+    var eventData = Helpers.parseLocationData();
     
     if(eventData.action === 'new' && eventData.type === 'component') {
       if(!Origin.editor.data.newcomponent) {
@@ -105,35 +112,33 @@ define([
       return;
     } 
     if(eventData.action === 'edit') {
-      Origin.contentPane.setView(EditorFormView, { model: Origin.editor.data.get({ _id: eventData.id }) })
+      let model
+      if (eventData.type === 'course') {
+        model = Origin.editor.data.course
+      } else {
+        model = Origin.editor.data.get({ _friendlyId: eventData.id }) || Origin.editor.data.get({ _id: eventData.id })
+      }
+      if (!model) {
+        Origin.Notify.alert({
+          type:"error",
+          text: Origin.l10n.t('app.datamissing', {id:eventData.id})
+        })
+      } else {
+        Origin.contentPane.setView(EditorFormView, { model })
+      }
       return;
     }
 
     Origin.trigger(`editor:${eventData.contentType}`, eventData);
   }
 
-  function parseLocationData() {
-    var data = {
-      contentType: Origin.location.route2,
-      type: Origin.location.route2,
-      id: Origin.location.route3,
-      action: Origin.location.route4
-    };
-    if(data.type === 'page' || data.type === 'menu') {
-      data.contentType = 'contentObject';
-    }
-    if(data.type === 'settings') {
-      data.contentType = 'course';
-    }
-    if(data.contentType === 'config' || data.contentType === 'course') {
-      data.id = data.contentType === 'course' ? Origin.location.route1 : Origin.editor.data.config.get('_id');
-      data.action = 'edit';
-    }
-    return data;
-  }
-
   Origin.on('editor:contentObject', async data => {
-    const model = data.id ? Origin.editor.data.get({ _id: data.id }) : Origin.editor.data.course;
+    let model
+    if (data.id) {
+      model = Origin.editor.data.get({ _friendlyId: data.id }) || Origin.editor.data.get({ _id: data.id })
+    } else {
+      model = Origin.editor.data.course;
+    }
     const actionButtons = [
       {
         id: 'preview',

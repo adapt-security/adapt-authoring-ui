@@ -59,7 +59,7 @@ define(function(require) {
 
     addComponent: function(_layout) {
       Origin.trigger('editorComponentListView:remove');
-      const _courseId = Origin.editor.data.course.get('_id');
+      const _courseId = Origin.editor.data.course.get('_courseId');
       Origin.editor.data.newcomponent = new ContentModel({
         _parentId: this.parentModel.get('_id'),
         _courseId,
@@ -68,7 +68,7 @@ define(function(require) {
         _layout
       });
       Origin.editor.data.newcomponent.parent = this.parentModel;
-      Origin.router.navigateTo(`editor/${_courseId}/component/${this.model.get('name')}/new`);
+      Origin.router.navigateTo(`editor/${_courseId}/component/new`);
     }
   }, {
     template: 'editorPageComponentListItem'

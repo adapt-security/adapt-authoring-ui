@@ -168,13 +168,15 @@ define(function(require){
       Origin.Notify.confirm({
         type: 'warning',
         text: Origin.l10n.t('app.confirmdelete', { type: this.model.get('_type') }),
-        callback: ({ isConfirmed }) => {
+        callback: async ({ isConfirmed }) => {
           if(!isConfirmed) {
             return;
           }
-          this.model.destroy({
-            error: () => Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
-          });
+          try {
+            await this.model.destroy(/* {silent: false} */) // uncomment to see toast error
+          } catch (e) {
+            Origin.Notify.toast({ type: 'error', title: Origin.l10n.t('app.errordeletetitle'), text: e.message });
+          }
         }
       });
     },

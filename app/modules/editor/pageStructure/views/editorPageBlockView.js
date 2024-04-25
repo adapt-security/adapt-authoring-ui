@@ -180,11 +180,14 @@ define(function(require){
       }
     },
 
+    getRouteIdentifier: function() {
+      return this.model.get('_friendlyId') || this.model.get('_id');
+    },
+
     loadBlockEdit: function (event) {
-      var courseId = Origin.editor.data.course.get('_id');
-      var type = this.model.get('_type');
-      var id = this.model.get('_id');
-      Origin.router.navigateTo(`editor/${courseId}/${type}/${id}/edit`);
+      var courseId = Origin.editor.data.course.get('_courseId');
+      var routeId = this.getRouteIdentifier();
+      Origin.router.navigateTo(`editor/${courseId}/${routeId}/edit`);
     },
 
     removeComponentListView() {
