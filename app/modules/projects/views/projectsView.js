@@ -19,6 +19,8 @@ define(function(require){
       this.allTags = options.tags.models.slice() || [];
       this.usersCollection = new UserCollection();
       this.childViews = [];
+      this.filterText = '';
+      this.filterTags = [];
     },
 
     postRender: function() {
@@ -34,8 +36,14 @@ define(function(require){
 
       this.listenTo(Origin, {
         'window:resize dashboard:refresh': this._onResize,
-        'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
-        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(undefined, tags),
+        'dashboard:dashboardSidebarView:filterBySearch': text => {
+          this.filterText = text;
+          this.doFilter()
+        },
+        'dashboard:dashboardSidebarView:filterByTags': tags => {
+          this.filterTags = tags;
+          this.doFilter()
+        },
         'dashboard:sort:asc': () => this.doSort('asc'),
         'dashboard:sort:desc': () => this.doSort('desc'),
         'dashboard:sort:updated': () => this.doSort('updated')
@@ -50,10 +58,11 @@ define(function(require){
 
     initUserPreferences: function() {
       var prefs = this.getUserPreferences();
-
+      this.filterText = prefs.search;
+      this.filterTags = prefs.tags;
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
-      this.doFilter(prefs.search, prefs.tags, false);
+      this.doFilter(false);
       // set relevant filters as selected
       $(`a[data-callback='dashboard:layout:${prefs.layout}']`).addClass('selected');
       $(`a[data-callback='dashboard:sort:${prefs.sort}']`).addClass('selected');
@@ -207,7 +216,10 @@ define(function(require){
       if(fetch !== false) this.resetCollection();
     },
 
-    doFilter: function(text = "", tags = [], fetch) {
+    doFilter: function(fetch) {
+      const text = this.filterText || '';
+      const tags = this.filterTags || [];
+
       this.collection.customQuery.title = {
         $regex: `.*${text.toLowerCase()}.*`,
         $options: 'i'
