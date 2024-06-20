@@ -20,8 +20,9 @@ define(function(require) {
       'paste .projects-sidebar-filter-search-input': 'onPaste'
     },
 
-    preinitialize: function() {
+    initialize: function() {
       this.debouncedFilterProjectsByTitle = _.debounce(this.filterProjectsByTitle.bind(this), 1000);
+      return SidebarItemView.prototype.initialize.apply(this, arguments);
     },
 
     postRender: function() {
