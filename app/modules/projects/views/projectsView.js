@@ -147,8 +147,13 @@ define(function(require){
           this.collectionXhr = this.collection.fetch({
             success: (collection, response) => {
               this.isCollectionFetching = false;
-              this.allCourses.push(...collection.models);
 
+              collection.models.forEach(model => {
+                const courseId = model.get('_courseId')
+                if (this.allCourses.find(course => course.get('_courseId') === courseId)) return
+                this.allCourses.push(model);
+              })
+              
               this.removeChildViews();
               this.allCourses.forEach(a => this.appendProjectItem(a));
 
