@@ -69,8 +69,7 @@ define([
     _.defer(async function() {
       try {
         this.editor = await CKEditor.create(this.$el[0], {
-          plugins: [
-            ...CKEditor.builtinPlugins,
+          plugins: CKEditor.builtinPlugins.concat([
             function ItalicAsEmPlugin(editor) {
               editor.conversion.attributeToElement({
                 model: 'italic',
@@ -78,7 +77,7 @@ define([
                 converterPriority: 'high'
               });
             }
-          ],
+          ]),
           htmlSupport: { // allow all HTML, this will be filtered by the API
             allow: [{ name: /.*/, attributes: true, classes: true, styles: true }]
           }
