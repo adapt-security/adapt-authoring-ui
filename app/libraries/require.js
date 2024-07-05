@@ -7026,6 +7026,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value = this.parseGeneratorMethod();
 	            method = true;
 	        }
+                else if (this.match('...')) { 
+                    return this.parseSpreadElement(); 
+                }
 	        else {
 	            if (!key) {
 	                this.throwUnexpectedToken(this.lookahead);
