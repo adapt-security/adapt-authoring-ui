@@ -7026,7 +7026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            value = this.parseGeneratorMethod();
 	            method = true;
 	        }
-                else if (this.match('...')) { 
+                else if (this.match('...')) {
                     return this.parseSpreadElement(); 
                 }
 	        else {
@@ -7061,7 +7061,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    shorthand = true;
 	                    value = id;
 	                }
-	            }
+	            }	    
+                    else if (this.match('...')) {
+                        return this.parseSpreadElement(); 
+                    }
 	            else {
 	                this.throwUnexpectedToken(this.nextToken());
 	            }
