@@ -59,7 +59,11 @@ define(function(require){
     initUserPreferences: function() {
       var prefs = this.getUserPreferences();
       this.filterText = prefs.search;
-      this.filterTags = prefs.tags;
+      this.filterTags = prefs.tags?.reduce((m, tagId) => {
+        const tagModel = this.allTags.find(tag => tag.get('_id') === tagId)
+        if (tagModel) m.push({id:tagId, title:tagModel.get('title')})
+        return m
+      }, []) || [];
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
       this.doFilter(false);
@@ -68,6 +72,7 @@ define(function(require){
       $(`a[data-callback='dashboard:sort:${prefs.sort}']`).addClass('selected');
       // need to refresh this to get latest filters
       prefs = this.getUserPreferences();
+      prefs.tags = this.filterTags
       Origin.trigger('options:update:ui', prefs);
       Origin.trigger('sidebar:update:ui', prefs);
     },
@@ -227,7 +232,7 @@ define(function(require){
       this.setUserPreference('search', text, true);
 
       this.collection.customQuery.tags = {$all: _.pluck(tags, 'id')};
-      this.setUserPreference('tags', this.collection.queryOptions.tags, true);
+      this.setUserPreference('tags', this.filterTags.map(tag => tag.id), true);
 
       if(fetch !== false) this.resetCollection();
     },
