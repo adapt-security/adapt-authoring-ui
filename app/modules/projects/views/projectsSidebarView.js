@@ -24,6 +24,7 @@ define(function(require) {
       this.listenTo(Origin, 'sidebarFilter:filterByTags', this.filterProjectsByTags);
       this.listenTo(Origin, 'sidebarFilter:addTagToSidebar', this.addTagToSidebar);
       this.listenTo(Origin, 'sidebar:update:ui', this.updateUI);
+      
       this.debouncedFilterProjectsByTitle = _.debounce(this.filterProjectsByTitle.bind(this), 1000);
       return SidebarItemView.prototype.initialize.apply(this, arguments);
     },
