@@ -67,7 +67,7 @@ define([
   Backbone.Form.editors.TextArea.prototype.render = function() {
     textAreaRender.call(this);
     until(isAttached(this.$el)).then(() => {
-      return CKEditor.create(this.$el[0], {
+      return CKEDITOR.create(this.$el[0], {
         plugins: window.CKEDITOR.pluginsConfig.concat(function ItalicAsEmPlugin(editor) {
           editor.conversion.attributeToElement({
             model: 'italic',
