@@ -136,6 +136,7 @@ define([
         CKEDITOR.instances[this.editor.id] = this.editor
       }).catch(e => console.error(e));
     });
+    return this;
   };
 
   // get data from ckeditor in textarea
