@@ -65,6 +65,25 @@ define([
   // render ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.render = function() {
     textAreaRender.call(this);
+
+    function until(conditionFunction) {
+      function poll(resolve) {
+        if (conditionFunction()) {
+          resolve();
+          return;
+        }
+        setTimeout(function() {
+          poll(resolve)
+        }, 10);
+      }
+      return new Promise(poll);
+    }
+    function isAttached($element) {
+      return function() {
+        return Boolean($element.parents('body').length);
+      };
+    }
+
     until(isAttached(this.$el)).then(() => {
       return CKEDITOR.create(this.$el[0], {
         plugins: window.CKEDITOR.pluginsConfig.concat(function ItalicAsEmPlugin(editor) {
