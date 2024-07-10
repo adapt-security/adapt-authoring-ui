@@ -1,8 +1,7 @@
 define([
   'core/origin',
   'backboneForms',
-  'ckeditor',
-], function(Origin, BackboneForms, CKEditor) {
+], function(Origin, BackboneForms) {
 
   var templates = Handlebars.templates;
   var fieldTemplate = templates.field;
