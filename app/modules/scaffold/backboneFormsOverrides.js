@@ -2,7 +2,6 @@ define([
   'core/origin',
   'backboneForms',
 ], function(Origin, BackboneForms) {
-
   var templates = Handlebars.templates;
   var fieldTemplate = templates.field;
   var templateData = Backbone.Form.Field.prototype.templateData;
@@ -65,7 +64,6 @@ define([
   // render ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.render = function() {
     textAreaRender.call(this);
-
     function until(conditionFunction) {
       function poll(resolve) {
         if (conditionFunction()) {

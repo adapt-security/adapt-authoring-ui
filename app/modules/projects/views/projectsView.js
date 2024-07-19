@@ -19,6 +19,8 @@ define(function(require){
       this.allTags = options.tags.models.slice() || [];
       this.usersCollection = new UserCollection();
       this.childViews = [];
+      this.filterText = '';
+      this.filterTags = [];
     },
 
     postRender: function() {
@@ -34,8 +36,14 @@ define(function(require){
 
       this.listenTo(Origin, {
         'window:resize dashboard:refresh': this._onResize,
-        'dashboard:dashboardSidebarView:filterBySearch': text => this.doFilter(text),
-        'dashboard:dashboardSidebarView:filterByTags': tags => this.doFilter(undefined, tags),
+        'dashboard:dashboardSidebarView:filterBySearch': text => {
+          this.filterText = text;
+          this.doFilter()
+        },
+        'dashboard:dashboardSidebarView:filterByTags': tags => {
+          this.filterTags = tags;
+          this.doFilter()
+        },
         'dashboard:sort:asc': () => this.doSort('asc'),
         'dashboard:sort:desc': () => this.doSort('desc'),
         'dashboard:sort:updated': () => this.doSort('updated')
@@ -50,15 +58,21 @@ define(function(require){
 
     initUserPreferences: function() {
       var prefs = this.getUserPreferences();
-
+      this.filterText = prefs.search;
+      this.filterTags = prefs.tags?.reduce((m, tagId) => {
+        const tagModel = this.allTags.find(tag => tag.get('_id') === tagId)
+        if (tagModel) m.push({id:tagId, title:tagModel.get('title')})
+        return m
+      }, []) || [];
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
-      this.doFilter(prefs.search, prefs.tags, false);
+      this.doFilter(false);
       // set relevant filters as selected
       $(`a[data-callback='dashboard:layout:${prefs.layout}']`).addClass('selected');
       $(`a[data-callback='dashboard:sort:${prefs.sort}']`).addClass('selected');
       // need to refresh this to get latest filters
       prefs = this.getUserPreferences();
+      prefs.tags = this.filterTags
       Origin.trigger('options:update:ui', prefs);
       Origin.trigger('sidebar:update:ui', prefs);
     },
@@ -212,7 +226,10 @@ define(function(require){
       if(fetch !== false) this.resetCollection();
     },
 
-    doFilter: function(text = "", tags = [], fetch) {
+    doFilter: function(fetch) {
+      const text = this.filterText || '';
+      const tags = this.filterTags || [];
+
       this.collection.customQuery.title = {
         $regex: `.*${text.toLowerCase()}.*`,
         $options: 'i'
@@ -220,7 +237,7 @@ define(function(require){
       this.setUserPreference('search', text, true);
 
       this.collection.customQuery.tags = {$all: _.pluck(tags, 'id')};
-      this.setUserPreference('tags', this.collection.queryOptions.tags, true);
+      this.setUserPreference('tags', this.filterTags.map(tag => tag.id), true);
 
       if(fetch !== false) this.resetCollection();
     },
