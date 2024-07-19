@@ -59,11 +59,13 @@ define(function(require){
     initUserPreferences: function() {
       var prefs = this.getUserPreferences();
       this.filterText = prefs.search;
-      this.filterTags = prefs.tags?.reduce((m, tagId) => {
-        const tagModel = this.allTags.find(tag => tag.get('_id') === tagId)
-        if (tagModel) m.push({id:tagId, title:tagModel.get('title')})
-        return m
-      }, []) || [];
+      this.filterTags = prefs.tags 
+        ? prefs.tags.reduce((m, tagId) => {
+            const tagModel = this.allTags.find(tag => tag.get('_id') === tagId)
+            if (tagModel) m.push({id:tagId, title:tagModel.get('title')})
+            return m
+          }, []) 
+        : [];
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
       this.doFilter(false);
