@@ -12,6 +12,7 @@ define(function(require){
     preRender: function () {
       this.listenTo(this.model, 'destroy', this.remove);
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
+      this.listenTo(Origin, 'editor:dataLoaded', () => Origin.trigger('editorView:renderPage'))
     },
 
     postRender: function () {
@@ -32,7 +33,7 @@ define(function(require){
               _layout: (!isLeft && !isRight) ? 'full' : (isLeft ? 'left' : 'right'),
               _parentId: view.model.get('_parentId')
             },
-            success: () => Origin.trigger('editorView:renderPage'),
+            success: () => Origin.trigger('editor:refreshData'),
             error: ({ responseJSON }) => Origin.Notify.alert({ type: 'error', text: responseJSON.message })
           });
         }
