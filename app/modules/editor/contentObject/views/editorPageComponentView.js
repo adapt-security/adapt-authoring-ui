@@ -16,6 +16,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     preRender: function() {
       this.$el.addClass('component-' + this.model.get('_layout'));
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
+      this.listenTo(Origin, 'editor:dataLoaded', () => Origin.trigger('editorView:renderPage'))
       this.on({
         'contextMenu:component:edit': this.loadComponentEdit,
         'contextMenu:component:copy': this.onCopy,
@@ -189,7 +190,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
         type: 'PATCH',
         url:`api/content/${id}`,
         data: { _layout: layout },
-        success: () => Origin.trigger('editorView:renderPage'),
+        success: () => Origin.trigger('editor:refreshData'),
         error: jqXHR => Origin.Notify.alert({ type: 'error', text: jqXHR.responseJSON.message })
       });
     }
