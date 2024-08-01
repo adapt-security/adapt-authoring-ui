@@ -91,6 +91,27 @@ define([
             converterPriority: 'high'
           });
         }),
+        link: {
+          decorators: {
+            openInNewTab: {
+              mode: 'manual',
+              label: Origin.l10n.t('app.openintab'),
+              defaultValue: true,
+              attributes: {
+                target: '_blank',
+                rel: 'noopener noreferrer'
+              }
+            },
+            download: {
+              mode: 'manual',
+              label: Origin.l10n.t('app.forcedownload'),
+              attributes: {
+                download: 'download'
+              }
+            }
+          },
+          defaultProtocol: 'http://'
+        },
         toolbar: {
           items: [
             'sourceEditing',
