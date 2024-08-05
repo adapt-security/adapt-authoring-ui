@@ -1,4 +1,5 @@
-<div onkeydown="return event.key != 'Enter'" class="field{{#if title}} field-{{stringToClassName title}}{{else}}{{#if legend}} field-object field-object-{{stringToClassName legend}}{{/if}}{{/if}}{{#if isDefaultValue}} is-default-value{{/if}}" data-editor-id="{{editorId}}" data-type="{{#if inputType.type}}{{inputType.type}}{{else}}{{inputType}}{{/if}}">
+{{!-- <div onkeydown="return event.key != 'Enter'" class="field{{#if title}} field-{{stringToClassName title}}{{else}}{{#if legend}} field-object field-object-{{stringToClassName legend}}{{/if}}{{/if}}{{#if isDefaultValue}} is-default-value{{/if}}" data-editor-id="{{editorId}}" data-type="{{#if inputType.type}}{{inputType.type}}{{else}}{{inputType}}{{/if}}"> --}}
+<div class="field{{#if title}} field-{{stringToClassName title}}{{else}}{{#if legend}} field-object field-object-{{stringToClassName legend}}{{/if}}{{/if}}{{#if isDefaultValue}} is-default-value{{/if}}" data-editor-id="{{editorId}}" data-type="{{#if inputType.type}}{{inputType.type}}{{else}}{{inputType}}{{/if}}">
   {{#if title}}
   <label for="{{editorId}}" title="{{key}}">{{title}}</label>
   {{#if help}}
@@ -7,7 +8,7 @@
     <div class="tooltip">{{help}}</div>
   </div>
   {{/if}}
-  <button class="field-default" data-action="default" title="{{t 'app.reset'}}">
+  <button type="button" class="field-default" data-action="default" title="{{t 'app.reset'}}">
     <i class="fa fa-undo"></i>
   </button>
   {{else}}
