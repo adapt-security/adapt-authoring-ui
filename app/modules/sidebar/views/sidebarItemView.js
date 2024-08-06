@@ -148,7 +148,7 @@ define(function(require) {
     },
 
     closeProject: function() {
-      Origin.router.navigateTo('dashboard');
+      Origin.router.navigateToDashboard();
     },
 
     toggleDropdown: function(event) {
