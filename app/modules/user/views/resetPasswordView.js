@@ -55,9 +55,10 @@ define(function(require) {
         this.$('.reset-introduction').addClass('display-none');
         this.$('.message .success').removeClass('display-none');
       } catch(e) {
+        const message = e.responseJSON && e.responseJSON.message || Origin.l10n.t('app.errorgeneric');
         Origin.Notify.alert({ 
           type: 'error', 
-          text: `${Origin.l10n.t('app.resetpassworderror')}<br/><br/>${e.message}`
+          text: `${Origin.l10n.t('app.resetpassworderror')}<br/><br/>${message}`
         });
         console.error(e);
       }
