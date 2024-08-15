@@ -48,7 +48,7 @@ define(['backbone', 'underscore'], function(Backbone, _) {
                 const nextUrlMatch = link.match(/<[^>]*>; rel="next"/);
                 if(nextUrlMatch) {
                   const nextUrl = nextUrlMatch[0].match(/<(.*)>/);
-                  return resolve(_fetch(nextUrl[1], memo));
+                  await _fetch(nextUrl[1], memo);
                 }
               }
               resolve(memo);
