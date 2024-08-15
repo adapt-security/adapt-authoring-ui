@@ -76,7 +76,7 @@ define(function(require) {
 
   function handleError() {
     Origin.Notify.alert({ type: 'error', text: 'Failed to fetch course data' });
-    Origin.router.navigateTo('dashboard');
+    Origin.router.navigateTo('projects');
   }
   
   return Preloader;
