@@ -4,7 +4,7 @@ define(function(require) {
   var ContentCollection = require('core/collections/contentCollection');
   var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Origin = require('core/origin');
-  
+
   var isLoaded;
 
   var Preloader = {
@@ -20,19 +20,20 @@ define(function(require) {
       if(!Origin.editor.data) Origin.editor.data = {};
 
       isLoaded = false;
-      
-      if(await isOutdated()) {
 
-        Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-        Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+      if(await isOutdated()) {
+        Origin.editor.data.contentTemp = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+        Origin.editor.data.componentTypesTemp = new ContentPluginCollection(undefined, { type: 'component' });
         try {
           await Promise.all([
-            Origin.editor.data.content.fetch(),
-            Origin.editor.data.componentTypes.fetch()
+            Origin.editor.data.contentTemp.fetch(),
+            Origin.editor.data.componentTypesTemp.fetch()
           ]);
         } catch(e) {
           return handleError();
         }
+        Origin.editor.data.content = Origin.editor.data.contentTemp
+        Origin.editor.data.componentTypes = Origin.editor.data.componentTypesTemp
         Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
         Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
 
@@ -78,6 +79,6 @@ define(function(require) {
     Origin.Notify.alert({ type: 'error', text: 'Failed to fetch course data' });
     Origin.router.navigateTo('dashboard');
   }
-  
+
   return Preloader;
 });
