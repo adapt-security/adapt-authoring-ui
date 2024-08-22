@@ -1,0 +1,15 @@
+<div class="auth-inner">
+    <div class="auth-logo"></div>
+
+    <form class="auth-form" autocomplete="off">
+        <div class="auth-title">{{t 'app.signin'}}</div>
+        {{#if isAuthenticated}}
+            {{t 'app.alreadyloggedin'}}
+            <button class="dash btn small secondary">{{t 'app.gotodashboard'}}</button>
+        {{else}}
+            {{!-- <button class="local">Login with username and password</button> --}}
+            <a href="#/user/login">Login with username and password</a>
+            <a href="/api/auth/github">Login with GitHub</a>
+        {{/if}}
+    </form>
+</div>
