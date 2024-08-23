@@ -107,7 +107,7 @@ define([
         Origin.trigger('assetManagement:modalEdit:remove');
         return;
       }
-      return Origin.router.navigateTo('assetManagement');
+      Origin.router.navigateTo('assetManagement');
     },
 
     onSaveError: function(errorMessage) {
