@@ -36,13 +36,9 @@ define(function(require) {
   function loadAssetsView() {
     (new TagsCollection()).fetch({
       success: function(tagsCollection) {
-        // Load asset collection before so sidebarView has access to it
-        var assetCollection = new AssetCollection();
-        // No need to fetch as the collectionView takes care of this
-        // Mainly due to serverside filtering
         Origin.trigger('contentHeader:hide');
         Origin.sidebar.addView(new AssetManagementSidebarView({ collection: tagsCollection }).$el);
-        Origin.contentPane.setView(AssetManagementView, { collection: assetCollection });
+        Origin.contentPane.setView(AssetManagementView, { collection: new AssetCollection() });
         Origin.trigger('assetManagement:loaded');
       },
       error: function() {
