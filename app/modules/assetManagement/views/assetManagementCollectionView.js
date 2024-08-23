@@ -194,7 +194,7 @@ define(function(require){
 
     remove: function() {
       $('.asset-management-assets-container').off('scroll', this._doLazyScroll);
-      $(window).on('resize', this._onResize);
+      $(window).off('resize', this._onResize);
 
       OriginView.prototype.remove.apply(this, arguments);
     }
