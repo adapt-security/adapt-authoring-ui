@@ -37,7 +37,7 @@ define(function(require){
       if(this.isModal) {
         this.initPaging();
       } else {
-        Origin.on('contentPane:ready', () => this.initPaging());
+        Origin.once('contentPane:ready', () => this.initPaging());
       }
       // init lazy scrolling
       $('.asset-management-assets-container').on('scroll', this._doLazyScroll);
@@ -194,7 +194,7 @@ define(function(require){
 
     remove: function() {
       $('.asset-management-assets-container').off('scroll', this._doLazyScroll);
-      $(window).off('resize', this._onResize);
+      $(window).on('resize', this._onResize);
 
       OriginView.prototype.remove.apply(this, arguments);
     }
