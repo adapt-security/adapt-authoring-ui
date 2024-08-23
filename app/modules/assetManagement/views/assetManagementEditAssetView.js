@@ -102,12 +102,12 @@ define([
       const modelData = data ? Array.isArray(data) ? data[0] : data : undefined;
       const _id = modelData && modelData._id;
 
-      if(!this.model.get('isModal')) {
-        return Origin.router.navigateTo('assetManagement');
+      if(this.model.get('isModal')) {
+        if(_id) Origin.trigger('assetManagement:collection:refresh', null, true, _id);
+        Origin.trigger('assetManagement:modalEdit:remove');
+        return;
       }
-      if(data) {
-        Origin.trigger('assetManagement:collection:refresh', null, true, _id);
-      }
+      return Origin.router.navigateTo('assetManagement');
     },
 
     onSaveError: function(errorMessage) {

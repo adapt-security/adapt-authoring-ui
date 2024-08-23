@@ -13,6 +13,8 @@ define(function(require){
     },
 
     postRender: function() {
+      Origin.once('assetManagement:modalEdit:remove', this.remove);
+
       this.childView = new assetManagementEditAssetView({ 
         model: this.model.set('isModal', true) 
       });
