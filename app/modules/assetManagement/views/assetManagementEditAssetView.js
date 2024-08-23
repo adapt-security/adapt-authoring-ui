@@ -98,14 +98,16 @@ define([
       data ? this.model.save(data, Object.assign({ patch: true }, callbacks)) : this.onSaveSuccess();
     },
 
-    onSaveSuccess: function(data) {
-      if(data) {
-        if(Array.isArray(data)) data = data [0];
-        Origin.trigger('assetManagement:collection:refresh');
-        this.model.set(data);
+    onSaveSuccess: async function(data) {
+      const modelData = data ? Array.isArray(data) ? data[0] : data : undefined;
+      const _id = modelData && modelData._id;
+
+      if(!this.model.get('isModal')) {
+        return Origin.router.navigateTo('assetManagement');
       }
-      Origin.trigger('assetItemView:preview', this.model)
-      Origin.router.navigateTo('assetManagement');
+      if(data) {
+        Origin.trigger('assetManagement:collection:refresh', null, true, _id);
+      }
     },
 
     onSaveError: function(errorMessage) {

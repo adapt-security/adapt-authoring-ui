@@ -13,11 +13,9 @@ define(function(require){
     },
 
     postRender: function() {
-      this.childView = new assetManagementEditAssetView({ model: this.model });
-      this.childView.onSaveSuccess = () => {
-        Origin.trigger('assetManagement:collection:refresh');
-        this.remove();
-      };
+      this.childView = new assetManagementEditAssetView({ 
+        model: this.model.set('isModal', true) 
+      });
       $('.wrapper', this.$el).append(this.childView.$el);
     },
 

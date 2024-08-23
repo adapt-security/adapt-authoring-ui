@@ -136,7 +136,7 @@ define(function(require){
       });
     },
 
-    resetCollection: function(cb, shouldFetch = true) {
+    resetCollection: function(cb, shouldFetch = true, selectedId) {
       // to remove old views
       Origin.trigger('assetManagement:assetViews:remove');
 
@@ -146,7 +146,13 @@ define(function(require){
       this.page = 0;
       this.collection.reset();
 
-      if(shouldFetch) this.fetchCollection(cb);
+      if(!shouldFetch) {
+        return;
+      }
+      this.fetchCollection(() => {
+        if(selectedId) Origin.trigger('assetManagement:assetItemView:preview', this.collection.findWhere({ _id: selectedId }));
+        if(cb) cb()
+      });
     },
 
     // Filtering
@@ -194,7 +200,7 @@ define(function(require){
 
     remove: function() {
       $('.asset-management-assets-container').off('scroll', this._doLazyScroll);
-      $(window).on('resize', this._onResize);
+      $(window).off('resize', this._onResize);
 
       OriginView.prototype.remove.apply(this, arguments);
     }
