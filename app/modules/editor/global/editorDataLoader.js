@@ -22,22 +22,27 @@ define(function(require) {
       isLoaded = false;
 
       if(await isOutdated()) {
-        Origin.editor.data.contentTemp = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-        Origin.editor.data.componentTypesTemp = new ContentPluginCollection(undefined, { type: 'component' });
         try {
           await Promise.all([
-            Origin.editor.data.contentTemp.fetch(),
-            Origin.editor.data.componentTypesTemp.fetch()
+            new Promise (async (resolve) => {
+              const content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+              await content.fetch();
+              Origin.editor.data.content = content;
+              Origin.editor.data.course = content.findWhere({ _type: 'course' });
+              Origin.editor.data.config = content.findWhere({ _type: 'config' });
+              if(!Origin.editor.data.course || !Origin.editor.data.config) {
+                return handleError();
+              }
+              resolve()
+            }),
+            new Promise (async (resolve) => {
+              const componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+              await componentTypes.fetch();
+              Origin.editor.data.componentTypes = componentTypes;
+              resolve()
+            })
           ]);
         } catch(e) {
-          return handleError();
-        }
-        Origin.editor.data.content = Origin.editor.data.contentTemp
-        Origin.editor.data.componentTypes = Origin.editor.data.componentTypesTemp
-        Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
-        Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
-
-        if(!Origin.editor.data.course || !Origin.editor.data.config) {
           return handleError();
         }
       }
