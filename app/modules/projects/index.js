@@ -61,7 +61,7 @@ define(function(require) {
       return;
     }
     var collection = new ContentCollection(undefined, { 
-      filter: { }, 
+      filter: { createdBy: isMine ? meId : {} }, 
       _type: 'course'
     });
     Origin.trigger('contentHeader:updateTitle', { 
