@@ -60,9 +60,8 @@ define(function(require) {
     if(!isMine && !isShared) {
       return;
     }
-    var meId = Origin.sessionModel.get('user')._id;
     var collection = new ContentCollection(undefined, { 
-      filter: { createdBy: isMine ? meId : { $ne: meId } }, 
+      filter: { }, 
       _type: 'course'
     });
     Origin.trigger('contentHeader:updateTitle', { 
