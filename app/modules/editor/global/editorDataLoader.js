@@ -4,7 +4,7 @@ define(function(require) {
   var ContentCollection = require('core/collections/contentCollection');
   var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Origin = require('core/origin');
-  
+
   var isLoaded;
 
   var Preloader = {
@@ -20,23 +20,29 @@ define(function(require) {
       if(!Origin.editor.data) Origin.editor.data = {};
 
       isLoaded = false;
-      
-      if(await isOutdated()) {
 
-        Origin.editor.data.content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-        Origin.editor.data.componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+      if(await isOutdated()) {
         try {
           await Promise.all([
-            Origin.editor.data.content.fetch(),
-            Origin.editor.data.componentTypes.fetch()
+            new Promise (async (resolve) => {
+              const content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+              await content.fetch();
+              Origin.editor.data.content = content;
+              Origin.editor.data.course = content.findWhere({ _type: 'course' });
+              Origin.editor.data.config = content.findWhere({ _type: 'config' });
+              if(!Origin.editor.data.course || !Origin.editor.data.config) {
+                return handleError();
+              }
+              resolve()
+            }),
+            new Promise (async (resolve) => {
+              const componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+              await componentTypes.fetch();
+              Origin.editor.data.componentTypes = componentTypes;
+              resolve()
+            })
           ]);
         } catch(e) {
-          return handleError();
-        }
-        Origin.editor.data.course = Origin.editor.data.content.findWhere({ _type: 'course' });
-        Origin.editor.data.config = Origin.editor.data.content.findWhere({ _type: 'config' });
-
-        if(!Origin.editor.data.course || !Origin.editor.data.config) {
           return handleError();
         }
       }
@@ -78,6 +84,6 @@ define(function(require) {
     Origin.Notify.alert({ type: 'error', text: 'Failed to fetch course data' });
     Origin.router.navigateTo('projects');
   }
-  
+
   return Preloader;
 });
