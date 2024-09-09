@@ -21,7 +21,7 @@
     "requirejs": "^2.3.6"
   },
   "devDependencies": {
-    "eslint": "^8.56.0",
+    "eslint": "^9.10.0",
     "standard": "^17.1.0"
   }
 }
