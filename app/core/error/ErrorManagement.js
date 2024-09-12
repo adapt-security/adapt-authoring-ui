@@ -17,7 +17,27 @@ class ErrorManagement {
 
         if (!msg) return
 
-        const errorJson = JSON.parse(msg)
+        if (typeof msg !== 'string') {
+          console.error('Server returned unexpected error string:', msg)
+          return
+        }
+
+        let errorJson
+        try {
+          errorJson = JSON.parse(msg)
+        } catch (e) {
+          this.Origin.Notify.alert({
+            title: this.Origin.l10n.t('app.errormanagementtitle'),
+            text: msg,
+            callback: resolve,
+            customClass: {
+              popup: 'error-management'
+            }
+          })
+
+          return
+        }
+
         const title = errorJson.title
         const text = errorJson.text
         const debugInfo = errorJson.data

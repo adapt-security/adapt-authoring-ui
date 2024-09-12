@@ -41,7 +41,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     },
 
     getRouteIdentifier: function() {
-      return this.model.get('_friendlyId') || model.get('_id');
+      return this.model.get('_friendlyId') || this.model.get('_id');
     },
 
     loadComponentEdit: function(event) {
