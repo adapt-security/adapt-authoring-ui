@@ -50,8 +50,11 @@ define(['backbone', 'underscore', 'core/origin', 'core/models/apiModel'], functi
               this.headerData = headers.reduce((m, h) => Object.assign(m, { [h]: Number(res.xhr.getResponseHeader(`X-Adapt-${h}`)) }), {});
               const link = res.xhr.getResponseHeader('Link');
               if(link && options.recursive) {
-                const nextUrl = link.match(/<(.+)>; rel="next",/)[1];
-                if(nextUrl) return resolve(_fetch(nextUrl, memo));
+                const nextUrlMatch = link.match(/<[^>]*>; rel="next"/);
+                if(nextUrlMatch) {
+                  const nextUrl = nextUrlMatch[0].match(/<(.*)>/);
+                  return resolve(_fetch(nextUrl[1], memo));
+                }
               }
               resolve(memo);
             }, 
