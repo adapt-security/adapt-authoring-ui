@@ -14,7 +14,8 @@
   
   .modal-popup {
     height: 100%;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background-color: @ui-content-color;
     border-radius: 4px;
     box-shadow: 0 0 7px rgba(0,0,0,0.2);
@@ -27,8 +28,8 @@
       }
     }
     &-inner {
-      height: 100%;
       flex: 1 1 auto;
+      overflow: auto;
       
       .modal-popup-content {
         height: 100%;  
