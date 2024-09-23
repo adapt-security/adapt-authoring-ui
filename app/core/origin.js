@@ -161,7 +161,7 @@ define([
   // Event handling
 
   function onKeyDown(event) {
-    if($(event.target).is('input, textarea')) return;
+    if($(event.target).is('input,textarea,.ck')) return;
     Origin.trigger('key:down', event);
   }
 
