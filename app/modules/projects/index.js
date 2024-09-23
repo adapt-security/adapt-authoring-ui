@@ -61,10 +61,13 @@ define(function(require) {
         ]
       }
     ]);
-    const actionButtons = [{
-      id: 'createcourse',
-      buttonText: Origin.l10n.t('app.addnewproject')
-    }];
+    const actionButtons = []
+    if(Origin.sessionModel.hasScopes(["write:content"])) {
+        actionButtons.push({
+        id: 'createcourse',
+        buttonText: Origin.l10n.t('app.addnewproject')
+      });
+    }
     if(Origin.sessionModel.hasScopes(["import:adapt"])) {
       actionButtons.push({
         id: 'importcourse',
