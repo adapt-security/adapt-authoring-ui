@@ -15,7 +15,11 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
 
     postRender: function() {
       this.$el.selectize({
-        create: async (title, callback) => callback(await $.post('api/tags', { title })),
+        create: (title, callback) => {
+          $.post('api/tags', { title })
+            .done(callback)
+            .fail(() => callback())
+        },
         valueField: '_id',
         labelField: 'title',
         searchField: 'title',
@@ -24,9 +28,9 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
         load: (query, callback) => {
           $.post('api/tags/query', { title: { $regex: `.*${query}.*`, $options: 'i' } })
             .done(callback)
-            .error(() => callback());
+            .fail(() => callback());
         },
-        onLoad: () => this.setValue(this.value),
+        onLoad: () => this.setValue(this.getValue()),
         onItemAdd: this.onAddTag.bind(this),
         onItemRemove: this.onRemoveTag.bind(this)
       });
@@ -38,7 +42,8 @@ define([ 'core/origin', 'backboneForms' ], function(Origin, BackboneForms) {
     },
 
     setValue: function(value) {
-      this.$el[0].selectize.setValue(value);
+      this.$el[0].selectize.setValue((value.length > 0) ? value : this.model.get('tags'));
+      if(this.$el[0].selectize.isFocused) this.$el[0].selectize.focus();
     },
 
     focus: function() {
