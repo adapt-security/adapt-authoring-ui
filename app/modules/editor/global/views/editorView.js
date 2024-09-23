@@ -120,6 +120,10 @@ define(function(require) {
 
     pasteFromClipboard: function(_parentId, _sortOrder, _layout) {
       Origin.trigger('editorView:pasteCancel');
+
+      const { SweetAlert } = Origin.Notify.alert({ title: Origin.l10n.t('app.loading') });
+      SweetAlert.showLoading();
+
       $.ajax({
         method: 'POST',
         url: 'api/content/clone',
@@ -128,9 +132,13 @@ define(function(require) {
         success: newData => {
           Origin.editor.clipboardId = null;
           Origin.trigger(`editorView:pasted:${_parentId}`, newData);
-          Origin.editor.data.load();
+          Origin.trigger('editor:refreshData', () => {
+            Origin.trigger(`editorView:refreshView`);
+          });
+          SweetAlert.close();
         },
         fail: ({ message }) => {
+          SweetAlert.close();
           Origin.Notify.toast({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
         }
       });
