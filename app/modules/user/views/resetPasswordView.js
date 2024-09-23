@@ -31,7 +31,7 @@ define(function(require) {
 
     handleValidationError: function(model, errors) {
       if(errors) {
-        this.$('.resetError .message').text(this.errors.reduce((m,e) => `${m}${e}. `, ''));
+        this.$('.resetError .message').text(errors.reduce((m,e) => `${m}${e}. `, ''));
         this.$('.resetError').removeClass('display-none');
       }
     },
@@ -55,12 +55,18 @@ define(function(require) {
         this.$('.reset-introduction').addClass('display-none');
         this.$('.message .success').removeClass('display-none');
       } catch(e) {
+        const code = e.responseJSON && e.responseJSON.code;
         const message = e.responseJSON && e.responseJSON.message || Origin.l10n.t('app.errorgeneric');
-        Origin.Notify.alert({ 
-          type: 'error', 
-          text: `${Origin.l10n.t('app.resetpassworderror')}<br/><br/>${message}`
-        });
-        console.error(e);
+        if(code === 'INVALID_PASSWORD') {
+          this.handleValidationError(this.model, [message]);
+        } else {
+          console.error(e);
+          Origin.Notify.alert({ 
+            type: 'error', 
+            text: `${Origin.l10n.t('app.resetpassworderror')}<br/><br/>${message}`
+          });
+          Origin.router.navigateToLogin();
+        }
       }
     }
   }, {
