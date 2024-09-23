@@ -20,6 +20,7 @@ define(function(require){
     preRender: function() {
       this.listenTo(this.model, 'destroy', this.remove);
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
+      this.listenTo(Origin, 'editor:dataLoaded', () => Origin.trigger('editorView:renderPage'));
     },
 
     postRender: function () {
@@ -59,7 +60,8 @@ define(function(require){
           var eventPrefix = `editorView:move${Helpers.capitalise(type)}:`;
           Origin.trigger(eventPrefix + droppedOnId);
           // notify the old parent that the child's gone
-          if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + parentId);
+          if(droppedOnId !== _parentId) Origin.trigger(eventPrefix + _parentId);
+          Origin.trigger('editor:refreshData');
         },
         error: function(jqXHR) {
           Origin.Notify.toast({ type: 'error', text: jqXHR.responseJSON.message });
