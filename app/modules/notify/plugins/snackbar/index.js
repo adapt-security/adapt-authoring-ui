@@ -42,6 +42,12 @@ define(function(require) {
       if(data.callback) data.callback.apply();
     }, 500);
   };
+
+  Snackbar.close = function() {
+    const data = queue[0];
+    if(data) delete data.callback // force close shouldn't execute callback
+    close()
+  };
   
   var init = function() {
     Origin.Notify.register('snackbar', Snackbar);
