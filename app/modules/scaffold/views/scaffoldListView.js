@@ -55,8 +55,8 @@ define([
 
     // Accomodate sweetalert in item removal
     removeItem: function(item) {
-      var remove = function(isConfirmed) {
-        if(isConfirmed === false) return;
+      var remove = function(confirm) {
+        if(confirm.isConfirmed === false) return;
 
         var index = this.items.indexOf(item);
         this.items[index].remove();
