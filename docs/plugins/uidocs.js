@@ -36,13 +36,13 @@ export default class UIDocs {
     // replace first menu item
     config.docdash.menu = Object.entries(config.docdash.menu).reduce((m, [k, v], i) => {
       if(i === 0) {
-        k = `<img class="logo" src="assets/logo-colour.png" />Adapt authoring tool front-end documentation<br><span class="version">v${this.app.version}</span>`;
+        k = `<img class="logo" src="assets/logo-outline-colour.png" />Adapt authoring tool front-end documentation<br><span class="version">v${this.app.pkg.version}</span>`;
       }
       m[k] = v;
       return m;
     }, {});
     // update metadata
-    config.docdash.meta.version = `v${this.app.version}`;
+    config.docdash.meta.version = `v${this.app.pkg.version}`;
     config.docdash.meta.title = config.docdash.meta.description = "Adapt authoring tool front-end documentation";
     // set dest path
     config.opts.destination = this.outputDir;
