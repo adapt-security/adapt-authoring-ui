@@ -69,8 +69,6 @@ define(function(require) {
           return Origin.l10n.t('app.invalidusernameorpassword');
         case LoginView.ERR_ACCOUNT_LOCKED:
           return Origin.l10n.t('app.accountislocked');
-        case LoginView.ERR_TENANT_DISABLED:
-          return Origin.l10n.t('app.tenantnotenabled');
         case LoginView.ERR_ACCOUNT_INACTIVE:
           return Origin.l10n.t('app.accountnotactive');
       }
