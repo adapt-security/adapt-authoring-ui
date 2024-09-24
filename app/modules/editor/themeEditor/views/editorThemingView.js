@@ -41,7 +41,7 @@ define(function(require) {
 
       this.listenTo(this.model, 'change', this.renderForm);
       this.listenTo(this.themes, 'change', this.updateThemeSelect);
-      this.listenTo(this.presets, 'change', this.updatePresetSelect);
+      this.listenTo(this.presets, 'change, destroy', this.updatePresetSelect);
     },
 
     render: async function() {
