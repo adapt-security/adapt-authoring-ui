@@ -49,6 +49,11 @@ define(function(require){
       this.setViewToReady();
     },
 
+    remove: function() {
+      Origin.Notify.snackbar.close()
+      OriginView.prototype.remove.apply(this, arguments);
+    },
+
     fetch: async function() {
       try {
         this.contentPlugins.customQuery.includeUpdateInfo = true;
