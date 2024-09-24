@@ -18,14 +18,16 @@ define(function(require){
       var view = this;
       this.$el.addClass('paste-zone-component-' + this.model.get('_pasteZoneLayout'));
       this.$el.droppable({
-        accept: el =>  el.hasClass('component-draggable') && $(this).css('visibility') == 'visible',
+        accept: el =>  el.hasClass('component-draggable') && this.$el.css('visibility') == 'visible',
         hoverClass: 'paste-zone-droppable',
         drop: function (e, ui) {
+          var $component = $(ui.draggable);
+          var contentId = $component.attr('data-component-id');
           var isLeft = $(this).hasClass('paste-zone-component-left');
           var isRight = $(this).hasClass('paste-zone-component-right');
           $.ajax({
-            type: 'PUT',
-            url: `api/content/component/${$(ui.draggable).attr('data-component-id')}`,
+            type: 'PATCH',
+            url: `api/content/${contentId}`,
             data: {
               _layout: (!isLeft && !isRight) ? 'full' : (isLeft ? 'left' : 'right'),
               _parentId: view.model.get('_parentId')

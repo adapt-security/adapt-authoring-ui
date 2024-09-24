@@ -16,6 +16,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
     preRender: function() {
       this.$el.addClass('component-' + this.model.get('_layout'));
       this.listenTo(Origin, 'editorView:removeSubViews editorPageView:removePageSubViews', this.remove);
+      this.listenTo(Origin, 'editor:dataLoaded', () => Origin.trigger('editorView:renderPage'));
       this.on({
         'contextMenu:component:edit': this.loadComponentEdit,
         'contextMenu:component:copy': this.onCopy,
@@ -57,8 +58,8 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
           top: 22,
           left: 0
         },
-        appendTo:'.app-inner',
-        containment: '.app-inner',
+        appendTo:'.contentPane',
+        containment: '.contentPane',
         helper: function (e) {
           /** 
            * Store the offset to stop the page jumping during the start of drag
