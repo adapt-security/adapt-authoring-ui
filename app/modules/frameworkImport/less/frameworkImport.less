@@ -1,15 +1,17 @@
 @import 'colours';
 @import 'sharedStyles';
-@framework-import-red: #ff3343;
-@framework-import-amber: #ffa340;
-@framework-import-green: @secondary-color;
+
+@color-error: @alert-color;
+@color-warn: @warning-color;
+@color-info: @info-color;
+@color-success: @success-color;
 
 .frameworkImport {
   .summaryText {
     margin: 30px;
     padding: 15px;
-    background-color: @success-color;
-    &.error { background-color: @alert-color; }
+    background-color: @color-success;
+    &.error { background-color: @color-error; }
     color: white;
     font-size: 16px;
     font-weight: @font-weight-bold;
@@ -50,7 +52,11 @@
         .left { text-align: left; }
       }
 
-      tr.UPDATED { color: @success-color; }
+      tr.UPDATE_BLOCKED { color: @color-error; }
+      tr.INSTALLED { color: @color-info; }
+      tr.UPDATED { color: @color-success; }
+      tr.OLDER { color: @color-warn; }
+      tr.NO_CHANGE { color: rgba(0,0,0,0.7); }
     }
 
     .statusReport > div {
@@ -63,22 +69,31 @@
         font-size: 16px;
       }
       .messages {
-        padding: 10px 0;
-        > div {
-          padding: 5px 15px;
+        padding: 10px;
+        .message {
+          margin-bottom: 10px;
+          &:last-child {
+            margin-bottom: 0;
+          }
+          .code {
+            font-weight: bold;
+          }
+          .data .key {
+            font-weight: bold;
+          }
         }
       }
       &.error {
-        border-color: @alert-color;
-        h3 { background-color: @alert-color; }
+        border-color: @color-error;
+        h3 { background-color: @color-error; }
       }
       &.warn {
-        border-color: @warning-color;
-        h3 { background-color: @warning-color; }
+        border-color: @color-warn;
+        h3 { background-color: @color-warn; }
       }
       &.info {
-        border-color: @info-color;
-        h3 { background-color: @info-color; }
+        border-color: @color-info;
+        h3 { background-color: @color-info; }
       }
     }
   }

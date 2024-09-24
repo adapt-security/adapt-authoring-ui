@@ -42,15 +42,27 @@ define(function(require){
 
     checkCourse: async function() {
       if(!this.isValid()) return;
-      this.doImport(true)
-        .then(data => {
-          this.transformStatusData(data);
-          $('.actions button.check').addClass('display-none');
-          if(data.canImport) $('.actions button.import').removeClass('display-none');
-          this.$('#import_upload').addClass('display-none');
-          this.$el.append(Handlebars.templates.frameworkImportSummary(data));
-        })
-        .catch(this.onError)
+      try {
+        const data = await this.doImport(true);
+        $('button.frameworkimport.check').addClass('display-none');
+        if(data.canImport) $('button.frameworkimport.import').removeClass('display-none');
+        this.$('#import_upload').addClass('display-none');
+        this.$el.append(Handlebars.templates.frameworkImportSummary(this.transformStatusData(data)));
+      } catch(e) {
+        this.onError(e);
+      } finally {
+        Origin.trigger('sidebar:resetButtons');
+      }
+    },
+
+    transformStatusData: function(data) {
+      Object.values(data.statusReport).forEach(v => {
+        v.forEach(v2 => v2.codeKey = `app.import.status.${v2.code}`);
+      });
+      Object.values(data.versions).forEach(v => {
+        v.statusKey = `app.import.status.${v.status}`;
+      });
+      return data;
     },
 
     transformStatusData: function(data) {
@@ -75,7 +87,7 @@ define(function(require){
 
     doImport: async function(dryRun = false) {
       if(this.model.get('tags')) {
-        this.$('#tags').val(this.model.get('tags').map(t => t._id));
+        this.$('#tags').val(this.model.get('tags').map(t => t.title));
       }
       const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
       return Object.assign(data, { canImport: data.statusReport.error === undefined });
@@ -100,7 +112,7 @@ define(function(require){
     },
 
     onError: function(e) {
-      Origin.Notify.toast({ type: 'error', text: e.message })
+      Origin.Notify.alert({ type: 'error', text: e.message });
     }
   }, {
     template: 'frameworkImport'
