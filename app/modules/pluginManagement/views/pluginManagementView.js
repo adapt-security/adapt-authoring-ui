@@ -15,7 +15,7 @@ define(function(require){
     },
 
     initialize: function(options) {
-      this.contentPlugins = ApiCollection.ContentPlugins();
+      this.contentPlugins = ApiCollection.ContentPlugins({ queryOptions: { includeUpdateInfo: true } });
       this.contentPlugins.on('sync', this.renderPlugins, this);
       this.currentFilters = {};
 
