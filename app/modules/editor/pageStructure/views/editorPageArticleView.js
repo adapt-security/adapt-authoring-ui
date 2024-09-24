@@ -125,8 +125,8 @@ define(function(require){
           top: 22,
           left: 0
         },
-        appendTo:'.app-inner',
-        containment: '.app-inner',
+        appendTo:'.contentPane',
+        containment: '.contentPane',
         helper: function (e) {
           // Store the offset to stop the page jumping during the start of drag
           // because of the drop zones changing the scroll position on the page

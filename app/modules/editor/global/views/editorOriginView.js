@@ -66,8 +66,8 @@ define(function(require){
       }
     },
 
-    componentPasteLocation: function() {
-      if ($('.block-inner .add-control').length > 0) return;
+    componentPasteLocation: function(type) {
+      if ($('.block-inner .add-control').length > 0 || type !== 'component') return;
       Origin.Notify.toast({
         type: 'error',
         text: Origin.l10n.t('app.componentcopyerror')
@@ -80,7 +80,7 @@ define(function(require){
       $('.add-control').addClass('display-none');
       if(type) $('.paste-zone-' + (type === 'menu' ? 'page' : type)).removeClass('display-none').addClass('show');
       if(this.currentView === "page") {
-        this.componentPasteLocation();
+        this.componentPasteLocation(type);
       }
     },
 
