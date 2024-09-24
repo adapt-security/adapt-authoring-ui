@@ -223,13 +223,11 @@ define(function(require){
       event.stopPropagation();
     },
 
-    onCopy: function(e) {
-      e && e.preventDefault();
+    onCopy: function() {
       Origin.trigger('editorView:copy', this.model);
     },
 
-    onCopyID: function(e) {
-      e && e.preventDefault();
+    onCopyID: function() {
       Origin.trigger('editorView:copyID', this.model);
     },
 
