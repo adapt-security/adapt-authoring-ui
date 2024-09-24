@@ -72,7 +72,7 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
 
     logout: async function() {
       try {
-        await $.post('api/auth/disavow');
+        if(this.get('isAuthenticated')) await $.post('api/auth/disavow');
       } catch(e) {
         console.error(e);
       }
