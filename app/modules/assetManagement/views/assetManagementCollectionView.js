@@ -137,7 +137,7 @@ define(function(require){
       });
     },
 
-    resetCollection: function(cb, shouldFetch = true) {
+    resetCollection: function(cb, shouldFetch = true, selectedId) {
       // to remove old views
       Origin.trigger('assetManagement:assetViews:remove');
 
@@ -147,7 +147,13 @@ define(function(require){
       this.page = 0;
       this.assets.reset();
 
-      if(shouldFetch) this.fetchCollection(cb);
+      if(!shouldFetch) {
+        return;
+      }
+      this.fetchCollection(() => {
+        if(selectedId) Origin.trigger('assetManagement:assetItemView:preview', this.collection.findWhere({ _id: selectedId }));
+        if(cb) cb()
+      });
     },
 
     filter: function(filters) {
