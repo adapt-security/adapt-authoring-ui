@@ -46,7 +46,7 @@ define(['backbone'], function(Backbone) {
       return JSON.stringify(this);
     },
     pruneAttributes: function() {
-      if(this.attributelacklist) this.attributeBlacklist.forEach(this.unset);
+      if(this.attributeBlacklist) this.attributeBlacklist.forEach(this.unset, this);
     },
     onError: function(jqXhr, reject) {
       const Origin = require('core/origin');
