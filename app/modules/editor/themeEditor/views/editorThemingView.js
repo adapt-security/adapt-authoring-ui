@@ -92,8 +92,13 @@ define(function(require) {
     updateSelect: function({ className, items, value }) {
       var $select = this.$(`.${className} select`);
       $('option', $select).remove();
-      if(items.length) items.forEach(i => $select.append($(`<option>`, i)));
-      $select.attr({ disabled: !items.length, value });
+      if(items.length) {
+        items.forEach(i => {
+          if(i.value === value) i.selected = 'selected';
+          $select.append($(`<option>`, i));
+        });
+      }
+      $select.attr({ disabled: !items.length });
     },
 
     updateThemeSelect: function() {
@@ -125,7 +130,8 @@ define(function(require) {
 
     showPresetEdit: function(event) {
       event && event.preventDefault();
-      var presets = new Backbone.Collection(this.presets.where({ parentTheme: this.getSelectedTheme().get('theme') }));
+      var theme = this.$('.theme select').val();
+      var presets = new Backbone.Collection(this.presets.where({ parentTheme: theme }));
       var view = new PresetEditView({ model: new Backbone.Model({ presets }) });
       $('body').append(view.el);
     },
