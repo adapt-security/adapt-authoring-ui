@@ -29,7 +29,7 @@ define(function(require) {
     $el.attr({ class: data.type });
 
     $('.close', $el).toggle(data.persist);
-    if(!data.persist) setTimeout(closeSnack, data.timeout);
+    if(!data.persist) setTimeout(close, data.timeout);
 
     $el.removeClass('display-none').addClass('visible');
   };
