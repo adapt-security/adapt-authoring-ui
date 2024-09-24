@@ -106,10 +106,10 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
-      Object.assign(this.assets.options, {
+      Object.assign(this.assets.queryOptions, {
         skip: this.allAssets.length,
         limit: this.pageSize,
-        page: this.page++,
+        page: this.page+1,
         sort: this.sort
       });
       await this.tags.fetch();
