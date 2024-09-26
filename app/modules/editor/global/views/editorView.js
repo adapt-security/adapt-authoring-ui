@@ -65,7 +65,9 @@ define(function(require) {
     },
 
     buildProject: async function(type) {
-      if(this.isBuilding || !this.validateCourse()) {
+      const invalidType = type !== 'preview' && type !== 'publish' && type !== 'export';
+      
+      if(invalidType || this.isBuilding || !this.validateCourse()) {
         return;
       } 
       const isPreview = type === 'preview';
