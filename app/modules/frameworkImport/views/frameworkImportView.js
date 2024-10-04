@@ -91,7 +91,7 @@ define(function(require){
 
     doImport: async function(dryRun = false) {
       if(this.model.get('tags')) {
-        this.$('#tags').val(this.model.get('tags').map(t => t._id));
+        this.$('#tags').val(this.model.get('tags').map(t => t.title));
       }
       const data = await Helpers.submitForm(this.$('form.frameworkImport'), { data: { dryRun } })
       const canProceed = data.statusReport.error === undefined
