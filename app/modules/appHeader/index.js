@@ -1,5 +1,7 @@
 define(['core/origin', './views/appHeaderView'], function(Origin, AppHeaderView) {
   Origin.once('origin:dataReady', function() {
-    $('#app').before(new AppHeaderView({ model: Origin.sessionModel }).$el);
+    var view = new AppHeaderView({ model: Origin.sessionModel })
+    $('#app').before(view.$el);
+    $(Handlebars.templates.loadingSubtle()).insertAfter(view.$el)
   });
 });

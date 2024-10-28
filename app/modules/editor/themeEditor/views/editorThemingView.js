@@ -179,6 +179,7 @@ define(function(require) {
         return Origin.trigger('sidebar:resetButtons');
       }
       try {
+        Origin.trigger('origin:showLoadingSubtle');
         await this.postThemeData();
         await this.postPresetData();
         await this.postSettingsData();
@@ -189,6 +190,8 @@ define(function(require) {
       } catch(e) {
         this.onError(undefined, Origin.l10n.t('app.errorsave'));
         this.navigateBack();
+      } finally {
+        Origin.trigger('origin:hideLoadingSubtle');
       }
     },
 

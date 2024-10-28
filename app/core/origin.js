@@ -122,6 +122,8 @@ define([
 
     Origin.on('origin:hideLoading', hideLoading, Origin);
     Origin.on('origin:showLoading', showLoading, Origin);
+    Origin.on('origin:hideLoadingSubtle', hideLoadingSubtle, Origin);
+    Origin.on('origin:showLoadingSubtle', showLoadingSubtle, Origin);
   }
 
   // abstracted window events
@@ -137,6 +139,10 @@ define([
       .toggleClass('cover-top-bar', shouldHideTopBar);
   }
 
+  function showLoadingSubtle() {
+    $('#loading-subtle').removeClass('display-none')
+  }
+
   function hideLoading() {
     $loading.addClass('fade-out');
     _.delay(_.bind(function() {
@@ -144,6 +150,10 @@ define([
         .addClass('display-none')
         .removeClass('cover-top-bar');
     }, this), 300);
+  }
+
+  function hideLoadingSubtle() {
+    $('#loading-subtle').addClass('display-none')
   }
 
   // Calls all 'tapped' functions before continuing

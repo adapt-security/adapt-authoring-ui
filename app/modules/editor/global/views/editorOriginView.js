@@ -165,13 +165,12 @@ define(function(require){
     },
 
     deletePrompt: function() {
-      Origin.Notify.confirm({
+      Origin.Notify.alert({
         type: 'warning',
         text: Origin.l10n.t('app.confirmdelete', { type: this.model.get('_type') }),
-        callback: async ({ isConfirmed }) => {
-          if(!isConfirmed) {
-            return;
-          }
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
           try {
             await this.model.destroy(/* {silent: false} */) // uncomment to see toast error
           } catch (e) {

@@ -85,28 +85,31 @@ define(function(require) {
       var titleKey = isShared ? 'app.deletesharedproject' : 'app.deleteproject';
       var textKey = isShared ? 'app.confirmdeletesharedprojectwarning' : 'app.confirmdeleteprojectwarning';
 
-      Origin.Notify.confirm({
+      Origin.Notify.alert({
         type: 'warning',
         title: Origin.l10n.t(titleKey),
         html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t(textKey),
         destructive: isShared,
-        callback: this.deleteProjectConfirm.bind(this)
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        preConfirm: async () => await this.deleteProjectConfirm()
       });
     },
 
-    deleteProjectConfirm: function(data) {
-      if(!data.isConfirmed) {
-        return;
-      }
-      this.model.destroy({
-        success: function() {
-          Origin.trigger('dashboard:refresh');
-          this.remove();
-        }.bind(this),
-        error: function(model, response, options) {
-          _.delay(() => Origin.Notify.toast({ type: 'error', text: response.responseJSON.message }), 1000);
-        }
-      });
+    deleteProjectConfirm: function() {
+      return new Promise((resolve, reject) => {
+        this.model.destroy({
+          success: function() {
+            resolve();
+            Origin.trigger('dashboard:refresh');
+            this.remove();
+          }.bind(this),
+          error: function(model, response, options) {
+            reject();
+            _.delay(() => Origin.Notify.toast({ type: 'error', text: response.responseJSON.message }), 1000);
+          }
+        });
+      })
     },
 
     duplicateProject: async function() {

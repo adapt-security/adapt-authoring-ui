@@ -79,12 +79,14 @@ define(function(require){
       try {
         Object.assign(this.configs.queryOptions, { page: this.page, limit: this.pageSize });
         Object.assign(this.courses.queryOptions, { page: this.page, limit: this.pageSize });
+        Origin.trigger('origin:showLoadingSubtle');
         await Promise.all([
           this.tags.fetch(),
           this.users.fetch(),
           this.configs.fetch({ recursive: false, reset: true }),
         ]);
         await fetchCourses()
+        Origin.trigger('origin:hideLoadingSubtle');
       } catch(e) {
         Origin.Notify.toast({ type: 'error', text: e.responseJson.message });
       }

@@ -80,6 +80,7 @@ define(function(require) {
 
     addNewMenuItem: async function(event) {
       event && event.preventDefault();
+      Origin.trigger('origin:showLoadingSubtle');
       await $.ajax({ 
         url: `api/content/insertrecusive?rootId=${this._parentId}`, 
         method: 'post', 

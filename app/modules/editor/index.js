@@ -34,6 +34,17 @@ define([
 
         if (!courseId) return;
 
+        Origin.trigger('origin:showLoadingSubtle');
+
+        /* 
+        if route2 === 'menu' then set customQuery to be _type contentobject
+        
+        else set customQuery to be requested id and all descendants
+         - this will probably require content to interpret meta prop 'descendants'
+
+        in both cases the config must be loaded
+         */
+
         const langData = await $.get('api/content/language', {_courseId: courseId})
 
         this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
@@ -56,6 +67,7 @@ define([
           await this.components.fetch();
         }
         Origin.trigger('editorData:loaded');
+        Origin.trigger('origin:hideLoadingSubtle');
       },
       getParent(model) {
         return this.content.findWhere({ _id: typeof model === 'string' ? model : model.get('_parentId') });
