@@ -29,6 +29,63 @@ define([
         onRoute();
       },
 
+      store(content) {
+        content?.forEach(model => {
+          const old = this.content.findWhere({_id: model._id})
+          this.content.remove(old)
+          this.content.add(model)
+        })
+      },
+
+      async getPage(_friendlyId) {
+        const courseId = Origin.location.route1;
+        const model = this.content.findWhere({_friendlyId})
+        const lastUpdate = model?.get('_type') === 'page' ? model.get('_subtreeUpdateTime') : 0
+        try {
+          const content = await $.get('api/content/page', {
+            _courseId: courseId,
+            _friendlyId,
+            _lang: this._selectedLanguage,
+            _subtreeUpdateTime: lastUpdate
+          })
+          this.store(content)
+        } catch (e) {}
+      },
+
+      async getStructure() {
+        // if we have course then we have already loaded the structure
+        // any change to page/menu models will cause course timestamp to change
+        const courseId = Origin.location.route1;
+        const lastUpdate = this.course?.get('_subtreeUpdateTime')
+        const content = await $.get('api/content/structure', {
+          _courseId: courseId,
+          _lang: this._selectedLanguage,
+          _subtreeUpdateTime: lastUpdate
+        })
+
+        content?.forEach(model => {
+          const existing = this.content.findWhere({_id: model._id})
+
+          if (model._type === 'course' || model._type === 'config') {
+            this.content.remove(existing)
+            this.content.add(model)
+            return
+          }
+          if (!existing) {
+            // ensure content will be loaded when accessed
+            model._subtreeUpdateTime = 0
+            this.content.add(model)
+            return
+          }
+          if (model._subtreeUpdateTime > existing.get('_subtreeUpdateTime')) {
+            // ensure content will be loaded when accessed
+            model._subtreeUpdateTime = 0
+            this.content.remove(existing)
+            this.content.add(model)
+          }
+        })
+      },
+
       async load() {
         const courseId = Origin.location.route1;
 
@@ -36,32 +93,43 @@ define([
 
         Origin.trigger('origin:showLoadingSubtle');
 
-        /* 
-        if route2 === 'menu' then set customQuery to be _type contentobject
-        
-        else set customQuery to be requested id and all descendants
-         - this will probably require content to interpret meta prop 'descendants'
-
-        in both cases the config must be loaded
-         */
-
+        // it's possible another user added/removed a language so reload the data
+        // TODO: if there is already _selectedLanguage ask for lang data via getStructure?
         const langData = await $.get('api/content/language', {_courseId: courseId})
 
         this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
         this._defaultLanguage = langData.defaultLanguage;
-        
+
         if (this.course?.get('_courseId') === courseId) {
           this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
+          // if the user has changed language then clear the content
+          if (this.course?.get('_lang') !== this._selectedLanguage) {
+            this.content.reset()
+          }
         } else {
           // if a different course has been opened use its default language
           this._selectedLanguage = this._defaultLanguage;
+          this.content.reset()
         }
-        this.content.customQuery.$or = [
-          {_courseId: courseId, _lang:this._selectedLanguage},
-          {_courseId: courseId, _type:'config'}
-        ];
 
-        await this.content.fetch();
+        const route = Origin.location.route2
+        const specialRoutes = [
+          'config',
+          'extensions',
+          'languages',
+          'menusettings',
+          'selecttheme',
+          'settings'
+        ]
+
+        if (route === 'menu' || specialRoutes.includes(route)) {
+          await this.getStructure()
+        } else {
+          await this.getStructure()
+          await this.getPage(Origin.location.route2)
+        }
+
+
         var eventData = Helpers.parseLocationData();
         if(eventData.type === 'page') {
           await this.components.fetch();
