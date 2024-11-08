@@ -42,13 +42,13 @@ define([
         const model = this.content.findWhere({_friendlyId})
         const lastUpdate = model?.get('_type') === 'page' ? model.get('_subtreeUpdateTime') : 0
         try {
-          const content = await $.get('api/content/page', {
+          /* const content =  */return $.get('api/content/page', {
             _courseId: courseId,
             _friendlyId,
             _lang: this._selectedLanguage,
             _subtreeUpdateTime: lastUpdate
           })
-          this.store(content)
+          //this.store(content)
         } catch (e) {}
       },
 
@@ -56,14 +56,32 @@ define([
         // if we have course then we have already loaded the structure
         // any change to page/menu models will cause course timestamp to change
         const courseId = Origin.location.route1;
+
+        if (this.course?.get('_courseId') === courseId) {
+          this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
+          // if the user has changed language then clear the content
+          if (this.course?.get('_lang') !== this._selectedLanguage) {
+            this.content.reset()
+          }
+        } else {
+          // if a different course has been opened use its default language
+          //this._selectedLanguage = this._defaultLanguage;
+          this.content.reset()
+        }
+
         const lastUpdate = this.course?.get('_subtreeUpdateTime')
-        const content = await $.get('api/content/structure', {
+        const { structure, langInfo } = await $.get('api/content/structure', {
           _courseId: courseId,
           _lang: this._selectedLanguage,
           _subtreeUpdateTime: lastUpdate
         })
 
-        content?.forEach(model => {
+        this._languages = langInfo.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
+        this._defaultLanguage = langInfo.defaultLanguage;
+
+        this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
+       
+        structure?.forEach(model => {
           const existing = this.content.findWhere({_id: model._id})
 
           if (model._type === 'course' || model._type === 'config') {
@@ -86,6 +104,11 @@ define([
         })
       },
 
+      async getStructureAndPage(_friendlyId) {
+        const [_, page] = await Promise.all([this.getStructure(), this.getPage(_friendlyId)])
+        this.store(page)
+      },
+
       async load() {
         const courseId = Origin.location.route1;
 
@@ -95,7 +118,7 @@ define([
 
         // it's possible another user added/removed a language so reload the data
         // TODO: if there is already _selectedLanguage ask for lang data via getStructure?
-        const langData = await $.get('api/content/language', {_courseId: courseId})
+        /* const langData = await $.get('api/content/language', {_courseId: courseId})
 
         this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
         this._defaultLanguage = langData.defaultLanguage;
@@ -110,7 +133,7 @@ define([
           // if a different course has been opened use its default language
           this._selectedLanguage = this._defaultLanguage;
           this.content.reset()
-        }
+        } */
 
         const route = Origin.location.route2
         const specialRoutes = [
@@ -125,8 +148,9 @@ define([
         if (route === 'menu' || specialRoutes.includes(route)) {
           await this.getStructure()
         } else {
-          await this.getStructure()
-          await this.getPage(Origin.location.route2)
+          /* await this.getStructure()
+          await this.getPage(Origin.location.route2) */
+          await this.getStructureAndPage(Origin.location.route2)
         }
 
 
