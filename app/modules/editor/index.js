@@ -129,7 +129,9 @@ define([
           'settings'
         ]
 
-        if (route === 'menu' || specialRoutes.includes(route)) {
+        const isMenu = route === 'menu' || !!this.content.findWhere({_friendlyId: route, _type:'menu'})
+
+        if (isMenu || specialRoutes.includes(route)) {
           await this.getStructure()
         } else {
           await this.getStructureAndPage(Origin.location.route2)
