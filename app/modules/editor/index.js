@@ -70,11 +70,13 @@ define([
         }
 
         const lastUpdate = this.course?.get('_subtreeUpdateTime')
-        const { structure, langInfo } = await $.get('api/content/structure', {
+        const { structure, langInfo, components } = await $.get('api/content/structure', {
           _courseId: courseId,
           _lang: this._selectedLanguage,
           _subtreeUpdateTime: lastUpdate
         })
+
+        this.components.reset(components)
 
         this._languages = langInfo.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
         this._defaultLanguage = langInfo.defaultLanguage;
@@ -116,27 +118,9 @@ define([
 
         Origin.trigger('origin:showLoadingSubtle');
 
-        // it's possible another user added/removed a language so reload the data
-        // TODO: if there is already _selectedLanguage ask for lang data via getStructure?
-        /* const langData = await $.get('api/content/language', {_courseId: courseId})
-
-        this._languages = langData.languages?.sort((a, b) => a.localeCompare(b, 'en', {'sensitivity': 'base'}));
-        this._defaultLanguage = langData.defaultLanguage;
-
-        if (this.course?.get('_courseId') === courseId) {
-          this._selectedLanguage = this._selectedLanguage || this._defaultLanguage
-          // if the user has changed language then clear the content
-          if (this.course?.get('_lang') !== this._selectedLanguage) {
-            this.content.reset()
-          }
-        } else {
-          // if a different course has been opened use its default language
-          this._selectedLanguage = this._defaultLanguage;
-          this.content.reset()
-        } */
-
         const route = Origin.location.route2
         const specialRoutes = [
+          'component',
           'config',
           'extensions',
           'languages',
@@ -148,16 +132,9 @@ define([
         if (route === 'menu' || specialRoutes.includes(route)) {
           await this.getStructure()
         } else {
-          /* await this.getStructure()
-          await this.getPage(Origin.location.route2) */
           await this.getStructureAndPage(Origin.location.route2)
         }
 
-
-        var eventData = Helpers.parseLocationData();
-        if(eventData.type === 'page') {
-          await this.components.fetch();
-        }
         Origin.trigger('editorData:loaded');
         Origin.trigger('origin:hideLoadingSubtle');
       },
