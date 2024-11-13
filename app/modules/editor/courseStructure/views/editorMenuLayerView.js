@@ -132,6 +132,7 @@ define(function(require) {
     },
 
     onMenuItemDblclicked: function({ model }) {
+      var type = model.get('_type');
       var route = `editor/${Origin.editor.data.course.get('_courseId')}/${this.getRouteIdentifier(model)}`;
       if (type === 'menu') route += '/edit';
       Origin.router.navigateTo(route);

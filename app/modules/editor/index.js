@@ -41,29 +41,26 @@ define([
         const courseId = Origin.location.route1;
         const model = this.content.findWhere({_friendlyId})
 
-        let page
+        let lastUpdate = model?.get('_type') === 'page' ? model.get('_subtreeUpdateTime') : 0
 
-        // try and locate the page 
-        if (model && model.get('_type') !== 'page') {
-          model.get('_ancestors')?.some(ancestorId => {
-            const ancestor = this.content.findWhere({_friendlyId: ancestorId})
+        // we only need to download the page if there is an update
+        if (model && model.get('_type') !== 'page' && model.has('_ancestors')) {
+          const ancestors = model.get('_ancestors')
+          for (let i = 0; i < ancestors.length; i++) {
+            const ancestor = this.content.findWhere({_friendlyId: ancestors[i]})
             if (ancestor?.get('_type') === 'page') {
-              page = ancestor
-              return true
+              lastUpdate = ancestor.get('_subtreeUpdateTime')
+              break;
             }
-          })
+          }
         }
 
-        const lastUpdate = page ? page.get('_subtreeUpdateTime') : 0
-
-        try {
-          return $.get('api/content/page', {
-            _courseId: courseId,
-            _friendlyId,
-            _lang: this._selectedLanguage,
-            _subtreeUpdateTime: lastUpdate
-          })
-        } catch (e) {}
+        return $.get('api/content/page', {
+          _courseId: courseId,
+          _friendlyId,
+          _lang: this._selectedLanguage,
+          _subtreeUpdateTime: lastUpdate
+        })
       },
 
       async getStructure() {
