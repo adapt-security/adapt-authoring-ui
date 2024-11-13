@@ -134,25 +134,8 @@ define([
 
         Origin.trigger('origin:showLoadingSubtle');
 
-        const route = Origin.location.route2
-        const specialRoutes = [
-          'component',
-          'config',
-          'extensions',
-          'languages',
-          'menusettings',
-          'selecttheme',
-          'settings'
-        ]
-
-        // TODO: fix: if using direct URL this will break
-        //const isMenu = route === 'menu' || !!this.content.findWhere({_friendlyId: route, _type:'menu'})
-
-        /* if (isMenu || specialRoutes.includes(route)) {
-          await this.getStructure()
-        } else { */
-          await this.getStructureAndPage(Origin.location.route2)
-        /* } */
+        // TODO: combine the two http requests into one?
+        await this.getStructureAndPage(Origin.location.route2)
 
         Origin.trigger('editorData:loaded');
         Origin.trigger('origin:hideLoadingSubtle');
