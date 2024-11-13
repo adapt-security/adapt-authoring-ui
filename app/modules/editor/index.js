@@ -107,8 +107,21 @@ define([
       },
 
       async getStructureAndPage(_friendlyId) {
-        const [_, page] = await Promise.all([this.getStructure(), this.getPage(_friendlyId)])
-        this.store(page)
+        const [_, pageData] = await Promise.all([this.getStructure(), this.getPage(_friendlyId)])
+
+        if (!pageData.length) return
+        
+        const { _friendlyId: pageId } = pageData.find(item => item._type === 'page')
+
+        const existingPage = this.content.filter(model => {
+          return (
+            model.get('_friendlyId') === pageId ||
+            model.get('_ancestors')?.includes(pageId)
+          )
+        })
+
+        this.content.remove(existingPage)
+        this.content.add(pageData)
       },
 
       async load() {
@@ -129,13 +142,14 @@ define([
           'settings'
         ]
 
-        const isMenu = route === 'menu' || !!this.content.findWhere({_friendlyId: route, _type:'menu'})
+        // TODO: fix: if using direct URL this will break
+        //const isMenu = route === 'menu' || !!this.content.findWhere({_friendlyId: route, _type:'menu'})
 
-        if (isMenu || specialRoutes.includes(route)) {
+        /* if (isMenu || specialRoutes.includes(route)) {
           await this.getStructure()
-        } else {
+        } else { */
           await this.getStructureAndPage(Origin.location.route2)
-        }
+        /* } */
 
         Origin.trigger('editorData:loaded');
         Origin.trigger('origin:hideLoadingSubtle');
