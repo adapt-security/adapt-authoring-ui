@@ -40,15 +40,29 @@ define([
       async getPage(_friendlyId) {
         const courseId = Origin.location.route1;
         const model = this.content.findWhere({_friendlyId})
-        const lastUpdate = model?.get('_type') === 'page' ? model.get('_subtreeUpdateTime') : 0
+
+        let page
+
+        // try and locate the page 
+        if (model && model.get('_type') !== 'page') {
+          model.get('_ancestors')?.some(ancestorId => {
+            const ancestor = this.content.findWhere({_friendlyId: ancestorId})
+            if (ancestor?.get('_type') === 'page') {
+              page = ancestor
+              return true
+            }
+          })
+        }
+
+        const lastUpdate = page ? page.get('_subtreeUpdateTime') : 0
+
         try {
-          /* const content =  */return $.get('api/content/page', {
+          return $.get('api/content/page', {
             _courseId: courseId,
             _friendlyId,
             _lang: this._selectedLanguage,
             _subtreeUpdateTime: lastUpdate
           })
-          //this.store(content)
         } catch (e) {}
       },
 
