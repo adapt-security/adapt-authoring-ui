@@ -29,14 +29,6 @@ define([
         onRoute();
       },
 
-      store(content) {
-        content?.forEach(model => {
-          const old = this.content.findWhere({_id: model._id})
-          this.content.remove(old)
-          this.content.add(model)
-        })
-      },
-
       async getPage(_friendlyId) {
         const courseId = Origin.location.route1;
         const model = this.content.findWhere({_friendlyId})
