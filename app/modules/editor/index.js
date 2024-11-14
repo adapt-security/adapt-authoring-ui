@@ -67,8 +67,7 @@ define([
             this.content.reset()
           }
         } else {
-          // if a different course has been opened use its default language
-          //this._selectedLanguage = this._defaultLanguage;
+          delete this._selectedLanguage
           this.content.reset()
         }
 
