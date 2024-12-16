@@ -42,6 +42,11 @@ define(function(require) {
     var isEditor = action === 'edit';
     var crumbs = [];
 
+    crumbs.push({
+      title: Origin.l10n.t('app.projects'),
+      url: `#/`
+    });
+
     if (!isMenu || isEditor) {
       crumbs.push('course');
     }
@@ -72,7 +77,7 @@ define(function(require) {
 
   function getLangKey() {
     return {
-      settings: 'app.editorcourse',
+      course: 'app.editorcourse',
       config: 'app.editorconfig',
       pageedit: 'app.editorpagesettings',
       page: 'app.editorpage',
@@ -88,14 +93,14 @@ define(function(require) {
   function getNearestPage(model, cb) {
     do {
       switch(model.get('_type')) {
-        case 'course': 
-        case 'config': 
-        case undefined: 
+        case 'course':
+        case 'config':
+        case undefined:
           return;
-        case 'page': 
-        case 'menu': 
+        case 'page':
+        case 'menu':
           return model;
-        default: 
+        default:
           model = model.getParent();
       }
     } while(model);

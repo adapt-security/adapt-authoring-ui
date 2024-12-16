@@ -2,6 +2,7 @@
 define(function(require){
   var EditorOriginView = require('../../global/views/editorOriginView');
   var EditorMenuLayerView = require('./editorMenuLayerView');
+  var EditorHelpers = require('modules/editor/global/helpers');
   var Origin = require('core/origin');
 
   var EditorMenuView = EditorOriginView.extend({
@@ -9,10 +10,7 @@ define(function(require){
     tagName: "div",
 
     preRender: function() {
-      Origin.contentHeader.setTitle({
-        breadcrumbs: ['course', { title: Origin.l10n.t('app.editormenu') }],
-        title: Origin.l10n.t('app.coursestructuretitle')
-      });
+      EditorHelpers.setPageTitle(this.model);
       this.layerViews = [];
       this.listenTo(Origin, {
         'editorData:loaded': this.render,
@@ -47,7 +45,7 @@ define(function(require){
     },
 
     updateItemViews: function(previousParent, model) {
-      // since we remove the childViews when the layerView is destroyed 
+      // since we remove the childViews when the layerView is destroyed
       // we must move menuItemView to its new layerView
       var index = -1;
       for (var i = 0; i < this.layerViews[previousParent].childViews.length; i++) {
