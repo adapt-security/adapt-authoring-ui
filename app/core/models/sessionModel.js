@@ -10,7 +10,8 @@ define(['require', 'core/models/apiModel'], function(require, ApiModel) {
       this.on('sync error', (model, jqXhr) => this.updateAuthStatus(jqXhr.hasOwnProperty('status') ? jqXhr : undefined));
       Origin.on('window:active', this.checkAuthStatus, this);
 
-      this.checkAuthStatus();
+      //this.checkAuthStatus();
+      this.fetch({ silent: false })
     },
 
     hasScopes: function(scopes) {
