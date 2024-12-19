@@ -13,16 +13,15 @@ define(function(require) {
     Origin.router.navigateTo('user/profile');
   });
 
-  Origin.on('router:user', async function(location, subLocation, action) {
+  Origin.on('router:user', async function(location, subLocation, action, _, query) {
     var currentView;
     var model = Origin.sessionModel;
     var settings = {};
-    var query = {};
 
     if(location.indexOf('reset') === 0) { // hack fix this
       $('body').removeClass(`location-${location}`);
       try {
-        query = parseQueryString(location);
+        query = parseQueryString(query);
       } catch(e) {}
       location = 'reset';
       $('body').addClass(`location-${location}`);
@@ -51,7 +50,8 @@ define(function(require) {
 
   function parseQueryString(queryString) {
     try {
-      return queryString.split('?')[1].split('&').reduce((m,s) => {
+      if (queryString[0] === '?') queryString = queryString.slice(1)
+      return queryString.split('&').reduce((m,s) => {
         const [k,v] = s.split('=');
         return Object.assign(m, { [k]: v });
       }, {});

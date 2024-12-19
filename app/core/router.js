@@ -121,15 +121,15 @@ define(['underscore', 'backbone'], function(_, Backbone) {
       Origin.sessionModel.get('isAuthenticated') ? this.navigateToDashboard() : this.navigateToLogin();
     },
 
-    handleRoute: function(module, route1, route2, route3, route4) {
+    handleRoute: function(module, route1, route2, route3, route4, query) {
       Origin.trigger('origin:hideLoadingSubtle');
       Origin.removeViews();
       if(!this.verifyRoute(module, route1)) {
         return;
       }
       this.updateLocation(arguments);
-      Origin.trigger('router', module, route1, route2, route3, route4);
-      Origin.trigger('router:' + module, route1, route2, route3, route4);
+      Origin.trigger('router', module, route1, route2, route3, route4, query);
+      Origin.trigger('router:' + module, route1, route2, route3, route4, query);
     }
   });
 
