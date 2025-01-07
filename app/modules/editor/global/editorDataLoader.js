@@ -71,12 +71,14 @@ define(function(require) {
   async function isOutdated() {
     try {
       if(Origin.editor.data.course.get('_id') !== Origin.location.route1) {
+        Origin.editor.data.lastFetch = 0
         return true;
       }
     } catch(e) {
+      Origin.editor.data.lastFetch = 0
       return true;
     }
-    const [latestDoc] = await $.get('/api/content?sort={%22updatedAt%22:-1}&limit=1');
+    const [latestDoc] = await $.post('/api/content/query?sort={%22updatedAt%22:-1}&limit=1', {_courseId:Origin.editor.data.course.get('_id')});
     return !latestDoc || new Date(Origin.editor.data.lastFetch) < new Date(latestDoc.updatedAt);
   }
 
