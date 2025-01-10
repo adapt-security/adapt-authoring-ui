@@ -51,7 +51,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
     // Checks user permissions for route
     verifyRoute: function(mod, route1) {
       // Authentication error
-      if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login')) {
+      if(!Origin.sessionModel.get('isAuthenticated') && (mod !== 'user' && route1 !== 'login' && route1 !== 'authenticate')) {
         return this.blockUserAccess(Origin.sessionModel.get('error'), true);
       }
       // Check this user has permissions
@@ -104,7 +104,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     navigateToLogin: function() {
       // use Origin.router.navigate in case we don't have a valid 'this' reference
-      this.navigateTo('user/login');
+      this.navigateTo('user/authenticate');
     },
 
     navigateToDashboard: function() {

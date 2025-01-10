@@ -2,6 +2,7 @@
 define(function(require) {
   var ForgotPasswordView = require('./views/forgotPasswordView');
   var LoginView = require('./views/loginView');
+  var AuthView = require('./views/authView');
   var Origin = require('core/origin');
   var ResetPasswordView = require('./views/resetPasswordView');
   var UserProfileModel = require('./models/userProfileModel');
@@ -33,6 +34,11 @@ define(function(require) {
     settings.authenticate = false;
 
     switch(location) {
+      case 'authenticate':
+        if(model.get('isAuthenticated')) return Origin.router.navigateToDashboard();
+        Origin.trigger('contentHeader:hide');
+        currentView = AuthView;
+        break;
       case 'login':
         if(model.get('isAuthenticated')) return Origin.router.navigateToDashboard();
         Origin.trigger('contentHeader:hide');
