@@ -90,37 +90,11 @@ define(function(require){
       } catch(e) {
         console.error(e);
       }
-      this.checkForFrameworkUpdate();
     },
 
     remove: function() {
       Origin.Notify.snackbar.close()
       OriginView.prototype.remove.apply(this, arguments);
-    },
-
-    checkForFrameworkUpdate: async function() {
-      const enableUpdateApi = Origin.constants['adapt-authoring-adaptframework.enableUpdateApi'];
-      const hasPermission = Origin.sessionModel.hasScopes(['update:adapt']);
-      if(!enableUpdateApi || !hasPermission) {
-        return
-      }
-      const {
-        canBeUpdated,
-        latestCompatibleVersion
-      } = await $.get('/api/adapt/update');
-      if(!canBeUpdated) {
-        return;
-      }
-      Origin.Notify.snackbar({
-        type: 'info',
-        text: Origin.l10n.t('app.frameworkupdateavailable', { version: latestCompatibleVersion }),
-        buttonText: 'Click to update',
-        callback: () => {
-          $.post('/api/adapt/update')
-            .done(data => Origin.Notify.alert({ type: 'success', text: Origin.l10n.t('app.frameworkupdatesuccess', data) }))
-            .fail(e => Origin.Notify.alert({ type: 'success', text: e.responseJSON.message }));
-        }
-       });
     }
   }, {
     template: 'pluginManagement'
