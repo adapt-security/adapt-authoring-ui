@@ -37,22 +37,28 @@ define(function(require){
 
       Origin.Notify.alert({
         title: 'Change password',
-        html: `
+        html: `<div style="overflow-x:hidden">
           Enter your current password
           <input id="old_pass" class="swal2-input" type="password"><br/><br/>
           Choose a new password
           <input id="new_pass" class="swal2-input" type="password"><br/><br/>
           Confirm new password
           <input id="new_pass_confirm" class="swal2-input" type="password">
-        `,
+        </div>`,
         showCancelButton: true,
         preConfirm: async () => {
           const oldPassword = $('#old_pass').val();
           const password = $('#new_pass').val();
           const passwordConfirm = $('#new_pass_confirm').val();
           try {
-            if(password !== passwordConfirm) throw new Error('passwords must match!');
-            if(password.length === 0) return false;
+            let errors = [];
+            if(!oldPassword.length) errors.push('Missing current password value');
+            if(!password.length) errors.push('Missing new password value');
+            if(!passwordConfirm.length) errors.push('Missing confirmation password value');
+            if(password !== passwordConfirm) errors.push('Passwords must match!');
+
+            if(errors.length) throw new Error(errors.join(', '));
+
             await $.post('api/auth/local/validatepass', { password });
             await $.post('api/auth/local/changepass', { oldPassword, password });
             Origin.sessionModel.checkAuthStatus()
