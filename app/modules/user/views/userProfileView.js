@@ -52,8 +52,6 @@ define(function(require){
             if(password.length === 0) return false;
             await $.post('api/auth/local/validatepass', { password });
             await $.post('api/auth/local/changepass', { password });
-            await Origin.sessionModel.logout();
-
           } catch(e) {
             Origin.Notify.Swal.showValidationMessage(e.responseJSON?.message ?? e.message);
             return false;
