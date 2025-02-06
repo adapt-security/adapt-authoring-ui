@@ -38,20 +38,25 @@ define(function(require){
       Origin.Notify.alert({
         title: 'Change password',
         html: `
-          Please enter a new password
-          <input id="password1" class="swal2-input" type="password"><br/><br/>
-          Confirm password
-          <input id="password2" class="swal2-input" type="password">
+          Enter your current password
+          <input id="old_pass" class="swal2-input" type="password"><br/><br/>
+          Choose a new password
+          <input id="new_pass" class="swal2-input" type="password"><br/><br/>
+          Confirm new password
+          <input id="new_pass_confirm" class="swal2-input" type="password">
         `,
         showCancelButton: true,
         preConfirm: async () => {
-          const password = $('#password1').val();
-          const passwordConfirm = $('#password2').val();
+          const oldPassword = $('#old_pass').val();
+          const password = $('#new_pass').val();
+          const passwordConfirm = $('#new_pass_confirm').val();
           try {
             if(password !== passwordConfirm) throw new Error('passwords must match!');
             if(password.length === 0) return false;
             await $.post('api/auth/local/validatepass', { password });
-            await $.post('api/auth/local/changepass', { password });
+            await $.post('api/auth/local/changepass', { oldPassword, password });
+            Origin.sessionModel.checkAuthStatus()
+
           } catch(e) {
             Origin.Notify.Swal.showValidationMessage(e.responseJSON?.message ?? e.message);
             return false;
