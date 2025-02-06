@@ -9,17 +9,12 @@ define(function(require){
     className: 'user-profile',
 
     events: {
-      'click a.change-password' : 'togglePassword',
-      'keyup #password'         : 'onPasswordKeyup',
-      'click .toggle-password'  : 'togglePasswordView'
+      'click a.change-password' : 'changePassword'
     },
 
     preRender: function() {
       this.listenTo(Origin, 'userProfileSidebar:views:save', this.saveUser);
       this.listenTo(this.model, 'invalid', this.handleValidationError);
-      this.listenTo(this.model, 'change:_isNewPassword', this.togglePasswordUI);
-
-      this.model.set('_isNewPassword', false);
     },
 
     postRender: function() {
@@ -37,53 +32,34 @@ define(function(require){
       }
     },
 
-    togglePassword: function(event) {
-      event && event.preventDefault();
-      // convert to bool and invert
-      this.model.set('_isNewPassword', !!!this.model.get('_isNewPassword'));
-    },
+    changePassword: function(event) {
+      event.preventDefault();
 
-    togglePasswordUI: function(model, showPaswordUI) {
-      var formSelector = 'div.change-password-section .form-group .inner';
-      var buttonSelector = '.change-password';
+      Origin.Notify.alert({
+        title: 'Change password',
+        html: `
+          Please enter a new password
+          <input id="password1" class="swal2-input" type="password"><br/><br/>
+          Confirm password
+          <input id="password2" class="swal2-input" type="password">
+        `,
+        showCancelButton: true,
+        preConfirm: async () => {
+          const password = $('#password1').val();
+          const passwordConfirm = $('#password2').val();
+          try {
+            if(password !== passwordConfirm) throw new Error('passwords must match!');
+            if(password.length === 0) return false;
+            await $.post('api/auth/local/validatepass', { password });
+            await $.post('api/auth/local/changepass', { password });
+            await Origin.sessionModel.logout();
 
-      if (showPaswordUI) {
-        this.$(formSelector).removeClass('display-none');
-        this.$(buttonSelector).text(Origin.l10n.t('app.cancel'));
-      } else {
-        this.$(buttonSelector).text(Origin.l10n.t('app.changepassword'));
-        this.$(formSelector).addClass('display-none');
-
-        this.$('#password').val('').removeClass('display-none');
-        this.$('#passwordText').val('').addClass('display-none');
-        this.$('.toggle-password i').addClass('fa-eye').removeClass('fa-eye-slash');
-
-        this.$('.toggle-password').addClass('display-none');
-        this.$('#passwordError').html('');
-
-        this.model.set('password', '');
-      }
-    },
-
-    togglePasswordView: function(event) {
-      event && event.preventDefault();
-      const isHidden = this.$('#password').attr('type') === 'password';
-      this.$('#password').attr('type', isHidden ? 'text' : 'password');
-      this.$('.toggle-password i').toggleClass('fa-eye').toggleClass('fa-eye-slash');
-    },
-
-    indicatePasswordStrength: async function(password) {
-      if(!password.length) {
-        return this.$('#passwordFeedback').addClass('display-none');
-      }
-      let successMsg, errorMsg;
-      try {
-        successMsg = (await $.post('api/auth/local/validatepass', { password })).message;
-      } catch(e) { // format the API error message to look a bit nicer in the UI
-        const [message, errors] = e.responseJSON.message.split('. ');
-        errorMsg = `${message}:<ul>${errors.split(', ').map(e => `<li>${e}</li>`).join('')}</ul>`;
-      }
-      $('#passwordFeedback').removeClass().addClass(errorMsg ? 'error' : 'success').html(errorMsg || successMsg);
+          } catch(e) {
+            Origin.Notify.Swal.showValidationMessage(e.responseJSON?.message ?? e.message);
+            return false;
+          }
+        }
+      });
     },
 
     saveUser: function() {
@@ -104,20 +80,8 @@ define(function(require){
       this.model.save(toChange, {
         wait: true,
         patch: true,
-        success: async () => {
-          if (!this.model.get('_isNewPassword')) {
-            return Backbone.history.history.back();
-          }
-          try {
-            await $.post('api/auth/local/changepass', { password: this.$('#password').val() });
-            Origin.sessionModel.logout(); 
-          } catch(e) {
-            this.handleError(e);  
-          }
-        },
-        error: function(data, error) {
-          this.handleError(error);
-        }
+        success: () => Backbone.history.history.back(),
+        error: (data, error) => this.handleError(error)
       });
     },
 
@@ -125,14 +89,6 @@ define(function(require){
       Origin.trigger('sidebar:resetButtons');
       const text = error.responseJSON && error.responseJSON.message || Origin.l10n.t('app.errorgeneric');
       Origin.Notify.alert({ type: 'error', text });
-    },
-
-    onPasswordKeyup: function() {
-      const password = this.$('#password').val();
-      this.$('.toggle-password').toggleClass('display-none', !password.length);
-      // only check password at set intervals to reduce API calls
-      clearTimeout(this.updatePasswordTimeout);
-      this.updatePasswordTimeout = setTimeout(async () => await this.indicatePasswordStrength(password), 500);
     }
   }, {
     template: 'userProfile'
