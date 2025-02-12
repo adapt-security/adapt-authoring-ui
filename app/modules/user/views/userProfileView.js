@@ -64,7 +64,7 @@ define(function(require){
             Origin.sessionModel.checkAuthStatus()
 
           } catch(e) {
-            Origin.Notify.Swal.showValidationMessage(e.responseJSON?.message ?? e.message);
+            Origin.Notify.Swal.showValidationMessage((e.responseJSON && e.responseJSON.message) || e.message);
             return false;
           }
         }
