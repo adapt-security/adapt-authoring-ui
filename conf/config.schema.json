@@ -13,6 +13,16 @@
     	"type": "string",
       "isDirectory": true,
       "default": "$TEMP/ui-src"
+    },
+    "appConfig": {
+      "type": "object",
+      "properties": {
+        "shouldShowAuthMenu": {
+          "description": "Whether to show the authentication type menu",
+          "type": "boolean",
+          "default": false
+        }
+      }
     }
   }
 }

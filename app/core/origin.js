@@ -36,6 +36,7 @@ define([
      */
     loadUtilities: _.once(async function(callback) {
       try {
+        this.appConfig = await $.getJSON('config.json');
         /**
          * Reference to the constant attributes
          * @member Origin#constants
