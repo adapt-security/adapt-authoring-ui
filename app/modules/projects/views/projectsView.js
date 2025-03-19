@@ -16,7 +16,7 @@ define(function(require){
     preRender: function(options) {
       OriginView.prototype.preRender.apply(this, arguments);
       this.page = 1;
-      this.pageSize = 25;
+      this.pageSize = 250;
       this.configs = new ContentCollection(undefined, { _type: 'config' });
       this.courses = new ContentCollection(undefined, { _type: 'course' });
       this.users = ApiCollection.Users();
