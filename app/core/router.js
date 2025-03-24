@@ -104,7 +104,7 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
     navigateToLogin: function() {
       // use Origin.router.navigate in case we don't have a valid 'this' reference
-      if (Origin.appConfig.shouldShowAuthMenu) {
+      if (Origin.constants['adapt-authoring-ui.shouldShowAuthMenu'] === true) {
         this.navigateTo('user/authenticate');
       } else {
         Origin.trigger('router:handleLogin')
