@@ -125,7 +125,7 @@ define([
           })
         }
       });
-      Origin.on('modal:actions', action => {
+      Origin.once('modal:actions', action => {
         if(action !== 'upload') Origin.modal.close();
         const selected = Origin.modal.view.collectionView.getSelected();
         if(action === 'cancel' || !selected) {
