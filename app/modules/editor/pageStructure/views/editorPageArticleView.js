@@ -117,7 +117,7 @@ define(function(require){
     loadArticleEdit: function (event) {
       var courseId = Origin.editor.data.course.get('_courseId');
       var routeId = this.getRouteIdentifier();
-      Origin.router.navigateTo(`editor/${courseId}/${routeId}/edit`);
+      Origin.router.navigateTo(`editor/${courseId}/${encodeURIComponent(routeId)}/edit`);
     },
 
     setupDragDrop: function() {

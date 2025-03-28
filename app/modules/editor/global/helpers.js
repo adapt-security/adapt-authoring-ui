@@ -75,6 +75,8 @@ define(function(require) {
           }
         }
       }
+
+      data.id = decodeURIComponent(data.id)
   
       return data;
     }
@@ -115,7 +117,7 @@ define(function(require) {
     if (!isMenu && isEditor) {
       crumbs.push({
         title: Origin.l10n.t('app.editorpage'),
-        url: `#/editor/${data.page.get('_courseId')}/${getRouteIdentifier(data.page)}`
+        url: `#/editor/${data.page.get('_courseId')}/${encodeURIComponent(getRouteIdentifier(data.page))}`
       });
     }
     crumbs.push({ title: data.langString });

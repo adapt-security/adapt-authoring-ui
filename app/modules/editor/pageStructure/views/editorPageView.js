@@ -122,7 +122,7 @@ define(function(require){
     },
 
     loadPageEdit: function() {
-      Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/${this.getRouteIdentifier()}/edit`);
+      Origin.router.navigateTo(`editor/${this.model.get('_courseId')}/${encodeURIComponent(this.getRouteIdentifier())}/edit`);
     },
 
     getContextMenuType(e) {
