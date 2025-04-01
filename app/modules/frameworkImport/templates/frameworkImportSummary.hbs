@@ -8,27 +8,14 @@
     </div>
   <div class="inner">
     <p>Find below a summary of the course being imported.</p>
-    <div class="content">
-      <h2>Content summary</h2>
-      <table>
-        <thead>
-          <tr>
-            <th class="left" scope="col">Content type</th>
-            <th scope="col">Number of items</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each content}}
-            <tr>
-              <td class="left" scope="col">{{@key}}</td>
-              <td scope="col">{{this}}</td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
+    <div class="statusReport">
+      {{> part_frameworkImportStatusMessages type='error' messages=statusReport.error heading='Errors'}}
+      {{> part_frameworkImportStatusMessages type='warn' messages=statusReport.warn heading='Warnings'}}
+      {{> part_frameworkImportStatusMessages type='info' messages=statusReport.info heading='Information'}}
     </div>
     <div class="versions">
       <h2>Plugin versions</h2>
+      <p>See below for a summary of the actions to be taken on the course's installed plugins.</p>
       <table class="full-width">
         <thead>
           <tr>
@@ -49,10 +36,5 @@
           {{/each}}
         </tbody>
       </table>
-    </div>
-    <div class="statusReport">
-      {{> part_frameworkImportStatusMessages type='error' messages=statusReport.error heading='Errors'}}
-      {{> part_frameworkImportStatusMessages type='warn' messages=statusReport.warn heading='Warnings'}}
-      {{> part_frameworkImportStatusMessages type='info' messages=statusReport.info heading='Information'}}
     </div>
 </div>
