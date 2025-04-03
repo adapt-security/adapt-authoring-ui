@@ -84,6 +84,16 @@ define([
 
     until(isAttached(this.$el)).then(() => {
       return CKEDITOR.create(this.$el[0], {
+        htmlSupport: {
+          allow: [
+            {
+              name: /.*/,
+              attributes: true,
+              classes: true,
+              styles: true
+            }
+          ]
+        },
         plugins: window.CKEDITOR.pluginsConfig.concat(function ItalicAsEmPlugin(editor) {
           editor.conversion.attributeToElement({
             model: 'italic',
