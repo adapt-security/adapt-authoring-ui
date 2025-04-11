@@ -83,11 +83,24 @@ define([
     }
 
     until(isAttached(this.$el)).then(() => {
+      tinymce.init({
+        target: this.$el[0],
+        plugins: 'importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+        editimage_cors_hosts: ['picsum.photos'],
+        menubar: false,
+        toolbar: "code | searchreplace | align | numlist bullist | outdent indent | ltr rtl | bold italic underline strikethrough removeformat | link | table pagebreak charmap | blocks | forecolor backcolor",
+        toolbar_mode: 'wrap'
+      }).then(([editor]) => {
+        this.editor = editor
+      })
+    });
+
+    /* until(isAttached(this.$el)).then(() => {
       return CKEDITOR.create(this.$el[0], {
         htmlSupport: {
           allow: [
             {
-              name: /.*/,
+              name: new RegExp('.*'),
               attributes: true,
               classes: true,
               styles: true
@@ -164,13 +177,14 @@ define([
         CKEDITOR.instances.length++;
         CKEDITOR.instances[this.editor.id] = this.editor
       }).catch(e => console.error(e));
-    });
+    }); */
     return this;
   };
 
   // get data from ckeditor in textarea
   Backbone.Form.editors.TextArea.prototype.getValue = function() {
-    return this.editor.getData();
+    return this.editor.getContent();
+    //return this.editor.getData();
   };
 
   // set value in ckeditor
@@ -178,14 +192,16 @@ define([
     textAreaSetValue.call(this, value);
 
     if (this.editor) {
-      this.editor.setData(value);
+      this.editor.setContent(value);
+      //this.editor.setData(value);
     }
   };
 
   // ckeditor removal
   Backbone.Form.editors.TextArea.prototype.remove = async function() {
-    this.editor.stopListening()
-    delete CKEDITOR.instances[this.editor]
+    this.editor.remove();
+    //this.editor.stopListening()
+    //delete CKEDITOR.instances[this.editor]
   };
 
   // add override to allow prevention of validation
