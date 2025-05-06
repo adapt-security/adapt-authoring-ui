@@ -119,7 +119,7 @@ define([
 
     for (var i in objectSchema) {
       if (!objectSchema.hasOwnProperty(i)) continue;
-      
+
       var objectField = objectSchema[i];
 
       setRequiredValidators(objectField.required, objectField.properties);
@@ -229,11 +229,11 @@ define([
       }
       /*
       * Delete any 'empty' fieldsets:
-      * - No fields specified 
+      * - No fields specified
       * - Only an empty object with no sub-props exists on the schema, so there's nothing to render
       * */
      const noFieldsOnSchema = fields.some(f => {
-      return !schema[f] || (schema[f].type === 'object' && schema[f].properties === undefined);
+      return !schema[f] || (schema[f].type === 'object' && (schema[f].properties === undefined && !schema[f]._backboneForms));
      });
       if(!fields.length || noFieldsOnSchema) delete fieldsets[k];
     });
