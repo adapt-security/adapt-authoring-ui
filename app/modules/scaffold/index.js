@@ -180,7 +180,7 @@ define([
 
   function trimEmptyProperties(object) {
     for (var key in object) {
-      if (!object.hasOwnProperty(key) || object[key].type !== 'object') continue;
+      if (!object.hasOwnProperty(key) || object[key].type !== 'object' || object[key]._backboneForms) continue;
       if (_.isEmpty(object[key].properties)) delete object[key];
     }
   }
