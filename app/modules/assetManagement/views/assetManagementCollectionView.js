@@ -56,10 +56,14 @@ define(function(require){
 
     initPaging: function() {
       var $item = new AssetItemView({ model: new AssetModel() }).$el;
+      $item.css({
+        visibility: 'hidden'
+      }).appendTo('body');
       var containerHeight = $('.asset-management-assets-container').outerHeight();
       var itemHeight = $item.outerHeight(true);
       var columns = Math.floor($('.asset-management-assets-container').outerWidth()/$item.outerWidth(true));
-      var rows = Math.floor(containerHeight/itemHeight);
+      var rows = Math.max(1, Math.ceil(containerHeight/itemHeight));
+      $item.remove();
       // columns stack nicely, but need to add extra row if it's not a clean split
       if((containerHeight % itemHeight) > 0) rows++;
       this.pageSize = columns*rows;
@@ -90,11 +94,11 @@ define(function(require){
       this.isCollectionFetching = true;
 
       this.collection.customQuery.tags = { $all: this.tags };
-      
+
       if(this.search) {
         this.collection.customQuery.$or = [
           { title: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } },
-          { description: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } } 
+          { description: {  $regex: `.*${this.search.toLowerCase()}.*`, $options: 'i' } }
         ]
       } else {
         delete this.collection.customQuery.$or;
@@ -111,19 +115,19 @@ define(function(require){
         sort: this.sort
       });
       await this.tagsCollection.fetch();
-      
+
       this.collection.fetch({
         success: _.bind(function(collection, response) {
           this.allAssets.push(...collection.models);
           this.isCollectionFetching = false;
           // stop further fetching if this is the last page
           if(response.length < this.pageSize) this.shouldStopFetches = true;
-          
+
           $('.asset-management-no-assets').toggleClass('display-none', this.allAssets.length > 0);
-          
+
           this.$('.asset-management-list-item').remove();
           this.allAssets.forEach(a => this.appendAssetItem(a));
-          
+
           this.isCollectionFetching = false;
 
           Origin.trigger('assetManagement:assetManagementCollection:fetched');
