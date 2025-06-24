@@ -15,7 +15,7 @@ define(function(require){
     },
 
     initialize: function(options) {
-      this.contentPlugins = ApiCollection.ContentPlugins();
+      this.contentPlugins = ApiCollection.ContentPlugins({ queryOptions: { includeUpdateInfo: true } });
       this.contentPlugins.on('sync', this.renderPlugins, this);
       this.currentFilters = {};
 
@@ -46,6 +46,11 @@ define(function(require){
       if(!$('.pluginType-item ').length) this.renderStatusMessage('app.noplugintypes');
 
       this.setViewToReady();
+    },
+
+    remove: function() {
+      Origin.Notify.snackbar.close()
+      OriginView.prototype.remove.apply(this, arguments);
     },
 
     fetch: async function() {

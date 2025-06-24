@@ -58,14 +58,18 @@ define(function(require){
 
     initPaging: function() {
       var $item = new AssetItemView({ model: ApiModel.Asset() }).$el;
+      $item.css({
+        visibility: 'hidden'
+      }).appendTo('body');
       var containerHeight = $('.asset-management-assets-container').outerHeight();
       var itemHeight = $item.outerHeight(true);
       var columns = Math.floor($('.asset-management-assets-container').outerWidth()/$item.outerWidth(true));
-      var rows = Math.floor(containerHeight/itemHeight);
+      var rows = Math.max(1, Math.ceil(containerHeight/itemHeight));
+      $item.remove();
       // columns stack nicely, but need to add extra row if it's not a clean split
       if((containerHeight % itemHeight) > 0) rows++;
       this.pageSize = columns*rows;
-      this.resetCollection(this.setViewToReady);
+      this.resetCollection(this.setViewToReady.bind(this));
     },
 
     renderAssetForm: async function(model) {
@@ -79,6 +83,7 @@ define(function(require){
       }
       this.resetCollection();
       Origin.once('assetManagement:assetManagementCollection:fetched', () => {
+        if (!model) return
         this.$(`.asset-management-list-item.id-${model.get('_id')}`).trigger('click');
       });
     },
@@ -106,10 +111,10 @@ define(function(require){
       }
       this.isCollectionFetching = true;
 
-      Object.assign(this.assets.options, {
+      Object.assign(this.assets.queryOptions, {
         skip: this.allAssets.length,
         limit: this.pageSize,
-        page: this.page++,
+        page: this.page + 1,
         sort: this.sort
       });
       await this.tags.fetch();
@@ -137,7 +142,7 @@ define(function(require){
       });
     },
 
-    resetCollection: function(cb, shouldFetch = true) {
+    resetCollection: function(cb, shouldFetch = true, selectedId) {
       // to remove old views
       Origin.trigger('assetManagement:assetViews:remove');
 
@@ -147,7 +152,13 @@ define(function(require){
       this.page = 0;
       this.assets.reset();
 
-      if(shouldFetch) this.fetchCollection(cb);
+      if(!shouldFetch) {
+        return;
+      }
+      this.fetchCollection(() => {
+        if(selectedId) Origin.trigger('assetManagement:assetItemView:preview', this.collection.findWhere({ _id: selectedId }));
+        if(cb) cb()
+      });
     },
 
     filter: function(filters) {

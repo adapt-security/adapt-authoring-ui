@@ -114,6 +114,8 @@ define([
         }
       ].filter(b => b.id !== 'autofill' || this.schema.autofillId !== undefined);
 
+      this.hasModalOpen = true;
+
       Origin.modal.setView({ 
         view: new AssetManagementView(),
         header: { 
@@ -126,7 +128,11 @@ define([
         }
       });
       Origin.on('modal:actions', action => {
-        if(action !== 'upload') Origin.modal.close();
+        if (!this.hasModalOpen) return
+        if(action !== 'upload') {
+          this.hasModalOpen = false;
+          Origin.modal.close();
+        }
         const selected = Origin.modal.view.collectionView.getSelected();
         if(action === 'cancel' || !selected) {
           return;

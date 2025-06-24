@@ -28,8 +28,9 @@ define(function(require) {
     $('.body', $el).html(data.text);
     $el.attr({ class: data.type });
 
+    $('.close', $el).text(data.buttonText || Origin.l10n.t('app.close'));
     $('.close', $el).toggle(data.persist);
-    if(!data.persist) setTimeout(closeSnack, data.timeout);
+    if(!data.persist) setTimeout(close, data.timeout);
 
     $el.removeClass('display-none').addClass('visible');
   };
@@ -38,9 +39,15 @@ define(function(require) {
     $el.removeClass('visible');
     setTimeout(() => {
       $el.addClass('display-none');
-      data = queue.shift();
-      if(data?.callback) data.callback.apply();
+      data = queue.shift() || {};
+      if(typeof data.callback === 'function') data.callback.apply();
     }, 500);
+  };
+
+  Snackbar.close = function() {
+    const data = queue[0];
+    if(data) delete data.callback // force close shouldn't execute callback
+    close()
   };
   
   var init = function() {
@@ -49,7 +56,7 @@ define(function(require) {
       $el = $(`
         <div id="snackbar" class="display-none">
           <div class="body"></div>
-          <a href="#" class="close">${Origin.l10n.t('app.close')}</a>
+          <a href="#" class="close"></a>
         </div>
       `);
       $('.app-inner').append($el);
