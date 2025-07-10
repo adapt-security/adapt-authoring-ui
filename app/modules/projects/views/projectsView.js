@@ -59,12 +59,12 @@ define(function(require){
     initUserPreferences: function() {
       var prefs = this.getUserPreferences();
       this.filterText = prefs.search;
-      this.filterTags = prefs.tags 
+      this.filterTags = prefs.tags
         ? prefs.tags.reduce((m, tagId) => {
             const tagModel = this.allTags.find(tag => tag.get('_id') === tagId)
             if (tagModel) m.push({id:tagId, title:tagModel.get('title')})
             return m
-          }, []) 
+          }, [])
         : [];
       this.doLayout(prefs.layout);
       this.doSort(prefs.sort, false);
@@ -95,10 +95,15 @@ define(function(require){
         this.resizeTimer = -1;
       }
       var $item = new ProjectView({ model: new CourseModel() }).$el;
+      $item.css({
+        visibility: 'hidden'
+      }).appendTo('.projects-list'); // Fixed: added missing class selector
+
       var containerHeight = $(window).height()-this.$el.offset().top;
       var itemHeight = $item.outerHeight(true);
       var columns = Math.floor(this.$('.projects-inner').width()/$item.outerWidth(true));
-      var rows = Math.floor(containerHeight/itemHeight);
+      var rows = Math.max(1, Math.ceil(containerHeight/itemHeight));
+      $item.remove();
       // columns stack nicely, but need to add extra row if it's not a clean split
       if((containerHeight % itemHeight) > 0) rows++;
       this.collection.queryOptions.limit = columns*rows;
@@ -153,7 +158,7 @@ define(function(require){
       if(this.shouldStopFetches) return;
 
       this.isCollectionFetching = true;
-      
+
       this.usersCollection.fetch({
         success: (collection, response) => {
           Object.assign(this.collection.queryOptions, {
@@ -169,7 +174,7 @@ define(function(require){
                 if (this.allCourses.find(course => course.get('_courseId') === courseId)) return
                 this.allCourses.push(model);
               })
-              
+
               this.removeChildViews();
               this.allCourses.forEach(a => this.appendProjectItem(a));
 
