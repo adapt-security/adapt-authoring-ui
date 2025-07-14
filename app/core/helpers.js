@@ -349,6 +349,19 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
         }
         resolve(data);
       });
+    },
+
+    parseLinksHeader(res) {
+      const header = res.xhr.getResponseHeader('Link');
+      const links = {};
+      if(header) {
+        header.split(',').forEach(l => {
+          const [url, name] = l.split(';');
+          if (!url || !name) return console.trace(`Could not parse links: ${link}`);
+          links[name.replace(/rel="(.*)"/, '$1').trim()] = url.replace(/<(.*)>/, '$1').trim();
+        });
+      }
+      return links;
     }
   }
 

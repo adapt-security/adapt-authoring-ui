@@ -1,4 +1,4 @@
-define(['backbone', 'underscore'], function(Backbone, _) {
+define(['backbone', 'underscore', '../helpers'], function(Backbone, _, Helpers) {
   /**
    * Class for collecting API data
    * @class ApiCollection
@@ -43,14 +43,8 @@ define(['backbone', 'underscore'], function(Backbone, _) {
             data: this.buildQuery(),
             success: async (d, status, res) => {
               memo.push(...d.models);
-              const link = res.xhr.getResponseHeader('Link');
-              if(link) {
-                const nextUrlMatch = link.match(/<[^>]*>; rel="next"/);
-                if(nextUrlMatch) {
-                  const nextUrl = nextUrlMatch[0].match(/<(.*)>/);
-                  await _fetch(nextUrl[1], memo);
-                }
-              }
+              const { next } = Helpers.parseLinksHeader(res);
+              if(options.fetchAll !== false && next) await _fetch(next, memo);
               resolve(memo);
             },
             error: console.log
