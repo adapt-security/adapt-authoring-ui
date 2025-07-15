@@ -6,7 +6,7 @@ define(function(require) {
   var ContentCollection = require('core/collections/contentCollection');
   var TagsCollection = require('core/collections/tagsCollection');
 
-  Origin.on('router:projects', function(location, subLocation, action) {
+  Origin.on('router:projects', async function(location, subLocation, action) {
     Origin.trigger('editor:resetData');
     Origin.contentHeader.setButtons(Origin.contentHeader.BUTTON_TYPES.OPTIONS, [
       {
@@ -45,13 +45,15 @@ define(function(require) {
         group: 'sort'
       }
     ]);
-    (new TagsCollection()).fetch({
-      success: function(collection) {
-        Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
-        Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
-      },
-      error: () => console.log('Error occured getting the tags collection - try refreshing your page')
-    });
+    try {
+      const collection = new TagsCollection()
+      await collection.fetch();
+      Origin.sidebar.addView(new ProjectsSidebarView({ collection }).$el);
+      Origin.trigger('dashboard:loaded', { type: location || 'all', tags: collection });
+    } catch(e) {
+      console.log('Error occured getting the tags collection - try refreshing your page');
+      console.log(e);
+    }
   });
 
   Origin.on('dashboard:loaded', function ({ type, tags }) {

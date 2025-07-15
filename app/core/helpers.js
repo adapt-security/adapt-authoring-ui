@@ -357,7 +357,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       if(header) {
         header.split(',').forEach(l => {
           const [url, name] = l.split(';');
-          if (!url || !name) return console.trace(`Could not parse links: ${link}`);
+          if (!url || !name) return console.error(`Could not parse links: ${l}`);
           links[name.replace(/rel="(.*)"/, '$1').trim()] = url.replace(/<(.*)>/, '$1').trim();
         });
       }
