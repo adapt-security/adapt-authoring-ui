@@ -54,7 +54,7 @@ define(function(require){
       if(!coll) {
         this.$('.pluginManagement-plugins').append(Origin.l10n.t('app.noplugintypes'));
       } else {
-        coll.forEach(this.renderPluginTypeView);
+        coll.forEach(this.renderPluginTypeView, this);
       }
       this.setViewToReady();
     },
