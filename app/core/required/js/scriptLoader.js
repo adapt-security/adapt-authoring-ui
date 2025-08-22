@@ -100,8 +100,7 @@
       'bowser',
       'react',
       'react-dom',
-      'velocity',
-      'ckeditor'
+      'velocity'
     ], loadGlobals);
   }
 
