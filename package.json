@@ -19,7 +19,6 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
-    "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-terser": "^0.4.0",
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
     "babel-plugin-transform-amd-to-es6": "^0.6.1",
@@ -34,6 +33,7 @@
     "requirejs": "^2.3.6",
     "resolve": "^1.22.2",
     "rollup": "^2.79.1",
+    "rollup-plugin-inject-process-env": "*",
     "upath": "^2.0.1"
   },
   "devDependencies": {
