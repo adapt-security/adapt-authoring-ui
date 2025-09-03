@@ -80,17 +80,20 @@ define([
       }
       const callbacks = {
         success: data => this.onSaveSuccess(data),
-        error: (model, xhr) => {
-          if(typeof xhr === 'string') xhr = model;
-          this.onSaveError(xhr.responseJSON && xhr.responseJSON.message || xhr.statusText);
+        error: error => {
+          this.onSaveError(error.message);
         }
       };
-      if($('input[name="file"]').val()) { // handle file upload
-        this.form.$el.ajaxSubmit(Object.assign({
+      if(document.querySelector('input[name="file"]').value) { // handle file upload
+        const submitData = {
           method: this.model.isNew() ? 'POST' : 'PATCH',
-          url: `/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
-          beforeSubmit: this.sanitiseData,
-        }, callbacks));
+          data: this.sanitiseData(new FormData(this.form)),
+        };
+        fetch(`/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
+            submitData)
+            .then(res => res.json())
+            .then(callbacks.success)
+            .catch(callbacks.error);
         return;
       }
       this.form.commit();
