@@ -25,7 +25,7 @@ define(function(require){
     },
 
     getSelected: function() {
-      return this.assets.findWhere({ _isSelected: true });
+      return this.allAssets.find(a => a.get('_isSelected') === true );
     },
 
     preRender: function(options) {
