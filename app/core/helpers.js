@@ -220,19 +220,6 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return value.length > 0 && regEx.test(value);
     },
 
-    contentModelMap: function(type) {
-      var contentModels = {
-        course: 'core/models/courseModel',
-        contentobject: 'core/models/contentObjectModel',
-        article: 'core/models/articleModel',
-        block: 'core/models/blockModel',
-        component: 'core/models/componentModel'
-      };
-      if(contentModels.hasOwnProperty(type)) {
-        return require(contentModels[type]);
-      }
-    },
-
     // Ensures list is iterated (doesn't guarantee order), even if using async iterator
     // @param list Array or Backbone.Collection
     // @param func Function to use as iterator. Will be passed item, index and callback function
@@ -317,7 +304,7 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       return '';
     },
     // Comparison operator (ifValueEquals left for compatibility)
-    when: (a, operator, b, block) => {
+    when: function (a, operator, b, block) {
       console.log(a, operator, b);
       const ops = {
         eq: (l,r) => l === r,

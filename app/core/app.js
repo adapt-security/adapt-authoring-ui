@@ -1,43 +1,9 @@
-// LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
-(function() {
-  function loadLibraries(callback) {
-    require([
-      'handlebars',
-      'imageReady',
-      'inview',
-      'jqueryForm',
-      'jqueryTagsInput',
-      'jqueryUI',
-      'polyfill',
-      'scrollTo',
-      'selectize',
-      'velocity'
-    ], Handlebars => {
-      window.Handlebars = $.extend(Handlebars, window.Handlebars);
-      callback();
-    });
-  }
+import Origin from 'core/origin';
+import 'core/helpers';
+import 'core/l10n';
+import 'core/mpabc';
 
-  function loadCore(callback) {
-    require([
-      'templates/templates',
-      'core/origin',
-      'core/helpers',
-    ], (Templates, Origin) => callback(Origin));
-  }
-
-  function loadExtras(callback) {
-    require(['modules/modules', 'plugins/plugins'], callback);
-  }
-  /**
-   * Start app load
-   */
-  loadLibraries(() => {
-    loadCore(Origin => {
-      Origin.startSession(error => {
-        if(error) console.error(error);
-        loadExtras(() => Origin.initialize());
-      });
-    });
-  });
-})();
+Origin.startSession(error => {
+  if(error) console.error(error);
+  Origin.initialize();
+});

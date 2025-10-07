@@ -1,7 +1,5 @@
 define([
-  'core/origin',
-  'backboneForms',
-  'backboneFormsLists'
+  'core/origin'
 ], function(Origin) {
 
   var ScaffoldListView = Backbone.Form.editors.List.extend({

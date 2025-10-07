@@ -3,6 +3,10 @@ define(function(require) {
 	var _ = require('underscore');
 	var Backbone = require('backbone');
 	var Origin = require('core/origin');
+	var notifyAlert = require('./plugins/alert/index');
+	var notifyConsole = require('./plugins/console/index');
+	var notifySnackbar = require('./plugins/snackbar/index');
+	var notifyToast = require('./plugins/toast/index');
 
 	var Notify = Origin.Notify;
 
@@ -15,16 +19,12 @@ define(function(require) {
 	}
 
 	function loadPlugins() {
-		var notifyAlert = require('./plugins/alert/index');
 		notifyAlert();
 
-		var notifyConsole = require('./plugins/console/index');
 		notifyConsole();
 
-		var notifySnackbar = require('./plugins/snackbar/index');
 		notifySnackbar();
 		
-		var notifyToast = require('./plugins/toast/index');
 		notifyToast();
 	};
 

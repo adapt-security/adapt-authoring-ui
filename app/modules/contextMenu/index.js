@@ -5,7 +5,7 @@ define(function(require) {
   var ContextMenuView = require('./views/contextMenuView');
 
   // Public API
-  Origin.contextMenu = ContextMenu = {
+  var ContextMenu = Origin.contextMenu = {
     addItem: function(type, contextMenuObject) {
       if (contextMenuObject.length > 1) {
         _.each(contextMenuObject, function (object) {
