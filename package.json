@@ -21,7 +21,6 @@
     "requirejs": "^2.3.6"
   },
   "devDependencies": {
-    "eslint": "^9.11.0",
     "standard": "^17.1.0",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/git": "^10.0.1",
@@ -58,5 +57,8 @@
         }
       ]
     ]
+  },
+  "standard": {
+    "ignore": ["app"]
   }
 }
