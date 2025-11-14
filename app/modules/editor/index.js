@@ -43,7 +43,7 @@ define([
         type = 'course';
         break;
     }
-    Origin.trigger(`editor:${type}`, {
+    Origin.trigger(`editor:${type ?? route2}`, {
       type: route2,
       id: Origin.location.route3,
       action: Origin.location.route4
