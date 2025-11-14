@@ -51,6 +51,7 @@ define(function(require) {
         }
         for (let item of items) $el.append(new ViewClass(Object.assign(type, item)).$el);
       }
+      Origin.trigger('contentHeader:postRender', this);
     }
     getTemplateData() {
       if(!this.data.breadcrumbs) {
