@@ -60,7 +60,8 @@
   },
   "standard": {
     "ignore": [
-      "app"
+      "app",
+      "npm_hooks"
     ]
   }
 }
