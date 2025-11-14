@@ -39,7 +39,7 @@ define(function(require) {
     $el.removeClass('visible');
     setTimeout(() => {
       $el.addClass('display-none');
-      data = queue.shift();
+      var data = queue.shift();
       if(data && data.callback) data.callback.apply();
     }, 500);
   };

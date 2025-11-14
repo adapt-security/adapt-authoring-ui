@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-adapt-framework-version="{{versions.adapt_framework}}" data-adapt-authoring-version="{{versions.adapt-authoring}}" data-adapt-authoring-branch="{{git.adapt-authoring.branch}}" data-adapt-authoring-commit="{{git.adapt-authoring.commit}}">
+<html lang="en" data-adapt-framework-version="{{versions.adapt_framework}}" data-adapt-authoring-version="{{versions.adapt-authoring}}">
   <head>
     <title>{{productName}}</title>
     <link rel="icon" type="image/png" href="/css/assets/favicon.png" />
     <link rel="stylesheet" href="/css/adapt.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.0/ckeditor5.css">
-    {{#if isProduction}}
-      <script type="text/javascript" src="/require.js" data-main="/js/adapt.js"></script>
-    {{else}}
-    <script src="/require.js"></script>
-    <script src="/js/requireJsConfig.js"></script>
-    <script src="/core/app.js"></script>
-    {{/if}}
+    
+    <script type="text/javascript">
+      window.AAT_BUILD_TYPE = '@@build.type';
+    </script>
+    <script src="libraries/modernizr.js"></script>
+    <script src="libraries/require.min.js" data-main="js/scriptLoader.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.9.5/ace.js"></script>
     <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-store, no-cache" />

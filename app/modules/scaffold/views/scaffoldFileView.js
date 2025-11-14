@@ -1,7 +1,6 @@
 define([
-  'backboneForms',
   'core/origin'
-], function(BackboneForms, Origin) {
+], function(Origin) {
     var ScaffoldFileView = Backbone.Form.editors.Base.extend({
       render: function() {
         this.$el.html(Handlebars.templates[this.constructor.template]({ name: this.getName() }));
