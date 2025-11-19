@@ -119,7 +119,7 @@ define(function(require){
     deleteBlock: function(event) {
       this.model.destroy({
         success: () => this.remove(),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     },
 
@@ -267,7 +267,7 @@ define(function(require){
           this.children.push(model);
           this.render();
         }, this),
-        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errorfetchingdata' })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     }
 

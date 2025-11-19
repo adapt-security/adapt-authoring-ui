@@ -122,7 +122,7 @@ define(function(require){
           this.addBlockView(model, true);
           Origin.trigger('editor:refreshData');
         },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingblock') })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     },
 
@@ -149,7 +149,7 @@ define(function(require){
 
       this.model.destroy({
         success: () => this.remove(),
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errorgeneric') })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     },
 

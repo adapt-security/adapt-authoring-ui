@@ -107,10 +107,10 @@ define(function(require) {
           newMenuItemView.$el.removeClass('syncing');
           this.setHeight();
         }, this),
-        error: function(error) {
+        error: function(model, jqXhr) {
           // fade out menu item and alert
           newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
-          Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.errormenueditorbody') });
+          Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message });
           _.delay(newMenuItemView.remove, 3000);
         }
       });
@@ -135,11 +135,11 @@ define(function(require) {
         _parentId: model.get('_id'),
         _courseId: Origin.editor.data.course.get('_id')
       }, {
-        error: function() {
+        error: function(model, jqXhr) {
           newMenuItemView.$el.removeClass('syncing').addClass('not-synced');
           Origin.Notify.alert({
             type: 'error',
-            text: Origin.l10n.t('app.errormenueditorbody'),
+            text: jqXhr.responseJSON.message
           });
           _.delay(newMenuItemView.remove, 3000);
         },

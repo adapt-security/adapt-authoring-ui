@@ -121,7 +121,7 @@ define(function(require){
           Origin.trigger('editorView:itemDeleted', model);
           this.remove()
         }, this),
-        error: () => Origin.Notify.alert({ type: 'error', text: 'app.errordelete' })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     },
 
