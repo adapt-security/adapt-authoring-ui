@@ -114,7 +114,7 @@ define(function(require){
           articleView._skipRender = true; // prevent render of blocks in postRender
           articleView.addBlock();
         },
-        error: () => Origin.Notify.alert({ type: 'error', text: Origin.l10n.t('app.erroraddingarticle') })
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       });
     },
 
