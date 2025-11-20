@@ -67,6 +67,8 @@ define(function(require) {
       filter: { createdBy: isMine ? meId : { $ne: meId } }, 
       _type: 'course'
     });
+    collection.queryOptions.source = 'dashboard';
+    
     Origin.trigger('contentHeader:updateTitle', { 
       breadcrumbs: ['dashboard'], 
       title: Origin.l10n.t(`app.${isMine ? 'myprojects' : 'sharedprojects'}`) 
