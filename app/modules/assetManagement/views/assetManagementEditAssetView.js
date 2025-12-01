@@ -1,9 +1,10 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define([
   'core/origin',
+  'core/helpers',
   'core/views/originView',
   'modules/scaffold/views/scaffoldFileView'
-], function(Origin, OriginView, ScaffoldFileView){
+], function(Origin, Helpers, OriginView, ScaffoldFileView){
   var AssetManagementEditAssetView = OriginView.extend({
     className: 'asset-management-edit-asset',
     events: {
@@ -47,75 +48,51 @@ define([
       return message;
     },
 
-    sanitiseData: function(dataArr) {
-      const isArray = Array.isArray(dataArr)
-      if(!isArray) {
-        dataArr = Object.entries(dataArr).map(([k,v]) => Object.create({ name: k, value: v }));
-      }
-      for (let i = 0; i < dataArr.length; i++) {
-        const d = dataArr[i];
-        if(d.name === "tags") {
-          if(!d.value.length) dataArr.splice(i--, 1);
-        } else if(d.name === "url" && d.value === "") {
-          dataArr.splice(i--, 1);
-        }
-      }
-      if(isArray) return dataArr;
-      const data = dataArr.reduce((m, d) => Object.assign(m, { [d.name]: d.value }), {});
-      if(Object.keys(data).length) return data;
-    },
-
-    getAttributesToSave: function() {
-      if(this.model.isNew()) {
-        return this.model.attributes;
-      }
-      var changedAttributes = this.model.changedAttributes();
-      return Object.keys(changedAttributes).length ? changedAttributes : undefined;
-    },
-
-    save: function() {
-      const errors = this.form.validate();
-      if(errors) {
-        return this.onSaveError(`${Origin.l10n.t('app.validationfailedmessage')}<br/><br/>${this.buildErrorMessage(errors)}`);
-      }
-      const callbacks = {
-        success: data => this.onSaveSuccess(data),
-        error: error => {
-          this.onSaveError(error.message);
-        }
-      };
-      if(document.querySelector('input[name="file"]').value) { // handle file upload
-        const submitData = {
-          method: this.model.isNew() ? 'POST' : 'PATCH',
-          data: this.sanitiseData(new FormData(this.form)),
-        };
-        fetch(`/api/assets/${this.model.get('_id') ? this.model.get('_id') : ''}`,
-            submitData)
-            .then(res => res.json())
-            .then(callbacks.success)
-            .catch(callbacks.error);
-        return;
-      }
+    async save() {
       this.form.commit();
-      const data = this.sanitiseData(this.getAttributesToSave());
-      data ? this.model.save(data, Object.assign({ patch: true }, callbacks)) : this.onSaveSuccess();
-    },
+      const model = this.form.model;
+      const hasFile = !!$('input[name="file"]', this.form.$el).val();
+      const hasChanged = Object.keys(model.changedAttributes()).filter(a => a !== '_type').length > 0;
+      try {
+        if(model.isNew() && !hasFile) {
+          return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
+        }
+        if(hasChanged) {
+          if(!hasFile) { // don't upload empty file
+            $('input[type="file"]', this.form.$el).remove();
+          }
+          const validationErrors = this.form.validate();
+          if(validationErrors) {
+            return Origin.Notify.toast({ 
+              type: 'error', 
+              title: Origin.l10n.t('app.validationfailed'),
+              text: Object.values(validationErrors).map(e => `${e.title} ${e.type}`).join('<br/>')
+            });
+          }
+          const newData = await Helpers.submitForm(this.form, {
+            method: model.isNew() ? 'POST' : 'PATCH', 
+            url: model.url(),
+            beforeSubmit: this.sanitiseData
+          });
+          const _id = newData && newData._id;
 
-    onSaveSuccess: async function(data) {
-      const modelData = data ? Array.isArray(data) ? data[0] : data : undefined;
-      const _id = modelData && modelData._id;
-
-      if(this.model.get('isModal')) {
-        if(_id) Origin.trigger('assetManagement:collection:refresh', null, true, _id);
-        Origin.trigger('assetManagement:modalEdit:remove');
-        return;
+          if(this.model.get('isModal')) {
+            if(_id) Origin.trigger('assetManagement:collection:refresh', null, true, _id);
+            Origin.trigger('assetManagement:modalEdit:remove');
+            return;
+          }
+          Origin.router.navigateTo('assetManagement');
+        }
+      } catch(e) {
+        Origin.trigger('sidebar:resetButtons');
+        Origin.Notify.alert({ type: 'error', text: e.message });
       }
-      Origin.router.navigateTo('assetManagement');
     },
 
-    onSaveError: function(errorMessage) {
-      Origin.trigger('sidebar:resetButtons');
-      Origin.Notify.alert({ type: 'error', text: errorMessage });
+    sanitiseData(formData) {
+      const tags = formData.get('tags');
+      tags.length ? formData.set('tags', JSON.stringify(tags.split(','))) : formData.delete('tags');
+      if(!formData.get('url')) formData.delete('url');
     }
 
   }, {
