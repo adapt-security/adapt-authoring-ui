@@ -324,20 +324,35 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
 
     submitForm($form, options = {}) {
       return new Promise(async (resolve, reject) => {
+        if($form.$el) $form = $form.$el; // for Scaffold forms
+        const method = options.method || $form.attr('method');
+        const url = options.url || $form.attr('action');
+        if(!method || !url) {
+          console.error('Helpers#submitForm: method and URL must be specified either as form attributes or options');
+          return;
+        }
         const body = new FormData($form[0]);
-        if(options.extendedData) Object.entries(options.extendedData).forEach(([attr, val]) => body.append(attr, val));
-        const res = await fetch($form.attr('action'), { method: $form.attr('method'), body });
-        if(res.status === 204) {
-          return resolve();
+        if(options.data) {
+          Object.entries(options.data).forEach(d => body.append(...d));
+          delete options.data;
         }
-        const data = await res.json();
-        if(res.status > 299) {
-          return reject(data);
+        if(typeof options.beforeSubmit === 'function') {
+          options.beforeSubmit(body);
+          delete options.beforeSubmit;
         }
-        resolve(data);
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+        xhr.onprogress = typeof options.onProgress === 'function' ? options.onProgress : () => {};
+        xhr.onreadystatechange = () => { 
+          if(xhr.readyState !== XMLHttpRequest.DONE) return;
+          let responseData = xhr.response;
+          try { responseData = JSON.parse(responseData); } catch(e) {}
+          xhr.status > 299 ? reject(responseData) : resolve(responseData);  
+        }
+        xhr.send(body);
       });
     },
-
+    
     parseLinksHeader(res) {
       const header = res.xhr.getResponseHeader('Link');
       const links = {};
