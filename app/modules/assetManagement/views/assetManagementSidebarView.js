@@ -27,8 +27,8 @@ define(function(require) {
         },
 
         onFilterButtonClicked: function(event) {
-            $currentTarget = $(event.currentTarget);
-            var filterType = $currentTarget.attr('data-filter-type');
+            const $currentTarget = $(event.currentTarget);
+            const filterType = $currentTarget.attr('data-filter-type');
 
             // If this filter is already selected - remove filter
             // else add the filter
