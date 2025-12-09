@@ -80,13 +80,10 @@ define(function(require) {
     deleteProjectPrompt: function(event) {
       event && event.preventDefault();
       var isShared = this.model.get('_isShared') || (this.model.get('_shareWithUsers') && this.model.get('_shareWithUsers').length > 0);
-      var titleKey = isShared ? 'deletesharedproject' : 'deleteproject';
-      var textKey = isShared ? 'confirmdeletesharedprojectwarning' : 'confirmdeleteprojectwarning';
-
       Origin.Notify.confirm({
         type: 'warning',
-        title: Origin.l10n.t('app.' + titleKey),
-        html: Origin.l10n.t('app.confirmdeleteproject') + '<br/><br/>' + Origin.l10n.t('app.' + textKey),
+        title: Origin.l10n.t(`app.${isShared ? 'deletesharedproject' : 'deleteproject'}`),
+        html: `${Origin.l10n.t('app.confirmdeleteproject')}<br/><br/>${Origin.l10n.t('app.confirmdeleteprojectwarning')}`,
         destructive: isShared,
         callback: this.deleteProjectConfirm.bind(this)
       });
