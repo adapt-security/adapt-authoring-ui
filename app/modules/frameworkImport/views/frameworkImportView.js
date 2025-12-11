@@ -75,7 +75,7 @@ define(function(require){
       if(this.model.get('tags')) {
         this.$('#tags').val(this.model.get('tags').map(t => t.title));
       }
-      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { extendedData: { dryRun } })
+      const data = await Helpers.submitForm(this.$('form.frameworkImport'), { data: { dryRun } })
       return Object.assign(data, { canImport: data.statusReport.error === undefined });
     },
 
