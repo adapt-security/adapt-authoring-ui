@@ -91,7 +91,7 @@ define([
 
     sanitiseData(formData) {
       const tags = formData.get('tags');
-      tags.length ? formData.set('tags', JSON.stringify(tags.split(','))) : formData.delete('tags');
+      tags?.length ? formData.set('tags', JSON.stringify(tags.split(','))) : formData.delete('tags');
       if(!formData.get('url')) formData.delete('url');
     }
 
