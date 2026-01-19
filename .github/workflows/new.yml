@@ -1,19 +1,15 @@
-name: Add to main project
+# Calls the org-level reusable workflow to add PRs to the TODO Board
+
+name: Add PR to Project
 
 on:
-  issues:
-    types:
-      - opened
   pull_request:
     types:
       - opened
+      - reopened
 
 jobs:
   add-to-project:
-    name: Add to main project
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/add-to-project@v0.1.0
-        with:
-          project-url: https://github.com/orgs/adapt-security/projects/5
-          github-token: ${{ secrets.PROJECTS_SECRET }}
+    uses: adapt-security/.github/.github/workflows/new.yml@main
+    secrets:
+      PROJECTS_SECRET: ${{ secrets.PROJECTS_SECRET }}
