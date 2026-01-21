@@ -25,7 +25,7 @@ define(function(require) {
     if(location.indexOf('reset') === 0) { // hack fix this
       $('body').removeClass(`location-${location}`);
       try {
-        query = parseQueryString(location);
+        query = parseQueryString(window.location.href);
       } catch(e) {}
       location = 'reset';
       $('body').addClass(`location-${location}`);
