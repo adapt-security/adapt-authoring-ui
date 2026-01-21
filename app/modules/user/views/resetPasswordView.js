@@ -50,7 +50,7 @@ define(function(require) {
         return this.handleValidationError(this.model, [Origin.l10n.t('app.passwordnomatcherror')]);
       }
       try {
-        await $.post('api/auth/local/changepass', { password, email: this.model.get('email'), token: this.model.get('token') });
+        await $.post('api/auth/local/changepass', { password, email: this.model.get('email'), token: this.model.get('token'), noAuth: true });
         this.$('.form-reset-password').addClass('display-none');
         this.$('.reset-introduction').addClass('display-none');
         this.$('.message .success').removeClass('display-none');
