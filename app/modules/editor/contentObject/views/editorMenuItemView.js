@@ -85,10 +85,10 @@ define(function(require){
 
       /**
        * Lang string keys used (for at-langcheck):
-       * - app.confirmdeletemenu
-       * - app.confirmdeletepage
-       * - app.deleteitemmenu
-       * - app.deleteitempage
+       * - 'app.confirmdeletemenu'
+       * - 'app.confirmdeletepage'
+       * - 'app.deleteitemmenu'
+       * - 'app.deleteitempage'
        */
       Origin.Notify.confirm({
         type: 'warning',

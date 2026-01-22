@@ -10,20 +10,20 @@
     <p>Find below a summary of the course being imported.</p>
     <div class="statusReport">
       {{! Lang string keys used (for at-langcheck):
-        - app.import.status.ASSETS_IMPORTED_SUCCESSFULLY
-        - app.import.status.CONTENT_IMPORTED
-        - app.import.status.INSTALL_PLUGIN
-        - app.import.status.INSTALLED
-        - app.import.status.INVALID
-        - app.import.status.INVALID_PLUGIN_VERSION
-        - app.import.status.MANAGED_PLUGIN_UPDATE_DISABLED
-        - app.import.status.MIGRATE_CONTENT
-        - app.import.status.PLUGIN_INSTALL_MIGRATING
-        - app.import.status.NO_CHANGE
-        - app.import.status.OLDER
-        - app.import.status.TAGS_IMPORTED
-        - app.import.status.UPDATE_BLOCKED
-        - app.import.status.UPDATED
+        - 'app.import.status.ASSETS_IMPORTED_SUCCESSFULLY'
+        - 'app.import.status.CONTENT_IMPORTED'
+        - 'app.import.status.INSTALL_PLUGIN'
+        - 'app.import.status.INSTALLED'
+        - 'app.import.status.INVALID'
+        - 'app.import.status.INVALID_PLUGIN_VERSION'
+        - 'app.import.status.MANAGED_PLUGIN_UPDATE_DISABLED'
+        - 'app.import.status.MIGRATE_CONTENT'
+        - 'app.import.status.PLUGIN_INSTALL_MIGRATING'
+        - 'app.import.status.NO_CHANGE'
+        - 'app.import.status.OLDER'
+        - 'app.import.status.TAGS_IMPORTED'
+        - 'app.import.status.UPDATE_BLOCKED'
+        - 'app.import.status.UPDATED'
       }}
       {{> part_frameworkImportStatusMessages type='error' messages=statusReport.error heading='Errors'}}
       {{> part_frameworkImportStatusMessages type='warn' messages=statusReport.warn heading='Warnings'}}
@@ -54,3 +54,4 @@
       </table>
     </div>
 </div>
+
