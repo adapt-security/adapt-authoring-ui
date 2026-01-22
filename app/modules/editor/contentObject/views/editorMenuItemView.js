@@ -81,11 +81,19 @@ define(function(require){
       this.listenToOnce(Origin, 'editorView:cancelRemoveItem:'+ this.model.get('_id'), this.cancelDeleteItem);
 
       var self = this;
+      const type = this.model.get('_type')
 
+      /**
+       * Lang string keys used (for at-langcheck):
+       * - app.confirmdeletemenu
+       * - app.confirmdeletepage
+       * - app.deleteitemmenu
+       * - app.deleteitempage
+       */
       Origin.Notify.confirm({
         type: 'warning',
-        title: Origin.l10n.t('app.deleteitem'+ this.model.get('_type')),
-        text: Origin.l10n.t('app.confirmdelete' + this.model.get('_type')) + '<br/><br/>' + Origin.l10n.t('app.confirmdeletewarning' + this.model.get('_type')),
+        title: Origin.l10n.t('app.deleteitem' + type),
+        text: `${Origin.l10n.t('app.confirmdelete' + type)}<br/><br/>${Origin.l10n.t('app.confirmdeletewarning' + type)}`,
         callback: result => self.onConfirmRemovePopup(result.isConfirmed)
       });
     },
