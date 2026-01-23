@@ -3,9 +3,7 @@
     "enable": true,
     "manualPlugins": ["docs/plugins/uidocs.js"],
     "manualPages": {
-      "migrating-from-legacy.md": "ui",
-      "ui-extensions.md": "ui",
-      "ui-libraries.md": "ui"
+      "ui.md": "development"
     }
   }
 }
