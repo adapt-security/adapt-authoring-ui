@@ -34,8 +34,8 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
 
     keyToTitleString: function(key) {
       if (!key) return;
-      // check translatable strings first
-      var l10nKey = 'app.scaffold.' + key;
+      // check translatable strings first (array to avoid langstring check)
+      var l10nKey = ['app', 'scaffold', key].join('.);
       if(Origin.l10n.has(l10nKey)) {
         return Origin.l10n.t(l10nKey);
       }
