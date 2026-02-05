@@ -66,7 +66,7 @@ define(function(require){
       if(!this.isValid()) return;
       this.doImport()
         .then(() => Origin.router.navigateToDashboard())
-        .catch(this.onError);
+        .catch(this.onError.bind(this));
     },
 
     doImport: async function(dryRun = false) {
@@ -97,9 +97,73 @@ define(function(require){
       this.model.set({ tags: tags });
     },
 
+    formatErrorString: function (errorString) {
+      const normalise = (s, delim) => s.split(delim).map(s => s.trim()).filter(Boolean)
+      const nl = count => '<br/>'.repeat(count ?? 1)
+
+      // Extract prefix messages (anything before the first component error)
+      const firstComponentIndex = errorString.search(/\S+-component\s+\S+/);
+      const prefixMessages = firstComponentIndex > 0 
+        ? normalise(errorString.substring(0, firstComponentIndex), ',')
+        : [];
+      const componentString = firstComponentIndex > 0 
+        ? errorString.substring(firstComponentIndex) 
+        : errorString;
+
+      const components = normalise(componentString, ';')
+      const groups = {};
+      
+      components.forEach(component => {
+        const [, type, id, errorsStr] = component.match(/^(\S+-component)\s+(\S+)\s+(.+)$/) ?? [];
+
+        if(!type || !id || !errorsStr) {
+          return
+        }
+        // Split only on ", /" to avoid breaking apart value lists like "false,soft,hard"
+        const errors = errorsStr
+          .split(/,\s*(?=\/)/)
+          .map(s => s.trim())
+          .filter(Boolean)
+          .sort();
+        const signature = `${type}|${errors.join('|')}`;
+
+        if (!groups[signature]) groups[signature] = { type, errors, ids: [] };
+        groups[signature].ids.push(id);
+      });  
+      // Group by component type
+      const byType = {};
+      Object.values(groups).forEach(group => {
+        if (!byType[group.type]) byType[group.type] = [];
+        byType[group.type].push(group);
+      });
+    
+      // Format output
+      const output = [];
+      // Add prefix messages if any
+      if (prefixMessages.length) output.push(prefixMessages.join(', '));
+      // Add component errors
+      const formatted = Object.entries(byType).map(([type, typeGroups]) => {
+        const totalCount = typeGroups.reduce((sum, g) => sum + g.ids.length, 0);
+        const subGroups = typeGroups.map(group => {
+          return `<div style="margin-bottom:20px;"><b>IDs:</b> ${group.ids.join(', ')}<ul style="text-align:left;margin-top:10px;">${group.errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
+        });
+        return `<h2 style="margin:20px;">${type} (${totalCount})</h2><div>${subGroups.join('')}</div>`;
+      });
+
+      output.push(...formatted);
+
+      return output.join('');
+    },
+
     onError: function(e) {
-      Origin.Notify.alert({ type: 'error', text: e.message });
-      Origin.trigger('sidebar:resetButtons');
+      let text
+      try {
+        text = this.formatErrorString(e.message)
+      cath (e) {
+        text = e.message
+      }
+      Origin.Notify.alert({ type: 'error', text });
+      Origin.trigger('sidebar:resetButtons'); 
     }
   }, {
     template: 'frameworkImport'
