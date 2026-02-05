@@ -159,7 +159,7 @@ define(function(require){
       let text
       try {
         text = this.formatErrorString(e.message)
-      cath (e) {
+      } catch (e) {
         text = e.message
       }
       Origin.Notify.alert({ type: 'error', text });
