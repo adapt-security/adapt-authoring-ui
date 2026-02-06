@@ -82,7 +82,7 @@ define(function(require) {
       var isShared = this.model.get('_isShared') || (this.model.get('_shareWithUsers') && this.model.get('_shareWithUsers').length > 0);
       Origin.Notify.confirm({
         type: 'warning',
-        title: Origin.l10n.t(`app.${isShared ? 'deletesharedproject' : 'deleteproject'}`),
+        title: Origin.l10n.t(`${isShared ? 'app.deletesharedproject' : 'app.deleteproject'}`),
         html: `${Origin.l10n.t('app.confirmdeleteproject')}<br/><br/>${Origin.l10n.t('app.confirmdeleteprojectwarning')}`,
         destructive: isShared,
         callback: this.deleteProjectConfirm.bind(this)

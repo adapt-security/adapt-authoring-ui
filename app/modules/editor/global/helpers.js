@@ -62,6 +62,14 @@ define(function(require) {
     return modelTitle || Origin.editor.data.course.get('title');
   }
 
+  /**
+   * - app.editorarticle
+   * - app.editorblock
+   * - app.editorcomponent
+   * - app.editorconfig
+   * - app.editormenusettings
+   * - app.editorpagesettings
+   */
   function getLangKey() {
     var type = getType();
     var action = getAction();

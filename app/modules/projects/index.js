@@ -71,7 +71,7 @@ define(function(require) {
     
     Origin.trigger('contentHeader:updateTitle', { 
       breadcrumbs: ['dashboard'], 
-      title: Origin.l10n.t(`app.${isMine ? 'myprojects' : 'sharedprojects'}`) 
+      title: Origin.l10n.t(`${isMine ? 'app.myprojects' : 'app.sharedprojects'}`) 
     });
     Origin.contentPane.setView(ProjectsView, { collection, _isShared: isShared, tags });
   });

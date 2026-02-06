@@ -87,6 +87,8 @@ define(function(require){
        * Lang string keys used (for at-langcheck):
        * - 'app.confirmdeletemenu'
        * - 'app.confirmdeletepage'
+       * - 'app.confirmdeletewarningmenu'
+       * - 'app.confirmdeletewarningpage'
        * - 'app.deleteitemmenu'
        * - 'app.deleteitempage'
        */
