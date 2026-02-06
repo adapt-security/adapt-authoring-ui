@@ -63,12 +63,12 @@ define(function(require) {
   }
 
   /**
-   * - app.editorarticle
-   * - app.editorblock
-   * - app.editorcomponent
-   * - app.editorconfig
-   * - app.editormenusettings
-   * - app.editorpagesettings
+   * - 'app.editorarticle'
+   * - 'app.editorblock'
+   * - 'app.editorcomponent'
+   * - 'app.editorconfig'
+   * - 'app.editormenusettings'
+   * - 'app.editorpagesettings'
    */
   function getLangKey() {
     var type = getType();
