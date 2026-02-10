@@ -38,7 +38,7 @@ define(function(require) {
       this.model.pruneAttributes();
       try {
         const course = await $.ajax({ 
-          url: '/api/content/insertrecusive',
+          url: '/api/content/insertrecursive',
           method: 'POST',
           data: JSON.stringify(this.model.attributes), 
           contentType: 'application/json' 
