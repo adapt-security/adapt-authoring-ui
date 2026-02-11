@@ -20,7 +20,7 @@
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^0.4.0",
-    "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
+    "adapt-authoring-core": "^1.7.0",
     "babel-plugin-transform-amd-to-es6": "^0.6.1",
     "cpy": "^13.0.0",
     "fs-extra": "^11.2.0",
@@ -34,6 +34,18 @@
     "rollup": "^2.79.1",
     "rollup-plugin-inject-process-env": "*",
     "upath": "^2.0.1"
+  },
+  "peerDependencies": {
+    "adapt-authoring-adaptframework": "^1.9.3",
+    "adapt-authoring-server": "^1.2.1"
+  },
+  "peerDependenciesMeta": {
+    "adapt-authoring-adaptframework": {
+      "optional": true
+    },
+    "adapt-authoring-server": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
@@ -57,7 +69,15 @@
       ],
       "@semantic-release/npm",
       "@semantic-release/github",
-      "@semantic-release/git"
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "package.json"
+          ],
+          "message": "Chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ]
     ]
   },
   "standard": {
