@@ -99,49 +99,65 @@ define(function(require){
 
     formatErrorString: function (errorString) {
       const normalise = (s, delim) => s.split(delim).map(s => s.trim()).filter(Boolean)
-      const nl = count => '<br/>'.repeat(count ?? 1)
 
-      // Extract prefix messages (anything before the first component error)
-      const firstComponentIndex = errorString.search(/\S+-component\s+\S+/);
-      const prefixMessages = firstComponentIndex > 0 
-        ? normalise(errorString.substring(0, firstComponentIndex), ',')
-        : [];
-      const componentString = firstComponentIndex > 0 
-        ? errorString.substring(firstComponentIndex) 
-        : errorString;
+      // Match content type + id + errors: e.g. "contentobject abc123 /path must be..."
+      // Covers: contentobject, block, article, course, *-component, etc.
+      const contentErrorPattern = /\b(\S+)\s+([a-f0-9]{24})\s+(\/\S+.*?)(?=,\s*;\s*|,\s*$|$)/g;
 
-      const components = normalise(componentString, ';')
+      const prefixMessages = [];
       const groups = {};
-      
-      components.forEach(component => {
-        const [, type, id, errorsStr] = component.match(/^(\S+-component)\s+(\S+)\s+(.+)$/) ?? [];
+      let hasContentErrors = false;
 
-        if(!type || !id || !errorsStr) {
-          return
+      // Extract semicolon-delimited segments
+      const segments = normalise(errorString, ';');
+
+      segments.forEach(segment => {
+        const matches = [...segment.matchAll(contentErrorPattern)];
+        if (!matches.length) {
+          // No content errors found in this segment — treat as prefix message
+          normalise(segment, ',').forEach(msg => {
+            if (msg.trim()) prefixMessages.push(msg.trim());
+          });
+          return;
         }
-        // Split only on ", /" to avoid breaking apart value lists like "false,soft,hard"
-        const errors = errorsStr
-          .split(/,\s*(?=\/)/)
-          .map(s => s.trim())
-          .filter(Boolean)
-          .sort();
-        const signature = `${type}|${errors.join('|')}`;
+        hasContentErrors = true;
 
-        if (!groups[signature]) groups[signature] = { type, errors, ids: [] };
-        groups[signature].ids.push(id);
-      });  
-      // Group by component type
+        // Extract any text before the first content error as prefix
+        const firstMatchStart = segment.indexOf(matches[0][0]);
+        if (firstMatchStart > 0) {
+          normalise(segment.substring(0, firstMatchStart), ',').forEach(msg => {
+            if (msg.trim()) prefixMessages.push(msg.trim());
+          });
+        }
+
+        matches.forEach(match => {
+          const [, type, id, errorsStr] = match;
+          // Split only on ", /" to avoid breaking apart value lists like "false,soft,hard"
+          const errors = errorsStr
+            .split(/,\s*(?=\/)/)
+            .map(s => s.trim())
+            .filter(Boolean)
+            .sort();
+          const signature = `${type}|${errors.join('|')}`;
+
+          if (!groups[signature]) groups[signature] = { type, errors, ids: [] };
+          groups[signature].ids.push(id);
+        });
+      });
+
+      if (!hasContentErrors) return '';
+
+      // Group by content type
       const byType = {};
       Object.values(groups).forEach(group => {
         if (!byType[group.type]) byType[group.type] = [];
         byType[group.type].push(group);
       });
-    
+
       // Format output
       const output = [];
-      // Add prefix messages if any
       if (prefixMessages.length) output.push(prefixMessages.join(', '));
-      // Add component errors
+
       const formatted = Object.entries(byType).map(([type, typeGroups]) => {
         const totalCount = typeGroups.reduce((sum, g) => sum + g.ids.length, 0);
         const subGroups = typeGroups.map(group => {
@@ -156,12 +172,11 @@ define(function(require){
     },
 
     onError: function(e) {
-      let text
+      let text = e.message
       try {
-        text = this.formatErrorString(e.message)
-      } catch (e) {
-        text = e.message
-      }
+        const formatted = this.formatErrorString(e.message)
+        if (formatted) text = formatted
+      } catch {}
       Origin.Notify.alert({ type: 'error', text });
       Origin.trigger('sidebar:resetButtons'); 
     }
