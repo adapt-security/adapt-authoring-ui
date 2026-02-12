@@ -102,7 +102,7 @@ define(function(require){
 
       // Match content type + id + errors: e.g. "contentobject abc123 /path must be..."
       // Covers: contentobject, block, article, course, *-component, etc.
-      const contentErrorPattern = /\b(\S+)\s+([a-f0-9]{24})\s+(\/\S+.*?)(?=,\s*;\s*|,\s*$|$)/g;
+      const contentErrorPattern = /\b(\S+)\s+([a-z0-9][\w-]*)\s+((?:\/\S+|must\b).*?)(?=,\s*;\s*|,\s*$|$)/g;
 
       const prefixMessages = [];
       const groups = {};
@@ -132,9 +132,9 @@ define(function(require){
 
         matches.forEach(match => {
           const [, type, id, errorsStr] = match;
-          // Split only on ", /" to avoid breaking apart value lists like "false,soft,hard"
+          // Split on ", /" or ", must" to separate individual validation errors
           const errors = errorsStr
-            .split(/,\s*(?=\/)/)
+            .split(/,\s*(?=\/|must\b)/)
             .map(s => s.trim())
             .filter(Boolean)
             .sort();
@@ -163,7 +163,7 @@ define(function(require){
         const subGroups = typeGroups.map(group => {
           return `<div style="margin-bottom:20px;"><b>IDs:</b> ${group.ids.join(', ')}<ul style="text-align:left;margin-top:10px;">${group.errors.map(e => `<li>${e}</li>`).join('')}</ul></div>`;
         });
-        return `<h2 style="margin:20px;">${type} (${totalCount})</h2><div>${subGroups.join('')}</div>`;
+        return `<h2 style="margin:20px 0;">${type} (${totalCount})</h2><div>${subGroups.join('')}</div>`;
       });
 
       output.push(...formatted);
@@ -177,7 +177,13 @@ define(function(require){
         const formatted = this.formatErrorString(e.message)
         if (formatted) text = formatted
       } catch {}
-      Origin.Notify.alert({ type: 'error', text });
+      $('.frameworkImport .summaryText').addClass('error').text('Course import failed')
+      $('.frameworkImport .statusReport > .error').remove()
+      $('.frameworkImport .statusReport').prepend(`<div class="error">
+          <h3>Errors</h3>
+          <div class="messages">${text}</div>
+      </div>`)
+      // Origin.Notify.alert({ type: 'error', text });
       Origin.trigger('sidebar:resetButtons'); 
     }
   }, {
