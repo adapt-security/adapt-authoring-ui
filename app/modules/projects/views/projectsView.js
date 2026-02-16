@@ -183,6 +183,9 @@ define(function(require){
 
               this.$('.no-projects').toggleClass('display-none', this.allCourses.length > 0);
               if(typeof cb === 'function') cb(collection);
+              
+              // Check if we need to load more items to fill the visible area
+              this.checkAndFillVisibleArea();
             },
             error: () => {
               this.isCollectionFetching = false;
@@ -193,6 +196,23 @@ define(function(require){
           this.isCollectionFetching = false;
         }
       });
+    },
+
+    checkAndFillVisibleArea: function() {
+      // Check if we need to load more items to fill the viewport
+      if(this.shouldStopFetches || this.isCollectionFetching) return;
+      
+      const $last = $('.project-list-item').last();
+      if($last.length === 0) return;
+      
+      const contentPane = $('.contentPane');
+      const contentPaneBottom = contentPane.offset().top + contentPane.height();
+      const lastItemBottom = $last.offset().top + $last.height();
+      
+      // If the last item is visible (within the viewport), fetch more
+      if(lastItemBottom <= contentPaneBottom) {
+        this.fetchCollection();
+      }
     },
 
     doLazyScroll: function(e) {
