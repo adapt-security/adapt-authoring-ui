@@ -206,6 +206,8 @@ define(function(require){
       if($last.length === 0) return;
       
       const contentPane = $('.contentPane');
+      if(contentPane.length === 0) return;
+      
       const contentPaneBottom = contentPane.offset().top + contentPane.height();
       const lastItemBottom = $last.offset().top + $last.height();
       
