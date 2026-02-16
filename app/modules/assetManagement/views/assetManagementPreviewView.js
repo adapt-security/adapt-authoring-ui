@@ -51,7 +51,7 @@ define(function(require){
       try {
         await $.ajax({ url: `api/assets/${this.model.get('_id')}`, type: 'DELETE' });
         this.model.trigger('destroy', this.model, this.model.collection);
-        Origin.trigger('assetManagement:assetPreviewView:delete');
+        Origin.trigger('assetManagement:assetPreviewView:delete', this.model.get('_id'));
         this.remove();
       } catch(e) {
         Origin.Notify.alert({
