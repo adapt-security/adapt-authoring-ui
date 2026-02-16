@@ -188,7 +188,7 @@ define(function(require){
     },
 
     onAssetDeleted: function(assetId) {
-      if(!assetId) return;
+      if (!assetId) return;
       this.allAssets = this.allAssets.filter(asset => asset.get('_id') !== assetId);
       $('.asset-management-no-assets').toggleClass('display-none', this.allAssets.length > 0);
     },
