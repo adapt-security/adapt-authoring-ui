@@ -50,7 +50,8 @@ define(function(require){
         'assetManagement:sidebarFilter:remove': this.removeFilter,
         'assetManagement:sidebarView:filter': this.filterBySearchInput,
         'assetManagement:assetManagementSidebarView:filterByTags': this.filterByTags,
-        'assetManagement:collection:refresh': this.resetCollection
+        'assetManagement:collection:refresh': this.resetCollection,
+        'assetManagement:assetPreviewView:delete': this.onAssetDeleted
       });
     },
 
@@ -184,6 +185,12 @@ define(function(require){
       this.resetCollection(null, false);
       this.tags = _.pluck(tags, 'id');
       this.fetchCollection();
+    },
+
+    onAssetDeleted: function(assetId) {
+      if (!assetId) return;
+      this.allAssets = this.allAssets.filter(asset => asset.get('_id') !== assetId);
+      $('.asset-management-no-assets').toggleClass('display-none', this.allAssets.length > 0);
     },
 
     // Event handling
