@@ -123,7 +123,11 @@ define(function(require){
         creatorName = Origin.l10n.t('app.unknownuser');
       }
       if(this._isShared && creatorName) model.set('creatorName', creatorName);
-      model.set('tagTitles', model.get('tags').map(tId => this.allTags.find(t => t.get('_id') === tId).get('title')));
+      model.set('tagTitles', (model.get('tags') || []).reduce((titles, tId) => {
+        const tag = this.allTags.find(t => t.get('_id') === tId);
+        tag ? titles.push(tag.get('title')) : console.error(`Missing tag '${tId}' on course ${model.get('_id')}`);
+        return titles;
+      }, []));
       const view = new ProjectView({ model });
       this.childViews.push(view);
       this.getProjectsContainer().append(view.$el);
