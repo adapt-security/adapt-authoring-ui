@@ -1,6 +1,5 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require){
-  var CourseModel = require('core/models/courseModel');
   var Origin = require('core/origin');
   var OriginView = require('core/views/originView');
   var ProjectView = require('./projectView');
@@ -90,23 +89,7 @@ define(function(require){
     },
 
     initPaging: function() {
-      if(this.resizeTimer) {
-        clearTimeout(this.resizeTimer);
-        this.resizeTimer = -1;
-      }
-      var $item = new ProjectView({ model: new CourseModel() }).$el;
-      $item.css({
-        visibility: 'hidden'
-      }).appendTo('.projects-list'); // Fixed: added missing class selector
-
-      var containerHeight = $(window).height()-this.$el.offset().top;
-      var itemHeight = $item.outerHeight(true);
-      var columns = Math.floor(this.$('.projects-inner').width()/$item.outerWidth(true));
-      var rows = Math.max(1, Math.ceil(containerHeight/itemHeight));
-      $item.remove();
-      // columns stack nicely, but need to add extra row if it's not a clean split
-      if((containerHeight % itemHeight) > 0) rows++;
-      this.collection.queryOptions.limit = columns*rows;
+      this.collection.queryOptions.limit = 20;
       this.resetCollection(this.setViewToReady);
     },
 
@@ -205,16 +188,16 @@ define(function(require){
     checkAndFillVisibleArea: function() {
       // Check if we need to load more items to fill the viewport
       if(this.shouldStopFetches || this.isCollectionFetching) return;
-      
+
       const $last = $('.project-list-item').last();
       if($last.length === 0) return;
-      
-      const contentPane = $('.contentPane');
-      if(contentPane.length === 0) return;
-      
-      const contentPaneBottom = contentPane.offset().top + contentPane.height();
-      const lastItemBottom = $last.offset().top + $last.height();
-      
+
+      const $contentPane = $('.contentPane');
+      if($contentPane.length === 0) return;
+
+      const contentPaneBottom = $contentPane.scrollTop() + $contentPane.height();
+      const lastItemBottom = $last.position().top + $last.outerHeight(true);
+
       // If the last item is visible (within the viewport), fetch more
       if(lastItemBottom <= contentPaneBottom) {
         this.fetchCollection();
