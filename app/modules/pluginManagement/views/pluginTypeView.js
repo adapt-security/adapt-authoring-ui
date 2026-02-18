@@ -55,9 +55,8 @@ define(function(require){
 
       $.post(`${this.model.url()}/update`)
         .done(function() {
-          $btn.attr('title', Origin.l10n.t('app.uptodate'));
-          $icon.removeClass().addClass('fa fa-check');
-          this.model.fetch();
+          this.model.set({ canBeUpdated: false });
+          this.render();
         }.bind(this))
         .fail(function(e) {
           $btn.attr('title', Origin.l10n.t('app.updatefailed'));
