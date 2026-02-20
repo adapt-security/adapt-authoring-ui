@@ -1,6 +1,6 @@
 {
   "name": "adapt-authoring-ui",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Front-end application for the Adapt authoring tool",
   "homepage": "https://github.com/adapt-security/adapt-authoring-ui",
   "license": "GPL-3.0",
