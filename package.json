@@ -40,14 +40,6 @@
     "adapt-authoring-adaptframework": "^2.0.0",
     "adapt-authoring-server": "^2.0.0"
   },
-  "peerDependenciesMeta": {
-    "adapt-authoring-adaptframework": {
-      "optional": true
-    },
-    "adapt-authoring-server": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "conventional-changelog-eslint": "^6.0.0",
