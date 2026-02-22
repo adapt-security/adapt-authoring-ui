@@ -37,8 +37,8 @@
     "upath": "^2.0.1"
   },
   "peerDependencies": {
-    "adapt-authoring-adaptframework": "^1.9.4",
-    "adapt-authoring-server": "^1.2.1"
+    "adapt-authoring-adaptframework": "^2.0.0",
+    "adapt-authoring-server": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "adapt-authoring-adaptframework": {
