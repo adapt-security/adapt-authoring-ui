@@ -1,4 +1,5 @@
 build
 modules.js
 plugins.js
-templates.jspackage-lock.json
+templates.js
+package-lock.json
