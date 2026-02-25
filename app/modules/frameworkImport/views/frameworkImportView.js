@@ -65,7 +65,7 @@ define(function(require){
     importCourse: function() {
       if(!this.isValid()) return;
       this.doImport()
-        .then(() => Origin.router.navigateToDashboard())
+        .then(data => Origin.router.navigateTo(`editor/${data.courseId}/menu`))
         .catch(this.onError.bind(this));
     },
 
