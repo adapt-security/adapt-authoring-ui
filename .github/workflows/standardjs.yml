@@ -1,4 +1,4 @@
-name: Standard.js formatting check
+name: Lint
 on: push
 jobs:
   default:
