@@ -232,7 +232,8 @@ define(function(require) {
           });
           SweetAlert.close();
         },
-        fail: ({ message }) => {
+        error: jqXHR => {
+          const message = jqXHR.responseJSON.message
           SweetAlert.close();
           Origin.Notify.alert({ type: 'error', text: `${Origin.l10n.t('app.errorpaste')}${message ? `\n\n${message}` : ''}` });
         }
