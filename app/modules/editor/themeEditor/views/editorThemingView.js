@@ -33,7 +33,7 @@ define(function(require) {
     },
 
     initData: async function() {
-      this.model = new Backbone.Model(Origin.editor.data.config.get('themeVariables'));
+      this.model = new Backbone.Model(Origin.editor.data.course.get('themeVariables'));
       this.themes = new ContentPluginCollection(undefined, { type: 'theme' });
       this.presets = new PresetCollection();
       
@@ -216,7 +216,7 @@ define(function(require) {
       return new Promise((resolve, reject) => {
         if(!this.form) return resolve();
         this.form.commit();
-        Origin.editor.data.config.save({ themeVariables: this.model.attributes }, { error: () => reject(), success: () => resolve() });
+        Origin.editor.data.course.save({ themeVariables: this.model.attributes }, { error: () => reject(), success: () => resolve() });
       });
     },
 
