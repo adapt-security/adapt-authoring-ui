@@ -177,14 +177,17 @@ define(function(require){
         const formatted = this.formatErrorString(e.message)
         if (formatted) text = formatted
       } catch {}
+      if(!$('.frameworkImport .statusReport').length) {
+        this.$('#import_upload').addClass('display-none');
+        this.$el.append(`<div class="frameworkImport"><div class="summaryText error"></div><div class="inner"><div class="statusReport"></div></div></div>`);
+      }
       $('.frameworkImport .summaryText').addClass('error').text('Course import failed')
       $('.frameworkImport .statusReport > .error').remove()
       $('.frameworkImport .statusReport').prepend(`<div class="error">
           <h3>Errors</h3>
           <div class="messages">${text}</div>
       </div>`)
-      // Origin.Notify.alert({ type: 'error', text });
-      Origin.trigger('sidebar:resetButtons'); 
+      Origin.trigger('sidebar:resetButtons');
     }
   }, {
     template: 'frameworkImport'
