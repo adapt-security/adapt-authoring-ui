@@ -26,6 +26,7 @@ define(function(require) {
           await Promise.all([
             new Promise (async (resolve) => {
               const content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
+              content.queryOptions = { limit: 0 };
               await content.fetch();
               Origin.editor.data.content = content;
               Origin.editor.data.course = content.findWhere({ _type: 'course' });
