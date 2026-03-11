@@ -199,8 +199,19 @@ define(function(require){
       this.contentobjects.add(newModel);
     },
 
-    onItemDeleted: async function(oldModel) {
-      await this.updateContentObjects(true);
+    onItemDeleted: function(oldModel) {
+      var content = Origin.editor.data.content;
+      var removeDescendants = function(parentId) {
+        content.where({ _parentId: parentId }).forEach(function(child) {
+          removeDescendants(child.get('_id'));
+          content.remove(child);
+        });
+      };
+      removeDescendants(oldModel.get('_id'));
+      content.remove(oldModel);
+      this.contentobjects = new Backbone.Collection(content.filter(function(c) {
+        return c.get('_type') === 'menu' || c.get('_type') === 'page';
+      }));
       Origin.trigger('editorView:menuView:updateSelectedItem', this.contentobjects.findWhere({ _id: oldModel.get('_parentId') }));
     }
   }, {
