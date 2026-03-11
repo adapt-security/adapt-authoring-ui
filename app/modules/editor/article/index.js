@@ -10,6 +10,7 @@ define(function(require) {
       return;
     }
     var model = Origin.editor.data.content.findWhere({ _id: data.id });
+    await model.fetch();
     var form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
     Origin.sidebar.addView(new EditorArticleEditSidebarView({ model, form }).$el);

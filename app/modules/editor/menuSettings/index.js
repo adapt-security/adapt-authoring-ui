@@ -8,7 +8,6 @@ define(function(require) {
   Origin.on('editor:menusettings', function(data) {
     var route1 = Origin.location.route1;
     var model = Origin.editor.data.config;
-    
     Helpers.setPageTitle(model);
     
     var backButtonRoute = `#/editor/${route1}/menu`;
