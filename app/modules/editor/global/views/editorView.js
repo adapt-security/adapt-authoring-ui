@@ -195,19 +195,12 @@ define(function(require) {
     },
 
     copyIdToClipboard: function(model) {
-      var id = model.get('_id');
-
-      if (helpers.copyStringToClipboard(id)) {
-        Origin.Notify.alert({
-          type: 'info',
-          text: Origin.l10n.t('app.copyidtoclipboardsuccess', { id: id })
-        });
-      } else {
-        Origin.Notify.alert({
-          type: 'warning',
-          text: Origin.l10n.t('app.copyidtoclipboarderror', { id: id })
-        });
-      }
+      const id = model.get('_friendlyId') || model.get('_id');
+      const isSuccess = helpers.copyStringToClipboard(id)
+      Origin.Notify.alert({
+        type: isSuccess ? 'info' : 'warning',
+        text: Origin.l10n.t(isSuccess ? 'app.copyidtoclipboardsuccess' : 'app.copyidtoclipboarderror', { id })
+      });
     },
 
     pasteFromClipboard: function(_parentId, _sortOrder, _layout) {
