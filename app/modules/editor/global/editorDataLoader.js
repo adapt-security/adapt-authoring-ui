@@ -23,15 +23,16 @@ define(function (require) {
 
       isLoaded = false
 
-      if (await isOutdated()) {
-        try {
+      try {
+        var treeData = await isOutdated()
+        if (treeData) {
           await Promise.all([
-            loadTree(),
+            loadTree(treeData),
             loadComponentTypes()
           ])
-        } catch (e) {
-          return handleError()
         }
+      } catch (e) {
+        return handleError()
       }
       isLoaded = true
 
@@ -55,17 +56,25 @@ define(function (require) {
     }
   }
 
-  async function loadTree () {
-    var courseId = Origin.location.route1
-    var res = await fetch('/api/content/tree/' + courseId)
-    if (!res.ok) throw new Error('Failed to fetch content tree')
-    lastModified = res.headers.get('Last-Modified')
-    var items = await res.json()
+  async function loadTree (treeData) {
+    var items, resLastModified
+    if (treeData.items) {
+      items = treeData.items
+      resLastModified = treeData.lastModified
+    } else {
+      var courseId = Origin.location.route1
+      var res = await fetch('/api/content/tree/' + courseId)
+      if (!res.ok) throw new Error('Failed to fetch content tree')
+      resLastModified = res.headers.get('Last-Modified')
+      items = await res.json()
+    }
+    lastModified = resLastModified
     var content = new Backbone.Collection(items.map(function (item) {
       return new ContentModel(item)
-    }), { comparator: '_sortOrder' })
-    content.findWhere = Backbone.Collection.prototype.findWhere
-    content.where = Backbone.Collection.prototype.where
+    }), {
+      model: ContentModel,
+      comparator: '_sortOrder'
+    })
     Origin.editor.data.content = content
     Origin.editor.data.course = content.findWhere({ _type: 'course' })
     Origin.editor.data.config = content.findWhere({ _type: 'config' })
@@ -95,7 +104,12 @@ define(function (require) {
     var res = await fetch('/api/content/tree/' + courseId, {
       headers: { 'If-Modified-Since': lastModified }
     })
-    return res.status !== 304
+    if (res.status === 304) return false
+    if (!res.ok) throw new Error('Failed to check content staleness')
+    return {
+      items: await res.json(),
+      lastModified: res.headers.get('Last-Modified')
+    }
   }
 
   function handleError () {
