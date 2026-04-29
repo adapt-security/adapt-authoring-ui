@@ -76,7 +76,7 @@ define(function(require){
         this.$('#tags').val(this.model.get('tags').map(t => t.title));
       }
       const data = await Helpers.submitForm(this.$('form.frameworkImport'), { data: { dryRun } })
-      return Object.assign(data, { canImport: data.statusReport.error === undefined });
+      return Object.assign(data, { canImport: !data.statusReport.error?.length });
     },
 
     onAddTag: function (tag) {
