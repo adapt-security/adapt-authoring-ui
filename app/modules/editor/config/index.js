@@ -7,6 +7,7 @@ define(function(require) {
 
   Origin.on('editor:config', async function(data) {
     var model = Origin.editor.data.config;
+    await model.fetch();
     var form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
     Origin.sidebar.addView(new EditorConfigEditSidebarView({ form }).$el);

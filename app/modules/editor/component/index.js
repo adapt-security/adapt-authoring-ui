@@ -14,6 +14,7 @@ define(function(require) {
       });
     }
     const model = _id === 'new' ? Origin.editor.data.newcomponent : Origin.editor.data.content.findWhere({ _id });
+    if (_id !== 'new') await model.fetch();
     const form = await Origin.scaffold.buildForm({ model });
     Helpers.setPageTitle(model);
     Origin.sidebar.addView(new EditorComponentEditSidebarView({ model, form }).$el);
