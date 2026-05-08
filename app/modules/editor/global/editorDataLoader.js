@@ -1,11 +1,13 @@
 // LICENCE https://github.com/adaptlearning/adapt_authoring/blob/master/LICENSE
 define(function(require) {
   var _ = require('underscore');
-  var ContentCollection = require('core/collections/contentCollection');
+  var Backbone = require('backbone');
+  var ContentModel = require('core/models/contentModel');
   var ContentPluginCollection = require('core/collections/contentPluginCollection');
   var Origin = require('core/origin');
 
   var isLoaded;
+  var lastModified;
 
   var Preloader = {
     /**
@@ -21,35 +23,19 @@ define(function(require) {
 
       isLoaded = false;
 
-      if(await isOutdated()) {
-        try {
+      try {
+        var treeData = await isOutdated();
+        if(treeData) {
           await Promise.all([
-            new Promise (async (resolve) => {
-              const content = new ContentCollection(undefined, { _courseId: Origin.location.route1 });
-              content.queryOptions = { limit: 0 };
-              await content.fetch();
-              Origin.editor.data.content = content;
-              Origin.editor.data.course = content.findWhere({ _type: 'course' });
-              Origin.editor.data.config = content.findWhere({ _type: 'config' });
-              if(!Origin.editor.data.course || !Origin.editor.data.config) {
-                return handleError();
-              }
-              resolve()
-            }),
-            new Promise (async (resolve) => {
-              const componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
-              await componentTypes.fetch();
-              Origin.editor.data.componentTypes = componentTypes;
-              resolve()
-            })
+            loadTree(treeData),
+            loadComponentTypes()
           ]);
-        } catch(e) {
-          return handleError();
         }
+      } catch(e) {
+        return handleError();
       }
       isLoaded = true;
 
-      Origin.editor.data.lastFetch = new Date().toISOString();
       if(_.isFunction(callback)) {
         callback();
       }
@@ -60,6 +46,7 @@ define(function(require) {
         Origin.editor.data.course = undefined;
         Origin.editor.data.config = undefined;
       }
+      lastModified = undefined;
     },
     /**
     * Makes sure all data has been loaded and calls callback
@@ -69,18 +56,74 @@ define(function(require) {
     }
   };
 
+  async function loadTree(treeData) {
+    var items, resLastModified;
+    if(treeData && treeData.items) {
+      items = treeData.items;
+      resLastModified = treeData.lastModified;
+    } else {
+      var courseId = Origin.location.route1;
+      await new Promise(function(resolve, reject) {
+        $.ajax({
+          url: '/api/content/tree/' + courseId,
+          success: function(data, textStatus, jqXHR) {
+            items = data;
+            resLastModified = jqXHR.getResponseHeader('Last-Modified');
+            resolve();
+          },
+          error: function() { reject(new Error('Failed to fetch content tree')); }
+        });
+      });
+    }
+    lastModified = resLastModified;
+    var content = new Backbone.Collection(items.map(function(item) {
+      return new ContentModel(item);
+    }), {
+      model: ContentModel,
+      comparator: '_sortOrder'
+    });
+    Origin.editor.data.content = content;
+    Origin.editor.data.course = content.findWhere({ _type: 'course' });
+    Origin.editor.data.config = content.findWhere({ _type: 'config' });
+    if(!Origin.editor.data.course || !Origin.editor.data.config) {
+      return handleError();
+    }
+  }
+
+  async function loadComponentTypes() {
+    var componentTypes = new ContentPluginCollection(undefined, { type: 'component' });
+    await componentTypes.fetch();
+    Origin.editor.data.componentTypes = componentTypes;
+  }
+
   async function isOutdated() {
     try {
       if(Origin.editor.data.course.get('_id') !== Origin.location.route1) {
-        Origin.editor.data.lastFetch = 0
+        lastModified = undefined;
         return true;
       }
     } catch(e) {
-      Origin.editor.data.lastFetch = 0
+      lastModified = undefined;
       return true;
     }
-    const [latestDoc] = await $.post('/api/content/query?sort={%22updatedAt%22:-1}&limit=1', {_courseId:Origin.editor.data.course.get('_id')});
-    return !latestDoc || new Date(Origin.editor.data.lastFetch) < new Date(latestDoc.updatedAt);
+    if(!lastModified) return true;
+    var courseId = Origin.editor.data.course.get('_id');
+    return new Promise(function(resolve, reject) {
+      $.ajax({
+        url: '/api/content/tree/' + courseId,
+        headers: { 'If-Modified-Since': lastModified },
+        complete: function(jqXHR) {
+          if(jqXHR.status === 304) return resolve(false);
+          if(jqXHR.status === 200) {
+            return resolve({
+              items: jqXHR.responseJSON,
+              lastModified: jqXHR.getResponseHeader('Last-Modified')
+            });
+          }
+          reject(new Error('Failed to check content staleness'));
+        }
+      });
+    });
   }
 
   function handleError() {

@@ -10,6 +10,7 @@ define(function(require) {
   Origin.on('editor:course', renderCourseEdit);
 
   async function renderCourseEdit() {
+    await Origin.editor.data.course.fetch();
     EditorHelpers.setPageTitle(Origin.editor.data.course);
     var form = await Origin.scaffold.buildForm({ model: Origin.editor.data.course });
     Origin.contentPane.setView(EditorCourseEditView, { model: Origin.editor.data.course, form });

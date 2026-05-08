@@ -30,6 +30,7 @@ define(function(require) {
   });
 
   async function renderContentObjectEdit(data) {
+    await data.model.fetch();
     Helpers.setPageTitle(data.model);
     var form = await Origin.scaffold.buildForm({ model: data.model });
     Origin.sidebar.addView(new EditorPageEditSidebarView({ form: form }).$el);
