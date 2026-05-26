@@ -205,7 +205,7 @@ define(function(require){
     },
 
     doLazyScroll: function(e) {
-      if(this.isCollectionFetching) {
+      if(this.shouldStopFetches || this.isCollectionFetching) {
         return;
       }
       const $last = $('.project-list-item').last();
