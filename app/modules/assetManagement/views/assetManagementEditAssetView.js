@@ -32,8 +32,10 @@ define([
     },
 
     updateTitle: function(e) {
-      if(!this.form.fields.title.getValue()) { // add the asset file name if there isn't already a title
-        this.form.fields.title.setValue($(e.currentTarget).val().replace("C:\\fakepath\\", ""));
+      const value = $(e.currentTarget).val();
+      this.$('.asset-thumb').toggle(!value);
+      if(value && !this.form.fields.title.getValue()) {
+        this.form.fields.title.setValue(value.replace("C:\\fakepath\\", ""));
       }
     },
 
@@ -70,11 +72,13 @@ define([
             });
           }
           const newData = await Helpers.submitForm(this.form, {
-            method: model.isNew() ? 'POST' : 'PATCH', 
+            method: model.isNew() ? 'POST' : 'PATCH',
             url: model.url(),
             beforeSubmit: this.sanitiseData
           });
           const _id = newData && newData._id;
+
+          if(newData) this.model.set(newData);
 
           if(this.model.get('isModal')) {
             if(_id) Origin.trigger('assetManagement:collection:refresh', null, true, _id);

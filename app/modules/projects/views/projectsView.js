@@ -185,33 +185,24 @@ define(function(require){
       });
     },
 
-    checkAndFillVisibleArea: function() {
-      // Check if we need to load more items to fill the viewport
-      if(this.shouldStopFetches || this.isCollectionFetching) return;
-
-      const $last = $('.project-list-item').last();
-      if($last.length === 0) return;
-
-      const $contentPane = $('.contentPane');
-      if($contentPane.length === 0) return;
-
-      const contentPaneBottom = $contentPane.scrollTop() + $contentPane.height();
-      const lastItemBottom = $last.position().top + $last.outerHeight(true);
-
-      // If the last item is visible (within the viewport), fetch more
-      if(lastItemBottom <= contentPaneBottom) {
-        this.fetchCollection();
-      }
+    isNearListBottom: function(buffer) {
+      const cp = $('.contentPane')[0];
+      if(!cp) return false;
+      return cp.scrollHeight - cp.scrollTop - cp.clientHeight <= buffer;
     },
 
-    doLazyScroll: function(e) {
-      if(this.isCollectionFetching) {
-        return;
-      }
-      const $last = $('.project-list-item').last();
-      const triggerY = ($('.contentPane').offset().top + $('.contentPane').height()) - ($last.height()/2) ;
+    checkAndFillVisibleArea: function() {
+      // Trigger another fetch when current items don't overflow the viewport
+      if(this.shouldStopFetches || this.isCollectionFetching) return;
+      if(this.isNearListBottom(0)) this.fetchCollection();
+    },
 
-      if($last.offset().top < triggerY) this.fetchCollection();
+    doLazyScroll: function() {
+      // Trigger when user scrolls within one viewport of the bottom
+      if(this.isCollectionFetching || this.shouldStopFetches) return;
+      const cp = $('.contentPane')[0];
+      if(!cp) return;
+      if(this.isNearListBottom(cp.clientHeight)) this.fetchCollection();
     },
 
     doLayout: function(layout) {

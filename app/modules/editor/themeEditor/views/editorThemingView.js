@@ -164,8 +164,9 @@ define(function(require) {
       }, {
         success: model => {
           this.presets.add(model);
+          this.updatePresetSelect();
           this.updateRestorePresetButton(false);
-          window.setTimeout(() => this.$('.preset select').val(model.get('_id')), 1);
+          this.$('.preset select').val(model.get('_id'));
         },
         error: this.onError
       });

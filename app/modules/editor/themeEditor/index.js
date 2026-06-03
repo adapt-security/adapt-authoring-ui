@@ -8,7 +8,11 @@ define(function(require) {
     Origin.router.navigate(`#/editor/${Origin.editor.data.course.get('_id')}/${ROUTE}`, { trigger: true });
   });
 
-  Origin.on('editor:selecttheme', () => {
+  Origin.on('editor:selecttheme', async () => {
+    await Promise.all([
+      Origin.editor.data.course.fetch(),
+      Origin.editor.data.config.fetch()
+    ]);
     Origin.sidebar.addView(new EditorThemingSidebarView().$el);
     Origin.contentPane.setView(EditorThemingView);
   });
