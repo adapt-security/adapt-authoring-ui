@@ -57,6 +57,7 @@ define([
       const hasChanged = Object.keys(model.changedAttributes()).filter(a => a !== '_type').length > 0;
       try {
         if(model.isNew() && !hasFile) {
+          Origin.trigger('sidebar:resetButtons');
           return Origin.Notify.toast({ type: 'error', text: Origin.l10n.t('app.pleaseaddfile') });
         }
         if(hasChanged) {
@@ -65,7 +66,8 @@ define([
           }
           const validationErrors = this.form.validate();
           if(validationErrors) {
-            return Origin.Notify.toast({ 
+            Origin.trigger('sidebar:resetButtons');
+            return Origin.Notify.toast({
               type: 'error', 
               title: Origin.l10n.t('app.validationfailed'),
               text: Object.values(validationErrors).map(e => `${e.title} ${e.type}`).join('<br/>')
