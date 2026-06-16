@@ -55,9 +55,7 @@ define(['../../global/views/editorOriginView', 'core/origin'], function(EditorOr
           this.remove();
           Origin.trigger('editorView:renderPage');
         }, this),
-        error: function(response) {
-          console.error(response);
-        }
+        error: (model, jqXhr) => Origin.Notify.alert({ type: 'error', text: jqXhr.responseJSON.message })
       })
     },
 
