@@ -25,7 +25,6 @@
         backboneFormsLists: 'libraries/backbone-forms-lists',
         bowser: 'libraries/bowser',
         ckeditor: 'libraries/ckeditor',
-        'core-js': 'libraries/core-js.min',
         handlebars: 'libraries/handlebars.min',
         imageReady: 'libraries/imageReady',
         inview: 'libraries/inview',
@@ -34,9 +33,6 @@
         jqueryUI: 'libraries/jquery-ui.min',
         moment: 'libraries/moment.min',
         polyglot: 'libraries/polyglot.min',
-        react: isProduction ? 'libraries/react.production.min' : 'libraries/react.development',
-        'react-dom': isProduction ? 'libraries/react-dom.production.min' : 'libraries/react-dom.development',
-        'regenerator-runtime': 'libraries/regenerator-runtime.min',
         scrollTo: 'libraries/scrollTo.min',
         selectize: 'libraries/selectize/js/selectize',
         underscore: 'libraries/underscore.min',
@@ -80,8 +76,6 @@
     require([
       'handlebars',
       'underscore',
-      'regenerator-runtime',
-      'core-js',
       'backbone',
       'backbone.controller',
       'backbone.es6',
@@ -96,8 +90,6 @@
       'scrollTo',
       'selectize',
       'bowser',
-      'react',
-      'react-dom',
       'velocity'
     ], loadGlobals);
   }
