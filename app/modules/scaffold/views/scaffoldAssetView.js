@@ -44,7 +44,9 @@ define([
 
     checkValueHasChanged: function() {
       var value = this.getValue();
-      if (this.key === 'heroImage') return this.saveModel({ heroImage: value });
+      // getValue() coerces a cleared field to undefined, which JSON.stringify drops from the
+      // request body; send an empty string so the cleared heroImage is actually persisted
+      if (this.key === 'heroImage') return this.saveModel({ heroImage: value || '' });
       if (Helpers.isAssetExternal(value)) return this.saveModel();
     },
 
@@ -112,8 +114,10 @@ define([
     onClearButtonClicked: function(event) {
       event.preventDefault();
 
-      this.checkValueHasChanged();
+      // clear the value before saving, otherwise checkValueHasChanged reads (and re-saves)
+      // the old value, leaving the removed asset in place
       this.setValue('');
+      this.checkValueHasChanged();
     },
 
     onExternalAssetButtonClicked: function(event) {
