@@ -1,5 +1,14 @@
 # Working with the UI
 
+## Branding & theme
+
+The app name and theme colours are owned by the core config (`adapt-authoring-core.*`), so they have a single, neutral source of truth shared with other modules (e.g. the mailer):
+
+- `appName` — shown in the browser tab and the app header.
+- `primaryColour`, `commitColour`, `chromeColour`, `accentColour` — map onto the editable LESS colours `@primary-color`, `@secondary-color`, `@tertiary-color` and `@quaternary-color` respectively.
+
+The colours are applied to the LESS at **build time** (via `modifyVars`), so changing one requires a UI rebuild to take effect. Any colour left unset falls back to the default defined in `app/core/less/colours.less`.
+
 ## Extending the UI
 
 The UI can be extended easily from an Adapt authoring tool module.
