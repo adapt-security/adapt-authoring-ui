@@ -1,13 +1,13 @@
-# Calls the org-level reusable workflow to add PRs to the TODO Board
-
-name: Add PR to Project
-
+name: Add to project
 on:
+  issues:
+    types:
+      - opened
+      - reopened
   pull_request:
     types:
       - opened
       - reopened
-
 jobs:
   add-to-project:
     uses: adapt-security/.github/.github/workflows/new.yml@main
