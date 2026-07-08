@@ -11,6 +11,12 @@
     "test": "node --test 'tests/**/*.spec.js'"
   },
   "repository": "github:adapt-security/adapt-authoring-ui",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
+  ],
   "dependencies": {
     "@babel/core": "^7.23.9",
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
