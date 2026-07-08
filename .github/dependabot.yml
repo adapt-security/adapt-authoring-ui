@@ -9,3 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      # Babel 8 requires @babel/core@^8, but @rollup/plugin-babel (this build's
+      # only Babel entry point) has no release supporting Babel 8, so the upgrade
+      # cannot land. Revisit if @rollup/plugin-babel ships Babel 8 support.
+      - dependency-name: "@babel/*"
+        update-types: ["version-update:semver-major"]
