@@ -46,6 +46,7 @@
     "adapt-authoring-adaptframework": "^3.0.0",
     "adapt-authoring-authored": "^1.4.0",
     "adapt-authoring-content": "^3.0.0",
+    "adapt-authoring-core": "^3.1.0",
     "adapt-authoring-server": "^2.0.0"
   },
   "devDependencies": {

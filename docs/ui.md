@@ -1,5 +1,23 @@
 # Working with the UI
 
+## Branding & theme
+
+The app name and theme colours are owned by the core config (`adapt-authoring-core.*`), so they have a single, neutral source of truth shared with other modules (e.g. the mailer):
+
+- `appName` — shown in the browser tab and the app header.
+- `primaryColour`, `commitColour`, `chromeColour`, `accentColour` — map onto the editable LESS colours `@primary-color`, `@secondary-color`, `@tertiary-color` and `@quaternary-color` respectively.
+
+The colours are applied to the LESS at **build time** (via `modifyVars`), so changing one requires a UI rebuild to take effect. Any colour left unset falls back to the default defined in `app/core/less/colours.less`.
+
+### Branding images
+
+Four core config keys point at custom image files (absolute filesystem paths). Each configured file is copied into the build's `css/assets/` directory and referenced in place of the built-in default; a key left unset keeps the built-in. Like the colours, images are baked in at **build time**, so changing one requires a UI rebuild.
+
+- `favicon` — the browser-tab icon (`index`/`loading` pages). Falls back to `favicon.png`.
+- `logo` — the loading-screen and login-screen logo. Falls back to `adapt-learning-logo-outline.png` / `adapt-learning-logo-white.png`.
+- `loginBackground` — the full-screen login/forgot/reset background (LESS `@login-background-image`). Falls back to `login_bg.jpg`.
+- `projectPlaceholder` — the default course thumbnail shown when a course has no hero image (LESS `@default-project-bg`). Falls back to `origami-project.jpg`.
+
 ## Extending the UI
 
 The UI can be extended easily from an Adapt authoring tool module.
