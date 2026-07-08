@@ -20,7 +20,14 @@ define(function(require){
     postRender: function() {
       // tagging
       this.$('#tags_control').tagsInput({
-        autocomplete_url: 'api/tags/autocomplete',
+        autocomplete_url: 'api/tags/query',
+        autocomplete: {
+          source: (request, response) => {
+            $.post('api/tags/query', { title: { $regex: `.*${request.term}.*`, $options: 'i' } })
+              .done(tags => response(tags.map(t => t.title)))
+              .fail(() => response([]));
+          }
+        },
         onAddTag: this.onAddTag.bind(this),
         onRemoveTag: this.onRemoveTag.bind(this),
         minChars : 3,
