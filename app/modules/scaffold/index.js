@@ -47,9 +47,13 @@ define([
         return editor;
       }
       var adaptType = item._adapt && item._adapt.inputType;
+      adaptType = typeof adaptType === 'string' ? adaptType : adaptType && adaptType.type;
 
       if (adaptType) {
-        return typeof adaptType === 'string' ? adaptType : adaptType.type;
+        if (Backbone.Form.editors[adaptType]) {
+          return adaptType;
+        }
+        console.warn('Scaffold: no editor registered for _adapt.inputType "' + adaptType + '", falling back to the primitive type editor');
       }
       switch (item.type) {
         case 'array':
