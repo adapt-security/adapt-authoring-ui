@@ -46,6 +46,11 @@ define([
       if (editor) {
         return editor;
       }
+      var adaptType = item._adapt && item._adapt.inputType;
+
+      if (adaptType) {
+        return typeof adaptType === 'string' ? adaptType : adaptType.type;
+      }
       switch (item.type) {
         case 'array':
           return 'List';
@@ -273,13 +278,6 @@ define([
     }
     const query = model.get('_courseId') ? `&_courseId=${model.get('_courseId')}` : '';
     const schema = await $.getJSON(`api/content/schema?_type=${schemaType}${query}`);
-
-    var access = schema.properties && schema.properties._access;
-    if(access) {
-      access._backboneForms = { type: 'Access' };
-      access.title = access.title || Origin.l10n.t('app.scaffold.access.title');
-      access.description = access.description || Origin.l10n.t('app.scaffold.access.help');
-    }
 
     options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);

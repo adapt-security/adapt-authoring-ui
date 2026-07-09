@@ -6,8 +6,6 @@
     "extensions": "Extensions",
     "colourPickerCancel": "Cancel selection",
     "access": {
-      "title": "Access",
-      "help": "Choose who can access this course.",
       "onlyme": "Only me",
       "specific": "Specific people",
       "anyone": "Anyone"
