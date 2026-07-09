@@ -2,6 +2,7 @@ define([
   'core/origin',
   'core/helpers',
   './backboneFormsOverrides',
+  './views/scaffoldAccessView',
   './views/scaffoldAssetItemView',
   './views/scaffoldAssetView',
   './views/scaffoldCodeEditorView',
@@ -12,7 +13,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, Helpers, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, Helpers, Overrides, ScaffoldAccessView, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
@@ -138,10 +139,12 @@ define([
     '_hasPreview',
     '_id',
     '_isSelected',
+    '_isShared',
     '_latestTrackingId',
     '_layout',
     '_menu',
     '_parentId',
+    '_shareWithUsers',
     '_sortOrder',
     '_supportedLayout',
     '_theme',
@@ -270,6 +273,13 @@ define([
     }
     const query = model.get('_courseId') ? `&_courseId=${model.get('_courseId')}` : '';
     const schema = await $.getJSON(`api/content/schema?_type=${schemaType}${query}`);
+
+    var access = schema.properties && schema.properties._access;
+    if(access) {
+      access._backboneForms = { type: 'Access' };
+      access.title = access.title || Origin.l10n.t('app.scaffold.access.title');
+      access.description = access.description || Origin.l10n.t('app.scaffold.access.help');
+    }
 
     options.model.schema = buildSchema(schema.required, schema.properties);
     options.fieldsets = buildFieldsets(schema.properties, options);

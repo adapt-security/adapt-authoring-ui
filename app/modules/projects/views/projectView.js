@@ -79,7 +79,8 @@ define(function(require) {
 
     deleteProjectPrompt: function(event) {
       event && event.preventDefault();
-      var isShared = this.model.get('_isShared') || (this.model.get('_shareWithUsers') && this.model.get('_shareWithUsers').length > 0);
+      var access = this.model.get('_access') || {};
+      var isShared = access.public || (access.users && access.users.length > 0);
       Origin.Notify.confirm({
         type: 'warning',
         title: Origin.l10n.t(`${isShared ? 'app.deletesharedproject' : 'app.deleteproject'}`),

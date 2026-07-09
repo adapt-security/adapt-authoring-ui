@@ -4,6 +4,13 @@
     "properties": "Properties",
     "settings": "Settings",
     "extensions": "Extensions",
-    "colourPickerCancel": "Cancel selection"
+    "colourPickerCancel": "Cancel selection",
+    "access": {
+      "title": "Access",
+      "help": "Choose who can access this course.",
+      "onlyme": "Only me",
+      "specific": "Specific people",
+      "anyone": "Anyone"
+    }
   }
 }
