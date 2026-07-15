@@ -2,6 +2,7 @@ define([
   'core/origin',
   'core/helpers',
   './backboneFormsOverrides',
+  './views/scaffoldAccessView',
   './views/scaffoldAssetItemView',
   './views/scaffoldAssetView',
   './views/scaffoldCodeEditorView',
@@ -12,7 +13,7 @@ define([
   './views/scaffoldListView',
   './views/scaffoldTagsView',
   './views/scaffoldUsersView'
-], function(Origin, Helpers, Overrides, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
+], function(Origin, Helpers, Overrides, ScaffoldAccessView, ScaffoldAssetItemView, ScaffoldAssetView, ScaffoldCodeEditorView, ScaffoldColourPickerView, ScaffoldDisplayTitleView, ScaffoldFileView, ScaffoldItemsModalView, ScaffoldListView, ScaffoldTagsView, ScaffoldUsersView) {
 
   var Scaffold = {};
   var alternativeModel;
@@ -44,6 +45,15 @@ define([
 
       if (editor) {
         return editor;
+      }
+      var adaptType = item._adapt && item._adapt.inputType;
+      adaptType = typeof adaptType === 'string' ? adaptType : adaptType && adaptType.type;
+
+      if (adaptType) {
+        if (Backbone.Form.editors[adaptType]) {
+          return adaptType;
+        }
+        console.warn('Scaffold: no editor registered for _adapt.inputType "' + adaptType + '", falling back to the primitive type editor');
       }
       switch (item.type) {
         case 'array':
@@ -138,10 +148,12 @@ define([
     '_hasPreview',
     '_id',
     '_isSelected',
+    '_isShared',
     '_latestTrackingId',
     '_layout',
     '_menu',
     '_parentId',
+    '_shareWithUsers',
     '_sortOrder',
     '_supportedLayout',
     '_theme',
