@@ -4,6 +4,11 @@
     "properties": "Properties",
     "settings": "Settings",
     "extensions": "Extensions",
-    "colourPickerCancel": "Cancel selection"
+    "colourPickerCancel": "Cancel selection",
+    "access": {
+      "onlyme": "Only me",
+      "specific": "Specific people",
+      "anyone": "Anyone"
+    }
   }
 }
