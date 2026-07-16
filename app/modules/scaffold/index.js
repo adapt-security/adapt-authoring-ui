@@ -155,6 +155,7 @@ define([
     'themeSettings',
     'themeVariables',
     'updatedAt',
+    'updatedBy',
     'userGroups',
   ];
   function buildSchema(requiredKeys, properties) {
