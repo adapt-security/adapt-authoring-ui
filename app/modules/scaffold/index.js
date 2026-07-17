@@ -140,7 +140,6 @@ define([
     '_isSelected',
     '_latestTrackingId',
     '_layout',
-    '_menu',
     '_parentId',
     '_sortOrder',
     '_supportedLayout',
