@@ -303,6 +303,10 @@ define(['handlebars', 'moment', 'core/origin'], function(Handlebars, Moment, Ori
       this.constants = Origin.constants;
       return '';
     },
+
+    constant: function(key) {
+      return Origin.constants[key];
+    },
     // Comparison operator (ifValueEquals left for compatibility)
     when: function (a, operator, b, block) {
       console.log(a, operator, b);

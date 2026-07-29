@@ -1,0 +1,22 @@
+.field[data-type="Access"] {
+  .scaffold-access-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .scaffold-access-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    input { margin-right: 8px; }
+  }
+  .scaffold-access-people {
+    margin-top: 10px;
+
+    .option {
+      .name { font-weight: @font-weight-bold; }
+      .email { margin-left: 5px; }
+    }
+  }
+}

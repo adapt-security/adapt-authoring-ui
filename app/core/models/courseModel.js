@@ -16,7 +16,9 @@ define(function(require) {
     },
 
     isEditable: function () {
-      return this.get('_isShared') || this.get('createdBy') == Origin.sessionModel.get('id');
+      var access = this.get('_access') || {};
+      var meId = Origin.sessionModel.get('id');
+      return access.public || (access.users || []).includes(meId) || this.get('createdBy') == meId;
     }
   });
 
